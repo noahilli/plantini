@@ -1,0 +1,24 @@
+Plantini – Open Source Plant Identification & Learning Platform
+Copyright (c) 2026 Plantini Contributors
+
+This product includes software developed by the Plantini Project and third-party components:
+
+1. Flutter Framework
+   - License: BSD 3-Clause
+   - Copyright: Google LLC and Flutter Authors
+
+2. Strapi Headless CMS
+   - License: MIT
+   - Copyright: Strapi Solutions
+
+3. Keycloak IAM
+   - License: Apache License 2.0
+   - Copyright: Red Hat, Inc. and Keycloak Contributors
+
+4. Isar Database
+   - License: Apache License 2.0
+   - Copyright: Simon Leier
+
+5. PlantNet API Integration
+   - Powered by Pl@ntNet (https://plantnet.org)
+   - Identification data used for educational biodiversity learning
