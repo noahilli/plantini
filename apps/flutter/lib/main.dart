@@ -82,7 +82,7 @@ class PlantiniApp extends StatelessWidget {
   }
 }
 
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   final AuthService authService;
   final ProgressService? progressService;
   final OfflineQueueService? queueService;
@@ -97,23 +97,34 @@ class AuthWrapper extends StatelessWidget {
   });
 
   @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    widget.authService.processRedirect();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: authService,
+      listenable: widget.authService,
       builder: (context, _) {
-        if (authService.isAuthenticated) {
+        if (widget.authService.isAuthenticated) {
           return HomeScreen(
-            authService: authService, 
-            progressService: progressService,
-            queueService: queueService,
-            api: api,
+            authService: widget.authService, 
+            progressService: widget.progressService,
+            queueService: widget.queueService,
+            api: widget.api,
           );
         }
         return Scaffold(
           appBar: AppBar(title: const Text('Plantini Login')),
           body: Center(
             child: ElevatedButton(
-              onPressed: () => authService.login(),
+              onPressed: () => widget.authService.login(),
               child: const Text('Login with Keycloak'),
             ),
           ),
