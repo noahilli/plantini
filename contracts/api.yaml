@@ -1,0 +1,375 @@
+openapi: 3.1.0
+info:
+  title: Plantini Platform API
+  version: 1.0.0
+  description: Fach-API für die Flutter-App zur Anbindung an Identity, Storage und CMS (Strapi).
+servers:
+  - url: https://api.plantini.local/v1
+    description: Lokale Entwicklungs-API
+paths:
+  /me:
+    get:
+      summary: Get current user profile
+      operationId: getMe
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile and claims
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /manifest:
+    get:
+      summary: Get latest content manifest
+      operationId: getManifest
+      description: Returns the active release manifest including checksums for offline sync.
+      responses:
+        '200':
+          description: Manifest details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manifest'
+        '500':
+          description: Internal Server Error
+  /ecosystem:
+    get:
+      summary: List ecosystems
+      operationId: listEcosystems
+      description: Get all ecosystems available for learning.
+      responses:
+        '200':
+          description: A list of ecosystems
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ecosystem'
+        '500':
+          description: Internal Server Error
+  /level:
+    get:
+      summary: List levels
+      operationId: listLevels
+      description: Get levels and user progress.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of levels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Level'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /plants:
+    get:
+      summary: List plants
+      operationId: listPlants
+      responses:
+        '200':
+          description: List of plants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plant'
+  /plants/{id}:
+    get:
+      summary: Get a specific plant
+      operationId: getPlant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single plant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plant'
+        '404':
+          description: Plant not found
+  /quizzes:
+    get:
+      summary: List quizzes
+      operationId: listQuizzes
+      responses:
+        '200':
+          description: List of quizzes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+  /media:
+    get:
+      summary: List media
+      operationId: listMedia
+      responses:
+        '200':
+          description: List of media
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Media'
+  /observations:
+    get:
+      summary: List user observations (Herbarium)
+      operationId: listObservations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of observations in the user's herbarium
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+    post:
+      summary: Create a new observation and trigger PlantNet identification
+      operationId: createObservation
+      description: |
+        PlantNet-Adapter-Flow:
+        1. Client uploads an image with optional metadata.
+        2. Backend creates a pending observation record.
+        3. Backend async worker sends the image to the PlantNet-Mock API.
+        4. Mock API returns a probabilistic taxon match and score.
+        5. Backend compares the result with expected species or saves it to the Herbarium.
+        6. Client can poll or wait for the updated observation status.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                notes:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+      responses:
+        '201':
+          description: Observation created and identification started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+        '400':
+          description: Bad Request (e.g. invalid image)
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /export/observations:
+    get:
+      summary: Export structured observations data
+      operationId: exportObservations
+      description: Returns a structured data export (e.g. CSV or JSON list) of all observations. For tenant separation, an organisationId parameter can be used to filter data based on the organisation.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: organisationId
+          in: query
+          description: Optional parameter to filter data by organisation (Tenant separation).
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Structured observation data export
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+            text/csv:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden (insufficient permissions for the requested organisation)
+        '500':
+          description: Internal Server Error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserProfile:
+      type: object
+      required:
+        - id
+        - username
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            type: string
+    Manifest:
+      type: object
+      required:
+        - version
+        - releasedAt
+      properties:
+        version:
+          type: string
+        releasedAt:
+          type: string
+          format: date-time
+        checksums:
+          type: object
+          additionalProperties:
+            type: string
+    Ecosystem:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    Level:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        isUnlocked:
+          type: boolean
+        progress:
+          type: number
+          format: float
+    Plant:
+      type: object
+      required:
+        - id
+        - scientificName
+      properties:
+        id:
+          type: string
+        scientificName:
+          type: string
+        commonName:
+          type: string
+        family:
+          type: string
+        description:
+          type: string
+    Quiz:
+      type: object
+      required:
+        - id
+        - title
+        - quizType
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        quizType:
+          type: string
+          enum: [multiple-choice, flashcard, identification]
+        data:
+          type: object
+    Media:
+      type: object
+      required:
+        - id
+        - title
+        - url
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        caption:
+          type: string
+        license:
+          type: string
+        author:
+          type: string
+        url:
+          type: string
+    Observation:
+      type: object
+      required:
+        - id
+        - plantName
+        - date
+      properties:
+        id:
+          type: string
+        plantName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+        notes:
+          type: string
+        location:
+          type: object
+          description: "Privacy Note: GPS coordinates are fuzzed/coarsened on export or public views, especially for minors."
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        identificationScore:
+          type: number
+          format: float
