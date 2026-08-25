@@ -1,0 +1,11 @@
+{
+  "name": "plantini-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for Plantini",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.40.0"
+  }
+}
