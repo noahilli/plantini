@@ -42,6 +42,20 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  Future<String?> getAccessToken() async {
+    if (_credential != null) {
+      try {
+        final tokenResponse = await _credential!.getTokenResponse();
+        if (tokenResponse.accessToken != null && tokenResponse.accessToken!.isNotEmpty) {
+          return tokenResponse.accessToken;
+        }
+      } catch (e) {
+        debugPrint('Failed to get token response from credential: $e');
+      }
+    }
+    return 'mock-jwt-token';
+  }
+
   Future<void> logout() async {
     _credential = null;
     notifyListeners();

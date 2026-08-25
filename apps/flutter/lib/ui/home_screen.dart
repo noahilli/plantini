@@ -44,7 +44,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
+      final token = await widget.authService.getAccessToken();
+      if (token != null) {
+        api.setBearerAuth('bearerAuth', token);
+      }
       final profileRes = await api.getDefaultApi().getMe();
       final ecosystemRes = await api.getDefaultApi().listEcosystems();
       
@@ -52,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _profile = profileRes.data;
         _ecosystems = ecosystemRes.data?.toList();
         _isLoading = false;
+        _error = null;
       });
     } catch (e) {
       setState(() {
@@ -76,7 +86,25 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text('Error: $_error'))
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text('Fehler beim Laden: $_error', textAlign: TextAlign.center),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: _fetchData,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Erneut versuchen'),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               : ListView(
                   children: [
                     if (_profile != null)

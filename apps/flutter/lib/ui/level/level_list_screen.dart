@@ -75,7 +75,7 @@ class _LevelListScreenState extends State<LevelListScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => PlantProfileScreen(
-                          plantId: 'mock-plant-1', 
+                          plantId: '1', 
                           api: widget.api,
                           progressService: widget.progressService,
                         ),

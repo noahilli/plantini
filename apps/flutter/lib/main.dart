@@ -21,6 +21,7 @@ String getApiBaseUrl() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  final authService = AuthService();
   late Isar isar;
   late ProgressService progressService;
   late OfflineQueueService queueService;
@@ -36,7 +37,28 @@ void main() async {
       [PlantSchema, QuizProgressSchema, LevelProgressSchema, OfflineObservationSchema],
       directory: dirPath,
     );
-    api = Openapi(dio: Dio(BaseOptions(baseUrl: getApiBaseUrl())));
+    
+    final dio = Dio(BaseOptions(baseUrl: getApiBaseUrl()));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          if (!options.headers.containsKey('Authorization')) {
+            final token = await authService.getAccessToken();
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          }
+          return handler.next(options);
+        },
+      ),
+    );
+    
+    api = Openapi(dio: dio);
+    final initialToken = await authService.getAccessToken();
+    if (initialToken != null) {
+      api.setBearerAuth('bearerAuth', initialToken);
+    }
+    
     progressService = ProgressService(isar);
     queueService = OfflineQueueService(isar, api);
   } catch (e) {
@@ -44,7 +66,7 @@ void main() async {
   }
 
   runApp(PlantiniApp(
-    authService: AuthService(), 
+    authService: authService, 
     progressService: progressService,
     queueService: queueService,
     api: api,
