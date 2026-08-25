@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "quizzes",
+  "info": {
+    "singularName": "quiz",
+    "pluralName": "quizzes",
+    "displayName": "Quiz"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "quizType": {
+      "type": "enumeration",
+      "enum": [
+        "multiple-choice",
+        "flashcard",
+        "identification"
+      ]
+    },
+    "data": {
+      "type": "json"
+    },
+    "level": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::level.level",
+      "inversedBy": "quizzes"
+    },
+    "plant": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::plant.plant"
+    },
+    "reviewStatus": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "draft"
+    }
+  }
+}

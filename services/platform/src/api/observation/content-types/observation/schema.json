@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "observations",
+  "info": {
+    "singularName": "observation",
+    "pluralName": "observations",
+    "displayName": "Observation",
+    "description": "Herbarium entry / Observation"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "userId": {
+      "type": "string",
+      "required": true
+    },
+    "photo": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::media.media"
+    },
+    "latitude": {
+      "type": "decimal"
+    },
+    "longitude": {
+      "type": "decimal"
+    },
+    "timestamp": {
+      "type": "datetime",
+      "required": true
+    },
+    "notes": {
+      "type": "text"
+    },
+    "plantnetScores": {
+      "type": "json"
+    },
+    "plant": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::plant.plant"
+    },
+    "organisationId": {
+      "type": "string"
+    }
+  }
+}

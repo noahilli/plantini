@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plants",
+  "info": {
+    "singularName": "plant",
+    "pluralName": "plants",
+    "displayName": "Plant"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "scientificName": {
+      "type": "string",
+      "required": true
+    },
+    "commonName": {
+      "type": "string"
+    },
+    "family": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "media": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::media.media",
+      "mappedBy": "plant"
+    },
+    "levels": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::level.level",
+      "mappedBy": "plants"
+    },
+    "reviewStatus": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "draft"
+    },
+    "kingdom": {
+      "type": "string"
+    },
+    "order": {
+      "type": "string"
+    },
+    "genus": {
+      "type": "string"
+    },
+    "species": {
+      "type": "string"
+    }
+  }
+}

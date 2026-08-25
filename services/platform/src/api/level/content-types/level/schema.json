@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "levels",
+  "info": {
+    "singularName": "level",
+    "pluralName": "levels",
+    "displayName": "Level"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "levelNumber": { "type": "integer", "required": true },
+    "difficulty": { "type": "string" },
+    "plants": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::plant.plant",
+      "inversedBy": "levels"
+    },
+    "quizzes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::quiz.quiz",
+      "mappedBy": "level"
+    },
+    "ecosystem": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::ecosystem.ecosystem",
+      "inversedBy": "levels"
+    }
+  }
+}
