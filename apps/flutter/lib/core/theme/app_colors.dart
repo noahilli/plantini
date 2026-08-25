@@ -1,40 +1,36 @@
 import 'package:flutter/material.dart';
 
-/// Central color definitions for the Plantini app.
-/// Selected to ensure WCAG 2.2 AA compliance for contrast ratios.
+/// Design System v2 Color Palette for Plantini
+/// Matches the official Plantini App Design specification (WCAG 2.2 AA compliant).
 class AppColors {
-  // Primary: A deep green for high contrast against white/light backgrounds.
-  static const Color primary = Color(0xFF1B5E20); // Green 900
-  static const Color onPrimary = Colors.white;
+  static const Color forest = Color(0xFF2F5D50);
+  static const Color forestDark = Color(0xFF21473D);
+  static const Color sage = Color(0xFF6D8B74);
+  static const Color moss = Color(0xFF98A886);
+  static const Color cream = Color(0xFFF7F4EC);
+  static const Color beige = Color(0xFFE8E0D0);
+  static const Color sand = Color(0xFFD9C7A3);
+  static const Color bark = Color(0xFF7A563A);
+  static const Color ink = Color(0xFF26332F);
+  static const Color muted = Color(0xFF65716C);
+  static const Color line = Color(0xFFD9DED9);
+  static const Color white = Colors.white;
+  static const Color mint = Color(0xFFDDECDA);
+  static const Color sun = Color(0xFFF1DF9B);
+  static const Color danger = Color(0xFFA35D49);
+  static const Color warningBg = Color(0xFFFFF5E8);
+  static const Color warningBorder = Color(0xFFF0D8B8);
 
-  // Secondary: A distinct color (e.g., Earthy brown/orange) for accents.
-  static const Color secondary = Color(0xFFE65100); // Orange 900
-  static const Color onSecondary = Colors.white;
-
-  // Background and Surface
-  static const Color background = Color(0xFFF1F8E9); // Light Green 50
-  static const Color onBackground = Color(0xFF1B1B1B);
-
-  static const Color surface = Colors.white;
-  static const Color onSurface = Color(0xFF1B1B1B);
-
-  // Semantic Colors
-  static const Color error = Color(0xFFB00020);
-  static const Color onError = Colors.white;
-
-  static const Color success = Color(0xFF00796B); // Teal 700
-
-  // Dark Mode variations
-  static const Color primaryDark = Color(0xFF81C784); // Green 300
-  static const Color onPrimaryDark = Color(0xFF000000);
-
-  static const Color secondaryDark = Color(0xFFFFB74D); // Orange 300
-  static const Color onSecondaryDark = Color(0xFF000000);
-
-  static const Color backgroundDark = Color(0xFF121212);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
-  static const Color onBackgroundDark = Colors.white;
-  static const Color onSurfaceDark = Colors.white;
-
-  static const Color errorDark = Color(0xFFCF6679);
+  // Semantic mappings
+  static const Color primary = forest;
+  static const Color onPrimary = white;
+  static const Color secondary = sage;
+  static const Color onSecondary = white;
+  static const Color background = cream;
+  static const Color onBackground = ink;
+  static const Color surface = white;
+  static const Color onSurface = ink;
+  static const Color error = danger;
+  static const Color onError = white;
+  static const Color success = forest;
 }

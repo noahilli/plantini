@@ -1,89 +1,70 @@
 import 'package:flutter/material.dart';
-
 import 'app_colors.dart';
-import 'app_typography.dart';
 
-/// Central theme configuration for Plantini.
-/// Configures Material 3 themes ensuring accessibility, high contrast, and large touch targets.
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: const ColorScheme(
         brightness: Brightness.light,
-        primary: AppColors.primary,
-        onPrimary: AppColors.onPrimary,
-        secondary: AppColors.secondary,
-        onSecondary: AppColors.onSecondary,
-        error: AppColors.error,
-        onError: AppColors.onError,
-        surface: AppColors.surface,
-        onSurface: AppColors.onSurface,
+        primary: AppColors.forest,
+        onPrimary: AppColors.white,
+        secondary: AppColors.sage,
+        onSecondary: AppColors.white,
+        surface: AppColors.white,
+        onSurface: AppColors.ink,
+        error: AppColors.danger,
+        onError: AppColors.white,
       ),
-      scaffoldBackgroundColor: AppColors.background,
-      textTheme: AppTypography.textTheme,
-      // Ensure components have accessible touch targets
-      visualDensity: VisualDensity.standard,
+      scaffoldBackgroundColor: AppColors.cream,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.cream,
+        foregroundColor: AppColors.forest,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+          color: AppColors.forest,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Color(0x182F5D50)),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(48, 48), // WCAG minimum touch target size
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
-          textStyle: const TextStyle(fontWeight: FontWeight.bold),
+          backgroundColor: AppColors.forest,
+          foregroundColor: AppColors.white,
+          elevation: 0,
+          minimumSize: const Size(48, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+          ),
         ),
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          minimumSize: const Size(48, 48), // WCAG minimum touch target size
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.mint,
+        labelStyle: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          color: AppColors.forest,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(999),
         ),
       ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          minimumSize: const Size(48, 48), // WCAG minimum touch target size
-        ),
-      ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
+      dividerColor: AppColors.line,
     );
   }
 
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: const ColorScheme(
-        brightness: Brightness.dark,
-        primary: AppColors.primaryDark,
-        onPrimary: AppColors.onPrimaryDark,
-        secondary: AppColors.secondaryDark,
-        onSecondary: AppColors.onSecondaryDark,
-        error: AppColors.errorDark,
-        onError: AppColors.onError,
-        surface: AppColors.surfaceDark,
-        onSurface: AppColors.onSurfaceDark,
-      ),
-      scaffoldBackgroundColor: AppColors.backgroundDark,
-      textTheme: AppTypography.textTheme,
-      visualDensity: VisualDensity.standard,
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(48, 48), // WCAG minimum touch target size
-          backgroundColor: AppColors.primaryDark,
-          foregroundColor: AppColors.onPrimaryDark,
-          textStyle: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-      ),
-      iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
-      ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.all(16),
-      ),
-    );
-  }
+  static ThemeData get darkTheme => lightTheme;
 }

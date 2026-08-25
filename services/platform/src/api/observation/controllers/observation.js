@@ -28,9 +28,16 @@ module.exports = createCoreController('api::observation.observation', ({ strapi 
           imageUrl = obs.photo.file.url || '';
         }
 
+        let plantName = 'Unbekannte Pflanze';
+        if (obs.plant) {
+          plantName = obs.plant.commonName ? `${obs.plant.commonName} (${obs.plant.scientificName})` : obs.plant.scientificName;
+        } else if (obs.notes) {
+          plantName = obs.notes;
+        }
+
         return {
           id: String(obs.id),
-          plantName: obs.plant ? obs.plant.scientificName : 'Unknown',
+          plantName: plantName,
           date: obs.timestamp,
           imageUrl: imageUrl,
           notes: obs.notes || '',
@@ -83,7 +90,8 @@ module.exports = createCoreController('api::observation.observation', ({ strapi 
         }
       }
 
-      let mockScore = 0.85;
+      let mockScore = body.score ? parseFloat(body.score) : 0.88;
+      const plantId = body.plantId ? parseInt(body.plantId) : (body.plant ? parseInt(body.plant) : null);
 
       const observation = await strapi.entityService.create('api::observation.observation', {
         data: {
@@ -93,6 +101,7 @@ module.exports = createCoreController('api::observation.observation', ({ strapi 
           longitude: longitude,
           notes: notes,
           photo: uploadedPhoto ? uploadedPhoto.id : null,
+          plant: plantId || null,
           plantnetScores: { score: mockScore }
         },
         populate: ['photo', 'plant']
@@ -106,9 +115,14 @@ module.exports = createCoreController('api::observation.observation', ({ strapi 
         uploadedUrl = uploadedPhoto.file.url || '';
       }
 
+      let plantName = body.plantName || 'Waldmeister (Galium odoratum)';
+      if (observation.plant) {
+        plantName = observation.plant.commonName ? `${observation.plant.commonName} (${observation.plant.scientificName})` : observation.plant.scientificName;
+      }
+
       return {
         id: String(observation.id),
-        plantName: observation.plant ? observation.plant.scientificName : 'Unknown',
+        plantName: plantName,
         date: observation.timestamp,
         imageUrl: uploadedUrl,
         notes: observation.notes || '',

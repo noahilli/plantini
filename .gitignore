@@ -20,6 +20,10 @@ yarn-error.log*
 logs/
 *.log
 
+# Python
+__pycache__/
+*.pyc
+
 # Editor and OS
 .DS_Store
 Thumbs.db

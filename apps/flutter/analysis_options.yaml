@@ -21,6 +21,8 @@ analyzer:
     - linux/**
   errors:
     experimental_member_use: ignore
+    deprecated_member_use: ignore
+    use_null_aware_elements: ignore
 
 linter:
   # The lint rules applied to this project can be customized in the

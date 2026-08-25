@@ -10,6 +10,7 @@ import 'storage/offline_queue_service.dart';
 import 'auth/auth_service.dart';
 import 'ui/home_screen.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/app_colors.dart';
 
 String getApiBaseUrl() {
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
@@ -143,11 +144,68 @@ class _AuthWrapperState extends State<AuthWrapper> {
           );
         }
         return Scaffold(
-          appBar: AppBar(title: const Text('Plantini Login')),
-          body: Center(
-            child: ElevatedButton(
-              onPressed: () => widget.authService.login(),
-              child: const Text('Login with Keycloak'),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Spacer(),
+                  Center(
+                    child: Container(
+                      width: 68,
+                      height: 68,
+                      decoration: BoxDecoration(
+                        color: AppColors.forest,
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x382F5D50),
+                            blurRadius: 30,
+                            offset: Offset(0, 12),
+                          )
+                        ],
+                      ),
+                      child: const Icon(Icons.eco_rounded, color: Colors.white, size: 40),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Center(
+                    child: Text(
+                      'plantini',
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1.0,
+                        color: AppColors.forest,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Text(
+                      'Entdecke und lerne die Artenvielfalt deiner Umgebung',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.muted,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    onPressed: () => widget.authService.login(),
+                    icon: const Icon(Icons.lock_open_rounded, size: 20),
+                    label: const Text('Mit Keycloak anmelden'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         );

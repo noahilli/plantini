@@ -15,7 +15,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Plantini Login'), findsOneWidget);
-    expect(find.text('Login with Keycloak'), findsOneWidget);
+    expect(find.text('plantini'), findsOneWidget);
+    expect(find.text('Mit Keycloak anmelden'), findsOneWidget);
   });
 }
