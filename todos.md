@@ -1,0 +1,12 @@
+# Plantini Todo List (Lokaler Fallback)
+
+- [x] M0-00: Zuweisungs- und Koordinationsplan für Walking Skeleton erstellen (Orchestrator)
+- [x] M0-01: Repo-Struktur, Versionen und ADRs bestätigen (Orchestrator)
+- [ ] M0-02: Docker/CI-Basis einrichten (DevOps)
+- [ ] M0-03: Keycloak-Realm/Clients konfigurieren (Auth Manager)
+- [ ] M0-04: Strapi-Kernmodell konfigurieren (CMS Manager)
+- [ ] M0-05: API `/me`/Manifest/Ecosystem implementieren (Backend API)
+- [ ] M0-06: Flutter Shell/Read Path (Flutter Frontend)
+- [ ] M0-07: Playwright Walking Skeleton (QA Playwright)
+- [ ] M0-08: Web-Storage-Spike (Flutter + Orchestrator)
+- [ ] M0-09: Threat/Privacy Review (Security)

@@ -1,0 +1,15 @@
+path,primary_role,required_reviewers,rule
+apps/flutter/**,flutter-frontend,ux-accessibility;qa-playwright,Flutter owner merges app changes
+apps/flutter/lib/features/auth/**,flutter-frontend,auth-manager;security-privacy;qa-playwright,OIDC contract requires Auth review
+apps/flutter/lib/design_system/**,ux-accessibility,flutter-frontend;qa-playwright,Implementation shared with Flutter owner
+services/platform/**,backend-api,security-privacy;qa-playwright,Backend owner controls migrations and policies
+services/platform/src/api/content/**,cms-manager,backend-api;content-data;qa-playwright,CMS schema and API boundary reviewed together
+services/identity/**,auth-manager,security-privacy;devops-release;qa-playwright,Realm exports must contain no secrets
+contracts/**,orchestrator,backend-api;flutter-frontend;qa-playwright,Any breaking change requires ADR and migration plan
+infra/**,devops-release,security-privacy;backend-api;auth-manager,Environment changes require restore and security impact
+tools/e2e/**,qa-playwright,affected-feature-owner,Tests may not mutate product code silently
+content/**,content-data,cms-manager;ux-accessibility;product-manager,Every published item needs source license and review
+docs/research/**,research-analytics,security-privacy;product-manager,No real data in repository
+docs/security/**,security-privacy,affected-owner;orchestrator,Confidential findings use private disclosure channel
+docs/adr/**,orchestrator,affected-owners,Accepted ADR cannot be bypassed
+knowledge/features/**,product-manager,orchestrator;affected-owner,Status and scope are centrally maintained

@@ -1,0 +1,129 @@
+# Blueprint only. Pin every variable and preferably image digest before first use.
+name: plantini
+
+services:
+  postgres-platform:
+    image: postgres:${POSTGRES_VERSION:?pin POSTGRES_VERSION}
+    environment:
+      POSTGRES_DB: plantini
+      POSTGRES_USER: plantini
+      POSTGRES_PASSWORD: ${PLATFORM_DB_PASSWORD:?set local secret}
+    volumes: [platform-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U plantini -d plantini]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  postgres-keycloak:
+    image: postgres:${POSTGRES_VERSION:?pin POSTGRES_VERSION}
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set local secret}
+    volumes: [keycloak-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U keycloak -d keycloak]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:${REDIS_VERSION:?pin REDIS_VERSION}
+    command: [redis-server, --appendonly, 'yes']
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    image: minio/minio:${MINIO_VERSION:?pin MINIO_VERSION}
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set local user}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set local secret}
+    ports: ['9000:9000', '9001:9001']
+    volumes: [object-data:/data]
+
+  mailpit:
+    image: axllent/mailpit:${MAILPIT_VERSION:?pin MAILPIT_VERSION}
+    ports: ['1025:1025', '8025:8025']
+
+  plantnet-mock:
+    image: mockserver/mockserver:${MOCKSERVER_VERSION:?pin MOCKSERVER_VERSION}
+    ports: ['1080:1080']
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION:?pin KEYCLOAK_VERSION}
+    command: [start-dev, --import-realm]
+    depends_on:
+      postgres-keycloak: {condition: service_healthy}
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set local secret}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_BOOTSTRAP_ADMIN:?set local admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_BOOTSTRAP_PASSWORD:?set local secret}
+      KC_HEALTH_ENABLED: 'true'
+    ports: ['8081:8080']
+    volumes:
+      - ../services/identity/realm:/opt/keycloak/data/import:ro
+
+  platform:
+    build:
+      context: ../services/platform
+    depends_on:
+      postgres-platform: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      keycloak: {condition: service_started}
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres-platform
+      DATABASE_PORT: '5432'
+      DATABASE_NAME: plantini
+      DATABASE_USERNAME: plantini
+      DATABASE_PASSWORD: ${PLATFORM_DB_PASSWORD:?set local secret}
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:?set local user}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:?set local secret}
+      OIDC_ISSUER: http://keycloak:8080/realms/plantini
+      PLANTNET_BASE_URL: http://plantnet-mock:1080
+      PLANTNET_API_KEY: local-mock-only
+      SMTP_HOST: mailpit
+      SMTP_PORT: '1025'
+      APP_KEYS: ${STRAPI_APP_KEYS:?set local secret}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?set local secret}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?set local secret}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?set local secret}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:?set local secret}
+    ports: ['1337:1337']
+    volumes:
+      - ../services/platform:/opt/app
+      - platform-node-modules:/opt/app/node_modules
+
+  playwright:
+    image: mcr.microsoft.com/playwright:${PLAYWRIGHT_IMAGE_TAG:?pin PLAYWRIGHT_IMAGE_TAG}
+    profiles: [tools]
+    working_dir: /work
+    command: [bash, -lc, 'npm ci && npx playwright test']
+    environment:
+      PLATFORM_URL: http://platform:1337
+      KEYCLOAK_URL: http://keycloak:8080
+      MAILPIT_URL: http://mailpit:8025
+    volumes:
+      - ../tools/e2e:/work
+    depends_on:
+      platform: {condition: service_started}
+      keycloak: {condition: service_started}
+
+volumes:
+  platform-db:
+  keycloak-db:
+  redis-data:
+  object-data:
+  platform-node-modules:

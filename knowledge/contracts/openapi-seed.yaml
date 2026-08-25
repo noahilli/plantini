@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Plantini Platform API
+  version: 0.1.0-seed
+  description: >-
+    Starting contract derived from plantini-anforderungen v1.2. Schemas,
+    authorization, errors and examples must be refined before implementation.
+servers:
+  - url: /api/v1
+security:
+  - oidc: []
+tags:
+  - name: Profile
+  - name: Content
+  - name: Learning
+  - name: Field
+  - name: Observations
+  - name: Administration
+  - name: Privacy
+  - name: Research
+paths:
+  /me:
+    get: {tags: [Profile], operationId: getMe, responses: {'200': {description: Current profile}}}
+    patch: {tags: [Profile], operationId: updateMe, responses: {'200': {description: Updated profile}}}
+  /content/manifest:
+    get: {tags: [Content], operationId: getContentManifest, responses: {'200': {description: Content manifest}}}
+  /content/changes:
+    get: {tags: [Content], operationId: getContentChanges, responses: {'200': {description: Content delta}}}
+  /ecosystems:
+    get: {tags: [Content], operationId: listEcosystems, responses: {'200': {description: Published ecosystems}}}
+  /ecosystems/{id}:
+    get: {tags: [Content], operationId: getEcosystem, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Ecosystem}}}
+  /levels/{id}:
+    get: {tags: [Content], operationId: getLevel, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Level}}}
+  /plants/{id}:
+    get: {tags: [Content], operationId: getPlant, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Plant profile}}}
+  /quiz-items:
+    get: {tags: [Learning], operationId: listQuizItems, responses: {'200': {description: Quiz items or package}}}
+  /learning-events:batch:
+    post: {tags: [Learning], operationId: submitLearningEvents, responses: {'200': {description: Batch acknowledgement}}}
+  /progress:
+    get: {tags: [Learning], operationId: getProgress, responses: {'200': {description: Authoritative progress}}}
+  /level-attempts:
+    post: {tags: [Learning], operationId: startLevelAttempt, responses: {'201': {description: Attempt}}}
+  /level-attempts/{id}:complete:
+    post: {tags: [Learning], operationId: completeLevelAttempt, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Completion result}}}
+  /achievements:
+    get: {tags: [Learning], operationId: listAchievements, responses: {'200': {description: Achievements}}}
+  /sync:
+    post: {tags: [Learning], operationId: synchronize, responses: {'200': {description: Sync result}}}
+  /media/uploads:
+    post: {tags: [Field], operationId: createMediaUpload, responses: {'201': {description: Upload reservation}}}
+  /identifications:
+    post: {tags: [Field], operationId: createIdentification, responses: {'202': {description: Identification job}}}
+  /identifications/{jobId}:
+    get: {tags: [Field], operationId: getIdentification, parameters: [{$ref: '#/components/parameters/JobId'}], responses: {'200': {description: Job status/result}}}
+  /identifications/{jobId}:retry:
+    post: {tags: [Field], operationId: retryIdentification, parameters: [{$ref: '#/components/parameters/JobId'}], responses: {'202': {description: Retried job}}}
+  /observations:
+    get: {tags: [Observations], operationId: listObservations, responses: {'200': {description: Own observations}}}
+    post: {tags: [Observations], operationId: createObservation, responses: {'201': {description: Observation}}}
+  /observations/{id}:
+    get: {tags: [Observations], operationId: getObservation, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Own observation}}}
+    patch: {tags: [Observations], operationId: updateObservation, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Updated observation}}}
+    delete: {tags: [Observations], operationId: deleteObservation, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'202': {description: Deletion accepted}}}
+  /observations/{id}:export:
+    post: {tags: [Observations], operationId: exportObservation, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'202': {description: Export job}}}
+  /admin/content-releases:
+    post: {tags: [Administration], operationId: createContentRelease, responses: {'202': {description: Release job}}}
+  /admin/imports:
+    post: {tags: [Administration], operationId: createImport, responses: {'202': {description: Import or dry-run job}}}
+  /admin/dashboard:
+    get: {tags: [Administration], operationId: getAdminDashboard, responses: {'200': {description: Aggregated metrics}}}
+  /admin/users:
+    get: {tags: [Administration], operationId: listAdminUsers, responses: {'200': {description: Authorized user view}}}
+  /admin/users/{id}:suspend:
+    post: {tags: [Administration], operationId: suspendUser, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'202': {description: Suspension accepted}}}
+  /privacy/exports:
+    post: {tags: [Privacy], operationId: createPrivacyExport, responses: {'202': {description: Export request}}}
+  /privacy/deletions:
+    post: {tags: [Privacy], operationId: createPrivacyDeletion, responses: {'202': {description: Deletion request}}}
+  /research/exports/{id}:
+    get: {tags: [Research], operationId: getResearchExport, parameters: [{$ref: '#/components/parameters/Id'}], responses: {'200': {description: Approved pseudonymized export}}}
+components:
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: https://identity.example.invalid/realms/plantini/.well-known/openid-configuration
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      schema: {type: string, format: uuid}

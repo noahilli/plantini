@@ -1,0 +1,21 @@
+package: plantini-agent-knowledge
+package_version: 1.0.0
+generated_at: 2026-08-24
+language: de
+project: Plantini
+source_document: plantini-anforderungen v1.2
+requirements:
+  functional: 63
+  non_functional: 32
+  total: 95
+target_go_live: 2027-04
+architecture_decision:
+  app: Flutter with Clean Architecture
+  mobile_local_store: Isar behind repository ports
+  web_local_store: spike required; IndexedDB/Drift-WASM fallback
+  cms: Strapi Community Edition with project-specific review state
+  identity: Keycloak
+  database: PostgreSQL
+  object_storage: S3-compatible
+  external_identification: PlantNet through backend adapter
+canonical_entrypoint: AGENT.md

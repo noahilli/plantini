@@ -1,0 +1,36 @@
+{
+  "ecosystems": [
+    {
+      "name": "Mitteleuropäischer Laubwald",
+      "description": "Typischer Laubmischwald mit Buche und Eiche als Leitbaumarten.",
+      "climateZone": "Temperate",
+      "levels": [
+        {
+          "title": "Bäume des Waldes",
+          "levelNumber": 1,
+          "difficulty": "beginner",
+          "plants": ["Rotbuche", "Stieleiche", "Hainbuche"]
+        },
+        {
+          "title": "Frühblüher",
+          "levelNumber": 2,
+          "difficulty": "intermediate",
+          "plants": ["Buschwindröschen", "Lerchensporn", "Scharbockskraut"]
+        }
+      ]
+    },
+    {
+      "name": "Alpenraum",
+      "description": "Gebirgsökosystem oberhalb der Waldgrenze.",
+      "climateZone": "Alpine",
+      "levels": [
+        {
+          "title": "Alpenblumen für Einsteiger",
+          "levelNumber": 1,
+          "difficulty": "beginner",
+          "plants": ["Alpenrose", "Enzian", "Edelweiß"]
+        }
+      ]
+    }
+  ]
+}
