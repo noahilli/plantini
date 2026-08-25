@@ -2,9 +2,11 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TARGET_PLATFORM="${1:-linux}"
 
 echo "🌱 Plantini – Gesamtumgebung starten"
 echo "========================================="
+echo "Ziel-Plattform: $TARGET_PLATFORM (Aufruf: ./start.sh [linux|web])"
 echo ""
 
 # ── 1. Docker-Infrastruktur ──────────────────────────────────────
@@ -62,11 +64,18 @@ echo "  🌐 PlantNet Mock:    http://localhost:1080"
 echo "========================================="
 echo ""
 
-# ── 2. Flutter Web-App ──────────────────────────────────────────
-echo "[4/4] Starte Flutter Web-App..."
-echo "  Die App wird auf http://localhost:3000 bereitgestellt."
-echo "  (Strg+C beendet nur die App. Docker läuft weiter.)"
-echo "-----------------------------------------"
-
+# ── 2. Flutter App ──────────────────────────────────────────────
 cd "$SCRIPT_DIR/apps/flutter"
-flutter run -d web-server --web-port 3000 --web-hostname 0.0.0.0
+
+if [ "$TARGET_PLATFORM" = "web" ]; then
+  echo "[4/4] Starte Flutter Web-App..."
+  echo "  Die App wird auf http://localhost:3000 bereitgestellt."
+  echo "  (Strg+C beendet nur die App. Docker läuft weiter.)"
+  echo "-----------------------------------------"
+  flutter run -d web-server --web-port 3000 --web-hostname 0.0.0.0
+else
+  echo "[4/4] Starte native Linux Desktop-App..."
+  echo "  (Strg+C beendet die App. Docker läuft weiter.)"
+  echo "-----------------------------------------"
+  flutter run -d linux
+fi
