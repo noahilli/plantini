@@ -232,5 +232,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `6541c06` (`featre (API-02) openapi v1 boundary contract and platform services refactoring`):** Überprüfung des OpenAPI v1 Boundary-Vertrags und der refaktorierten Platform-Services.
 - [ ] **Review Commit `eb10ff8` (`change (INFRA-04) e2e compose configuration, test runner scripts and tooling`):** Überprüfung der E2E Docker Compose-Umgebung und Test-Runner-Skripte.
 - [ ] **Review Commit `38ac7ba` (`featre (AUTH-01) validate keycloak jwts, resolve actor profile and enforce blocking ci gates`):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
-- [ ] **Review Commit (CONTENT-01 & LEARN-01):** Überprüfung der ContentService- und LearningSession-Tests (`content-service.test.js`, `learning_flow_test.dart`) und Manifest-/Quiz-Validierung.
+- [ ] **Review Commit `b005b8c` (`featre (CONTENT-01) content and learning domain tests and quiz schema validation`):** Überprüfung der ContentService- und LearningSession-Tests (`content-service.test.js`, `learning_flow_test.dart`) und Manifest-/Quiz-Validierung.
 
