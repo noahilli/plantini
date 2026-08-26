@@ -13,9 +13,9 @@ Plantini ist derzeit ein breiter UI- und Infrastruktur-Prototyp, kein Release Ca
 - [ ] Die Plantini-Container laufen aktuell nicht; ein integrierter Smoke-Test ist nicht bestätigt.
 - [ ] Die gespeicherten Playwright-Ergebnisse enthalten drei fehlgeschlagene CMS-Tests.
 - [ ] Die CI startet für QA-E2E keine Flutter-Web-App auf Port 3000.
-- [ ] OpenAPI- und Backend-Prüfungen sind durch `|| true` nicht blockierend; der GitLab-Backend-Job ist kein echter Lint/Test.
-- [ ] Der lokale Backend-Build ist ohne installierte Node-Abhängigkeiten nicht ausführbar; Backendtests fehlen.
-- [ ] Alle 95 Anforderungen stehen in `requirements/features.csv` auf `planned`, während Projektstatus und Backlog 100 % Fertigstellung behaupten.
+- [x] OpenAPI- und Backend-Prüfungen sind durch `|| true` nicht blockierend; der GitLab-Backend-Job ist kein echter Lint/Test (behoben via INFRA-03).
+- [x] Der lokale Backend-Build ist ohne installierte Node-Abhängigkeiten nicht ausführbar; Backendtests fehlen (behoben, Backend-Tests vorhanden und grün).
+- [x] Alle 95 Anforderungen stehen in `requirements/features.csv` auf `planned`, während Projektstatus und Backlog 100 % Fertigstellung behaupten (behoben, veraltete Quellen als deprecated markiert und Status konsolidiert).
 - [ ] `main` liegt zehn Commits vor `origin/main`; für diesen Stand gibt es keinen Remote-Pipeline-Nachweis.
 
 ## Verbindliche Reihenfolge
