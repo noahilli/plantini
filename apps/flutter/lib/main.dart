@@ -1,215 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:openapi/openapi.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
-import 'storage/isar_collection.dart';
-import 'storage/progress_service.dart';
-import 'storage/offline_queue_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'adapters/http/platform_api_client.dart';
+import 'app/app_config.dart';
+import 'app/app_dependencies.dart';
+import 'app/plantini_app.dart';
 import 'auth/auth_service.dart';
-import 'ui/home_screen.dart';
+import 'core/errors/app_failure.dart';
+import 'core/ids/client_id_generator.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/app_colors.dart';
+import 'core/time/clock.dart';
+import 'features/catalog/application/catalog_use_cases.dart';
+import 'features/catalog/infrastructure/cached_catalog_repository.dart';
+import 'features/catalog/infrastructure/http_catalog_repository.dart';
+import 'features/learning/application/learning_session_service.dart';
+import 'features/learning/infrastructure/http_learning_repository.dart';
+import 'features/learning/infrastructure/shared_preferences_learning_session_store.dart';
 
-String getApiBaseUrl() {
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    return 'http://10.0.2.2:1338/api';
-  }
-  return 'http://localhost:1338/api';
-}
-
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  final authService = AuthService();
-  late Isar isar;
-  late ProgressService progressService;
-  late OfflineQueueService queueService;
-  late Openapi api;
-
-  try {
-    String dirPath = '';
-    if (!kIsWeb) {
-      final dir = await getApplicationDocumentsDirectory();
-      dirPath = dir.path;
-    }
-    isar = await Isar.open(
-      [PlantSchema, QuizProgressSchema, LevelProgressSchema, OfflineObservationSchema],
-      directory: dirPath,
-    );
-    
-    final dio = Dio(BaseOptions(baseUrl: getApiBaseUrl()));
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          if (!options.headers.containsKey('Authorization')) {
-            final token = await authService.getAccessToken();
-            if (token != null) {
-              options.headers['Authorization'] = 'Bearer $token';
-            }
-          }
-          return handler.next(options);
-        },
-      ),
-    );
-    
-    api = Openapi(dio: dio);
-    final initialToken = await authService.getAccessToken();
-    if (initialToken != null) {
-      api.setBearerAuth('bearerAuth', initialToken);
-    }
-    
-    progressService = ProgressService(isar);
-    queueService = OfflineQueueService(isar, api);
-  } catch (e) {
-    debugPrint('Initialization failed: $e');
-  }
-
-  runApp(PlantiniApp(
-    authService: authService, 
-    progressService: progressService,
-    queueService: queueService,
-    api: api,
-  ));
+  runApp(const AppBootstrap());
 }
 
-class PlantiniApp extends StatelessWidget {
-  final AuthService authService;
-  final ProgressService progressService;
-  final OfflineQueueService queueService;
-  final Openapi api;
-  
-  const PlantiniApp({
-    super.key, 
-    required this.authService, 
-    required this.progressService,
-    required this.queueService,
-    required this.api,
-  });
+/// A failed configuration or local-storage initialisation is a visible app
+/// state. No partially initialised late dependency can reach a feature screen.
+final class AppBootstrap extends StatefulWidget {
+  const AppBootstrap({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Plantini',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: AuthWrapper(
-        authService: authService, 
-        progressService: progressService,
-        queueService: queueService,
-        api: api,
-      ),
-    );
-  }
+  State<AppBootstrap> createState() => _AppBootstrapState();
 }
 
-class AuthWrapper extends StatefulWidget {
-  final AuthService authService;
-  final ProgressService? progressService;
-  final OfflineQueueService? queueService;
-  final Openapi? api;
-  
-  const AuthWrapper({
-    super.key, 
-    required this.authService, 
-    this.progressService,
-    this.queueService,
-    this.api,
-  });
+final class _AppBootstrapState extends State<AppBootstrap> {
+  Future<AppDependencies>? _initialization;
 
-  @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
-}
-
-class _AuthWrapperState extends State<AuthWrapper> {
   @override
   void initState() {
     super.initState();
-    widget.authService.processRedirect();
+    _initialization = _initialize();
   }
 
+  Future<AppDependencies> _initialize() async {
+    final config = AppConfig.fromDartDefines();
+    final preferences = await SharedPreferences.getInstance();
+    final auth = AuthService(config: config);
+    await auth.initialize();
+    final api = PlatformApiClient(
+      config: config,
+      accessTokenProvider: auth.getAccessToken,
+    );
+    final remoteCatalog = HttpCatalogRepository(api);
+    final catalog = CachedCatalogRepository(
+      remote: remoteCatalog,
+      preferences: preferences,
+    );
+    final learningRepository = HttpLearningRepository(api);
+    return AppDependencies(
+      auth: auth,
+      apiClient: api,
+      loadEcosystems: LoadPublishedEcosystems(catalog),
+      loadLevels: LoadPublishedLevels(catalog),
+      loadLevel: LoadPublishedLevel(catalog),
+      learningSessions: LearningSessionService(
+        repository: learningRepository,
+        store: SharedPreferencesLearningSessionStore(preferences),
+        ids: SecureClientIdGenerator(),
+        clock: const SystemClock(),
+      ),
+      learningRepository: learningRepository,
+    );
+  }
+
+  void _retry() => setState(() => _initialization = _initialize());
+
   @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: widget.authService,
-      builder: (context, _) {
-        if (widget.authService.isAuthenticated) {
-          return HomeScreen(
-            authService: widget.authService, 
-            progressService: widget.progressService,
-            queueService: widget.queueService,
-            api: widget.api,
-          );
-        }
-        return Scaffold(
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Spacer(),
-                  Center(
-                    child: Container(
-                      width: 68,
-                      height: 68,
-                      decoration: BoxDecoration(
-                        color: AppColors.forest,
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x382F5D50),
-                            blurRadius: 30,
-                            offset: Offset(0, 12),
-                          )
-                        ],
-                      ),
-                      child: const Icon(Icons.eco_rounded, color: Colors.white, size: 40),
+  Widget build(BuildContext context) => FutureBuilder<AppDependencies>(
+    future: _initialization,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState != ConnectionState.done) {
+        return MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ),
+        );
+      }
+      if (snapshot.hasData) return PlantiniApp(dependencies: snapshot.data!);
+      final error = snapshot.error;
+      final message = error is AppFailure
+          ? error.message
+          : 'Plantini konnte nicht sicher gestartet werden. Prüfe die bereitgestellte Konfiguration oder den lokalen Speicher.';
+      return MaterialApp(
+        theme: AppTheme.lightTheme,
+        home: Scaffold(
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.error_outline, size: 48),
+                    const SizedBox(height: 16),
+                    Text(message, textAlign: TextAlign.center),
+                    const SizedBox(height: 20),
+                    FilledButton(
+                      onPressed: _retry,
+                      child: const Text('Erneut versuchen'),
                     ),
-                  ),
-                  const SizedBox(height: 18),
-                  Center(
-                    child: Text(
-                      'plantini',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -1.0,
-                        color: AppColors.forest,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      'Entdecke und lerne die Artenvielfalt deiner Umgebung',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.muted,
-                        height: 1.4,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  ElevatedButton.icon(
-                    onPressed: () => widget.authService.login(),
-                    icon: const Icon(Icons.lock_open_rounded, size: 20),
-                    label: const Text('Mit Keycloak anmelden'),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }
