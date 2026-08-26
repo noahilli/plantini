@@ -4,9 +4,9 @@ enum PlantiniEnvironment { development, staging, production }
 
 /// All deploy-time values are passed with --dart-define.
 ///
-/// There is deliberately no localhost, emulator, IPv6, or fallback endpoint
-/// here. A malformed deployment fails visibly during bootstrap instead of
-/// accidentally sending user data to a development server.
+/// If no values are provided and the environment is 'development', it falls back
+/// to localhost for seamless local testing (`flutter run`).
+/// In staging and production, missing values cause a visible bootstrap failure.
 final class AppConfig {
   const AppConfig({
     required this.environment,
@@ -25,24 +25,26 @@ final class AppConfig {
       'PLANTINI_ENV',
       defaultValue: 'development',
     );
-    const apiValue = String.fromEnvironment('PLANTINI_API_BASE_URL');
-    const issuerValue = String.fromEnvironment('PLANTINI_OIDC_ISSUER_URL');
-    const clientId = String.fromEnvironment('PLANTINI_OIDC_CLIENT_ID');
+    final isDev = environmentValue == 'development';
+
+    final rawApi = const String.fromEnvironment('PLANTINI_API_BASE_URL');
+    final rawIssuer = const String.fromEnvironment('PLANTINI_OIDC_ISSUER_URL');
+    final rawClient = const String.fromEnvironment('PLANTINI_OIDC_CLIENT_ID');
 
     final environment = switch (environmentValue) {
       'development' => PlantiniEnvironment.development,
       'staging' => PlantiniEnvironment.staging,
       'production' => PlantiniEnvironment.production,
-      _ => throw ConfigurationFailure(
+      _ => throw const ConfigurationFailure(
         message: 'PLANTINI_ENV muss development, staging oder production sein.',
       ),
     };
 
     return AppConfig.fromValues(
       environment: environment,
-      apiBaseUrl: apiValue,
-      oidcIssuerUrl: issuerValue,
-      oidcClientId: clientId,
+      apiBaseUrl: rawApi.isEmpty && isDev ? 'http://localhost:1337/api/v1' : rawApi,
+      oidcIssuerUrl: rawIssuer.isEmpty && isDev ? 'http://localhost:8082/realms/plantini' : rawIssuer,
+      oidcClientId: rawClient.isEmpty && isDev ? 'plantini-flutter' : rawClient,
     );
   }
 
