@@ -233,4 +233,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `eb10ff8` (`change (INFRA-04) e2e compose configuration, test runner scripts and tooling`):** Überprüfung der E2E Docker Compose-Umgebung und Test-Runner-Skripte.
 - [ ] **Review Commit `38ac7ba` (`featre (AUTH-01) validate keycloak jwts, resolve actor profile and enforce blocking ci gates`):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
 - [ ] **Review Commit `b005b8c` (`featre (CONTENT-01) content and learning domain tests and quiz schema validation`):** Überprüfung der ContentService- und LearningSession-Tests (`content-service.test.js`, `learning_flow_test.dart`) und Manifest-/Quiz-Validierung.
-
+- [ ] **Review Commit `85075cb` (`bugfix (STATUS-01) korrigiere projektstatus und veraltete quellen`):** Überprüfung: PROJECT_STATUS.md auf v0.3.0-alpha zurückgestuft, RELEASE_NOTES.md korrigiert, BACKLOG.csv und features.csv als deprecated markiert, test-data-and-accounts.md erstellt.
+- [ ] **Review Commit `e298b2b` (`featre (APP-01) plant domain model, detail screen and field/herbarium module structure`):** Überprüfung: Plant-Domain-Modell, PlantDetailScreen, Field- und Herbarium-Feature-Module mit Domain/Application/Infrastructure-Schichten.
