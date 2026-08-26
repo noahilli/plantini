@@ -51,9 +51,13 @@ final class AuthService extends ChangeNotifier {
       debugPrint('AuthService initialize failed: $error');
       _credential = null;
       _state = AuthState.failed;
-      _failure = const ConfigurationFailure(
-        message: 'Die Anmeldung konnte nicht initialisiert werden. Prüfe die bereitgestellte OIDC-Konfiguration.',
-      );
+      _failure = error is CredentialStoreUnavailable
+          ? const StorageFailure(
+              message: 'Der System-Schlüsselbund ist nicht verfügbar. Installiere libsecret und starte einen Secret Service, bevor du dich anmeldest.',
+            )
+          : const ConfigurationFailure(
+              message: 'Die Anmeldung konnte nicht initialisiert werden. Prüfe die bereitgestellte OIDC-Konfiguration.',
+            );
     }
     notifyListeners();
   }

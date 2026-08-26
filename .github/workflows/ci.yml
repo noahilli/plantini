@@ -49,12 +49,12 @@ jobs:
       - name: Install Linux Build Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libsecret-1-dev
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
+          flutter-version: '3.47.1'
           channel: 'stable'
           cache: true
 
@@ -76,7 +76,12 @@ jobs:
 
       - name: Build Linux Desktop
         run: |
-          cd apps/flutter && flutter build linux
+          cd apps/flutter && ./tool/build-linux.sh
+        env:
+          PLANTINI_ENV: development
+          PLANTINI_API_BASE_URL: http://127.0.0.1:1338/api/v1
+          PLANTINI_OIDC_ISSUER_URL: http://127.0.0.1:8082/realms/plantini
+          PLANTINI_OIDC_CLIENT_ID: plantini-mobile-dev
 
   # ── 3. End-to-End Playwright Tests ───────────────────────────────
   e2e-integration-tests:

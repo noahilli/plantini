@@ -13,6 +13,15 @@ abstract interface class CredentialStore {
   Future<void> clear();
 }
 
+/// A platform keyring failure is distinct from an OIDC configuration error.
+/// Linux deployments need libsecret and a running Secret Service to persist a
+/// refresh token securely; callers can present an actionable recovery state.
+final class CredentialStoreUnavailable implements Exception {
+  const CredentialStoreUnavailable(this.cause);
+
+  final Object cause;
+}
+
 final class SecureCredentialStore implements CredentialStore {
   SecureCredentialStore({FlutterSecureStorage? storage})
     : _storage = storage ?? const FlutterSecureStorage();
@@ -22,23 +31,41 @@ final class SecureCredentialStore implements CredentialStore {
 
   @override
   Future<Credential?> read() async {
-    final encoded = await _storage.read(key: _key);
+    final String? encoded;
+    try {
+      encoded = await _storage.read(key: _key);
+    } catch (error) {
+      throw CredentialStoreUnavailable(error);
+    }
     if (encoded == null || encoded.isEmpty) return null;
     try {
       final value = jsonDecode(encoded);
       if (value is! Map<String, dynamic>) return null;
       return Credential.fromJson(value);
     } catch (error) {
-      debugPrint('SecureCredentialStore: corrupted credential in storage, clearing: $error');
+      debugPrint(
+        'SecureCredentialStore: corrupted credential in storage, clearing: $error',
+      );
       await clear();
       return null;
     }
   }
 
   @override
-  Future<void> write(Credential credential) =>
-      _storage.write(key: _key, value: jsonEncode(credential.toJson()));
+  Future<void> write(Credential credential) async {
+    try {
+      await _storage.write(key: _key, value: jsonEncode(credential.toJson()));
+    } catch (error) {
+      throw CredentialStoreUnavailable(error);
+    }
+  }
 
   @override
-  Future<void> clear() => _storage.delete(key: _key);
+  Future<void> clear() async {
+    try {
+      await _storage.delete(key: _key);
+    } catch (error) {
+      debugPrint('SecureCredentialStore: could not clear credential: $error');
+    }
+  }
 }

@@ -20,7 +20,11 @@ flutter test
 echo ""
 echo "[3/5] Flutter Web & Linux Build Verification..."
 flutter build web
-flutter build linux
+PLANTINI_ENV=development \
+PLANTINI_API_BASE_URL=http://127.0.0.1:1338/api/v1 \
+PLANTINI_OIDC_ISSUER_URL=http://127.0.0.1:8082/realms/plantini \
+PLANTINI_OIDC_CLIENT_ID=plantini-mobile-dev \
+  ./tool/build-linux.sh
 
 echo ""
 echo "[4/5] API Smoke Tests (gegen lokale Docker-Umgebung)..."

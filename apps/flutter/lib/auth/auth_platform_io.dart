@@ -1,40 +1,50 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:openid_client/openid_client_io.dart' as openid;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'auth_platform_interface.dart';
 
-class IoAuthPlatformHelper implements AuthPlatformHelper {
+/// The desktop callback is deliberately an IPv4 literal. The local Keycloak
+/// clients only allow this exact loopback URI and IPv6 is not routable in the
+/// supported Plantini development and E2E environments.
+final Uri desktopLoopbackRedirectUri = Uri.parse('http://127.0.0.1:4000/');
+
+/// Builds a PKCE authorization-code flow for desktop clients. Keeping this
+/// outside the widget layer makes the redirect and PKCE invariant testable.
+openid.Flow createDesktopPkceFlow(
+  openid.Client client,
+  Iterable<String> scopes,
+) {
+  final flow = openid.Flow.authorizationCodeWithPKCE(client);
+  flow.scopes.addAll(scopes);
+  flow.redirectUri = desktopLoopbackRedirectUri;
+  return flow;
+}
+
+final class IoAuthPlatformHelper implements AuthPlatformHelper {
   @override
   Future<openid.Credential?> login(
     String issuerUrl,
     String clientId,
     List<String> scopes,
   ) async {
-    try {
-      var issuer = await openid.Issuer.discover(Uri.parse(issuerUrl));
-      var client = openid.Client(issuer, clientId);
+    final issuer = await openid.Issuer.discover(Uri.parse(issuerUrl));
+    final client = openid.Client(issuer, clientId);
+    final flow = createDesktopPkceFlow(client, scopes);
+    final authorizationUri = flow.authenticationUri;
 
-      void urlLauncher(String url) async {
-        final uri = Uri.parse(url);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      }
-
-      var authenticator = openid.Authenticator(
-        client,
-        scopes: scopes,
-        port: 4000,
-        urlLancher: urlLauncher,
-      );
-
-      var credential = await authenticator.authorize();
-      return credential;
-    } catch (e) {
-      debugPrint('IO login failed: $e');
-      return null;
+    if (!await canLaunchUrl(authorizationUri)) {
+      throw StateError('Kein Browser kann die Anmeldung öffnen.');
     }
+
+    final authenticator = openid.Authenticator.fromFlow(
+      flow,
+      urlLancher: (url) {
+        unawaited(_launchAuthorizationPage(Uri.parse(url)));
+      },
+    );
+    return authenticator.authorize();
   }
 
   @override
@@ -44,6 +54,13 @@ class IoAuthPlatformHelper implements AuthPlatformHelper {
     List<String> scopes,
   ) async {
     return null;
+  }
+}
+
+Future<void> _launchAuthorizationPage(Uri uri) async {
+  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!launched) {
+    throw StateError('Der Browser konnte die Anmeldung nicht öffnen.');
   }
 }
 
