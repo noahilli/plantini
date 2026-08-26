@@ -129,3 +129,91 @@ test('herbarium enforces ownership, version preconditions, and tombstones', asyn
   const listed = await service.list({ id: ids.owner }, {});
   assert.deepEqual(listed.items, []);
 });
+
+test('herbarium observation creation is protected by idempotency key and clientMutationId', async () => {
+  const repositories = createRepositories();
+  const service = new HerbariumService({
+    repository: repositories.herbarium,
+    fieldRepository: repositories.field,
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  const actor = { id: ids.owner };
+  const payload = {
+    clientObservationId: ids.clientObservation,
+    observedAt: '2026-01-01T00:00:00.000Z',
+    note: 'Erster Fund',
+    idempotencyKey: 'idempotency-key-obs-001',
+  };
+
+  // 1. Initial creation returns created: true
+  const first = await service.create(actor, payload);
+  assert.equal(first.created, true);
+  assert.equal(first.observation.note, 'Erster Fund');
+  assert.equal(repositories.observations.length, 1);
+
+  // 2. Duplicate submission with same body returns created: false and existing observation
+  const duplicate = await service.create(actor, payload);
+  assert.equal(duplicate.created, false);
+  assert.equal(duplicate.observation.id, first.observation.id);
+  assert.equal(duplicate.observation.note, 'Erster Fund');
+  assert.equal(repositories.observations.length, 1);
+
+  // 3. Duplicate submission with same idempotencyKey but modified payload throws IDEMPOTENCY_CONFLICT
+  await assert.rejects(
+    () => service.create(actor, {
+      ...payload,
+      note: 'Geänderte Notiz mit gleichem Key',
+    }),
+    (error) => error instanceof ProblemError && error.code === 'IDEMPOTENCY_CONFLICT',
+  );
+
+  // 4. Creation using clientMutationId in request body
+  const secondClientObsId = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee2';
+  const mutationPayload = {
+    clientObservationId: secondClientObsId,
+    observedAt: '2026-01-01T00:00:00.000Z',
+    note: 'Fund mit clientMutationId',
+    clientMutationId: 'mutation-key-obs-002',
+  };
+  const mutationFirst = await service.create(actor, mutationPayload);
+  assert.equal(mutationFirst.created, true);
+  assert.equal(repositories.observations.length, 2);
+
+  const mutationDuplicate = await service.create(actor, mutationPayload);
+  assert.equal(mutationDuplicate.created, false);
+  assert.equal(mutationDuplicate.observation.id, mutationFirst.observation.id);
+  assert.equal(repositories.observations.length, 2);
+});
+
+test('media upload reservation is idempotent with body idempotencyKey', async () => {
+  const repositories = createRepositories();
+  const field = new FieldService({
+    repository: repositories.field,
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  const actor = { id: ids.owner };
+  const uploadPayload = {
+    clientMediaId: ids.clientMedia,
+    contentType: 'image/png',
+    bytes: 1024,
+    idempotencyKey: 'upload-idempotency-key-body-01',
+  };
+
+  const first = await field.reserveUpload(actor, uploadPayload, undefined, (id) => `https://api.example.test/uploads/${id}`);
+  assert.equal(first.created, true);
+  assert.equal(repositories.media.length, 1);
+
+  const duplicate = await field.reserveUpload(actor, uploadPayload, undefined, (id) => `https://api.example.test/uploads/${id}`);
+  assert.equal(duplicate.created, false);
+  assert.equal(duplicate.id, first.id);
+  assert.equal(repositories.media.length, 1);
+
+  await assert.rejects(
+    () => field.reserveUpload(actor, {
+      ...uploadPayload,
+      bytes: 2048,
+    }, undefined, (id) => `https://api.example.test/uploads/${id}`),
+    (error) => error instanceof ProblemError && error.code === 'IDEMPOTENCY_CONFLICT',
+  );
+});
+

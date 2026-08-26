@@ -24,13 +24,13 @@ class FieldService {
 
   async reserveUpload(actor, body, idempotencyHeader, uploadUrlFor) {
     const input = validateUploadReservation(body);
-    const externalKey = requireIdempotencyKey(idempotencyHeader);
+    const externalKey = requireIdempotencyKey(input.idempotencyKey || input.clientMutationId || idempotencyHeader || input.clientMediaId);
     const idempotencyKey = scopedIdempotencyKey(actor.id, 'media-upload', externalKey);
     const requestDigest = payloadDigest(input);
     const existing = await this.repository.findPrivateMediaByIdempotencyKey(idempotencyKey);
     if (existing) {
       assertSamePayload(existing.requestDigest, requestDigest);
-      return mapUpload(existing, uploadUrlFor(existing.publicId));
+      return { ...mapUpload(existing, uploadUrlFor(existing.publicId)), created: false };
     }
 
     const clientExisting = await this.repository.findPrivateMediaByClientId(actor.id, input.clientMediaId);
@@ -38,7 +38,7 @@ class FieldService {
       if (clientExisting.contentType !== input.contentType || Number(clientExisting.bytes) !== input.bytes) {
         throw conflict('CLIENT_MEDIA_CONFLICT', 'Die Client-Medien-ID wurde bereits mit anderen Metadaten verwendet.');
       }
-      return mapUpload(clientExisting, uploadUrlFor(clientExisting.publicId));
+      return { ...mapUpload(clientExisting, uploadUrlFor(clientExisting.publicId)), created: false };
     }
 
     const expiresAt = new Date(this.clock().getTime() + RESERVATION_TTL_MS).toISOString();
@@ -53,7 +53,7 @@ class FieldService {
       status: 'reserved',
       expiresAt,
     });
-    return mapUpload(media, uploadUrlFor(media.publicId));
+    return { ...mapUpload(media, uploadUrlFor(media.publicId)), created: true };
   }
 
   async attachUpload(actor, mediaId, file) {
@@ -76,13 +76,13 @@ class FieldService {
 
   async createIdentification(actor, body, idempotencyHeader) {
     const input = validateIdentificationRequest(body);
-    const externalKey = requireIdempotencyKey(idempotencyHeader);
+    const externalKey = requireIdempotencyKey(input.idempotencyKey || input.clientMutationId || idempotencyHeader || input.clientJobId);
     const idempotencyKey = scopedIdempotencyKey(actor.id, 'identification', externalKey);
     const requestDigest = payloadDigest(input);
     const existing = await this.repository.findJobByIdempotencyKey(idempotencyKey);
     if (existing) {
       assertSamePayload(existing.requestDigest, requestDigest);
-      return mapJob(existing);
+      return { ...mapJob(existing), created: false };
     }
 
     const media = await this.repository.findPrivateMediaByPublicId(actor.id, input.mediaId);
@@ -94,7 +94,7 @@ class FieldService {
       if (clientExisting.mediaId !== input.mediaId || clientExisting.expectedPlantId !== input.expectedPlantId) {
         throw conflict('CLIENT_JOB_CONFLICT', 'Die Client-Auftrags-ID wurde bereits mit anderen Daten verwendet.');
       }
-      return mapJob(clientExisting);
+      return { ...mapJob(clientExisting), created: false };
     }
 
     const job = await this.repository.createJob({
@@ -110,7 +110,7 @@ class FieldService {
       candidates: [],
     });
     await this.enqueuePersistedJob(job.publicId);
-    return mapJob(job);
+    return { ...mapJob(job), created: true };
   }
 
   async getIdentification(actor, jobId) {
@@ -216,15 +216,23 @@ class FieldService {
 
 function validateUploadReservation(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['clientMediaId', 'contentType', 'bytes']);
+  rejectUnknownFields(value, ['clientMediaId', 'contentType', 'bytes', 'idempotencyKey', 'clientMutationId']);
   const contentType = requireString(value.contentType, 'contentType', { max: 40 });
   if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
     throw invalidRequest({ contentType: 'Erlaubt sind image/jpeg, image/png und image/webp.' });
   }
+  const idempotencyKey = value.idempotencyKey !== undefined
+    ? optionalString(value.idempotencyKey, 'idempotencyKey', { min: 16, max: 128 })
+    : undefined;
+  const clientMutationId = value.clientMutationId !== undefined
+    ? optionalString(value.clientMutationId, 'clientMutationId', { min: 16, max: 128 })
+    : undefined;
   return {
     clientMediaId: requireUuid(value.clientMediaId, 'clientMediaId'),
     contentType,
     bytes: requireInteger(value.bytes, 'bytes', { min: 1, max: MAX_IMAGE_BYTES }),
+    ...(idempotencyKey !== undefined ? { idempotencyKey } : {}),
+    ...(clientMutationId !== undefined ? { clientMutationId } : {}),
   };
 }
 
@@ -249,11 +257,19 @@ function validateImageUpload(file, reservation) {
 
 function validateIdentificationRequest(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['clientJobId', 'mediaId', 'expectedPlantId']);
+  rejectUnknownFields(value, ['clientJobId', 'mediaId', 'expectedPlantId', 'idempotencyKey', 'clientMutationId']);
+  const idempotencyKey = value.idempotencyKey !== undefined
+    ? optionalString(value.idempotencyKey, 'idempotencyKey', { min: 16, max: 128 })
+    : undefined;
+  const clientMutationId = value.clientMutationId !== undefined
+    ? optionalString(value.clientMutationId, 'clientMutationId', { min: 16, max: 128 })
+    : undefined;
   return {
     clientJobId: requireUuid(value.clientJobId, 'clientJobId'),
     mediaId: requireUuid(value.mediaId, 'mediaId'),
     expectedPlantId: value.expectedPlantId === undefined ? undefined : requireUuid(value.expectedPlantId, 'expectedPlantId'),
+    ...(idempotencyKey !== undefined ? { idempotencyKey } : {}),
+    ...(clientMutationId !== undefined ? { clientMutationId } : {}),
   };
 }
 

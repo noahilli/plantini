@@ -29,7 +29,7 @@ class HerbariumService {
 
   async create(actor, body, idempotencyHeader) {
     const input = validateCreateObservation(body);
-    const externalKey = requireIdempotencyKey(idempotencyHeader);
+    const externalKey = requireIdempotencyKey(input.idempotencyKey || input.clientMutationId || idempotencyHeader || input.clientObservationId);
     const idempotencyKey = scopedIdempotencyKey(actor.id, 'observation', externalKey);
     const requestDigest = payloadDigest(input);
     const existing = await this.repository.findObservationByIdempotencyKey(idempotencyKey);
@@ -136,8 +136,23 @@ class HerbariumService {
 
 function validateCreateObservation(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['clientObservationId', 'observedAt', 'note', 'mediaId', 'identificationJobId', 'location']);
+  rejectUnknownFields(value, [
+    'clientObservationId',
+    'observedAt',
+    'note',
+    'mediaId',
+    'identificationJobId',
+    'location',
+    'idempotencyKey',
+    'clientMutationId',
+  ]);
   const location = value.location === undefined ? undefined : validateLocation(value.location);
+  const idempotencyKey = value.idempotencyKey !== undefined
+    ? optionalString(value.idempotencyKey, 'idempotencyKey', { min: 16, max: 128 })
+    : undefined;
+  const clientMutationId = value.clientMutationId !== undefined
+    ? optionalString(value.clientMutationId, 'clientMutationId', { min: 16, max: 128 })
+    : undefined;
   return {
     clientObservationId: requireUuid(value.clientObservationId, 'clientObservationId'),
     observedAt: requireDate(value.observedAt, 'observedAt'),
@@ -145,6 +160,8 @@ function validateCreateObservation(body) {
     mediaId: value.mediaId === undefined ? undefined : requireUuid(value.mediaId, 'mediaId'),
     identificationJobId: value.identificationJobId === undefined ? undefined : requireUuid(value.identificationJobId, 'identificationJobId'),
     location,
+    ...(idempotencyKey !== undefined ? { idempotencyKey } : {}),
+    ...(clientMutationId !== undefined ? { clientMutationId } : {}),
   };
 }
 

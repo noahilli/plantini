@@ -17,6 +17,11 @@ final class HerbariumEntry {
     required this.version,
     required this.syncStatus,
     this.mediaUrl,
+    this.plantName,
+    this.scientificName,
+    this.identificationResult,
+    this.latitude,
+    this.longitude,
   });
 
   final String id;
@@ -27,4 +32,54 @@ final class HerbariumEntry {
   final String version;
   final SyncStatus syncStatus;
   final String? mediaUrl;
+  final String? plantName;
+  final String? scientificName;
+  final String? identificationResult;
+  final double? latitude;
+  final double? longitude;
+
+  /// Display title for list and detail views.
+  String get displayTitle {
+    if (plantName != null && plantName!.trim().isNotEmpty) {
+      return plantName!;
+    }
+    if (scientificName != null && scientificName!.trim().isNotEmpty) {
+      return scientificName!;
+    }
+    return 'Unbestimmter Fund';
+  }
+
+  /// Creates a copy of this entry with modified fields.
+  HerbariumEntry copyWith({
+    String? id,
+    DateTime? observedAt,
+    String? note,
+    String? confirmedPlantId,
+    String? identificationJobId,
+    String? version,
+    SyncStatus? syncStatus,
+    String? mediaUrl,
+    String? plantName,
+    String? scientificName,
+    String? identificationResult,
+    double? latitude,
+    double? longitude,
+  }) {
+    return HerbariumEntry(
+      id: id ?? this.id,
+      observedAt: observedAt ?? this.observedAt,
+      note: note ?? this.note,
+      confirmedPlantId: confirmedPlantId ?? this.confirmedPlantId,
+      identificationJobId: identificationJobId ?? this.identificationJobId,
+      version: version ?? this.version,
+      syncStatus: syncStatus ?? this.syncStatus,
+      mediaUrl: mediaUrl ?? this.mediaUrl,
+      plantName: plantName ?? this.plantName,
+      scientificName: scientificName ?? this.scientificName,
+      identificationResult: identificationResult ?? this.identificationResult,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+    );
+  }
 }
+

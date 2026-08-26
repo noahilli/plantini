@@ -21,7 +21,7 @@ class LearningService {
 
   async startAttempt(actor, body, idempotencyHeader) {
     const input = validateStartAttempt(body);
-    const idempotencyKey = requireIdempotencyKey(idempotencyHeader);
+    const idempotencyKey = requireIdempotencyKey(input.idempotencyKey || input.clientMutationId || idempotencyHeader || input.clientAttemptId);
     const scopedKey = scopedIdempotencyKey(actor.id, 'level-attempt', idempotencyKey);
     const requestDigest = payloadDigest(input);
     const existing = await this.repository.findAttemptByIdempotencyKey(scopedKey);
@@ -256,11 +256,19 @@ class LearningService {
 
 function validateStartAttempt(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['levelId', 'clientAttemptId', 'contentVersion']);
+  rejectUnknownFields(value, ['levelId', 'clientAttemptId', 'contentVersion', 'idempotencyKey', 'clientMutationId']);
+  const idempotencyKey = value.idempotencyKey !== undefined
+    ? optionalString(value.idempotencyKey, 'idempotencyKey', { min: 16, max: 128 })
+    : undefined;
+  const clientMutationId = value.clientMutationId !== undefined
+    ? optionalString(value.clientMutationId, 'clientMutationId', { min: 16, max: 128 })
+    : undefined;
   return {
     levelId: requireUuid(value.levelId, 'levelId'),
     clientAttemptId: requireUuid(value.clientAttemptId, 'clientAttemptId'),
     contentVersion: requireString(value.contentVersion, 'contentVersion', { max: 128 }),
+    ...(idempotencyKey !== undefined ? { idempotencyKey } : {}),
+    ...(clientMutationId !== undefined ? { clientMutationId } : {}),
   };
 }
 

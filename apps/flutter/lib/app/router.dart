@@ -6,6 +6,8 @@ import '../core/theme/app_colors.dart';
 import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
+import '../features/herbarium/presentation/herbarium_detail_screen.dart';
+import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/learning/presentation/learning_screen.dart';
 import 'app_dependencies.dart';
 
@@ -112,7 +114,8 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
         ),
         GoRoute(
           path: '/herbarium',
-          builder: (context, state) => const HerbariumScreen(),
+          builder: (context, state) =>
+              HerbariumScreen(dependencies: dependencies),
         ),
         GoRoute(
           path: '/profile',
@@ -182,50 +185,6 @@ final class AppShell extends StatelessWidget {
             label: 'Profil',
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Placeholder screen for the digital herbarium (Tab "Feld").
-final class HerbariumScreen extends StatelessWidget {
-  const HerbariumScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Herbarium'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.eco_rounded, size: 64, color: AppColors.forest),
-              const SizedBox(height: 16),
-              Text(
-                'Herbarium',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.forest,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Route: /herbarium',
-                style: TextStyle(color: AppColors.muted),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Hier findest du bald deine gesammelten Pflanzenfunde.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: AppColors.ink),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

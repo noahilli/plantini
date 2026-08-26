@@ -66,7 +66,7 @@ module.exports = {
   async startLevelAttempt(ctx) {
     return withActor(ctx, async (runtime, actor) => {
       const result = await runtime.learning.startAttempt(actor, ctx.request.body, ctx.get('idempotency-key'));
-      ctx.status = 201;
+      ctx.status = result.created === false ? 200 : 201;
       return result.attempt;
     });
   },
@@ -108,7 +108,7 @@ module.exports = {
     return withActor(ctx, async (runtime, actor) => {
       const uploadUrlFor = (mediaId) => absoluteUrl(ctx, `/api/v1/media/uploads/${mediaId}/content`);
       const upload = await runtime.field.reserveUpload(actor, ctx.request.body, ctx.get('idempotency-key'), uploadUrlFor);
-      ctx.status = 201;
+      ctx.status = upload.created === false ? 200 : 201;
       return upload;
     });
   },
@@ -140,7 +140,7 @@ module.exports = {
   async createIdentification(ctx) {
     return withActor(ctx, async (runtime, actor) => {
       const job = await runtime.field.createIdentification(actor, ctx.request.body, ctx.get('idempotency-key'));
-      ctx.status = 202;
+      ctx.status = job.created === false ? 200 : 202;
       return job;
     });
   },
@@ -168,7 +168,7 @@ module.exports = {
   async createObservation(ctx) {
     return withActor(ctx, async (runtime, actor) => {
       const result = await runtime.herbarium.create(actor, ctx.request.body, ctx.get('idempotency-key'));
-      ctx.status = 201;
+      ctx.status = result.created ? 201 : 200;
       return result.observation;
     });
   },
