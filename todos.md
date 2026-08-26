@@ -231,5 +231,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `956fd02` (`featre (AUTH-04) harden keycloak realm configuration and security tests`):** Überprüfung der gehärteten Keycloak-Realm-Konfiguration und der Sicherheits-Unit-Tests (`realm-security.test.mjs`).
 - [ ] **Review Commit `6541c06` (`featre (API-02) openapi v1 boundary contract and platform services refactoring`):** Überprüfung des OpenAPI v1 Boundary-Vertrags und der refaktorierten Platform-Services.
 - [ ] **Review Commit `eb10ff8` (`change (INFRA-04) e2e compose configuration, test runner scripts and tooling`):** Überprüfung der E2E Docker Compose-Umgebung und Test-Runner-Skripte.
-- [ ] **Review Commit (AUTH-01/02/03 & INFRA-03):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
+- [ ] **Review Commit `38ac7ba` (`featre (AUTH-01) validate keycloak jwts, resolve actor profile and enforce blocking ci gates`):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
 
