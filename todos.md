@@ -36,7 +36,7 @@ Plantini ist derzeit ein breiter UI- und Infrastruktur-Prototyp, kein Release Ca
 - [x] **P0 | STATUS-04:** OQ-01 bis OQ-08 entscheiden oder sichtbar blockieren. Zuerst: Web-Speicher, Backendzuschnitt, Altersfluss, Organisationsisolation und PlantNet-Vertrag.
 - [x] **P0 | STATUS-05:** Realistischen MVP-Scope festschreiben; Forschungs- und komplexe Adminfunktionen bei fehlender Kapazität explizit phasieren.
 - [x] **P0 | STATUS-06:** Einen anonymisierten Referenzdatensatz und gemeinsame Testkonten für App, API, CMS und E2E definieren.
-- [ ] **P1 | STATUS-07:** Begriffe, Artenzahlen, Levelnamen und Statuswerte zentral aus Domain/Content ableiten; hart codierte Werte wie „90 Funde“ entfernen.
+- [x] **P1 | STATUS-07:** Begriffe, Artenzahlen, Levelnamen und Statuswerte zentral aus Domain/Content ableiten; hart codierte Werte wie „90 Funde" entfernen.
 
 Abnahme: Eine automatisch erzeugte Übersicht nennt pro MVP-Feature Implementierungs- und Teststand; keine Quelle behauptet Release-Reife bei roten oder fehlenden Gates.
 
@@ -45,9 +45,9 @@ Abnahme: Eine automatisch erzeugte Übersicht nennt pro MVP-Feature Implementier
 - [x] **P0 | APP-01:** Featuremodule mit Domain-Modellen, Use Cases, Repository-Ports und getrennten API-/Local-Storage-Adaptern umsetzen; API, Isar und UI nicht direkt vermischen.
 - [x] **P0 | APP-02:** Dev-/Staging-/Production-Konfiguration einführen; API- und OIDC-URLs nicht auf localhost fest verdrahten.
 - [x] **P0 | APP-03:** App-Start absichern: Initialisierungsfehler dürfen keine uninitialisierten `late`-Abhängigkeiten erzeugen; Bootstrap-, Retry- und Diagnosezustand ergänzen.
-- [ ] **P1 | APP-04:** Deklaratives Routing, Deep Links und wiederherstellbare Tab-/Unterseitennavigation implementieren.
-- [ ] **P1 | APP-05:** Einheitliche Zustände als Komponenten definieren: loading, empty, offline, stale, permission denied, recoverable error und fatal error.
-- [ ] **P1 | APP-06:** Stille `catch`-Blöcke und fachlich falsche Fallback-Inhalte entfernen; Fehler dürfen keine erfolgreichen oder fremden Daten vortäuschen.
+- [x] **P1 | APP-04:** Deklaratives Routing, Deep Links und wiederherstellbare Tab-/Unterseitennavigation implementieren.
+- [x] **P1 | APP-05:** Einheitliche Zustände als Komponenten definieren: loading, empty, offline, stale, permission denied, recoverable error und fatal error.
+- [x] **P1 | APP-06:** Stille `catch`-Blöcke und fachlich falsche Fallback-Inhalte entfernen; Fehler dürfen keine erfolgreichen oder fremden Daten vortäuschen.
 - [ ] **P1 | APP-07:** Große Screens zerlegen, State Management und Dependency Injection vereinheitlichen, Seiteneffekte aus Widgets ziehen.
 - [ ] **P1 | APP-08:** Design Tokens, Abstände, Typografie, Komponenten, Icons und Tonalität vereinheitlichen; Dark Mode und große Schrift prüfen.
 - [ ] **P2 | APP-09:** Web, Android und iOS als reale Zielplattformen konfigurieren; Linux nur bei bestätigtem Produkt-Scope behalten.
@@ -235,3 +235,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `b005b8c` (`featre (CONTENT-01) content and learning domain tests and quiz schema validation`):** Überprüfung der ContentService- und LearningSession-Tests (`content-service.test.js`, `learning_flow_test.dart`) und Manifest-/Quiz-Validierung.
 - [ ] **Review Commit `85075cb` (`bugfix (STATUS-01) korrigiere projektstatus und veraltete quellen`):** Überprüfung: PROJECT_STATUS.md auf v0.3.0-alpha zurückgestuft, RELEASE_NOTES.md korrigiert, BACKLOG.csv und features.csv als deprecated markiert, test-data-and-accounts.md erstellt.
 - [ ] **Review Commit `e298b2b` (`featre (APP-01) plant domain model, detail screen and field/herbarium module structure`):** Überprüfung: Plant-Domain-Modell, PlantDetailScreen, Field- und Herbarium-Feature-Module mit Domain/Application/Infrastructure-Schichten.
+- [ ] **Review Commit `5b99774` (`featre (APP-05) unified state widgets and remove hardcoded content values`):** Überprüfung: LoadingState, EmptyState, OfflineState, ErrorState, PermissionDeniedState Widgets und content_constants.dart.
+- [ ] **Review Commit `c1ec09f` (`featre (APP-04) declarative routing with go_router and silent catch cleanup`):** Überprüfung: GoRouter-Routing mit ShellRoute/Bottom-Nav, Placeholder-Screens, stille catch-Blöcke durch Logging ersetzt.
