@@ -1,11 +1,27 @@
 {
   "name": "plantini-e2e",
-  "version": "1.0.0",
-  "description": "E2E tests for Plantini",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Contract-driven Playwright tests for Plantini's release-critical user journeys",
   "scripts": {
-    "test": "playwright test"
+    "stack:up": "./scripts/run-e2e-stack.sh",
+    "stack:down": "docker compose --env-file .runtime/e2e.env -f ../../infra/compose.e2e.yaml down --volumes --remove-orphans",
+    "check:environment": "node ./scripts/run-with-e2e-env.mjs node --dns-result-order=ipv4first ./scripts/verify-e2e-env.mjs",
+    "test": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test",
+    "test:health": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test --project=health",
+    "test:contract": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test --project=contract",
+    "test:core": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test --project=web-app",
+    "test:resilience": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test --project=resilience",
+    "test:accessibility": "npm run check:environment && node ./scripts/run-with-e2e-env.mjs playwright test --project=accessibility",
+    "test:list": "playwright test --list",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "install:browsers": "playwright install --with-deps chromium"
   },
   "devDependencies": {
-    "@playwright/test": "1.40.0"
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.55.0",
+    "@types/node": "22.15.3",
+    "typescript": "5.8.3"
   }
 }

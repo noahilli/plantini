@@ -1,0 +1,11 @@
+# Playwright runtime artifacts are CI artifacts, never source files.
+playwright-report/
+test-results/
+blob-report/
+.runtime/
+
+# The auth and CMS suites use their own runners but share this policy.
+auth/playwright-report/
+auth/test-results/
+cms/playwright-report/
+cms/test-results/

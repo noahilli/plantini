@@ -1,0 +1,170 @@
+name: plantini-e2e
+
+# Fresh, isolated integration environment. It is intentionally separate from
+# deployment compose files: all passwords are generated at runtime into an
+# ignored file and every host port is bound to IPv4 loopback only.
+services:
+  postgres-platform:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: plantini
+      POSTGRES_USER: plantini
+      POSTGRES_PASSWORD: ${E2E_PLATFORM_DB_PASSWORD:?run tools/e2e/scripts/prepare-e2e-env.mjs first}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plantini -d plantini"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - e2e-platform-db:/var/lib/postgresql/data
+
+  postgres-keycloak:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${E2E_KEYCLOAK_DB_PASSWORD:?run tools/e2e/scripts/prepare-e2e-env.mjs first}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - e2e-keycloak-db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4.2-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - e2e-redis:/data
+
+  plantnet-mock:
+    build:
+      context: ./plantnet-mock
+    image: plantini/plantnet-mock:e2e
+    environment:
+      PLANTNET_MOCK_DEFAULT_PLANT_ID: 10000000-0000-4000-8000-000000000101
+      PLANTNET_MOCK_MODE: ${E2E_PLANTNET_MODE:-success}
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:1080/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    command: ["start-dev", "--import-realm", "--http-enabled=true"]
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${E2E_KEYCLOAK_DB_PASSWORD:?run tools/e2e/scripts/prepare-e2e-env.mjs first}
+      # Keycloak 24 start-dev uses the legacy bootstrap variable names. They
+      # exist only in the ephemeral E2E environment, never in deployment env.
+      KEYCLOAK_ADMIN: ${E2E_KEYCLOAK_ADMIN_USERNAME:?missing E2E_KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${E2E_KEYCLOAK_ADMIN_PASSWORD:?missing E2E_KEYCLOAK_ADMIN_PASSWORD}
+      KC_HEALTH_ENABLED: 'true'
+      KC_HOSTNAME: 127.0.0.1
+      KC_HOSTNAME_PORT: '8082'
+      KC_HOSTNAME_STRICT: 'false'
+    ports:
+      - "127.0.0.1:8082:8080"
+    volumes:
+      - ../services/identity/realm:/opt/keycloak/data/import:ro
+    healthcheck:
+      # The Keycloak base image intentionally has no curl/wget. The bootstrap
+      # service performs the stricter authenticated API readiness retry.
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      timeout: 5s
+      retries: 36
+
+  keycloak-bootstrap:
+    image: quay.io/keycloak/keycloak:24.0.4
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      E2E_KEYCLOAK_ADMIN_USERNAME: ${E2E_KEYCLOAK_ADMIN_USERNAME:?missing E2E_KEYCLOAK_ADMIN_USERNAME}
+      E2E_KEYCLOAK_ADMIN_PASSWORD: ${E2E_KEYCLOAK_ADMIN_PASSWORD:?missing E2E_KEYCLOAK_ADMIN_PASSWORD}
+      E2E_USERNAME: ${E2E_USERNAME:?missing E2E_USERNAME}
+      E2E_USER_PASSWORD: ${E2E_USER_PASSWORD:?missing E2E_USER_PASSWORD}
+      E2E_USER_EMAIL: ${E2E_USER_EMAIL:?missing E2E_USER_EMAIL}
+    entrypoint: ["/bin/sh", "/scripts/keycloak-bootstrap-e2e.sh"]
+    volumes:
+      - ./scripts/keycloak-bootstrap-e2e.sh:/scripts/keycloak-bootstrap-e2e.sh:ro
+
+  platform:
+    build:
+      context: ../services/platform
+      dockerfile: Dockerfile
+    image: plantini/platform:e2e
+    depends_on:
+      postgres-platform:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      plantnet-mock:
+        condition: service_healthy
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres-platform
+      DATABASE_PORT: '5432'
+      DATABASE_NAME: plantini
+      DATABASE_USERNAME: plantini
+      DATABASE_PASSWORD: ${E2E_PLATFORM_DB_PASSWORD:?missing E2E_PLATFORM_DB_PASSWORD}
+      REDIS_URL: redis://redis:6379
+      APP_KEYS: ${E2E_STRAPI_APP_KEYS:?missing E2E_STRAPI_APP_KEYS}
+      API_TOKEN_SALT: ${E2E_STRAPI_API_TOKEN_SALT:?missing E2E_STRAPI_API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${E2E_STRAPI_ADMIN_JWT_SECRET:?missing E2E_STRAPI_ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${E2E_STRAPI_TRANSFER_TOKEN_SALT:?missing E2E_STRAPI_TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${E2E_STRAPI_JWT_SECRET:?missing E2E_STRAPI_JWT_SECRET}
+      CORS_ORIGINS: http://127.0.0.1:3000
+      PRIVATE_UPLOAD_DIR: /var/lib/plantini/private-media
+      PLATFORM_OIDC_ISSUER: http://127.0.0.1:8082/realms/plantini
+      PLATFORM_OIDC_AUDIENCE: plantini-api
+      PLATFORM_OIDC_JWKS_URI: http://keycloak:8080/realms/plantini/protocol/openid-connect/certs
+      PLATFORM_SEED_DEMO_CONTENT: 'true'
+      PLANTNET_BASE_URL: http://plantnet-mock:1080
+      PLANTNET_API_KEY: e2e-mock-only
+    ports:
+      - "127.0.0.1:1338:1337"
+    volumes:
+      - e2e-private-media:/var/lib/plantini/private-media
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:1337/api/v1/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 5s
+      timeout: 5s
+      retries: 36
+
+  web:
+    image: nginx:1.27.4-alpine
+    depends_on:
+      platform:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:80"
+    volumes:
+      - ../apps/flutter/build/web:/usr/share/nginx/html:ro
+      - ./nginx/e2e.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz | grep -qx ok"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  e2e-platform-db:
+  e2e-keycloak-db:
+  e2e-redis:
+  e2e-private-media:
