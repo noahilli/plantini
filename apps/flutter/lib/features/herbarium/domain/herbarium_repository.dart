@@ -15,6 +15,10 @@ abstract interface class HerbariumRepository {
     required DateTime observedAt,
     String? note,
     String? mediaId,
+    String? mediaUrl,
+    String? plantName,
+    String? scientificName,
+    String? identificationResult,
     String? identificationJobId,
     required String idempotencyKey,
   });

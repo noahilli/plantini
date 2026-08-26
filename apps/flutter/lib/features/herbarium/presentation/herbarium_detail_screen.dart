@@ -225,7 +225,7 @@ class _DetailHeroImage extends StatelessWidget {
       child: Image.network(
         mediaUrl!,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
+        errorBuilder: (_, _, _) => Container(
           color: AppColors.cream,
           alignment: Alignment.center,
           child: const Icon(

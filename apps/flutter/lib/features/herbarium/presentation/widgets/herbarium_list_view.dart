@@ -249,7 +249,7 @@ class _HerbariumThumbnail extends StatelessWidget {
           ? Image.network(
               mediaUrl!,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Center(
+              errorBuilder: (_, _, _) => const Center(
                 child: Icon(
                   Icons.eco_rounded,
                   color: AppColors.sage,

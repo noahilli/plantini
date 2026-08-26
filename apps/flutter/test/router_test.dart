@@ -17,6 +17,7 @@ import 'package:plantini_app/features/catalog/application/catalog_use_cases.dart
 import 'package:plantini_app/features/catalog/domain/catalog_models.dart';
 import 'package:plantini_app/features/catalog/domain/catalog_repository.dart';
 import 'package:plantini_app/features/catalog/presentation/plant_detail_screen.dart';
+import 'package:plantini_app/features/herbarium/presentation/herbarium_screen.dart';
 import 'package:plantini_app/features/learning/application/learning_session_service.dart';
 import 'package:plantini_app/features/learning/domain/learning_models.dart';
 import 'package:plantini_app/features/learning/domain/learning_repository.dart';
@@ -152,15 +153,16 @@ void main() {
       expect(find.text('Lerninhalt'), findsOneWidget);
     });
 
-    testWidgets('renders HerbariumScreen placeholder', (tester) async {
+    testWidgets('renders HerbariumScreen', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: HerbariumScreen(),
+        MaterialApp(
+          home: HerbariumScreen(dependencies: dependencies),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.text('Herbarium'), findsWidgets);
-      expect(find.text('Route: /herbarium'), findsOneWidget);
+      expect(find.byKey(const ValueKey('herbarium-search-field')), findsOneWidget);
     });
 
     testWidgets('renders ProfileScreen placeholder', (tester) async {

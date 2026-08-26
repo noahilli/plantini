@@ -6,7 +6,6 @@ import '../core/theme/app_colors.dart';
 import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
-import '../features/herbarium/presentation/herbarium_detail_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/learning/presentation/learning_screen.dart';
 import 'app_dependencies.dart';

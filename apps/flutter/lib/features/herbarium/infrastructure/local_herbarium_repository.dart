@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:isar/isar.dart';
+
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../../../core/storage/local_database.dart';

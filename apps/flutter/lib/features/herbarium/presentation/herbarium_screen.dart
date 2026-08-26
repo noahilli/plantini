@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../../design_system/async_state_view.dart';
 import '../application/herbarium_use_cases.dart';
 import '../domain/herbarium_models.dart';
@@ -128,7 +127,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
 
   void _onEntryTap(HerbariumEntry entry) {
     Navigator.of(context).push(
-      MaterialBarPageRoute(
+      MaterialPageRoute(
         builder: (ctx) => HerbariumDetailScreen(
           entry: entry,
           onDelete: (item) async {
@@ -140,54 +139,13 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   }
 
   Future<void> _showAddObservationDialog() async {
-    final nameController = TextEditingController();
-    final noteController = TextEditingController();
-
-    final created = await showDialog<bool>(
+    final result = await showDialog<(String, String)>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Neuen Fund erfassen'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                key: const ValueKey('add-plant-name'),
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Pflanzenname',
-                  hintText: 'z.B. Wald-Sauerklee',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                key: const ValueKey('add-plant-note'),
-                controller: noteController,
-                decoration: const InputDecoration(
-                  labelText: 'Notiz / Fundort',
-                  hintText: 'z.B. Im schattigen Buchenwald gefunden.',
-                ),
-                maxLines: 2,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Abbrechen'),
-          ),
-          FilledButton(
-            key: const ValueKey('submit-add-plant'),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Speichern'),
-          ),
-        ],
-      ),
+      builder: (ctx) => const _AddObservationDialog(),
     );
 
-    if (created == true && mounted) {
-      final name = nameController.text.trim();
+    if (result != null && mounted) {
+      final (name, note) = result;
       final now = DateTime.now();
       final clientId = 'obs-${now.millisecondsSinceEpoch}';
 
@@ -195,7 +153,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         clientObservationId: clientId,
         observedAt: now,
         plantName: name.isNotEmpty ? name : 'Unbekannter Fund',
-        note: noteController.text.trim(),
+        note: note,
         identificationResult: 'Manuell hinzugefügter Feldfund',
         idempotencyKey: clientId,
       );
@@ -207,9 +165,6 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         });
       }
     }
-
-    nameController.dispose();
-    noteController.dispose();
   }
 
   List<HerbariumEntry> get _filteredEntries {
@@ -295,7 +250,69 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   }
 }
 
-/// Custom MaterialPageRoute wrapper ensuring clean animations and routing.
-class MaterialBarPageRoute<T> extends MaterialPageRoute<T> {
-  MaterialBarPageRoute({required super.builder});
+class _AddObservationDialog extends StatefulWidget {
+  const _AddObservationDialog();
+
+  @override
+  State<_AddObservationDialog> createState() => _AddObservationDialogState();
+}
+
+class _AddObservationDialogState extends State<_AddObservationDialog> {
+  late final TextEditingController _nameController = TextEditingController();
+  late final TextEditingController _noteController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Neuen Fund erfassen'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              key: const ValueKey('add-plant-name'),
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Pflanzenname',
+                hintText: 'z.B. Wald-Sauerklee',
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              key: const ValueKey('add-plant-note'),
+              controller: _noteController,
+              decoration: const InputDecoration(
+                labelText: 'Notiz / Fundort',
+                hintText: 'z.B. Im schattigen Buchenwald gefunden.',
+              ),
+              maxLines: 2,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Abbrechen'),
+        ),
+        FilledButton(
+          key: const ValueKey('submit-add-plant'),
+          onPressed: () {
+            Navigator.of(context).pop((
+              _nameController.text.trim(),
+              _noteController.text.trim(),
+            ));
+          },
+          child: const Text('Speichern'),
+        ),
+      ],
+    );
+  }
 }
