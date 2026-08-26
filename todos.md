@@ -1,6 +1,6 @@
 # Plantini – priorisierte TODO-Liste nach Features
 
-Stand: 25. August 2026
+Stand: 26. August 2026
 Grundlage: Review von Flutter-App, Strapi/Fach-API, Keycloak, OpenAPI, Docker-Compose, CI, E2E-Tests und Projektdokumentation. Diese Datei ersetzt den bisherigen lokalen Meilenstein-Fallback.
 
 ## Ist-Zustand
@@ -76,7 +76,7 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 - [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
 - [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
 - [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
-- [x] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
+- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
 
@@ -97,8 +97,8 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 
 ## Feature 5 – Exkursion und Pflanzenidentifikation (FA030–FA035, FA040)
 
-- [x] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
-- [x] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
+- [ ] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
+- [ ] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
 - [ ] **P1 | FIELD-03:** Idempotenten Upload mit stabiler Client-ID und Auftragsstatus definieren; Media-Pflichtfelder und Observation-Upload konsistent machen.
 - [ ] **P1 | FIELD-04:** Persistenten Worker/Queue-Prozess bauen, der PlantNet-Mock aufruft; Redis ist aktuell nur deklariert.
 - [ ] **P1 | FIELD-05:** Kandidaten mit Score, Provider-Metadaten und Modell-/Flora-Version speichern; feste Scores und Waldmeister-Ergebnis entfernen.
@@ -113,11 +113,11 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 
 - [x] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
 - [x] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
-- [x] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
-- [x] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
+- [ ] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
+- [ ] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
 - [ ] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
 - [ ] **P1 | OFFLINE-06:** Lokale und entfernte Beobachtungen über stabile IDs zusammenführen; Sync-Status, Fehler und Retry sichtbar machen.
-- [x] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
+- [ ] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
 - [ ] **P1 | OFFLINE-08:** Exakte Standorte privat halten; Export/Share standardmäßig ohne oder vergröbert. Organisationsfilter nie aus ungeprüften Queryparametern übernehmen.
 - [ ] **P2 | OFFLINE-09:** Einzelfund-/Gesamtexport und vollständige Löschung von Original, Derivaten, Queue- und Serverdaten umsetzen.
 - [ ] **P2 | OFFLINE-10:** Download-, Cache- und Speicherverwaltung mit Größenanzeige, Löschregeln und Speicherknappheit ergänzen.
@@ -167,7 +167,7 @@ Abnahme: Contract-Tests beweisen jeden MVP-Endpunkt gegen eine frische reale Tes
 
 - [ ] **P0 | INFRA-01:** Die zehn lokalen Commits veröffentlichen und eine echte Remote-Pipeline nachweisen; vorher existiert kein CI-Nachweis für diesen Stand.
 - [ ] **P0 | INFRA-02:** Toolversionen konsistent pinnen. Lokal: Flutter 3.47.1/Dart 3.13.1; CI/SBOM: Flutter 3.24.x; `pubspec.yaml`: Dart 3.13.1.
-- [x] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
+- [ ] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
 - [ ] **P0 | INFRA-04:** E2E-Pipeline reparieren: Umgebung seeden, Testnutzer anlegen, Flutter Web starten, Readiness abwarten, dann CMS-/Auth-/QA-Tests ausführen.
 - [ ] **P0 | INFRA-05:** Playwright-Reports, `test-results`, leere temporäre JSONs und Laufzeitartefakte aus Git entfernen/ignorieren; Reports als CI-Artefakte speichern.
 - [ ] **P1 | INFRA-06:** Dev-Compose von Staging/Produktion trennen; keine Dummy-Defaults, Dev-Admins, `start-dev`, Bind-Mounts oder öffentliche Adminports in Produktion.
@@ -239,10 +239,17 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `c1ec09f` (`featre (APP-04) declarative routing with go_router and silent catch cleanup`):** Überprüfung: GoRouter-Routing mit ShellRoute/Bottom-Nav, Placeholder-Screens, stille catch-Blöcke durch Logging ersetzt.
 - [ ] **Review Commit `781117c` (`featre (OFFLINE-01) isar downgrade for web support and linux platform added`):** Überprüfung: Isar 2.X Downgrade in pubspec.yaml, Linux-Unterstützung hinzugefügt, OQ-02 in BLOCKERS.md entschieden.
 - [ ] **Review Commit `524e3fe` (`featre (OFFLINE-02) isar local database schema and models for offline content`):** Überprüfung: LocalDatabase Klasse, Isar-Modelle für Ecosystem, Level, Plant erstellt und Code via build_runner generiert.
-- [ ] **Review Commit `66f7a96` (`featre (OFFLINE-03) persistent background sync queue with exponential backoff`):** Überprüfung: IsarSyncJob Schema, SyncQueueService mit enqueueJob, processQueue, Exponential Backoff und Connectivity Trigger.
-- [ ] **Review Commit `3b07872` (`featre (CONTENT-06) atomic content release download and checksum validation`):** Überprüfung: ContentSyncService, atomarer Manifest-Download, SHA-256 Validierung, Persistenz in LocalDatabase, Fehlerabbruch.
-- [ ] **Review Commit `d02e971` (`featre (FIELD-01) secure media capture with exif stripping and size limits`):** Überprüfung: media_service.dart mit Magic-Byte Validation, Skalierung (max 10MB) und EXIF-Entfernung.
-- [ ] **Review Commit `d668a29` (`featre (FIELD-02) resilient location service with privacy blurring and offline fallback`):** Überprüfung: location_service.dart mit State-Machine, Privacy-Rundung und stabilem Fallback.
-- [ ] **Review Commit `47bd932` (`featre (OFFLINE-07) reactive herbarium list and detail ui replacing static placeholders`):** Überprüfung: herbarium_search_filter_bar.dart, local_herbarium_repository.dart, Offline UI Anbindung.
-- [ ] **Review Commit `08a3860` (`featre (OFFLINE-04) server side idempotency keys and unique constraints for observations`):** Überprüfung: Strapi schema.json Unique-Constraints, Idempotency Checks in field-service.js und herbarium-service.js.
-- [ ] **Review Commit `fa6e75b` (`test (QA) add complete e2e flutter walkthrough`):** Überprüfung: End-to-End Test für den gesamten Walkthrough (Login, Levelwahl, Quiz, Herbarium) in integration_test/app_test.dart.
+- [x] **Review Commit `66f7a96` (`featre (OFFLINE-03) persistent background sync queue with exponential backoff`):** Teilweise abgelehnt: nicht in die App integriert, `running`-Jobs werden nach Abbruch nicht zurückgewonnen und `maxAttempts` wird nicht erzwungen. Korrektur bleibt offen.
+- [x] **Review Commit `3b07872` (`featre (CONTENT-06) atomic content release download and checksum validation`):** Teilweise abgelehnt: Service ist nicht eingebunden und der Demo-Manifest enthält keine Pakete. Korrektur bleibt offen.
+- [x] **Review Commit `d02e971` (`featre (FIELD-01) secure media capture with exif stripping and size limits`):** Teilweise abgelehnt: die Hilfsklasse ist nicht mit einem Feldablauf verbunden. Korrektur bleibt offen.
+- [x] **Review Commit `d668a29` (`featre (FIELD-02) resilient location service with privacy blurring and offline fallback`):** Teilweise abgelehnt: die Hilfsklasse ist nicht mit einem expliziten Nutzer-Opt-in verbunden. Korrektur bleibt offen.
+- [x] **Review Commit `47bd932` (`featre (OFFLINE-07) reactive herbarium list and detail ui replacing static placeholders`):** Abgelehnt: fiktive Unsplash-Daten und präzise Koordinaten werden angezeigt; `syncEntries()` markiert ohne Netzaufruf Daten als synchronisiert. Wird ersetzt.
+- [x] **Review Commit `08a3860` (`featre (OFFLINE-04) server side idempotency keys and unique constraints for observations`):** Teilweise abgelehnt: In-Memory-Tests decken Wiederholungen ab, aber OpenAPI dokumentiert Replay-Status nicht und es fehlt ein echter Datenbank-Integrationstest.
+- [x] **Review Commit `fa6e75b` (`test (QA) add complete e2e flutter walkthrough`):** Abgelehnt als E2E-Nachweis: der Ablauf nutzt nur Fake-Auth, Fake-Katalog, Fake-Lernen und ein In-Memory-Herbarium. Er wird als Widgettest eingeordnet; echter externer E2E bleibt QA-06.
+- [x] **Review Commit `f72de5d` (`bugfix (STATUS-02) fix platform backend env and flutter linux boot exception`):** Abgelehnt: der Commit ändert keine Linux-Laufzeitursache. Die Konfigurations- und OIDC-Korrektur liegt in `742a79d` und ist separat getestet.
+
+### Ergebnis des Antigravity-Reviews (26. August 2026)
+
+- [x] Review abgeschlossen: Falsche Fertigmeldungen wurden zurückgenommen; die betroffenen Aufgaben bleiben bis zur nachweislich integrierten Umsetzung offen.
+- [x] Korrektur eingeleitet: keine Demo-Funde, keine vorgetäuschte Synchronisation und keine als E2E bezeichneten Fake-Tests sollen im Produktpfad verbleiben.
+- [ ] Noch nachzuweisen: echter IPv4-gestützter Login- bis Herbarium-Ablauf gegen eine frische E2E-Umgebung.
