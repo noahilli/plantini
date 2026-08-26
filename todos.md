@@ -97,8 +97,8 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 
 ## Feature 5 – Exkursion und Pflanzenidentifikation (FA030–FA035, FA040)
 
-- [ ] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
-- [ ] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
+- [x] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
+- [x] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
 - [ ] **P1 | FIELD-03:** Idempotenten Upload mit stabiler Client-ID und Auftragsstatus definieren; Media-Pflichtfelder und Observation-Upload konsistent machen.
 - [ ] **P1 | FIELD-04:** Persistenten Worker/Queue-Prozess bauen, der PlantNet-Mock aufruft; Redis ist aktuell nur deklariert.
 - [ ] **P1 | FIELD-05:** Kandidaten mit Score, Provider-Metadaten und Modell-/Flora-Version speichern; feste Scores und Waldmeister-Ergebnis entfernen.
@@ -114,10 +114,10 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 - [x] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
 - [x] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
 - [x] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
-- [ ] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
+- [x] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
 - [ ] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
 - [ ] **P1 | OFFLINE-06:** Lokale und entfernte Beobachtungen über stabile IDs zusammenführen; Sync-Status, Fehler und Retry sichtbar machen.
-- [ ] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
+- [x] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
 - [ ] **P1 | OFFLINE-08:** Exakte Standorte privat halten; Export/Share standardmäßig ohne oder vergröbert. Organisationsfilter nie aus ungeprüften Queryparametern übernehmen.
 - [ ] **P2 | OFFLINE-09:** Einzelfund-/Gesamtexport und vollständige Löschung von Original, Derivaten, Queue- und Serverdaten umsetzen.
 - [ ] **P2 | OFFLINE-10:** Download-, Cache- und Speicherverwaltung mit Größenanzeige, Löschregeln und Speicherknappheit ergänzen.
@@ -241,4 +241,7 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `524e3fe` (`featre (OFFLINE-02) isar local database schema and models for offline content`):** Überprüfung: LocalDatabase Klasse, Isar-Modelle für Ecosystem, Level, Plant erstellt und Code via build_runner generiert.
 - [ ] **Review Commit `66f7a96` (`featre (OFFLINE-03) persistent background sync queue with exponential backoff`):** Überprüfung: IsarSyncJob Schema, SyncQueueService mit enqueueJob, processQueue, Exponential Backoff und Connectivity Trigger.
 - [ ] **Review Commit `3b07872` (`featre (CONTENT-06) atomic content release download and checksum validation`):** Überprüfung: ContentSyncService, atomarer Manifest-Download, SHA-256 Validierung, Persistenz in LocalDatabase, Fehlerabbruch.
-
+- [ ] **Review Commit `d02e971` (`featre (FIELD-01) secure media capture with exif stripping and size limits`):** Überprüfung: media_service.dart mit Magic-Byte Validation, Skalierung (max 10MB) und EXIF-Entfernung.
+- [ ] **Review Commit `d668a29` (`featre (FIELD-02) resilient location service with privacy blurring and offline fallback`):** Überprüfung: location_service.dart mit State-Machine, Privacy-Rundung und stabilem Fallback.
+- [ ] **Review Commit `47bd932` (`featre (OFFLINE-07) reactive herbarium list and detail ui replacing static placeholders`):** Überprüfung: herbarium_search_filter_bar.dart, local_herbarium_repository.dart, Offline UI Anbindung.
+- [ ] **Review Commit `08a3860` (`featre (OFFLINE-04) server side idempotency keys and unique constraints for observations`):** Überprüfung: Strapi schema.json Unique-Constraints, Idempotency Checks in field-service.js und herbarium-service.js.
