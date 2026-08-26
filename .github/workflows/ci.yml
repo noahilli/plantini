@@ -24,15 +24,19 @@ jobs:
 
       - name: Validate OpenAPI Contract
         run: |
-          npx @redocly/cli lint contracts/api.yaml || true
+          npx @redocly/cli lint contracts/api.yaml
 
       - name: Install Platform Dependencies
         run: |
           cd services/platform && npm ci
 
-      - name: Check Platform Syntax & Code
+      - name: Run Backend Unit Tests
         run: |
-          cd services/platform && npm run build --dry-run || true
+          cd services/platform && npm test
+
+      - name: Run Identity Realm Security Tests
+        run: |
+          node --test services/identity/test/*.test.mjs
 
   # ── 2. Flutter Mobile, Web & Desktop Test & Build ────────────────
   flutter-test-and-build:

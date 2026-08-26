@@ -5,18 +5,25 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 echo "🧪 Starte vollständigen lokalen CI & Quality Check..."
 echo "==================================================="
 
-echo "[1/4] Flutter Static Analysis & Unit Tests..."
+echo "[1/5] Backend & Identity Tests..."
+cd "$SCRIPT_DIR/services/platform"
+npm test
+cd "$SCRIPT_DIR"
+node --test services/identity/test/*.test.mjs
+
+echo ""
+echo "[2/5] Flutter Static Analysis & Unit Tests..."
 cd "$SCRIPT_DIR/apps/flutter"
 flutter analyze
 flutter test
 
 echo ""
-echo "[2/4] Flutter Web & Linux Build Verification..."
+echo "[3/5] Flutter Web & Linux Build Verification..."
 flutter build web
 flutter build linux
 
 echo ""
-echo "[3/4] API Smoke Tests (gegen lokale Docker-Umgebung)..."
+echo "[4/5] API Smoke Tests (gegen lokale Docker-Umgebung)..."
 cd "$SCRIPT_DIR"
 
 check_ep() {

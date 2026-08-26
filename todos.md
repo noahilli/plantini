@@ -56,9 +56,9 @@ Abnahme: Alle Features verwenden dieselben Konfigurations-, Navigations-, Fehler
 
 ## Feature 2 – Konto, Anmeldung und Berechtigungen (FA001–FA009)
 
-- [ ] **P0 | AUTH-01:** Mock-Token-Fallback entfernen und Keycloak-JWTs in der Fach-API gegen Issuer, Audience, Signatur und Ablauf validieren.
-- [ ] **P0 | AUTH-02:** Aus `sub` eine stabile interne Nutzer-ID auflösen; globalen Mock-User aus `/me` und Beobachtungen entfernen.
-- [ ] **P0 | AUTH-03:** Objekt- und organisationsbezogene Autorisierung für alle privaten Endpunkte implementieren, besonders Beobachtung, Upload und Export; BOLA-Negativtests ergänzen.
+- [x] **P0 | AUTH-01:** Mock-Token-Fallback entfernen und Keycloak-JWTs in der Fach-API gegen Issuer, Audience, Signatur und Ablauf validieren.
+- [x] **P0 | AUTH-02:** Aus `sub` eine stabile interne Nutzer-ID auflösen; globalen Mock-User aus `/me` und Beobachtungen entfernen.
+- [x] **P0 | AUTH-03:** Objekt- und organisationsbezogene Autorisierung für alle privaten Endpunkte implementieren, besonders Beobachtung, Upload und Export; BOLA-Negativtests ergänzen.
 - [x] **P0 | AUTH-04:** Keycloak-Client härten: konkrete Redirect-URIs/Web-Origins, PKCE, keine Wildcards/Direct Access Grants und getrennte Clients je Umgebung.
 - [ ] **P1 | AUTH-05:** Tokens plattformsicher persistieren, Refresh/Ablauf behandeln sowie lokale und globale Abmeldung/Widerruf umsetzen.
 - [ ] **P1 | AUTH-06:** Registrierung, E-Mail-Verifikation, Passwort-Reset, Sperrung und verständliche Fehlerzustände E2E umsetzen.
@@ -167,7 +167,7 @@ Abnahme: Contract-Tests beweisen jeden MVP-Endpunkt gegen eine frische reale Tes
 
 - [ ] **P0 | INFRA-01:** Die zehn lokalen Commits veröffentlichen und eine echte Remote-Pipeline nachweisen; vorher existiert kein CI-Nachweis für diesen Stand.
 - [ ] **P0 | INFRA-02:** Toolversionen konsistent pinnen. Lokal: Flutter 3.47.1/Dart 3.13.1; CI/SBOM: Flutter 3.24.x; `pubspec.yaml`: Dart 3.13.1.
-- [ ] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
+- [x] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
 - [ ] **P0 | INFRA-04:** E2E-Pipeline reparieren: Umgebung seeden, Testnutzer anlegen, Flutter Web starten, Readiness abwarten, dann CMS-/Auth-/QA-Tests ausführen.
 - [ ] **P0 | INFRA-05:** Playwright-Reports, `test-results`, leere temporäre JSONs und Laufzeitartefakte aus Git entfernen/ignorieren; Reports als CI-Artefakte speichern.
 - [ ] **P1 | INFRA-06:** Dev-Compose von Staging/Produktion trennen; keine Dummy-Defaults, Dev-Admins, `start-dev`, Bind-Mounts oder öffentliche Adminports in Produktion.
@@ -219,3 +219,17 @@ Abnahme: Release erst bei grünen Muss-Kernreisen auf Staging, bestandener Acces
 - [ ] **Slice E – Pilot und Release:** kompletter Content, Accessibility, Store-Builds, Datenschutzfreigabe, Last/Security/Restore, Pilot und Release-Gates.
 
 Ein Slice gilt erst als fertig, wenn Code, Vertrag, Migration, Telemetrie, Datenschutz-/Accessibility-Auswirkung, automatisierte Tests und Nachweis auf einer frischen Umgebung gemeinsam vorliegen.
+
+---
+
+## Review-TODOs (Commits zur Überprüfung)
+
+Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|change (ID) Beschreibung` erstellt und stehen für Peer-Review & Audit bereit:
+
+- [ ] **Review Commit `0538149` (`change (STATUS-01) status registry, evidence and open question baseline update`):** Überprüfung der kanonischen Statusquelle `STATUS_REGISTRY.csv`, `EVIDENCE.md` und `BLOCKERS.md`.
+- [ ] **Review Commit `25e8643` (`featre (APP-01) modular app architecture, configuration and bootstrap state`):** Überprüfung des modularen Flutter-Architektur-Schnitts, `AppConfig` und `PlantiniApp` Bootstrap-State.
+- [ ] **Review Commit `956fd02` (`featre (AUTH-04) harden keycloak realm configuration and security tests`):** Überprüfung der gehärteten Keycloak-Realm-Konfiguration und der Sicherheits-Unit-Tests (`realm-security.test.mjs`).
+- [ ] **Review Commit `6541c06` (`featre (API-02) openapi v1 boundary contract and platform services refactoring`):** Überprüfung des OpenAPI v1 Boundary-Vertrags und der refaktorierten Platform-Services.
+- [ ] **Review Commit `eb10ff8` (`change (INFRA-04) e2e compose configuration, test runner scripts and tooling`):** Überprüfung der E2E Docker Compose-Umgebung und Test-Runner-Skripte.
+- [ ] **Review Commit (AUTH-01/02/03 & INFRA-03):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
+

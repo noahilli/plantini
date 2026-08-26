@@ -31,13 +31,15 @@ flutter:build_web:
     expire_in: 1 week
 
 # ── Backend & OpenAPI Stage ────────────────────────────────────────
-backend:lint:
-  stage: lint
+backend:test:
+  stage: test
   image: node:20-alpine
   script:
     - cd services/platform
     - npm ci
-    - npm run build --dry-run || true
+    - npm test
+    - cd ../..
+    - node --test services/identity/test/*.test.mjs
 
 # ── E2E Integration ────────────────────────────────────────────────
 e2e:playwright:
