@@ -373,7 +373,7 @@ AppDependencies createWidgetFlowDependencies() {
 void main() {
   group('Plantini widget flow', () {
     testWidgets(
-      'uses fakes for the visible Login -> Lernen -> Herbarium -> Logout journey',
+      'uses fakes for the visible Login -> Lernen -> Profil -> Logout journey',
       (tester) async {
         // ---------------------------------------------------------------------
         // 1. App starten (Unauthentifizierter Zustand)
@@ -474,100 +474,7 @@ void main() {
         expect(find.text('Level abgeschlossen'), findsOneWidget);
 
         // ---------------------------------------------------------------------
-        // 6. Navigation: Zurück zum Herbarium über die NavigationBar ("Feld")
-        // ---------------------------------------------------------------------
-        expect(find.text('Feld'), findsOneWidget);
-        await tester.tap(find.text('Feld'));
-        await tester.pumpAndSettle();
-
-        // Prüfen, dass HerbariumScreen geöffnet ist
-        expect(find.text('Herbarium'), findsWidgets);
-        expect(find.text('Stieleiche'), findsOneWidget);
-        expect(find.text('Rotbuche'), findsOneWidget);
-
-        // ---------------------------------------------------------------------
-        // 7. Herbarium: Suche & Filter prüfen
-        // ---------------------------------------------------------------------
-        // Test Filter "Synchronisiert"
-        final filterSynced = find.byKey(const ValueKey('filter-synced'));
-        expect(filterSynced, findsOneWidget);
-        await tester.tap(filterSynced);
-        await tester.pumpAndSettle();
-
-        // Nur synchronisierte Einträge (Stieleiche) sichtbar
-        expect(find.text('Stieleiche'), findsOneWidget);
-        expect(find.text('Rotbuche'), findsNothing);
-
-        // Test Filter "Ausstehend"
-        final filterPending = find.byKey(const ValueKey('filter-pending'));
-        expect(filterPending, findsOneWidget);
-        await tester.tap(filterPending);
-        await tester.pumpAndSettle();
-
-        // Nur ausstehende Einträge (Rotbuche) sichtbar
-        expect(find.text('Stieleiche'), findsNothing);
-        expect(find.text('Rotbuche'), findsOneWidget);
-
-        // Filter zurücksetzen ("Alle")
-        final filterAll = find.byKey(const ValueKey('filter-all'));
-        expect(filterAll, findsOneWidget);
-        await tester.tap(filterAll);
-        await tester.pumpAndSettle();
-
-        expect(find.text('Stieleiche'), findsOneWidget);
-        expect(find.text('Rotbuche'), findsOneWidget);
-
-        // Textsuche testen
-        final searchField = find.byKey(
-          const ValueKey('herbarium-search-field'),
-        );
-        expect(searchField, findsOneWidget);
-
-        await tester.enterText(searchField, 'Stiel');
-        await tester.pumpAndSettle();
-        expect(find.text('Stieleiche'), findsOneWidget);
-        expect(find.text('Rotbuche'), findsNothing);
-
-        // Textsuche leeren
-        await tester.tap(find.byKey(const ValueKey('herbarium-search-clear')));
-        await tester.pumpAndSettle();
-        expect(find.text('Rotbuche'), findsOneWidget);
-
-        // ---------------------------------------------------------------------
-        // 8. Herbarium: Neuen Feldfund anlegen & Sync
-        // ---------------------------------------------------------------------
-        final addFab = find.byKey(const ValueKey('herbarium-add-observation'));
-        expect(addFab, findsOneWidget);
-        await tester.tap(addFab);
-        await tester.pumpAndSettle();
-
-        // Dialog prüfen
-        expect(find.text('Neuen Fund erfassen'), findsOneWidget);
-        await tester.enterText(
-          find.byKey(const ValueKey('add-plant-name')),
-          'Wald-Sauerklee',
-        );
-        await tester.enterText(
-          find.byKey(const ValueKey('add-plant-note')),
-          'Im schattigen Moos am Wegrand gefunden (Widgettest)',
-        );
-        await tester.pump();
-
-        // Speichern
-        await tester.tap(find.byKey(const ValueKey('submit-add-plant')));
-        await tester.pumpAndSettle();
-
-        // Verifizieren, dass der neue Eintrag in der Liste sichtbar ist
-        expect(find.text('Wald-Sauerklee'), findsOneWidget);
-
-        // Synchronisieren-Button testen
-        final syncBtn = find.byKey(const ValueKey('herbarium-sync-button'));
-        expect(syncBtn, findsOneWidget);
-        await tester.tap(syncBtn);
-        await tester.pumpAndSettle();
-
-        // ---------------------------------------------------------------------
-        // 9. Profil & Logout testen
+        // 6. Profil & Logout testen
         // ---------------------------------------------------------------------
         expect(find.text('Profil'), findsOneWidget);
         await tester.tap(find.text('Profil'));

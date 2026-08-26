@@ -32,9 +32,23 @@ final class Observation {
   final ObservationLocation? location;
 }
 
+/// A short-lived private-media reservation created before uploading image bytes.
+final class MediaUpload {
+  const MediaUpload({
+    required this.id,
+    required this.expiresAt,
+    required this.status,
+  });
+
+  final String id;
+  final DateTime expiresAt;
+  final String status;
+}
+
 /// A candidate plant returned by the automated identification provider.
 final class IdentificationCandidate {
   const IdentificationCandidate({
+    required this.candidateId,
     required this.scientificName,
     this.commonName,
     this.plantId,
@@ -43,6 +57,9 @@ final class IdentificationCandidate {
     this.modelVersion = 'unknown',
   });
 
+  /// Provider-stable reference. Unlike [plantId], this is available for
+  /// candidates that have not yet been curated in Plantini's own catalogue.
+  final String candidateId;
   final String scientificName;
   final String? commonName;
   final String? plantId;
@@ -52,12 +69,7 @@ final class IdentificationCandidate {
 }
 
 /// Status of an asynchronous plant identification job.
-enum IdentificationStatus {
-  pending,
-  processing,
-  identified,
-  failed,
-}
+enum IdentificationStatus { pending, processing, identified, failed }
 
 /// Identification job representation.
 final class IdentificationJob {
@@ -69,6 +81,7 @@ final class IdentificationJob {
     this.candidates = const [],
     this.failureCode,
     this.confirmedPlantId,
+    this.confirmedCandidateId,
   });
 
   final String id;
@@ -78,4 +91,5 @@ final class IdentificationJob {
   final List<IdentificationCandidate> candidates;
   final String? failureCode;
   final String? confirmedPlantId;
+  final String? confirmedCandidateId;
 }

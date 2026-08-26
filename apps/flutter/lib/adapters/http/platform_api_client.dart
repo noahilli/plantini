@@ -53,11 +53,13 @@ final class PlatformApiClient {
     String path, {
     required Map<String, Object?> body,
     String? idempotencyKey,
+    String? ifMatchVersion,
   }) => _requestJson(
     method: 'PATCH',
     path: path,
     body: body,
     idempotencyKey: idempotencyKey,
+    ifMatchVersion: ifMatchVersion,
   );
 
   Future<Result<ApiJsonResponse>> postMultipart(
@@ -66,7 +68,7 @@ final class PlatformApiClient {
     required Uint8List bytes,
     required String mediaType,
     required String filename,
-    required String idempotencyKey,
+    String? idempotencyKey,
   }) async {
     final form = FormData.fromMap({
       ...fields,
@@ -87,10 +89,12 @@ final class PlatformApiClient {
   Future<Result<ApiJsonResponse>> deleteJson(
     String path, {
     String? idempotencyKey,
+    String? ifMatchVersion,
   }) => _requestJson(
     method: 'DELETE',
     path: path,
     idempotencyKey: idempotencyKey,
+    ifMatchVersion: ifMatchVersion,
   );
 
   Future<Result<ApiJsonResponse>> _requestJson({
@@ -99,6 +103,7 @@ final class PlatformApiClient {
     Map<String, Object?> queryParameters = const {},
     Object? body,
     String? idempotencyKey,
+    String? ifMatchVersion,
   }) async {
     try {
       final token = await _accessTokenProvider();
@@ -115,6 +120,7 @@ final class PlatformApiClient {
             if (token != null && token.isNotEmpty)
               'Authorization': 'Bearer $token',
             if (idempotencyKey != null) 'Idempotency-Key': idempotencyKey,
+            if (ifMatchVersion != null) 'If-Match': ifMatchVersion,
           },
         ),
       );
@@ -123,6 +129,16 @@ final class PlatformApiClient {
         return Result.success(
           ApiJsonResponse(
             body: data,
+            statusCode: response.statusCode ?? 0,
+            traceId: _traceId(response.headers),
+          ),
+        );
+      }
+      if ((response.statusCode == 202 || response.statusCode == 204) &&
+          (data == null || data == '')) {
+        return Result.success(
+          ApiJsonResponse(
+            body: const {},
             statusCode: response.statusCode ?? 0,
             traceId: _traceId(response.headers),
           ),

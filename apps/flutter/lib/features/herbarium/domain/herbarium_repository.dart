@@ -20,6 +20,9 @@ abstract interface class HerbariumRepository {
     String? scientificName,
     String? identificationResult,
     String? identificationJobId,
+    double? latitude,
+    double? longitude,
+    double? accuracyMeters,
     required String idempotencyKey,
   });
 

@@ -13,8 +13,9 @@ import 'core/time/clock.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
 import 'features/catalog/infrastructure/cached_catalog_repository.dart';
 import 'features/catalog/infrastructure/http_catalog_repository.dart';
+import 'features/field/infrastructure/http_field_repository.dart';
 import 'features/herbarium/application/herbarium_use_cases.dart';
-import 'features/herbarium/infrastructure/local_herbarium_repository.dart';
+import 'features/herbarium/infrastructure/http_herbarium_repository.dart';
 import 'features/learning/application/learning_session_service.dart';
 import 'features/learning/infrastructure/http_learning_repository.dart';
 import 'features/learning/infrastructure/shared_preferences_learning_session_store.dart';
@@ -57,7 +58,8 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       preferences: preferences,
     );
     final learningRepository = HttpLearningRepository(api);
-    final herbariumRepository = LocalHerbariumRepository();
+    final fieldRepository = HttpFieldRepository(api);
+    final herbariumRepository = HttpHerbariumRepository(api);
     return AppDependencies(
       auth: auth,
       apiClient: api,
@@ -71,6 +73,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
         clock: const SystemClock(),
       ),
       learningRepository: learningRepository,
+      fieldRepository: fieldRepository,
       herbariumRepository: herbariumRepository,
       listHerbarium: ListHerbarium(herbariumRepository),
       deleteHerbariumEntry: DeleteEntry(herbariumRepository),

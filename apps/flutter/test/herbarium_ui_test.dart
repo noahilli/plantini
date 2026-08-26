@@ -43,37 +43,42 @@ void main() {
   ];
 
   group('HerbariumListView Widget Tests', () {
-    testWidgets('renders entries with thumbnail, title, scientific name and sync status', (tester) async {
-      HerbariumEntry? tappedEntry;
+    testWidgets(
+      'renders entries with thumbnail, title, scientific name and sync status',
+      (tester) async {
+        HerbariumEntry? tappedEntry;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: HerbariumListView(
-              entries: sampleEntries,
-              onEntryTap: (entry) => tappedEntry = entry,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: HerbariumListView(
+                entries: sampleEntries,
+                onEntryTap: (entry) => tappedEntry = entry,
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(find.text('Stieleiche'), findsOneWidget);
-      expect(find.text('Quercus robur'), findsOneWidget);
-      expect(find.text('Gänseblümchen'), findsOneWidget);
-      expect(find.text('Bellis perennis'), findsOneWidget);
-      expect(find.text('Brennnessel'), findsOneWidget);
+        expect(find.text('Stieleiche'), findsOneWidget);
+        expect(find.text('Quercus robur'), findsOneWidget);
+        expect(find.text('Gänseblümchen'), findsOneWidget);
+        expect(find.text('Bellis perennis'), findsOneWidget);
+        expect(find.text('Brennnessel'), findsOneWidget);
 
-      // Verify sync status icons / tooltips
-      expect(find.byTooltip('Synchronisiert'), findsOneWidget);
-      expect(find.byTooltip('Ausstehend (Lokal)'), findsOneWidget);
-      expect(find.byTooltip('Synchronisationskonflikt'), findsOneWidget);
+        // Verify sync status icons / tooltips
+        expect(find.byTooltip('Synchronisiert'), findsOneWidget);
+        expect(find.byTooltip('Ausstehend (Lokal)'), findsOneWidget);
+        expect(find.byTooltip('Synchronisationskonflikt'), findsOneWidget);
 
-      // Tap on first entry
-      await tester.tap(find.text('Stieleiche'));
-      expect(tappedEntry?.id, 'entry-1');
-    });
+        // Tap on first entry
+        await tester.tap(find.text('Stieleiche'));
+        expect(tappedEntry?.id, 'entry-1');
+      },
+    );
 
-    testWidgets('renders empty view when entries list is empty', (tester) async {
+    testWidgets('renders empty view when entries list is empty', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -92,105 +97,119 @@ void main() {
   });
 
   group('HerbariumDetailScreen Widget Tests', () {
-    testWidgets('renders full detail with PlantNet AI result, sync status, and notes', (tester) async {
-      final entry = sampleEntries.first;
-      bool deleteCalled = false;
+    testWidgets(
+      'renders full detail with PlantNet AI result, sync status, and notes',
+      (tester) async {
+        final entry = sampleEntries.first;
+        bool deleteCalled = false;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: HerbariumDetailScreen(
-            entry: entry,
-            onDelete: (item) async {
-              deleteCalled = true;
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('Stieleiche'), findsWidgets);
-      expect(find.text('Quercus robur'), findsOneWidget);
-      expect(find.text('Synchronisiert'), findsWidgets);
-      expect(find.text('PlantNet KI-Bestimmung'), findsOneWidget);
-      expect(find.text('PlantNet: Quercus robur (98%)'), findsOneWidget);
-      expect(find.text('Schöne Eiche im Wald'), findsOneWidget);
-
-      // Test delete button and confirmation dialog
-      expect(find.byKey(const ValueKey('herbarium-delete-button')), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('herbarium-delete-button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Fund löschen?'), findsOneWidget);
-      expect(find.text('Löschen'), findsOneWidget);
-
-      await tester.tap(find.text('Löschen'));
-      await tester.pumpAndSettle();
-
-      expect(deleteCalled, isTrue);
-    });
-  });
-
-  group('HerbariumSearchFilterBar Widget Tests', () {
-    testWidgets('triggers onSearchChanged and onStatusFilterChanged callbacks', (tester) async {
-      String currentSearch = '';
-      SyncStatus? currentStatus;
-      final controller = TextEditingController();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: StatefulBuilder(
-              builder: (context, setState) {
-                return HerbariumSearchFilterBar(
-                  searchQuery: currentSearch,
-                  selectedStatus: currentStatus,
-                  searchController: controller,
-                  onSearchChanged: (query) {
-                    setState(() => currentSearch = query);
-                  },
-                  onStatusFilterChanged: (status) {
-                    setState(() => currentStatus = status);
-                  },
-                );
+        await tester.pumpWidget(
+          MaterialApp(
+            home: HerbariumDetailScreen(
+              entry: entry,
+              onDelete: (item) async {
+                deleteCalled = true;
               },
             ),
           ),
-        ),
-      );
+        );
 
-      // Type in search field
-      await tester.enterText(
-        find.byKey(const ValueKey('herbarium-search-field')),
-        'Eiche',
-      );
-      await tester.pump();
-      expect(currentSearch, 'Eiche');
+        expect(find.text('Stieleiche'), findsWidgets);
+        expect(find.text('Quercus robur'), findsOneWidget);
+        expect(find.text('Synchronisiert'), findsWidgets);
+        expect(find.text('PlantNet KI-Bestimmung'), findsOneWidget);
+        expect(find.text('PlantNet: Quercus robur (98%)'), findsOneWidget);
+        expect(find.text('Schöne Eiche im Wald'), findsOneWidget);
 
-      // Clear search via suffix icon
-      expect(find.byKey(const ValueKey('herbarium-search-clear')), findsOneWidget);
-      await tester.tap(find.byKey(const ValueKey('herbarium-search-clear')));
-      await tester.pump();
-      expect(currentSearch, '');
+        // Test delete button and confirmation dialog
+        expect(
+          find.byKey(const ValueKey('herbarium-delete-button')),
+          findsOneWidget,
+        );
+        await tester.tap(find.byKey(const ValueKey('herbarium-delete-button')));
+        await tester.pumpAndSettle();
 
-      // Select filter chip
-      await tester.tap(find.byKey(const ValueKey('filter-pending')));
-      await tester.pump();
-      expect(currentStatus, SyncStatus.pending);
+        expect(find.text('Fund löschen?'), findsOneWidget);
+        expect(find.text('Löschen'), findsOneWidget);
 
-      // Toggle off filter chip
-      await tester.tap(find.byKey(const ValueKey('filter-pending')));
-      await tester.pump();
-      expect(currentStatus, isNull);
-    });
+        await tester.tap(find.text('Löschen'));
+        await tester.pumpAndSettle();
+
+        expect(deleteCalled, isTrue);
+      },
+    );
+  });
+
+  group('HerbariumSearchFilterBar Widget Tests', () {
+    testWidgets(
+      'triggers onSearchChanged and onStatusFilterChanged callbacks',
+      (tester) async {
+        String currentSearch = '';
+        SyncStatus? currentStatus;
+        final controller = TextEditingController();
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: StatefulBuilder(
+                builder: (context, setState) {
+                  return HerbariumSearchFilterBar(
+                    searchQuery: currentSearch,
+                    selectedStatus: currentStatus,
+                    searchController: controller,
+                    onSearchChanged: (query) {
+                      setState(() => currentSearch = query);
+                    },
+                    onStatusFilterChanged: (status) {
+                      setState(() => currentStatus = status);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        // Type in search field
+        await tester.enterText(
+          find.byKey(const ValueKey('herbarium-search-field')),
+          'Eiche',
+        );
+        await tester.pump();
+        expect(currentSearch, 'Eiche');
+
+        // Clear search via suffix icon
+        expect(
+          find.byKey(const ValueKey('herbarium-search-clear')),
+          findsOneWidget,
+        );
+        await tester.tap(find.byKey(const ValueKey('herbarium-search-clear')));
+        await tester.pump();
+        expect(currentSearch, '');
+
+        // Select filter chip
+        await tester.tap(find.byKey(const ValueKey('filter-pending')));
+        await tester.pump();
+        expect(currentStatus, SyncStatus.pending);
+
+        // Toggle off filter chip
+        await tester.tap(find.byKey(const ValueKey('filter-pending')));
+        await tester.pump();
+        expect(currentStatus, isNull);
+      },
+    );
   });
 
   group('HerbariumScreen Integrated Reactive Tests', () {
-    testWidgets('filters entries in-memory by text and sync status', (tester) async {
-      final repo = LocalHerbariumRepository(initialEntries: List.of(sampleEntries));
+    testWidgets('filters entries in-memory by text and sync status', (
+      tester,
+    ) async {
+      final repo = LocalHerbariumRepository(
+        initialEntries: List.of(sampleEntries),
+      );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: HerbariumScreen(repository: repo),
-        ),
+        MaterialApp(home: HerbariumScreen(repository: repo)),
       );
       await tester.pumpAndSettle();
 
@@ -223,60 +242,65 @@ void main() {
       expect(find.text('Gänseblümchen'), findsNothing);
     });
 
-    testWidgets('sync button reactively updates pending entries to synced', (tester) async {
-      final repo = LocalHerbariumRepository(initialEntries: List.of(sampleEntries));
+    testWidgets(
+      'sync button reports that the local test adapter cannot synchronize',
+      (tester) async {
+        final repo = LocalHerbariumRepository(
+          initialEntries: List.of(sampleEntries),
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: HerbariumScreen(repository: repo),
-        ),
-      );
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          MaterialApp(home: HerbariumScreen(repository: repo)),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.byTooltip('Ausstehend (Lokal)'), findsOneWidget);
+        expect(find.byTooltip('Ausstehend (Lokal)'), findsOneWidget);
 
-      // Tap sync button
-      await tester.tap(find.byKey(const ValueKey('herbarium-sync-button')));
-      await tester.pumpAndSettle();
+        // Tap sync button
+        await tester.tap(find.byKey(const ValueKey('herbarium-sync-button')));
+        await tester.pumpAndSettle();
 
-      // All items are now synced
-      expect(find.byTooltip('Ausstehend (Lokal)'), findsNothing);
-      expect(find.byTooltip('Synchronisiert'), findsNWidgets(3));
-    });
+        // The test adapter never pretends that an unsent item reached the server.
+        expect(find.byTooltip('Ausstehend (Lokal)'), findsOneWidget);
+        expect(
+          find.text(
+            'Der lokale Testadapter kann keine Funde synchronisieren. Verwende die API-Implementierung.',
+          ),
+          findsOneWidget,
+        );
+      },
+    );
 
-    testWidgets('adding a new observation reactively adds item to list', (tester) async {
-      final repo = LocalHerbariumRepository(initialEntries: List.of(sampleEntries));
+    testWidgets(
+      'add action launches the field flow instead of creating fake local data',
+      (tester) async {
+        final repo = LocalHerbariumRepository(
+          initialEntries: List.of(sampleEntries),
+        );
+        var startFieldCalls = 0;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: HerbariumScreen(repository: repo),
-        ),
-      );
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          MaterialApp(
+            home: HerbariumScreen(
+              repository: repo,
+              onStartField: () => startFieldCalls += 1,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      // Tap FAB
-      await tester.tap(find.byKey(const ValueKey('herbarium-add-observation')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Neuen Fund erfassen'), findsOneWidget);
-
-      // Fill in plant name and note
-      await tester.enterText(find.byKey(const ValueKey('add-plant-name')), 'Waldmeister');
-      await tester.enterText(find.byKey(const ValueKey('add-plant-note')), 'Im Buchenwald');
-      await tester.pump();
-
-      // Save
-      await tester.tap(find.byKey(const ValueKey('submit-add-plant')));
-      await tester.pumpAndSettle();
-
-      // Verify newly added item is in the list
-      expect(find.text('Waldmeister'), findsOneWidget);
-      expect(find.text('Im Buchenwald'), findsOneWidget);
-    });
+        await tester.tap(
+          find.byKey(const ValueKey('herbarium-add-observation')),
+        );
+        await tester.pumpAndSettle();
+        expect(startFieldCalls, 1);
+        expect(find.text('Waldmeister'), findsNothing);
+      },
+    );
   });
 
   group('LocalHerbariumRepository Unit Tests', () {
-    test('CRUD operations and sync work accurately', () async {
+    test('CRUD operations stay pending and never fake a remote sync', () async {
       final repo = LocalHerbariumRepository(initialEntries: []);
 
       // Create entry
@@ -306,12 +330,13 @@ void main() {
 
       // Sync entries
       final syncRes = await repo.syncEntries();
-      expect(syncRes.isSuccess, isTrue);
-      final syncedEntries = (syncRes as Success<List<HerbariumEntry>>).value;
-      expect(syncedEntries.first.syncStatus, SyncStatus.synced);
+      expect(syncRes.isSuccess, isFalse);
 
       // Delete entry
-      final delRes = await repo.deleteEntry(id: 'c-1', ifMatchVersion: 'v1');
+      final delRes = await repo.deleteEntry(
+        id: 'c-1',
+        ifMatchVersion: 'local-c-1',
+      );
       expect(delRes.isSuccess, isTrue);
 
       final listAfterDel = await repo.listEntries();

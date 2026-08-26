@@ -6,6 +6,7 @@ import '../core/theme/app_colors.dart';
 import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
+import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/learning/presentation/learning_screen.dart';
 import 'app_dependencies.dart';
@@ -27,10 +28,7 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
   },
   routes: [
     // Top-level unauthenticated / system routes outside the Shell
-    GoRoute(
-      path: '/boot',
-      builder: (context, state) => const BootScreen(),
-    ),
+    GoRoute(path: '/boot', builder: (context, state) => const BootScreen()),
     GoRoute(
       path: '/login',
       builder: (context, state) => LoginScreen(auth: dependencies.auth),
@@ -38,10 +36,8 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
 
     // Main App Shell with Bottom Navigation (Lernen, Feld, Profil)
     ShellRoute(
-      builder: (context, state, child) => AppShell(
-        location: state.matchedLocation,
-        child: child,
-      ),
+      builder: (context, state, child) =>
+          AppShell(location: state.matchedLocation, child: child),
       routes: [
         GoRoute(
           path: '/',
@@ -112,6 +108,11 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
           },
         ),
         GoRoute(
+          path: '/field',
+          builder: (context, state) =>
+              FieldCaptureScreen(dependencies: dependencies),
+        ),
+        GoRoute(
           path: '/herbarium',
           builder: (context, state) =>
               HerbariumScreen(dependencies: dependencies),
@@ -127,11 +128,7 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
 
 /// Shell widget with bottom navigation bar containing 3 tabs: Lernen, Feld, Profil.
 final class AppShell extends StatelessWidget {
-  const AppShell({
-    super.key,
-    required this.child,
-    required this.location,
-  });
+  const AppShell({super.key, required this.child, required this.location});
 
   final Widget child;
   final String location;
@@ -152,7 +149,7 @@ final class AppShell extends StatelessWidget {
         context.go('/ecosystems');
         break;
       case 1:
-        context.go('/herbarium');
+        context.go('/field');
         break;
       case 2:
         context.go('/profile');
@@ -215,14 +212,18 @@ final class ProfileScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.person_outline, size: 64, color: AppColors.forest),
+              const Icon(
+                Icons.person_outline,
+                size: 64,
+                color: AppColors.forest,
+              ),
               const SizedBox(height: 16),
               Text(
                 'Profil',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.forest,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: AppColors.forest,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -249,14 +250,14 @@ final class BootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Center(
-          child: Semantics(
-            label: 'Plantini wird gestartet',
-            liveRegion: true,
-            child: const CircularProgressIndicator(),
-          ),
-        ),
-      );
+    body: Center(
+      child: Semantics(
+        label: 'Plantini wird gestartet',
+        liveRegion: true,
+        child: const CircularProgressIndicator(),
+      ),
+    ),
+  );
 }
 
 /// Login screen when user is unauthenticated.
@@ -267,46 +268,46 @@ final class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Icon(Icons.eco_rounded, size: 72),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Plantini',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Entdecke Pflanzen und sichere deine Lernfortschritte in deinem eigenen Konto.',
-                      textAlign: TextAlign.center,
-                    ),
-                    if (auth.failure != null) ...[
-                      const SizedBox(height: 20),
-                      Text(auth.failure!.message, textAlign: TextAlign.center),
-                    ],
-                    const SizedBox(height: 32),
-                    FilledButton.icon(
-                      key: const ValueKey('auth-login'),
-                      onPressed: auth.login,
-                      icon: const Icon(Icons.login),
-                      label: const Text('Anmelden'),
-                    ),
-                  ],
+    body: SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(Icons.eco_rounded, size: 72),
+                const SizedBox(height: 20),
+                Text(
+                  'Plantini',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
-              ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Entdecke Pflanzen und sichere deine Lernfortschritte in deinem eigenen Konto.',
+                  textAlign: TextAlign.center,
+                ),
+                if (auth.failure != null) ...[
+                  const SizedBox(height: 20),
+                  Text(auth.failure!.message, textAlign: TextAlign.center),
+                ],
+                const SizedBox(height: 32),
+                FilledButton.icon(
+                  key: const ValueKey('auth-login'),
+                  onPressed: auth.login,
+                  icon: const Icon(Icons.login),
+                  label: const Text('Anmelden'),
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 /// Screen shown when a link is invalid or lacks required query parameters.
@@ -315,9 +316,9 @@ final class InvalidRouteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Ungültiger Link')),
-        body: const Center(
-          child: Text('Dieser Lernlink enthält keine gültige Inhaltsversion.'),
-        ),
-      );
+    appBar: AppBar(title: const Text('Ungültiger Link')),
+    body: const Center(
+      child: Text('Dieser Lernlink enthält keine gültige Inhaltsversion.'),
+    ),
+  );
 }

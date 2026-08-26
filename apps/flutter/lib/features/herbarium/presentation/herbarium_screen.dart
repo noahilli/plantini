@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
@@ -22,6 +23,7 @@ class HerbariumScreen extends StatefulWidget {
     this.listHerbarium,
     this.deleteEntry,
     this.syncEntries,
+    this.onStartField,
   });
 
   final AppDependencies? dependencies;
@@ -29,6 +31,7 @@ class HerbariumScreen extends StatefulWidget {
   final ListHerbarium? listHerbarium;
   final DeleteEntry? deleteEntry;
   final SyncEntries? syncEntries;
+  final VoidCallback? onStartField;
 
   @override
   State<HerbariumScreen> createState() => _HerbariumScreenState();
@@ -55,19 +58,23 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   }
 
   void _initDependencies() {
-    _repository = widget.repository ??
+    _repository =
+        widget.repository ??
         widget.dependencies?.herbariumRepository ??
         LocalHerbariumRepository();
 
-    _listUseCase = widget.listHerbarium ??
+    _listUseCase =
+        widget.listHerbarium ??
         widget.dependencies?.listHerbarium ??
         ListHerbarium(_repository);
 
-    _deleteUseCase = widget.deleteEntry ??
+    _deleteUseCase =
+        widget.deleteEntry ??
         widget.dependencies?.deleteHerbariumEntry ??
         DeleteEntry(_repository);
 
-    _syncUseCase = widget.syncEntries ??
+    _syncUseCase =
+        widget.syncEntries ??
         widget.dependencies?.syncHerbariumEntries ??
         SyncEntries(_repository);
   }
@@ -108,7 +115,16 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         _isSyncing = false;
       });
     } else {
+      final failure = result.failureOrNull;
       setState(() => _isSyncing = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            failure?.message ??
+                'Das Herbarium konnte nicht synchronisiert werden.',
+          ),
+        ),
+      );
     }
   }
 
@@ -125,6 +141,15 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
     }
   }
 
+  void _startField() {
+    final callback = widget.onStartField;
+    if (callback != null) {
+      callback();
+      return;
+    }
+    context.go('/field');
+  }
+
   void _onEntryTap(HerbariumEntry entry) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -136,35 +161,6 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _showAddObservationDialog() async {
-    final result = await showDialog<(String, String)>(
-      context: context,
-      builder: (ctx) => const _AddObservationDialog(),
-    );
-
-    if (result != null && mounted) {
-      final (name, note) = result;
-      final now = DateTime.now();
-      final clientId = 'obs-${now.millisecondsSinceEpoch}';
-
-      final createResult = await _repository.createEntry(
-        clientObservationId: clientId,
-        observedAt: now,
-        plantName: name.isNotEmpty ? name : 'Unbekannter Fund',
-        note: note,
-        identificationResult: 'Manuell hinzugefügter Feldfund',
-        idempotencyKey: clientId,
-      );
-
-      if (createResult case Success<HerbariumEntry>(:final value)) {
-        setState(() {
-          _allEntries.removeWhere((e) => e.id == value.id);
-          _allEntries.insert(0, value);
-        });
-      }
-    }
   }
 
   List<HerbariumEntry> get _filteredEntries {
@@ -231,7 +227,8 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
                     onEntryTap: _onEntryTap,
                     onDeleteEntry: _handleDeleteEntry,
                     onRefresh: _loadEntries,
-                    emptyMessage: _searchQuery.isNotEmpty || _selectedStatus != null
+                    emptyMessage:
+                        _searchQuery.isNotEmpty || _selectedStatus != null
                         ? 'Keine Funde für die aktuelle Suche oder Filterung gefunden.'
                         : 'Noch keine Pflanzenfunde im Herbarium erfasst.',
                   ),
@@ -240,79 +237,12 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         key: const ValueKey('herbarium-add-observation'),
-        tooltip: 'Neuen Fund hinzufügen',
-        onPressed: _showAddObservationDialog,
+        tooltip: 'Neuen Fund bestimmen',
+        onPressed: _startField,
         backgroundColor: AppColors.forest,
         foregroundColor: AppColors.white,
         child: const Icon(Icons.add_photo_alternate_outlined),
       ),
-    );
-  }
-}
-
-class _AddObservationDialog extends StatefulWidget {
-  const _AddObservationDialog();
-
-  @override
-  State<_AddObservationDialog> createState() => _AddObservationDialogState();
-}
-
-class _AddObservationDialogState extends State<_AddObservationDialog> {
-  late final TextEditingController _nameController = TextEditingController();
-  late final TextEditingController _noteController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _noteController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Neuen Fund erfassen'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              key: const ValueKey('add-plant-name'),
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Pflanzenname',
-                hintText: 'z.B. Wald-Sauerklee',
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              key: const ValueKey('add-plant-note'),
-              controller: _noteController,
-              decoration: const InputDecoration(
-                labelText: 'Notiz / Fundort',
-                hintText: 'z.B. Im schattigen Buchenwald gefunden.',
-              ),
-              maxLines: 2,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Abbrechen'),
-        ),
-        FilledButton(
-          key: const ValueKey('submit-add-plant'),
-          onPressed: () {
-            Navigator.of(context).pop((
-              _nameController.text.trim(),
-              _noteController.text.trim(),
-            ));
-          },
-          child: const Text('Speichern'),
-        ),
-      ],
     );
   }
 }

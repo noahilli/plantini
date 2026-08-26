@@ -6,11 +6,7 @@ import '../domain/herbarium_models.dart';
 
 /// Screen presenting the detailed observation record from the digital herbarium.
 class HerbariumDetailScreen extends StatelessWidget {
-  const HerbariumDetailScreen({
-    super.key,
-    required this.entry,
-    this.onDelete,
-  });
+  const HerbariumDetailScreen({super.key, required this.entry, this.onDelete});
 
   final HerbariumEntry entry;
   final Future<void> Function(HerbariumEntry entry)? onDelete;
@@ -38,9 +34,7 @@ class HerbariumDetailScreen extends StatelessWidget {
             child: const Text('Abbrechen'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.danger,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('Löschen'),
           ),
@@ -60,9 +54,9 @@ class HerbariumDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasPlantNetResult = entry.identificationResult != null &&
+    final hasPlantNetResult =
+        entry.identificationResult != null &&
         entry.identificationResult!.trim().isNotEmpty;
-    final hasCoordinates = entry.latitude != null && entry.longitude != null;
 
     return Scaffold(
       appBar: AppBar(
@@ -159,15 +153,6 @@ class HerbariumDetailScreen extends StatelessWidget {
                     label: 'Beobachtet am',
                     value: _formatDate(entry.observedAt),
                   ),
-                  if (hasCoordinates) ...[
-                    const SizedBox(height: 8),
-                    _MetadataTile(
-                      icon: Icons.location_on_outlined,
-                      label: 'Standortkoordinaten',
-                      value:
-                          '${entry.latitude!.toStringAsFixed(5)}° N, ${entry.longitude!.toStringAsFixed(5)}° E',
-                    ),
-                  ],
                   if (entry.confirmedPlantId != null) ...[
                     const SizedBox(height: 8),
                     _MetadataTile(
@@ -239,9 +224,7 @@ class _DetailHeroImage extends StatelessWidget {
           return Container(
             color: AppColors.cream,
             alignment: Alignment.center,
-            child: const CircularProgressIndicator(
-              color: AppColors.forest,
-            ),
+            child: const CircularProgressIndicator(color: AppColors.forest),
           );
         },
       ),
@@ -258,33 +241,33 @@ class _SyncStatusBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icon, color, bgColor, title, desc) = switch (status) {
       SyncStatus.synced => (
-          Icons.cloud_done_rounded,
-          AppColors.forest,
-          AppColors.mint,
-          'Synchronisiert',
-          'Dieser Fund ist sicher auf dem Server und lokal gespeichert.',
-        ),
+        Icons.cloud_done_rounded,
+        AppColors.forest,
+        AppColors.mint,
+        'Synchronisiert',
+        'Dieser Fund ist sicher auf dem Server und lokal gespeichert.',
+      ),
       SyncStatus.pending => (
-          Icons.cloud_upload_outlined,
-          AppColors.bark,
-          AppColors.warningBg,
-          'Lokal gespeichert (Ausstehend)',
-          'Wird automatisch synchronisiert, sobald eine Internetverbindung besteht.',
-        ),
+        Icons.cloud_upload_outlined,
+        AppColors.bark,
+        AppColors.warningBg,
+        'Lokal gespeichert (Ausstehend)',
+        'Wird automatisch synchronisiert, sobald eine Internetverbindung besteht.',
+      ),
       SyncStatus.conflict => (
-          Icons.warning_amber_rounded,
-          AppColors.danger,
-          AppColors.warningBg,
-          'Synchronisationskonflikt',
-          'Bei der Synchronisation ist ein Versionskonflikt aufgetreten.',
-        ),
+        Icons.warning_amber_rounded,
+        AppColors.danger,
+        AppColors.warningBg,
+        'Synchronisationskonflikt',
+        'Bei der Synchronisation ist ein Versionskonflikt aufgetreten.',
+      ),
       SyncStatus.deleted => (
-          Icons.delete_outline,
-          AppColors.muted,
-          AppColors.cream,
-          'Gelöscht',
-          'Dieser Eintrag ist zur Löschung vorgemerkt.',
-        ),
+        Icons.delete_outline,
+        AppColors.muted,
+        AppColors.cream,
+        'Gelöscht',
+        'Dieser Eintrag ist zur Löschung vorgemerkt.',
+      ),
     };
 
     return Container(
@@ -389,10 +372,7 @@ class _PlantNetResultCard extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.icon,
-    required this.title,
-  });
+  const _SectionHeader({required this.icon, required this.title});
 
   final IconData icon;
   final String title;

@@ -11,6 +11,34 @@ final class MockFieldRepository implements FieldRepository {
   IdentificationJob? jobToReturn;
 
   @override
+  Future<Result<MediaUpload>> reserveMediaUpload({
+    required String clientMediaId,
+    required String contentType,
+    required int bytes,
+    required String idempotencyKey,
+  }) async => Result.success(
+    MediaUpload(
+      id: 'media-123',
+      expiresAt: DateTime.parse('2026-08-26T13:00:00.000Z'),
+      status: 'reserved',
+    ),
+  );
+
+  @override
+  Future<Result<MediaUpload>> uploadMediaContent({
+    required String mediaId,
+    required List<int> bytes,
+    required String contentType,
+    required String filename,
+  }) async => Result.success(
+    MediaUpload(
+      id: mediaId,
+      expiresAt: DateTime.parse('2026-08-26T13:00:00.000Z'),
+      status: 'uploaded',
+    ),
+  );
+
+  @override
   Future<Result<IdentificationJob>> submitObservation({
     required String clientJobId,
     required String mediaId,
@@ -37,6 +65,7 @@ final class MockFieldRepository implements FieldRepository {
             createdAt: DateTime.parse('2026-08-26T12:00:00.000Z'),
             candidates: const [
               IdentificationCandidate(
+                candidateId: 'plantnet:gbif:2927079',
                 scientificName: 'Bellis perennis',
                 commonName: 'Gänseblümchen',
                 score: 0.95,
@@ -49,7 +78,8 @@ final class MockFieldRepository implements FieldRepository {
   @override
   Future<Result<IdentificationJob>> confirmIdentification({
     required String jobId,
-    required String confirmedPlantId,
+    String? candidateId,
+    String? confirmedPlantId,
   }) async {
     return Result.success(
       IdentificationJob(
@@ -57,6 +87,7 @@ final class MockFieldRepository implements FieldRepository {
         status: 'identified',
         createdAt: DateTime.parse('2026-08-26T12:00:00.000Z'),
         confirmedPlantId: confirmedPlantId,
+        confirmedCandidateId: candidateId,
       ),
     );
   }
@@ -90,6 +121,9 @@ final class MockHerbariumRepository implements HerbariumRepository {
     String? scientificName,
     String? identificationResult,
     String? identificationJobId,
+    double? latitude,
+    double? longitude,
+    double? accuracyMeters,
     required String idempotencyKey,
   }) async {
     final entry = HerbariumEntry(
@@ -155,31 +189,37 @@ void main() {
   });
 
   group('Herbarium Use Cases', () {
-    test('ListHerbarium, DeleteEntry, and SyncEntries perform correctly', () async {
-      final repo = MockHerbariumRepository();
-      final entry = HerbariumEntry(
-        id: 'entry-1',
-        observedAt: DateTime.parse('2026-08-26T10:00:00.000Z'),
-        note: 'Gefunden im Park',
-        confirmedPlantId: 'plant-1',
-        version: 'v1',
-        syncStatus: SyncStatus.synced,
-      );
-      repo.entries.add(entry);
+    test(
+      'ListHerbarium, DeleteEntry, and SyncEntries perform correctly',
+      () async {
+        final repo = MockHerbariumRepository();
+        final entry = HerbariumEntry(
+          id: 'entry-1',
+          observedAt: DateTime.parse('2026-08-26T10:00:00.000Z'),
+          note: 'Gefunden im Park',
+          confirmedPlantId: 'plant-1',
+          version: 'v1',
+          syncStatus: SyncStatus.synced,
+        );
+        repo.entries.add(entry);
 
-      final listUseCase = ListHerbarium(repo);
-      final listResult = await listUseCase();
-      expect(listResult.isSuccess, isTrue);
-      expect((listResult as Success<List<HerbariumEntry>>).value.length, 1);
+        final listUseCase = ListHerbarium(repo);
+        final listResult = await listUseCase();
+        expect(listResult.isSuccess, isTrue);
+        expect((listResult as Success<List<HerbariumEntry>>).value.length, 1);
 
-      final syncUseCase = SyncEntries(repo);
-      final syncResult = await syncUseCase();
-      expect(syncResult.isSuccess, isTrue);
+        final syncUseCase = SyncEntries(repo);
+        final syncResult = await syncUseCase();
+        expect(syncResult.isSuccess, isTrue);
 
-      final deleteUseCase = DeleteEntry(repo);
-      final deleteResult = await deleteUseCase(id: 'entry-1', ifMatchVersion: 'v1');
-      expect(deleteResult.isSuccess, isTrue);
-      expect(repo.entries, isEmpty);
-    });
+        final deleteUseCase = DeleteEntry(repo);
+        final deleteResult = await deleteUseCase(
+          id: 'entry-1',
+          ifMatchVersion: 'v1',
+        );
+        expect(deleteResult.isSuccess, isTrue);
+        expect(repo.entries, isEmpty);
+      },
+    );
   });
 }
