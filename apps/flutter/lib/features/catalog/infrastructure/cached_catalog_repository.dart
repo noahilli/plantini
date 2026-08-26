@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/errors/app_failure.dart';
@@ -77,9 +78,10 @@ final class CachedCatalogRepository implements CatalogRepository {
     if (remote case Success<T>(:final value)) {
       try {
         await _preferences.setString(key, jsonEncode(encode(value)));
-      } catch (_) {
+      } catch (error) {
         // A successful online response remains valid even if its cache write
         // fails; the next offline launch will truthfully lack local content.
+        debugPrint('CachedCatalogRepository: Failed to write cache for $key: $error');
       }
       return Result.success(value);
     }

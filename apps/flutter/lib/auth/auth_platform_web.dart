@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:openid_client/openid_client.dart' as openid;
 
 import 'auth_platform_interface.dart';
@@ -92,7 +93,8 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
         Uri.base.replace(path: '/', query: null, fragment: null).toString(),
       );
       return credential;
-    } catch (_) {
+    } catch (error) {
+      debugPrint('WebAuthPlatformHelper callback failed: $error');
       html.window.sessionStorage.remove(_transactionKey);
       rethrow;
     }
@@ -130,7 +132,8 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
         redirectUri: redirectUri,
         scopes: rawScopes.cast<String>(),
       );
-    } catch (_) {
+    } catch (error) {
+      debugPrint('WebAuthPlatformHelper: corrupted PKCE transaction in storage: $error');
       return null;
     }
   }

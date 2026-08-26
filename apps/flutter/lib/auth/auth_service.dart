@@ -47,7 +47,8 @@ final class AuthService extends ChangeNotifier {
           ? AuthState.unauthenticated
           : AuthState.authenticated;
       _failure = null;
-    } catch (_) {
+    } catch (error) {
+      debugPrint('AuthService initialize failed: $error');
       _credential = null;
       _state = AuthState.failed;
       _failure = const ConfigurationFailure(
@@ -73,7 +74,8 @@ final class AuthService extends ChangeNotifier {
       }
       // Web navigation returns here only after the redirect, where initialize
       // resolves the credential. Do not mark that transition as a failure.
-    } catch (_) {
+    } catch (error) {
+      debugPrint('AuthService login failed: $error');
       _state = AuthState.failed;
       _failure = const UnauthorizedFailure(
         message: 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut.',
@@ -89,7 +91,8 @@ final class AuthService extends ChangeNotifier {
       final tokenResponse = await credential.getTokenResponse();
       final token = tokenResponse.accessToken;
       if (token != null && token.isNotEmpty) return token;
-    } catch (_) {
+    } catch (error) {
+      debugPrint('AuthService getAccessToken failed: $error');
       _credential = null;
       await _credentialStore.clear();
       _state = AuthState.unauthenticated;

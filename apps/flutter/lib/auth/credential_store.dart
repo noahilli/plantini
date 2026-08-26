@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:openid_client/openid_client.dart';
 
@@ -27,7 +28,8 @@ final class SecureCredentialStore implements CredentialStore {
       final value = jsonDecode(encoded);
       if (value is! Map<String, dynamic>) return null;
       return Credential.fromJson(value);
-    } catch (_) {
+    } catch (error) {
+      debugPrint('SecureCredentialStore: corrupted credential in storage, clearing: $error');
       await clear();
       return null;
     }

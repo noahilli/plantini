@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../app/app_config.dart';
 import '../../core/errors/app_failure.dart';
@@ -136,10 +135,13 @@ final class PlatformApiClient {
         ),
       );
     } on DioException catch (error) {
+      debugPrint('PlatformApiClient: DioException on $path: $error');
       return Result.failure(_mapDioFailure(error));
     } on AppFailure catch (failure) {
+      debugPrint('PlatformApiClient: AppFailure on $path: ${failure.message}');
       return Result.failure(failure);
     } catch (error) {
+      debugPrint('PlatformApiClient: unexpected error on $path: $error');
       return Result.failure(
         NetworkFailure(
           message:
