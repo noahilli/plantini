@@ -1,3 +1,5 @@
+export 'plant_model.dart';
+
 /// Immutable published-content models. They deliberately contain no transport
 /// or persistence annotations.
 final class Ecosystem {
