@@ -112,7 +112,7 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 ## Feature 6 – Privates Herbarium, Offline und Sync (FA036–FA045)
 
 - [x] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
-- [ ] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
+- [x] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
 - [ ] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
 - [ ] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
 - [ ] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
@@ -237,3 +237,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `e298b2b` (`featre (APP-01) plant domain model, detail screen and field/herbarium module structure`):** Überprüfung: Plant-Domain-Modell, PlantDetailScreen, Field- und Herbarium-Feature-Module mit Domain/Application/Infrastructure-Schichten.
 - [ ] **Review Commit `5b99774` (`featre (APP-05) unified state widgets and remove hardcoded content values`):** Überprüfung: LoadingState, EmptyState, OfflineState, ErrorState, PermissionDeniedState Widgets und content_constants.dart.
 - [ ] **Review Commit `c1ec09f` (`featre (APP-04) declarative routing with go_router and silent catch cleanup`):** Überprüfung: GoRouter-Routing mit ShellRoute/Bottom-Nav, Placeholder-Screens, stille catch-Blöcke durch Logging ersetzt.
+- [ ] **Review Commit `781117c` (`featre (OFFLINE-01) isar downgrade for web support and linux platform added`):** Überprüfung: Isar 2.X Downgrade in pubspec.yaml, Linux-Unterstützung hinzugefügt, OQ-02 in BLOCKERS.md entschieden.
+- [ ] **Review Commit `524e3fe` (`featre (OFFLINE-02) isar local database schema and models for offline content`):** Überprüfung: LocalDatabase Klasse, Isar-Modelle für Ecosystem, Level, Plant erstellt und Code via build_runner generiert.
