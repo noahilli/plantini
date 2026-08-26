@@ -76,7 +76,7 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 - [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
 - [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
 - [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
-- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
+- [x] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
 
