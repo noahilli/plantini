@@ -2,11 +2,9 @@ import '../core/errors/app_failure.dart';
 
 enum PlantiniEnvironment { development, staging, production }
 
-/// All deploy-time values are passed with --dart-define.
-///
-/// If no values are provided and the environment is 'development', it falls back
-/// to localhost for seamless local testing (`flutter run`).
-/// In staging and production, missing values cause a visible bootstrap failure.
+/// All deploy-time values are passed with --dart-define. Missing or malformed
+/// values fail visibly during bootstrap; a shipped binary must never guess a
+/// local endpoint or silently select an IPv6 loopback route.
 final class AppConfig {
   const AppConfig({
     required this.environment,
@@ -25,11 +23,9 @@ final class AppConfig {
       'PLANTINI_ENV',
       defaultValue: 'development',
     );
-    final isDev = environmentValue == 'development';
-
-    final rawApi = const String.fromEnvironment('PLANTINI_API_BASE_URL');
-    final rawIssuer = const String.fromEnvironment('PLANTINI_OIDC_ISSUER_URL');
-    final rawClient = const String.fromEnvironment('PLANTINI_OIDC_CLIENT_ID');
+    const rawApi = String.fromEnvironment('PLANTINI_API_BASE_URL');
+    const rawIssuer = String.fromEnvironment('PLANTINI_OIDC_ISSUER_URL');
+    const rawClient = String.fromEnvironment('PLANTINI_OIDC_CLIENT_ID');
 
     final environment = switch (environmentValue) {
       'development' => PlantiniEnvironment.development,
@@ -42,9 +38,9 @@ final class AppConfig {
 
     return AppConfig.fromValues(
       environment: environment,
-      apiBaseUrl: rawApi.isEmpty && isDev ? 'http://localhost:1337/api/v1' : rawApi,
-      oidcIssuerUrl: rawIssuer.isEmpty && isDev ? 'http://localhost:8082/realms/plantini' : rawIssuer,
-      oidcClientId: rawClient.isEmpty && isDev ? 'plantini-flutter' : rawClient,
+      apiBaseUrl: rawApi,
+      oidcIssuerUrl: rawIssuer,
+      oidcClientId: rawClient,
     );
   }
 
@@ -63,6 +59,12 @@ final class AppConfig {
     if (!_hasApiV1Path(apiBaseUri)) {
       throw const ConfigurationFailure(
         message: 'PLANTINI_API_BASE_URL muss auf /api/v1 enden.',
+      );
+    }
+    if (_isIpv6Literal(apiBaseUri) || _isIpv6Literal(oidcIssuerUri)) {
+      throw const ConfigurationFailure(
+        message:
+            'PLANTINI_API_BASE_URL und PLANTINI_OIDC_ISSUER_URL dürfen keine IPv6-Literale verwenden.',
       );
     }
     if (oidcClientId.trim().isEmpty) {
@@ -102,6 +104,8 @@ final class AppConfig {
     final path = uri.path.replaceAll(RegExp(r'/+$'), '');
     return path == '/api/v1';
   }
+
+  static bool _isIpv6Literal(Uri uri) => uri.host.contains(':');
 
   static Uri _normaliseBaseUri(Uri uri) {
     final path = uri.path.replaceAll(RegExp(r'/+$'), '');

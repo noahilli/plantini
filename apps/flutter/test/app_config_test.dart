@@ -50,4 +50,16 @@ void main() {
       throwsA(isA<ConfigurationFailure>()),
     );
   });
+
+  test('rejects IPv6 literals so desktop deployments stay on IPv4 or DNS', () {
+    expect(
+      () => AppConfig.fromValues(
+        environment: PlantiniEnvironment.development,
+        apiBaseUrl: 'http://[::1]:1338/api/v1',
+        oidcIssuerUrl: 'http://127.0.0.1:8082/realms/plantini',
+        oidcClientId: 'plantini-mobile-dev',
+      ),
+      throwsA(isA<ConfigurationFailure>()),
+    );
+  });
 }
