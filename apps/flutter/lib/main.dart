@@ -78,7 +78,11 @@ final class _AppBootstrapState extends State<AppBootstrap> {
     );
   }
 
-  void _retry() => setState(() => _initialization = _initialize());
+  void _retry() {
+    setState(() {
+      _initialization = _initialize();
+    });
+  }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<AppDependencies>(
