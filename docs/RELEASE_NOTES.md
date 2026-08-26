@@ -1,8 +1,8 @@
-# Plantini Release Notes – Version 1.0.0-rc1
+# Plantini Release Notes – Version 0.3.0-alpha
 
-**Release Tag:** `v1.0.0-rc1`  
+**Release Tag:** `v0.3.0-alpha`  
 **Datum:** 25. August 2026  
-**Status:** Feature Complete (MVP) – Release Candidate  
+**Status:** Alpha – Walking Skeleton, wesentliche Features in Entwicklung  
 
 ---
 
