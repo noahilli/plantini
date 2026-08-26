@@ -1,0 +1,140 @@
+id,record_type,priority,status,owner,requirement_refs,depends_on,evidence_refs,blocker_ids,scope,last_reviewed,next_action
+RELEASE-2026-08-25,release,release,blocked,release-manager,NFA023;NFA031;NFA032,WORKSTREAM-00;WORKSTREAM-01;WORKSTREAM-02;WORKSTREAM-03;WORKSTREAM-04;WORKSTREAM-05;WORKSTREAM-06;WORKSTREAM-07;WORKSTREAM-08;WORKSTREAM-09;WORKSTREAM-10;WORKSTREAM-11;WORKSTREAM-12,E-BASELINE-01,B-EVIDENCE-01;B-CI-01;B-ENV-01;B-REMOTE-01,release,2026-08-25,No RC tag or release claim until every release gate is verified
+WORKSTREAM-00,workstream,P0,in_progress,product-manager,NFA022;NFA027,STATUS-01;STATUS-02;STATUS-03;STATUS-04;STATUS-05;STATUS-06;STATUS-07,E-STATUS-01;E-STATUS-02;E-STATUS-03;E-STATUS-04;E-STATUS-05;E-STATUS-06,B-EVIDENCE-01,foundation,2026-08-25,Implement STATUS-07 in product code and retain evidence discipline
+WORKSTREAM-01,workstream,P0,planned,flutter-frontend,NFA002;NFA003;NFA018;NFA020;NFA021,APP-01;APP-02;APP-03;APP-04;APP-05;APP-06;APP-07;APP-08;APP-09,NONE,B-ENV-01,foundation,2026-08-25,Start APP-02 and APP-03 after status baseline is consumed
+WORKSTREAM-02,workstream,P0,planned,auth-manager,FA001-FA009;NFA009;NFA010,AUTH-01;AUTH-02;AUTH-03;AUTH-04;AUTH-05;AUTH-06;AUTH-07;AUTH-08;AUTH-09;AUTH-10,NONE,B-ENV-01,foundation,2026-08-25,Start AUTH-01 through AUTH-04 before any protected journey claim
+WORKSTREAM-03,workstream,P0,planned,cms-manager,FA010-FA017;FA050-FA054,CONTENT-01;CONTENT-02;CONTENT-03;CONTENT-04;CONTENT-05;CONTENT-06;CONTENT-07;CONTENT-08,NONE,B-OQ-01,alpha,2026-08-25,Align one published test release before content expansion
+WORKSTREAM-04,workstream,P1,planned,flutter-frontend,FA020-FA029,LEARN-01;LEARN-02;LEARN-03;LEARN-04;LEARN-05;LEARN-06;LEARN-07;LEARN-08,NONE,B-ENV-01,alpha,2026-08-25,Start after a real content and progress contract exists
+WORKSTREAM-05,workstream,P1,planned,backend-api,FA030-FA035;FA040,FIELD-01;FIELD-02;FIELD-03;FIELD-04;FIELD-05;FIELD-06;FIELD-07;FIELD-08;FIELD-09,NONE,B-ENV-01;B-OQ-05,pilot,2026-08-25,Build the mock-backed field path before considering the real provider
+WORKSTREAM-06,workstream,P0,ready,flutter-frontend,FA036-FA045;NFA020,OFFLINE-01;OFFLINE-02;OFFLINE-03;OFFLINE-04;OFFLINE-05;OFFLINE-06;OFFLINE-07;OFFLINE-08;OFFLINE-09;OFFLINE-10,NONE,B-OQ-02,alpha,2026-08-25,Run the web storage spike and record the OQ-02 decision
+WORKSTREAM-07,workstream,P1,planned,cms-manager,FA050-FA054;FA060;FA062;FA063,CMS-01;CMS-02;CMS-03;CMS-04;CMS-05;CMS-06;CMS-07;CMS-08,NONE,B-ENV-01,alpha,2026-08-25,Build the release validation path with one synthetic dataset
+WORKSTREAM-08,workstream,P0,ready,product-manager,FA055-FA075,ADMIN-01;ADMIN-02;ADMIN-03;ADMIN-04;ADMIN-05;ADMIN-06;ADMIN-07;ADMIN-08,NONE,B-OQ-06,pilot,2026-08-25,Resolve organisation scope before implementation starts
+WORKSTREAM-09,workstream,P0,ready,backend-api,NFA004;NFA021;NFA022,API-01;API-02;API-03;API-04;API-05;API-06;API-07;API-08,NONE,B-OQ-03;B-ENV-01,foundation,2026-08-25,Run the API boundary spike and complete the contract
+WORKSTREAM-10,workstream,P0,planned,devops-release,NFA023-NFA031,INFRA-01;INFRA-02;INFRA-03;INFRA-04;INFRA-05;INFRA-06;INFRA-07;INFRA-08;INFRA-09;INFRA-10;INFRA-11;INFRA-12;INFRA-13,NONE,B-CI-01;B-REMOTE-01,foundation,2026-08-25,Make required quality gates and a fresh test environment blocking
+WORKSTREAM-11,workstream,P0,planned,security-privacy,NFA009-NFA015,SEC-01;SEC-02;SEC-03;SEC-04;SEC-05;SEC-06;SEC-07;SEC-08,NONE,B-OQ-04;B-OQ-05,foundation,2026-08-25,Reassess the real implementation before accepting any mitigation
+WORKSTREAM-12,workstream,P0,in_progress,qa-playwright,NFA016-NFA022,QA-01;QA-02;QA-03;QA-04;QA-05;QA-06;QA-07;QA-08;QA-09;QA-10;QA-11,E-QA-01,B-CI-01;B-ENV-01,foundation,2026-08-25,Turn the documented gates into blocking CI evidence
+STATUS-01,work_item,P0,verified,product-manager,NFA027,NONE,E-STATUS-01,NONE,foundation,2026-08-25,Keep all rendered views free of release claims without evidence
+STATUS-02,work_item,P0,verified,product-manager,NFA027;NFA022,NONE,E-STATUS-02,NONE,foundation,2026-08-25,Use STATUS_REGISTRY.csv as the only mutable status authority
+STATUS-03,work_item,P0,verified,product-manager,NFA027;NFA022,STATUS-02,E-STATUS-03,NONE,foundation,2026-08-25,Require a row and evidence reference before verified is used
+STATUS-04,work_item,P0,verified,product-manager,NFA027,STATUS-02,E-STATUS-04,NONE,foundation,2026-08-25,Escalate each OQ via the decision register until resolved
+STATUS-05,work_item,P0,verified,product-manager,NFA027,STATUS-02,E-STATUS-05,NONE,foundation,2026-08-25,Use the alpha scope as an execution baseline and preserve go-live requirements
+STATUS-06,work_item,P0,verified,product-manager,NFA022;NFA012,STATUS-02,E-STATUS-06,NONE,foundation,2026-08-25,Provision the documented synthetic identities and dataset in CI
+STATUS-07,work_item,P1,ready,product-manager,FA010-FA017;FA020-FA029;FA036-FA045,STATUS-05;STATUS-06,E-STATUS-07,B-OQ-01,alpha,2026-08-25,Feature owners replace hard-coded values with the documented domain sources
+APP-01,work_item,P0,planned,flutter-frontend,NFA002;NFA021,STATUS-02,NONE,NONE,foundation,2026-08-25,Define a vertical module migration plan
+APP-02,work_item,P0,planned,flutter-frontend,NFA003;NFA023,STATUS-02,NONE,NONE,foundation,2026-08-25,Introduce environment configuration before E2E work
+APP-03,work_item,P0,planned,flutter-frontend,NFA020,STATUS-02,NONE,NONE,foundation,2026-08-25,Add a recoverable bootstrap state
+APP-04,work_item,P1,planned,flutter-frontend,NFA003,APP-02,NONE,NONE,alpha,2026-08-25,Define route restoration contracts
+APP-05,work_item,P1,planned,flutter-frontend,NFA016;NFA020,APP-03,NONE,NONE,alpha,2026-08-25,Create shared state components
+APP-06,work_item,P1,planned,flutter-frontend,NFA020,APP-05,NONE,NONE,alpha,2026-08-25,Remove deceptive fallback states
+APP-07,work_item,P1,planned,flutter-frontend,NFA002;NFA021,APP-01,NONE,NONE,alpha,2026-08-25,Consolidate state management and dependency injection
+APP-08,work_item,P1,planned,ux-accessibility,NFA016;NFA017,APP-05,NONE,NONE,alpha,2026-08-25,Define component acceptance with Flutter owner
+APP-09,work_item,P2,planned,flutter-frontend,NFA019,APP-02,NONE,NONE,pilot,2026-08-25,Confirm supported platform matrix
+AUTH-01,work_item,P0,planned,backend-api,FA001;FA004;NFA009,API-02,NONE,B-ENV-01,foundation,2026-08-25,Validate real Keycloak JWTs in the API
+AUTH-02,work_item,P0,planned,backend-api,FA004;FA036,AUTH-01,NONE,NONE,foundation,2026-08-25,Resolve internal profiles from sub
+AUTH-03,work_item,P0,planned,backend-api,FA006;FA036;NFA010,AUTH-01;AUTH-02,NONE,NONE,foundation,2026-08-25,Add object and organisation negative tests
+AUTH-04,work_item,P0,planned,auth-manager,FA001;FA006;NFA009,INFRA-06,NONE,B-ENV-01,foundation,2026-08-25,Harden local and environment-specific clients
+AUTH-05,work_item,P1,planned,auth-manager,FA008;NFA009,AUTH-01;AUTH-04,NONE,NONE,alpha,2026-08-25,Implement lifecycle and revocation behaviour
+AUTH-06,work_item,P1,planned,auth-manager,FA001;FA008,AUTH-04;QA-02,NONE,B-TESTDATA-01,alpha,2026-08-25,Create end-to-end identity lifecycle test
+AUTH-07,work_item,P1,planned,auth-manager,FA006;FA007;NFA010,AUTH-03;AUTH-04,NONE,NONE,pilot,2026-08-25,Enforce the shared role matrix
+AUTH-08,work_item,P2,planned,auth-manager,FA007;NFA025,AUTH-07,NONE,NONE,pilot,2026-08-25,Implement invitation and audit flow
+AUTH-09,work_item,P2,blocked,auth-manager,FA002;FA003,B-OQ-08,NONE,B-OQ-08,pilot,2026-08-25,Obtain provider decision and safe environment clients
+AUTH-10,work_item,P2,blocked,auth-manager,FA005;FA009;NFA012;NFA013,B-OQ-04,NONE,B-OQ-04,pilot,2026-08-25,Obtain age and consent policy before implementation
+CONTENT-01,work_item,P0,planned,cms-manager,FA010-FA017;FA050-FA054,API-02,NONE,B-OQ-03,foundation,2026-08-25,Align one cross-layer content model
+CONTENT-02,work_item,P0,planned,cms-manager,FA010;FA011;FA013,CONTENT-01,NONE,NONE,foundation,2026-08-25,Define stable public content IDs
+CONTENT-03,work_item,P1,planned,backend-api,FA010;FA011;FA017,CONTENT-01;CONTENT-02,NONE,NONE,alpha,2026-08-25,Serve published relations only
+CONTENT-04,work_item,P1,planned,flutter-frontend,FA013;FA015;NFA016,CONTENT-03,NONE,NONE,alpha,2026-08-25,Render structured content and media attributes
+CONTENT-05,work_item,P1,planned,backend-api,FA017;FA054,CONTENT-01;CMS-03,NONE,NONE,alpha,2026-08-25,Create immutable manifest contract
+CONTENT-06,work_item,P1,planned,flutter-frontend,FA017;FA041;NFA020,CONTENT-05;OFFLINE-02,NONE,NONE,alpha,2026-08-25,Implement atomic content activation
+CONTENT-07,work_item,P2,planned,flutter-frontend,FA014;FA016,CONTENT-04,NONE,NONE,pilot,2026-08-25,Add data-driven browse capabilities
+CONTENT-08,work_item,P2,blocked,content-data,FA010-FA017,B-OQ-01,NONE,B-OQ-01,pilot,2026-08-25,Obtain scientific count decision and review evidence
+LEARN-01,work_item,P1,planned,flutter-frontend,FA020;FA041,CONTENT-03;CONTENT-04,NONE,NONE,alpha,2026-08-25,Replace mock learning data
+LEARN-02,work_item,P1,planned,backend-api,FA021-FA024;FA028,CONTENT-01;API-02,NONE,NONE,alpha,2026-08-25,Define versioned quiz schema
+LEARN-03,work_item,P1,planned,backend-api,FA021-FA024,LEARN-02;CONTENT-03,NONE,NONE,alpha,2026-08-25,Scope questions by level and release
+LEARN-04,work_item,P1,planned,backend-api,FA024;FA026,LEARN-02;AUTH-01,NONE,NONE,alpha,2026-08-25,Validate attempts and completion server-side
+LEARN-05,work_item,P1,planned,flutter-frontend,FA020;FA029;FA041,LEARN-01;OFFLINE-02,NONE,NONE,alpha,2026-08-25,Persist and restore a complete attempt
+LEARN-06,work_item,P1,planned,backend-api,FA026;FA027;FA029;FA041,LEARN-04;OFFLINE-04;OFFLINE-05,NONE,NONE,alpha,2026-08-25,Build idempotent authoritative progress
+LEARN-07,work_item,P2,planned,flutter-frontend,FA027;FA028,LEARN-06,NONE,NONE,pilot,2026-08-25,Design repeat and achievement evidence
+LEARN-08,work_item,P2,blocked,product-manager,FA029,B-OQ-04,NONE,B-OQ-04,pilot,2026-08-25,Clarify certificate and legal scope
+FIELD-01,work_item,P1,planned,flutter-frontend,FA030;FA032;NFA014,SEC-04,NONE,NONE,pilot,2026-08-25,Implement safe image intake
+FIELD-02,work_item,P1,planned,flutter-frontend,FA032;NFA014,B-OQ-04,NONE,B-OQ-04,pilot,2026-08-25,Implement separate GPS consent states
+FIELD-03,work_item,P1,planned,backend-api,FA030;FA033;FA036,AUTH-02;API-02,NONE,NONE,pilot,2026-08-25,Define idempotent upload and observation contract
+FIELD-04,work_item,P1,planned,backend-api,FA033;NFA030,FIELD-03;INFRA-09,NONE,NONE,pilot,2026-08-25,Run a persistent mock worker
+FIELD-05,work_item,P1,planned,backend-api,FA033;FA034,FIELD-04,NONE,NONE,pilot,2026-08-25,Persist normalised provider results
+FIELD-06,work_item,P1,planned,backend-api,FA034;FA035,LEARN-04;FIELD-05,NONE,NONE,pilot,2026-08-25,Validate target match and user confirmation
+FIELD-07,work_item,P1,planned,backend-api,NFA030,FIELD-04;INFRA-09,NONE,NONE,pilot,2026-08-25,Add bounded provider resilience
+FIELD-08,work_item,P1,planned,flutter-frontend,FA034;FA035,FIELD-05,NONE,NONE,pilot,2026-08-25,Explain uncertainty and safety
+FIELD-09,work_item,P2,blocked,backend-api,FA033;NFA015;NFA030,B-OQ-05,NONE,B-OQ-05,pilot,2026-08-25,Do not activate a real provider without contract and load evidence
+OFFLINE-01,work_item,P0,ready,flutter-frontend,NFA003;NFA020,NONE,NONE,B-OQ-02,foundation,2026-08-25,Run browser storage spike and record OQ-02 result
+OFFLINE-02,work_item,P1,planned,flutter-frontend,FA041;FA044;NFA020,OFFLINE-01,NONE,NONE,alpha,2026-08-25,Version local schema and migrations
+OFFLINE-03,work_item,P1,planned,flutter-frontend,FA044;FA045,OFFLINE-02;FIELD-03,NONE,NONE,pilot,2026-08-25,Replace simulated queue
+OFFLINE-04,work_item,P1,planned,backend-api,FA044;NFA020,AUTH-02;API-02,NONE,NONE,pilot,2026-08-25,Enforce server idempotency
+OFFLINE-05,work_item,P1,planned,backend-api,FA044;NFA020,OFFLINE-04,NONE,NONE,pilot,2026-08-25,Specify and test conflict rules
+OFFLINE-06,work_item,P1,planned,flutter-frontend,FA036;FA044;FA045,OFFLINE-03;OFFLINE-04;OFFLINE-05,NONE,NONE,pilot,2026-08-25,Show stable IDs and retry states
+OFFLINE-07,work_item,P1,planned,flutter-frontend,FA036-FA040,OFFLINE-06,NONE,NONE,pilot,2026-08-25,Replace static herbarium views
+OFFLINE-08,work_item,P1,planned,security-privacy,FA039;NFA014,AUTH-03;OFFLINE-04,NONE,NONE,pilot,2026-08-25,Enforce private location and scope policy
+OFFLINE-09,work_item,P2,planned,backend-api,FA009;FA039;FA074,OFFLINE-08,NONE,NONE,pilot,2026-08-25,Implement deletion and export lifecycle
+OFFLINE-10,work_item,P2,planned,flutter-frontend,FA041;FA045;NFA005,CONTENT-06;OFFLINE-02,NONE,NONE,pilot,2026-08-25,Add explicit storage management
+CMS-01,work_item,P1,planned,cms-manager,FA050-FA054;FA060,CONTENT-01,NONE,NONE,alpha,2026-08-25,Complete structured CMS models
+CMS-02,work_item,P1,planned,cms-manager,FA051;FA054,CMS-01,NONE,NONE,alpha,2026-08-25,Implement separated review workflow
+CMS-03,work_item,P1,planned,cms-manager,FA054;FA060,CMS-01;CMS-02,NONE,NONE,alpha,2026-08-25,Make publishing atomically validated
+CMS-04,work_item,P1,planned,cms-manager,FA036;FA060,FIELD-03,NONE,NONE,pilot,2026-08-25,Separate observation and editorial media
+CMS-05,work_item,P2,planned,cms-manager,FA052;FA053,CMS-01;CMS-03,NONE,NONE,pilot,2026-08-25,Build authoring preview and validation
+CMS-06,work_item,P2,planned,cms-manager,FA053;FA062,CMS-01;CONTENT-02,NONE,NONE,pilot,2026-08-25,Make seed imports reproducible
+CMS-07,work_item,P2,planned,devops-release,FA060;FA062,INFRA-09;CMS-04,NONE,NONE,pilot,2026-08-25,Configure object storage and lifecycle
+CMS-08,work_item,P2,planned,cms-manager,FA053;NFA027,CMS-02;CMS-03;QA-02,NONE,B-ENV-01,pilot,2026-08-25,Prove fresh-environment publish flow
+ADMIN-01,work_item,P0,ready,product-manager,FA055-FA058;FA061;FA064,NONE,NONE,B-OQ-06,foundation,2026-08-25,Record organisation scope decision with auth and backend review
+ADMIN-02,work_item,P1,planned,auth-manager,FA055-FA059,ADMIN-01;AUTH-07,NONE,NONE,pilot,2026-08-25,Create authorised administration flows
+ADMIN-03,work_item,P2,planned,security-privacy,FA059;NFA025,ADMIN-02,NONE,NONE,pilot,2026-08-25,Design tamper-resistant audit evidence
+ADMIN-04,work_item,P2,planned,research-analytics,FA057;FA058;NFA024,ADMIN-01,NONE,NONE,pilot,2026-08-25,Define data-minimised event catalogue
+ADMIN-05,work_item,P2,planned,research-analytics,FA057;FA058,ADMIN-04,NONE,NONE,pilot,2026-08-25,Build approved aggregate reporting only
+ADMIN-06,work_item,P2,blocked,product-manager,FA070-FA074;NFA012,B-OQ-04,NONE,B-OQ-04,pilot,2026-08-25,Obtain privacy and research governance decision
+ADMIN-07,work_item,P2,blocked,security-privacy,FA009;FA074;NFA012,ADMIN-06,NONE,B-OQ-04,pilot,2026-08-25,Define retention only after legal basis is fixed
+ADMIN-08,work_item,P3,deferred,product-manager,FA075,NONE,NONE,NONE,post-pilot,2026-08-25,Reassess after core support ownership is funded
+API-01,work_item,P0,ready,orchestrator,NFA004;NFA021,NONE,NONE,B-OQ-03,foundation,2026-08-25,Run sync and worker boundary spike
+API-02,work_item,P0,planned,backend-api,NFA004;NFA022,API-01,NONE,B-OQ-03,foundation,2026-08-25,Complete canonical OpenAPI contract
+API-03,work_item,P0,planned,backend-api,NFA004;NFA023,API-02;INFRA-03,NONE,B-CI-01,foundation,2026-08-25,Pin code generation and fail divergence
+API-04,work_item,P0,planned,backend-api,NFA004;NFA021,API-02,NONE,NONE,foundation,2026-08-25,Specify reusable API conventions
+API-05,work_item,P1,planned,backend-api,NFA021,API-02;API-04,NONE,NONE,alpha,2026-08-25,Move logic into testable services
+API-06,work_item,P1,planned,backend-api,NFA022,API-02;API-05;INFRA-04,NONE,B-ENV-01,alpha,2026-08-25,Test against real backing services
+API-07,work_item,P1,planned,backend-api,NFA020;NFA021,API-05,NONE,NONE,alpha,2026-08-25,Version constraints and migrations
+API-08,work_item,P2,planned,backend-api,NFA005;NFA022,API-06;INFRA-10,NONE,NONE,pilot,2026-08-25,Measure resource limits
+INFRA-01,work_item,P0,blocked,devops-release,NFA023,B-REMOTE-01,NONE,B-REMOTE-01,foundation,2026-08-25,Publish only with authorised remote access and preserve proof
+INFRA-02,work_item,P0,planned,devops-release,NFA023,STATUS-02,NONE,NONE,foundation,2026-08-25,Pin a single compatible toolchain
+INFRA-03,work_item,P0,planned,devops-release,NFA022;NFA023,STATUS-02,NONE,B-CI-01,foundation,2026-08-25,Make required checks blocking
+INFRA-04,work_item,P0,planned,devops-release,NFA022;NFA023,INFRA-03;STATUS-06,NONE,B-ENV-01;B-TESTDATA-01,foundation,2026-08-25,Seed and await a real E2E environment
+INFRA-05,work_item,P0,planned,devops-release,NFA023,INFRA-03,NONE,NONE,foundation,2026-08-25,Keep runtime artefacts out of source control
+INFRA-06,work_item,P1,planned,devops-release,NFA023;NFA009,INFRA-02,NONE,NONE,alpha,2026-08-25,Split development and production posture
+INFRA-07,work_item,P1,planned,devops-release,NFA023;NFA026,INFRA-06,NONE,NONE,alpha,2026-08-25,Define image and migration lifecycle
+INFRA-08,work_item,P1,planned,devops-release,NFA009;NFA010,INFRA-06,NONE,NONE,alpha,2026-08-25,Apply network and secret controls
+INFRA-09,work_item,P1,planned,devops-release,NFA007;NFA026,INFRA-06,NONE,NONE,alpha,2026-08-25,Provision persistent backing services
+INFRA-10,work_item,P1,planned,devops-release,NFA024;NFA012,INFRA-08,NONE,NONE,pilot,2026-08-25,Build PII-filtered observability
+INFRA-11,work_item,P1,planned,devops-release,NFA007;NFA026,INFRA-09,NONE,NONE,pilot,2026-08-25,Automate and measure restore
+INFRA-12,work_item,P2,planned,devops-release,NFA023;NFA026,INFRA-07;INFRA-11,NONE,NONE,pilot,2026-08-25,Automate staged deployment and rollback
+INFRA-13,work_item,P2,planned,devops-release,NFA019;NFA031,INFRA-02;INFRA-12,NONE,NONE,pilot,2026-08-25,Produce platform release artefacts
+SEC-01,work_item,P0,planned,security-privacy,NFA009;NFA010,AUTH-01;AUTH-03;FIELD-03,NONE,NONE,foundation,2026-08-25,Model threats against the implemented system
+SEC-02,work_item,P0,planned,security-privacy,NFA009,APP-02;AUTH-04,NONE,NONE,foundation,2026-08-25,Restrict transport exceptions to debug
+SEC-03,work_item,P0,planned,security-privacy,NFA011;NFA023,INFRA-08,NONE,NONE,foundation,2026-08-25,Remove unsafe defaults and prove rotation
+SEC-04,work_item,P1,planned,security-privacy,NFA009;NFA010,FIELD-01;INFRA-08,NONE,NONE,pilot,2026-08-25,Enforce safe upload processing
+SEC-05,work_item,P1,planned,security-privacy,NFA012;NFA014,OFFLINE-08;INFRA-08,NONE,NONE,pilot,2026-08-25,Protect exact locations by design
+SEC-06,work_item,P1,blocked,security-privacy,NFA012;NFA013,B-OQ-04,NONE,B-OQ-04,pilot,2026-08-25,Obtain legal and privacy approval before pilot
+SEC-07,work_item,P1,planned,security-privacy,NFA010;NFA011;NFA023,INFRA-03,NONE,B-CI-01,pilot,2026-08-25,Make security evidence blocking
+SEC-08,work_item,P2,planned,security-privacy,NFA010;NFA025,SEC-07;INFRA-10,NONE,NONE,pilot,2026-08-25,Plan independent testing and response drills
+QA-01,work_item,P0,verified,qa-playwright,NFA016-NFA022,STATUS-02;STATUS-03,E-QA-01,NONE,foundation,2026-08-25,Implement the declared gates in CI
+QA-02,work_item,P0,planned,qa-playwright,NFA022,QA-01;STATUS-06,NONE,B-TESTDATA-01,foundation,2026-08-25,Align tests to observable product states
+QA-03,work_item,P1,planned,qa-playwright,NFA022,QA-01;LEARN-04;OFFLINE-05,NONE,NONE,alpha,2026-08-25,Add domain unit coverage and branch reporting
+QA-04,work_item,P1,planned,qa-playwright,NFA016;NFA022,QA-01;APP-05,NONE,NONE,alpha,2026-08-25,Add state and accessibility widget coverage
+QA-05,work_item,P1,planned,qa-playwright,NFA022,QA-01;API-06,NONE,B-ENV-01,alpha,2026-08-25,Automate integration and migration contracts
+QA-06,work_item,P1,planned,qa-playwright,NFA022,QA-02;AUTH-06;CONTENT-06;LEARN-06;FIELD-08;OFFLINE-07,NONE,B-ENV-01,alpha,2026-08-25,Stabilise the full synthetic core journey
+QA-07,work_item,P1,planned,qa-playwright,NFA020;NFA022,QA-05;OFFLINE-06;FIELD-07,NONE,B-ENV-01,alpha,2026-08-25,Inject deterministic failure and conflict states
+QA-08,work_item,P1,planned,ux-accessibility,NFA016,QA-04,NONE,NONE,alpha,2026-08-25,Execute target-platform accessibility checks
+QA-09,work_item,P2,planned,qa-playwright,NFA016;NFA022,QA-04,NONE,NONE,pilot,2026-08-25,Add visual regression to stable components
+QA-10,work_item,P2,planned,qa-playwright,NFA005;NFA007;NFA010;NFA022,QA-05;INFRA-11;SEC-08,NONE,B-ENV-01,pilot,2026-08-25,Measure nonfunctional release gates
+QA-11,work_item,P2,planned,product-manager,NFA017,QA-06;QA-08;SEC-06,NONE,B-OQ-04,pilot,2026-08-25,Run approved anonymised pilot research
+OQ-01,open_question,gate,blocked,product-manager;scientific-board,FA010-FA017;FA053,NONE,E-OQ-01,B-OQ-01,pre-content-import,2026-08-25,Decide global or per-ecosystem count and record rationale
+OQ-02,open_question,gate,blocked,orchestrator;flutter-frontend,NFA003;NFA020,OFFLINE-01,E-OQ-02,B-OQ-02,gate-a,2026-08-25,Run target-browser storage spike with failure cases
+OQ-03,open_question,gate,blocked,orchestrator;backend-api,NFA004;NFA021,API-01,E-OQ-03,B-OQ-03,gate-a,2026-08-25,Run sync and worker boundary spike
+OQ-04,open_question,gate,blocked,product-manager;security-privacy;legal,FA005;NFA012;NFA013,NONE,E-OQ-04,B-OQ-04,pre-pilot,2026-08-25,Approve age and consent policy with legal review
+OQ-05,open_question,gate,blocked,product-manager;backend-api;devops-release,FA033;NFA015;NFA030,NONE,E-OQ-05,B-OQ-05,pre-field-pilot,2026-08-25,Obtain provider contract quote attribution and load plan
+OQ-06,open_question,gate,blocked,product-manager;auth-manager;backend-api,FA055-FA064,ADMIN-01,E-OQ-06,B-OQ-06,pre-admin,2026-08-25,Approve explicit MVP organisation boundary
+OQ-07,open_question,gate,blocked,steering-committee;legal,NFA032;NFA028,NONE,E-OQ-07,B-OQ-07,pre-public-repository,2026-08-25,Approve code and content licence register
+OQ-08,open_question,gate,blocked,auth-manager;release-manager,FA002;FA003;NFA031,NONE,E-OQ-08,B-OQ-08,pre-beta,2026-08-25,Select production providers and redirect domains
