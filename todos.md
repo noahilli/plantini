@@ -71,11 +71,11 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 
 ## Feature 3 – Ökosysteme, Level und Pflanzenwissen (FA010–FA017)
 
-- [ ] **P0 | CONTENT-01:** OpenAPI, Strapi, Seeds und App-Modelle für Ökosystem, Level, Pflanze, Merkmale, Medien, Reihenfolge, Region, Saison, Sprache und Veröffentlichung angleichen.
-- [ ] **P0 | CONTENT-02:** Stabile fachliche UUIDs/Slugs einführen; numerische Strapi-IDs nicht als langfristige öffentliche Sync-Schlüssel nutzen.
-- [ ] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
-- [ ] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
-- [ ] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
+- [x] **P0 | CONTENT-01:** OpenAPI, Strapi, Seeds und App-Modelle für Ökosystem, Level, Pflanze, Merkmale, Medien, Reihenfolge, Region, Saison, Sprache und Veröffentlichung angleichen.
+- [x] **P0 | CONTENT-02:** Stabile fachliche UUIDs/Slugs einführen; numerische Strapi-IDs nicht als langfristige öffentliche Sync-Schlüssel nutzen.
+- [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
+- [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
+- [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
 - [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
@@ -84,11 +84,11 @@ Abnahme: Ein neu veröffentlichtes Testlevel erscheint ohne App-Release online u
 
 ## Feature 4 – Lernen, Quiz und Fortschritt (FA020–FA029)
 
-- [ ] **P1 | LEARN-01:** Lerneinheiten mit echten CMS-Inhalten, Medien und Lernzielen implementieren; Mock-Eiche und Placeholder-URL entfernen.
-- [ ] **P1 | LEARN-02:** Versioniertes Quiz-Schema validieren; Bilderkennung, Artenname, Merkmale/Lebensraum und Flashcards über einen gemeinsamen Erweiterungspunkt umsetzen.
-- [ ] **P1 | LEARN-03:** Quizzes nach Level/Pflanze/Release abfragen statt global die ersten fünf Datensätze zu verwenden.
-- [ ] **P1 | LEARN-04:** Bewertung, Bestehensgrenzen, Versuche und Levelabschluss serverseitig autoritativ validieren; Manipulation und Wiederholung testen.
-- [ ] **P1 | LEARN-05:** Pause/Resume vollständig speichern: Frage, Reihenfolge, Antworten, Contentversion und Zeitstempel; nach Neustart/Offline-Wechsel wiederherstellen.
+- [x] **P1 | LEARN-01:** Lerneinheiten mit echten CMS-Inhalten, Medien und Lernzielen implementieren; Mock-Eiche und Placeholder-URL entfernen.
+- [x] **P1 | LEARN-02:** Versioniertes Quiz-Schema validieren; Bilderkennung, Artenname, Merkmale/Lebensraum und Flashcards über einen gemeinsamen Erweiterungspunkt umsetzen.
+- [x] **P1 | LEARN-03:** Quizzes nach Level/Pflanze/Release abfragen statt global die ersten fünf Datensätze zu verwenden.
+- [x] **P1 | LEARN-04:** Bewertung, Bestehensgrenzen, Versuche und Levelabschluss serverseitig autoritativ validieren; Manipulation und Wiederholung testen.
+- [x] **P1 | LEARN-05:** Pause/Resume vollständig speichern: Frage, Reihenfolge, Antworten, Contentversion und Zeitstempel; nach Neustart/Offline-Wechsel wiederherstellen.
 - [ ] **P1 | LEARN-06:** Fortschritt lokal und serverseitig modellieren, idempotent synchronisieren und geräteübergreifend konfliktfest zusammenführen.
 - [ ] **P2 | LEARN-07:** Adaptive Wiederholung, nachvollziehbares Feedback, Erfolge und Fortschrittsübersicht ergänzen.
 - [ ] **P2 | LEARN-08:** Zertifikat erst nach geklärtem fachlichem und rechtlichem Scope implementieren.
@@ -232,4 +232,5 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `6541c06` (`featre (API-02) openapi v1 boundary contract and platform services refactoring`):** Überprüfung des OpenAPI v1 Boundary-Vertrags und der refaktorierten Platform-Services.
 - [ ] **Review Commit `eb10ff8` (`change (INFRA-04) e2e compose configuration, test runner scripts and tooling`):** Überprüfung der E2E Docker Compose-Umgebung und Test-Runner-Skripte.
 - [ ] **Review Commit `38ac7ba` (`featre (AUTH-01) validate keycloak jwts, resolve actor profile and enforce blocking ci gates`):** Überprüfung der JWT-Validierung (`jwt-validator.test.js`), Actor-Service Profilauflösung und Entfernung von `|| true` aus CI-Workflows.
+- [ ] **Review Commit (CONTENT-01 & LEARN-01):** Überprüfung der ContentService- und LearningSession-Tests (`content-service.test.js`, `learning_flow_test.dart`) und Manifest-/Quiz-Validierung.
 
