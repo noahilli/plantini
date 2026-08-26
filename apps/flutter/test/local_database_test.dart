@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantini_app/core/storage/local_database.dart';
+import 'package:plantini_app/core/storage/models/isar_sync_queue.dart';
 import 'package:plantini_app/features/catalog/infrastructure/models/isar_ecosystem.dart';
 import 'package:plantini_app/features/catalog/infrastructure/models/isar_level.dart';
 import 'package:plantini_app/features/catalog/infrastructure/models/isar_plant.dart';
@@ -10,7 +11,8 @@ void main() {
       expect(LocalDatabase.schemas, contains(IsarEcosystemSchema));
       expect(LocalDatabase.schemas, contains(IsarLevelSchema));
       expect(LocalDatabase.schemas, contains(IsarPlantSchema));
-      expect(LocalDatabase.schemas.length, 3);
+      expect(LocalDatabase.schemas, contains(IsarSyncJobSchema));
+      expect(LocalDatabase.schemas.length, 4);
     });
 
     test('IsarEcosystem properties instantiate correctly', () {
@@ -85,6 +87,25 @@ void main() {
       expect(plant.media.first.publicId, 'media-1');
       expect(plant.media.first.altText, 'Eichenblatt');
       expect(plant.media.first.author, 'Botaniker');
+    });
+
+    test('IsarSyncJob properties instantiate correctly', () {
+      final now = DateTime.parse('2026-08-26T14:30:00Z');
+      final job = IsarSyncJob()
+        ..clientId = 'job-client-1'
+        ..payload = '{"observation": "flower"}'
+        ..status = SyncJobStatus.pending
+        ..attemptCount = 0
+        ..nextRetryAt = now
+        ..createdAt = now
+        ..updatedAt = now;
+
+      expect(job.clientId, 'job-client-1');
+      expect(job.payload, '{"observation": "flower"}');
+      expect(job.status, SyncJobStatus.pending);
+      expect(job.attemptCount, 0);
+      expect(job.nextRetryAt, now);
+      expect(job.createdAt, now);
     });
   });
 }

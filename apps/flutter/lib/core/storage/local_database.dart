@@ -6,6 +6,7 @@ import '../../features/catalog/infrastructure/models/isar_level.dart';
 import '../../features/catalog/infrastructure/models/isar_plant.dart';
 import '../errors/app_failure.dart';
 import '../result.dart';
+import 'models/isar_sync_queue.dart';
 
 /// Local offline database wrapper around an [Isar] instance.
 final class LocalDatabase {
@@ -18,11 +19,13 @@ final class LocalDatabase {
   IsarCollection<IsarEcosystem> get ecosystems => _isar.isarEcosystems;
   IsarCollection<IsarLevel> get levels => _isar.isarLevels;
   IsarCollection<IsarPlant> get plants => _isar.isarPlants;
+  IsarCollection<IsarSyncJob> get syncQueue => _isar.isarSyncJobs;
 
   static const List<CollectionSchema<dynamic>> schemas = [
     IsarEcosystemSchema,
     IsarLevelSchema,
     IsarPlantSchema,
+    IsarSyncJobSchema,
   ];
 
   /// Opens or reuses an existing [Isar] database instance.
