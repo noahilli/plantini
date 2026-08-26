@@ -17,6 +17,7 @@
     "mediaId": { "type": "string", "required": true },
     "expectedPlantId": { "type": "string" },
     "confirmedPlantId": { "type": "string" },
+    "confirmedCandidateId": { "type": "string" },
     "status": { "type": "enumeration", "enum": ["pending", "processing", "identified", "failed", "cancelled"], "required": true },
     "attempts": { "type": "integer", "required": true, "default": 0 },
     "retryAfter": { "type": "datetime" },

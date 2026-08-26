@@ -101,7 +101,8 @@ class HerbariumService {
   async requireConfirmedIdentification(actor, jobId) {
     if (!this.fieldRepository) return undefined;
     const job = await this.fieldRepository.findJobByPublicId(actor.id, jobId);
-    if (!job || job.status !== 'identified' || !job.confirmedPlantId) {
+    if (!job || job.status !== 'identified'
+      || (!job.confirmedCandidateId && !job.confirmedPlantId)) {
       throw invalidRequest({ identificationJobId: 'Die Identifikation muss zuerst abgeschlossen und bestätigt werden.' });
     }
     return job;
@@ -199,6 +200,7 @@ function mapIdentification(job) {
     ...(Array.isArray(job.candidates) ? { candidates: job.candidates } : {}),
     ...(job.failureCode ? { failureCode: job.failureCode } : {}),
     ...(job.confirmedPlantId ? { confirmedPlantId: job.confirmedPlantId } : {}),
+    ...(job.confirmedCandidateId ? { confirmedCandidateId: job.confirmedCandidateId } : {}),
   };
 }
 

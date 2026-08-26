@@ -217,6 +217,7 @@ paths:
         required: true
         content: {application/json: {schema: {$ref: '#/components/schemas/CreateUploadRequest'}}}
       responses:
+        '200': {description: Existing private upload reservation replayed for the same idempotency key, content: {application/json: {schema: {$ref: '#/components/schemas/MediaUpload'}}}}
         '201': {description: Private upload reservation, content: {application/json: {schema: {$ref: '#/components/schemas/MediaUpload'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -255,6 +256,7 @@ paths:
         required: true
         content: {application/json: {schema: {$ref: '#/components/schemas/CreateIdentificationRequest'}}}
       responses:
+        '200': {description: Existing identification job replayed for the same idempotency key, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
         '202': {description: Persisted asynchronous job, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -316,6 +318,7 @@ paths:
         required: true
         content: {application/json: {schema: {$ref: '#/components/schemas/CreateObservationRequest'}}}
       responses:
+        '200': {description: Existing private observation replayed for the same idempotency key, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
         '201': {description: Caller-owned observation, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -640,7 +643,7 @@ components:
     CreateUploadRequest:
       type: object
       required: [clientMediaId, contentType, bytes]
-      properties: {clientMediaId: {$ref: '#/components/schemas/Id'}, contentType: {type: string, enum: [image/jpeg, image/png, image/webp]}, bytes: {type: integer, minimum: 1, maximum: 20971520}}
+      properties: {clientMediaId: {$ref: '#/components/schemas/Id'}, contentType: {type: string, enum: [image/jpeg, image/png]}, bytes: {type: integer, minimum: 1, maximum: 20971520}}
     MediaUpload:
       type: object
       required: [id, expiresAt, status]
@@ -664,15 +667,18 @@ components:
         candidates: {type: array, items: {$ref: '#/components/schemas/IdentificationCandidate'}}
         failureCode: {type: string}
         confirmedPlantId: {$ref: '#/components/schemas/Id'}
+        confirmedCandidateId: {type: string, minLength: 3, maxLength: 160}
     IdentificationCandidate:
       type: object
-      required: [scientificName, score]
-      properties: {plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}}
+      required: [candidateId, scientificName, score]
+      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}}
     ConfirmIdentificationRequest:
       type: object
       additionalProperties: false
-      required: [confirmedPlantId]
-      properties: {confirmedPlantId: {$ref: '#/components/schemas/Id'}}
+      oneOf:
+        - required: [candidateId]
+        - required: [confirmedPlantId]
+      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, confirmedPlantId: {$ref: '#/components/schemas/Id'}}
     CreateObservationRequest:
       type: object
       required: [clientObservationId, observedAt]

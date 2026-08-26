@@ -80,7 +80,16 @@ test('private uploads verify magic bytes and identification is caller-owned', as
   assert.deepEqual(queued, [job.id]);
   await field.processIdentification(job.id, {
     async identify() {
-      return { provider: 'plantnet-mock', modelVersion: 'v1', candidates: [{ plantId: ids.plant, scientificName: 'Quercus robur', score: 0.98 }] };
+      return {
+        provider: 'plantnet-mock',
+        modelVersion: 'v1',
+        candidates: [{
+          candidateId: `plantini:${ids.plant}`,
+          plantId: ids.plant,
+          scientificName: 'Quercus robur',
+          score: 0.98,
+        }],
+      };
     },
   });
   const confirmed = await field.confirmIdentification(actor, job.id, { confirmedPlantId: ids.plant });
@@ -217,3 +226,50 @@ test('media upload reservation is idempotent with body idempotencyKey', async ()
   );
 });
 
+test('an externally identified candidate can be confirmed and saved to the herbarium', async () => {
+  const repositories = createRepositories();
+  const field = new FieldService({
+    repository: repositories.field,
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  const herbarium = new HerbariumService({
+    repository: repositories.herbarium,
+    fieldRepository: repositories.field,
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  const externalCandidateId = 'plantnet:gbif:2927079';
+  repositories.jobs.push({
+    id: 1,
+    publicId: ids.clientJob,
+    ownerId: ids.owner,
+    status: 'identified',
+    candidates: [{
+      candidateId: externalCandidateId,
+      scientificName: 'Bellis perennis',
+      commonName: 'Gaensebluemchen',
+      score: 0.98,
+      provider: 'plantnet',
+      modelVersion: 'plantnet-model-test',
+    }],
+    createdAt: '2026-01-01T00:00:00.000Z',
+  });
+
+  const confirmed = await field.confirmIdentification(
+    { id: ids.owner },
+    ids.clientJob,
+    { candidateId: externalCandidateId },
+  );
+  assert.equal(confirmed.confirmedCandidateId, externalCandidateId);
+  assert.equal(Object.hasOwn(confirmed, 'confirmedPlantId'), false);
+
+  const created = await herbarium.create({ id: ids.owner }, {
+    clientObservationId: ids.clientObservation,
+    observedAt: '2026-01-01T00:00:00.000Z',
+    note: 'Extern bestimmte Pflanze',
+    identificationJobId: ids.clientJob,
+  }, 'external-candidate-observation-key');
+  assert.equal(created.created, true);
+  assert.equal(Object.hasOwn(created.observation, 'confirmedPlantId'), false);
+  assert.equal(created.observation.identification.confirmedCandidateId, externalCandidateId);
+  assert.equal(created.observation.identification.candidates[0].candidateId, externalCandidateId);
+});

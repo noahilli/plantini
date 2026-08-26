@@ -886,6 +886,7 @@ export interface ApiIdentificationJobIdentificationJob
     mediaId: Attribute.String & Attribute.Required;
     expectedPlantId: Attribute.String;
     confirmedPlantId: Attribute.String;
+    confirmedCandidateId: Attribute.String;
     status: Attribute.Enumeration<
       ['pending', 'processing', 'identified', 'failed', 'cancelled']
     > &

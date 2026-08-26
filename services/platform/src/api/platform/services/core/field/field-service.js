@@ -6,10 +6,13 @@ const { ProblemError, conflict, invalidRequest, notFound } = require('../errors'
 const { newId, payloadDigest, requireIdempotencyKey, requireUuid, scopedIdempotencyKey } = require('../ids');
 const { optionalString, requireInteger, requirePlainObject, requireString, rejectUnknownFields } = require('../validation');
 
-const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+// PlantNet's real v2 endpoint accepts JPEG and PNG. The Flutter media service
+// re-encodes captured input to one of these formats before it reaches this API.
+const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png']);
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const RESERVATION_TTL_MS = 15 * 60 * 1000;
 const MAX_IDENTIFICATION_ATTEMPTS = 5;
+const MAX_PROVIDER_RETRY_DELAY_MS = 24 * 60 * 60 * 1000;
 
 /**
  * Persistent, caller-owned upload and identification state.  The queue itself
@@ -165,11 +168,22 @@ class FieldService {
     if (job.status !== 'identified') {
       throw conflict('IDENTIFICATION_NOT_READY', 'Das Ergebnis kann erst nach abgeschlossener Identifikation bestätigt werden.');
     }
-    if (Array.isArray(job.candidates) && job.candidates.length > 0
-      && !job.candidates.some((candidate) => candidate && candidate.plantId === input.confirmedPlantId)) {
-      throw invalidRequest({ confirmedPlantId: 'Die bestätigte Pflanze ist kein Kandidat dieses Auftrags.' });
+    const candidates = Array.isArray(job.candidates) ? job.candidates : [];
+    const candidate = candidates.find((item) => item && (
+      (input.candidateId && item.candidateId === input.candidateId)
+      || (input.confirmedPlantId && item.plantId === input.confirmedPlantId)
+    ));
+    if (!candidate) {
+      throw invalidRequest({ candidateId: 'Die bestätigte Pflanze ist kein Kandidat dieses Auftrags.' });
     }
-    const updated = await this.repository.updateJob(job.id, { confirmedPlantId: input.confirmedPlantId });
+    const updated = await this.repository.updateJob(job.id, {
+      // A user may replace a formerly curated selection with an external
+      // PlantNet candidate. Persisting null deliberately clears the stale
+      // catalogue UUID so the observation cannot be attributed to the wrong
+      // species.
+      confirmedPlantId: candidate.plantId || null,
+      confirmedCandidateId: candidate.candidateId,
+    });
     return mapJob(updated);
   }
 
@@ -219,7 +233,7 @@ function validateUploadReservation(body) {
   rejectUnknownFields(value, ['clientMediaId', 'contentType', 'bytes', 'idempotencyKey', 'clientMutationId']);
   const contentType = requireString(value.contentType, 'contentType', { max: 40 });
   if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
-    throw invalidRequest({ contentType: 'Erlaubt sind image/jpeg, image/png und image/webp.' });
+    throw invalidRequest({ contentType: 'Erlaubt sind image/jpeg und image/png.' });
   }
   const idempotencyKey = value.idempotencyKey !== undefined
     ? optionalString(value.idempotencyKey, 'idempotencyKey', { min: 16, max: 128 })
@@ -275,8 +289,18 @@ function validateIdentificationRequest(body) {
 
 function validateConfirmation(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['confirmedPlantId']);
-  return { confirmedPlantId: requireUuid(value.confirmedPlantId, 'confirmedPlantId') };
+  rejectUnknownFields(value, ['confirmedPlantId', 'candidateId']);
+  const confirmedPlantId = value.confirmedPlantId === undefined
+    ? undefined
+    : requireUuid(value.confirmedPlantId, 'confirmedPlantId');
+  const candidateId = value.candidateId === undefined
+    ? undefined
+    : optionalString(value.candidateId, 'candidateId', { min: 3, max: 160 });
+  if ((confirmedPlantId === undefined && candidateId === undefined)
+      || (confirmedPlantId !== undefined && candidateId !== undefined)) {
+    throw invalidRequest({ body: 'Genau candidateId oder confirmedPlantId muss gesetzt sein.' });
+  }
+  return { confirmedPlantId, candidateId };
 }
 
 function validateProviderCandidates(candidates) {
@@ -284,11 +308,13 @@ function validateProviderCandidates(candidates) {
     throw new Error('Provider returned no usable candidates.');
   }
   return candidates.map((candidate) => {
-    if (!candidate || typeof candidate.scientificName !== 'string' || candidate.scientificName.length === 0
+    if (!candidate || typeof candidate.candidateId !== 'string' || candidate.candidateId.length < 3
+      || typeof candidate.scientificName !== 'string' || candidate.scientificName.length === 0
       || typeof candidate.score !== 'number' || candidate.score < 0 || candidate.score > 1) {
       throw new Error('Provider returned an invalid candidate.');
     }
     return {
+      candidateId: candidate.candidateId,
       scientificName: candidate.scientificName,
       ...(typeof candidate.commonName === 'string' ? { commonName: candidate.commonName } : {}),
       ...(typeof candidate.plantId === 'string' ? { plantId: candidate.plantId } : {}),
@@ -317,13 +343,13 @@ function mapJob(job) {
     ...(Array.isArray(job.candidates) && job.candidates.length ? { candidates: job.candidates } : {}),
     ...(job.failureCode ? { failureCode: job.failureCode } : {}),
     ...(job.confirmedPlantId ? { confirmedPlantId: job.confirmedPlantId } : {}),
+    ...(job.confirmedCandidateId ? { confirmedCandidateId: job.confirmedCandidateId } : {}),
   };
 }
 
 function hasExpectedMagicBytes(bytes, contentType) {
   if (contentType === 'image/jpeg') return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
   if (contentType === 'image/png') return bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-  if (contentType === 'image/webp') return bytes.length >= 12 && bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
   return false;
 }
 
@@ -333,7 +359,13 @@ function retryAfterFor(error, now, attempt, jobId) {
   const requestedDelay = Number(error.retryAfterMs || 1_000);
   const exponentialDelay = Math.min(60_000, 1_000 * (2 ** Math.max(0, attempt - 1)));
   const jitter = deterministicJitter(jobId, attempt);
-  const retryMs = Math.min(60_000, Math.max(requestedDelay, exponentialDelay) + jitter);
+  // PlantNet returns Retry-After as an HTTP date when its daily identify
+  // quota is exhausted. Do not hammer the provider every minute: persist and
+  // enqueue the returned delay, bounded to one day for recovery safety.
+  const retryMs = Math.min(
+    MAX_PROVIDER_RETRY_DELAY_MS,
+    Math.max(requestedDelay, exponentialDelay) + jitter,
+  );
   return new Date(now.getTime() + retryMs).toISOString();
 }
 
