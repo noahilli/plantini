@@ -10,9 +10,15 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "slug": { "type": "string", "required": true, "unique": true },
+    "releaseVersion": { "type": "string", "required": true },
     "title": { "type": "string", "required": true },
     "levelNumber": { "type": "integer", "required": true },
+    "sequence": { "type": "integer", "required": true },
     "difficulty": { "type": "string" },
+    "learningGoal": { "type": "text" },
+    "completionRule": { "type": "json", "required": true },
     "plants": {
       "type": "relation",
       "relation": "manyToMany",

@@ -11,9 +11,15 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "slug": { "type": "string", "required": true, "unique": true },
+    "releaseVersion": { "type": "string", "required": true },
     "name": { "type": "string", "required": true },
     "description": { "type": "text" },
     "climateZone": { "type": "string" },
+    "region": { "type": "string" },
+    "season": { "type": "string" },
+    "language": { "type": "string", "default": "de" },
     "levels": {
       "type": "relation",
       "relation": "oneToMany",

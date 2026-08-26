@@ -12,6 +12,7 @@
 | ADR-006 | Offline-Ereignisse idempotent; Content Releases atomar/versioniert | accepted |
 | ADR-007 | Isar Mobile hinter Port; Webadapter erst nach Spike festlegen | provisional |
 | ADR-008 | Monorepo für Produktcode; große offene Medien separat möglich | accepted |
+| ADR-009 | Öffentlicher Fach-API-Vertrag unter `/api/v1`, idempotente Schreibvorgänge und serverautoritärer Fortschritt | accepted |
 
 ## Neue ADR
 

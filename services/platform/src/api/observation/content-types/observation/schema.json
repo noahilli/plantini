@@ -11,19 +11,34 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "userId": {
-      "type": "string",
-      "required": true
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "ownerId": { "type": "string", "required": true },
+    "clientObservationId": { "type": "string", "required": true },
+    "ownerClientObservationKey": { "type": "string", "required": true, "unique": true },
+    "idempotencyKey": { "type": "string", "required": true, "unique": true },
+    "requestDigest": { "type": "string", "required": true },
+    "version": { "type": "string", "required": true },
+    "syncStatus": {
+      "type": "enumeration",
+      "enum": ["synced", "pending", "conflict", "deleted"],
+      "required": true,
+      "default": "synced"
     },
     "photo": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::media.media"
     },
+    "mediaId": {
+      "type": "string"
+    },
     "latitude": {
       "type": "decimal"
     },
     "longitude": {
+      "type": "decimal"
+    },
+    "locationAccuracyMeters": {
       "type": "decimal"
     },
     "timestamp": {
@@ -35,6 +50,15 @@
     },
     "plantnetScores": {
       "type": "json"
+    },
+    "identificationJobId": {
+      "type": "string"
+    },
+    "confirmedPlantId": {
+      "type": "string"
+    },
+    "deletedAt": {
+      "type": "datetime"
     },
     "plant": {
       "type": "relation",

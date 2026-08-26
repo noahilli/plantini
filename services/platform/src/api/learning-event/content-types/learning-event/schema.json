@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "learning_events",
+  "info": {
+    "singularName": "learning-event",
+    "pluralName": "learning-events",
+    "displayName": "Learning Event"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "ownerId": { "type": "string", "required": true },
+    "clientEventId": { "type": "string", "required": true },
+    "idempotencyKey": { "type": "string", "required": true, "unique": true },
+    "requestDigest": { "type": "string", "required": true },
+    "type": { "type": "string", "required": true },
+    "occurredAt": { "type": "datetime", "required": true },
+    "payloadVersion": { "type": "integer", "required": true },
+    "payload": { "type": "json", "required": true },
+    "receivedAt": { "type": "datetime", "required": true }
+  }
+}

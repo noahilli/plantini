@@ -10,6 +10,9 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "slug": { "type": "string", "required": true, "unique": true },
+    "releaseVersion": { "type": "string", "required": true },
     "scientificName": {
       "type": "string",
       "required": true
@@ -22,6 +25,17 @@
     },
     "description": {
       "type": "text"
+    },
+    "warning": {
+      "type": "text"
+    },
+    "sources": {
+      "type": "json",
+      "default": []
+    },
+    "features": {
+      "type": "json",
+      "default": []
     },
     "media": {
       "type": "relation",

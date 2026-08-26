@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "level_attempts",
+  "info": {
+    "singularName": "level-attempt",
+    "pluralName": "level-attempts",
+    "displayName": "Level Attempt"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "ownerId": { "type": "string", "required": true },
+    "clientAttemptId": { "type": "string", "required": true },
+    "ownerClientAttemptKey": { "type": "string", "required": true, "unique": true },
+    "idempotencyKey": { "type": "string", "required": true, "unique": true },
+    "requestDigest": { "type": "string", "required": true },
+    "levelPublicId": { "type": "string", "required": true },
+    "contentVersion": { "type": "string", "required": true },
+    "status": { "type": "enumeration", "enum": ["active", "completed", "expired"], "required": true },
+    "startedAt": { "type": "datetime", "required": true },
+    "completedAt": { "type": "datetime" },
+    "completionIdempotencyKey": { "type": "string", "unique": true },
+    "completionDigest": { "type": "string" },
+    "completionClientEventId": { "type": "string" },
+    "score": { "type": "decimal" },
+    "passed": { "type": "boolean" },
+    "progress": { "type": "decimal" }
+  }
+}

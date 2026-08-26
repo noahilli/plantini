@@ -10,6 +10,9 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "slug": { "type": "string", "required": true, "unique": true },
+    "releaseVersion": { "type": "string", "required": true },
     "title": {
       "type": "string",
       "required": true

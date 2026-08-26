@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "private_media",
+  "info": {
+    "singularName": "private-media",
+    "pluralName": "private-medias",
+    "displayName": "Private Media"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "ownerId": { "type": "string", "required": true },
+    "clientMediaId": { "type": "string", "required": true },
+    "ownerClientMediaKey": { "type": "string", "required": true, "unique": true },
+    "idempotencyKey": { "type": "string", "required": true, "unique": true },
+    "requestDigest": { "type": "string", "required": true },
+    "contentType": { "type": "string", "required": true },
+    "bytes": { "type": "integer", "required": true },
+    "status": { "type": "enumeration", "enum": ["reserved", "uploaded", "rejected", "deleted"], "required": true },
+    "expiresAt": { "type": "datetime", "required": true },
+    "sha256": { "type": "string" },
+    "storageKey": { "type": "string" }
+  }
+}

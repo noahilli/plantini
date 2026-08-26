@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "identification_jobs",
+  "info": {
+    "singularName": "identification-job",
+    "pluralName": "identification-jobs",
+    "displayName": "Identification Job"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "ownerId": { "type": "string", "required": true },
+    "clientJobId": { "type": "string", "required": true },
+    "ownerClientJobKey": { "type": "string", "required": true, "unique": true },
+    "idempotencyKey": { "type": "string", "required": true, "unique": true },
+    "requestDigest": { "type": "string", "required": true },
+    "mediaId": { "type": "string", "required": true },
+    "expectedPlantId": { "type": "string" },
+    "confirmedPlantId": { "type": "string" },
+    "status": { "type": "enumeration", "enum": ["pending", "processing", "identified", "failed", "cancelled"], "required": true },
+    "attempts": { "type": "integer", "required": true, "default": 0 },
+    "retryAfter": { "type": "datetime" },
+    "candidates": { "type": "json", "default": [] },
+    "failureCode": { "type": "string" },
+    "providerMetadata": { "type": "json" }
+  }
+}

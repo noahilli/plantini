@@ -1,375 +1,719 @@
 openapi: 3.1.0
 info:
   title: Plantini Platform API
-  version: 1.0.0
-  description: Fach-API für die Flutter-App zur Anbindung an Identity, Storage und CMS (Strapi).
+  version: 1.0.0-draft.1
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+  description: |
+    Kanonischer Vertrag zwischen Plantini-App und Fach-API. Die App kommuniziert
+    niemals direkt mit Strapi oder einem Identifikationsprovider. Alle schreibenden
+    Aufrufe sind über Idempotency-Key oder clientEventId wiederholbar.
 servers:
-  - url: https://api.plantini.local/v1
-    description: Lokale Entwicklungs-API
+  - url: /api/v1
+    description: Reverse-proxy prefix for development, staging and production
+security:
+  - bearerAuth: []
+tags:
+  - name: Profile
+    description: Authenticated person and preferences.
+  - name: Content
+    description: Published, versioned botanical content.
+  - name: Learning
+    description: Server-authoritative learning attempts and progress.
+  - name: Field
+    description: Private media and asynchronous identification jobs.
+  - name: Herbarium
+    description: Caller-owned private observations.
 paths:
   /me:
     get:
-      summary: Get current user profile
+      summary: Read the authenticated profile
+      tags: [Profile]
       operationId: getMe
-      security:
-        - bearerAuth: []
       responses:
-        '200':
-          description: User profile and claims
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /manifest:
-    get:
-      summary: Get latest content manifest
-      operationId: getManifest
-      description: Returns the active release manifest including checksums for offline sync.
+        '200': {description: Authenticated profile, content: {application/json: {schema: {$ref: '#/components/schemas/UserProfile'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    patch:
+      summary: Update permitted profile preferences
+      tags: [Profile]
+      operationId: updateMe
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/UpdateProfileRequest'}}}
       responses:
-        '200':
-          description: Manifest details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Manifest'
-        '500':
-          description: Internal Server Error
-  /ecosystem:
+        '200': {description: Updated profile, content: {application/json: {schema: {$ref: '#/components/schemas/UserProfile'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /content/manifest:
     get:
-      summary: List ecosystems
-      operationId: listEcosystems
-      description: Get all ecosystems available for learning.
-      responses:
-        '200':
-          description: A list of ecosystems
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Ecosystem'
-        '500':
-          description: Internal Server Error
-  /level:
-    get:
-      summary: List levels
-      operationId: listLevels
-      description: Get levels and user progress.
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: A list of levels
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Level'
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /plants:
-    get:
-      summary: List plants
-      operationId: listPlants
-      responses:
-        '200':
-          description: List of plants
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Plant'
-  /plants/{id}:
-    get:
-      summary: Get a specific plant
-      operationId: getPlant
+      summary: Read the active immutable content manifest
+      tags: [Content]
+      operationId: getContentManifest
+      security: []
       parameters:
-        - name: id
+        - {$ref: '#/components/parameters/IfNoneMatch'}
+      responses:
+        '200': {description: Immutable active content release, content: {application/json: {schema: {$ref: '#/components/schemas/ContentManifest'}}}}
+        '304': {description: Previously downloaded release is current}
+        '400': {$ref: '#/components/responses/BadRequest'}
+  /content/changes:
+    get:
+      summary: Read released content changes and deletion tombstones
+      tags: [Content]
+      operationId: getContentChanges
+      security: []
+      parameters:
+        - name: since
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        '200': {description: Incremental release changes, content: {application/json: {schema: {$ref: '#/components/schemas/ContentChangePage'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+  /ecosystems:
+    get:
+      summary: List published ecosystems
+      tags: [Content]
+      operationId: listEcosystems
+      security: []
+      parameters:
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Published ecosystems only, content: {application/json: {schema: {$ref: '#/components/schemas/EcosystemPage'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+  /ecosystems/{ecosystemId}:
+    get:
+      summary: Read one published ecosystem
+      tags: [Content]
+      operationId: getEcosystem
+      security: []
+      parameters: [{$ref: '#/components/parameters/EcosystemId'}]
+      responses:
+        '200': {description: Published ecosystem, content: {application/json: {schema: {$ref: '#/components/schemas/Ecosystem'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /levels/{levelId}:
+    get:
+      summary: Read an accessible level and its user state
+      tags: [Content]
+      operationId: getLevel
+      parameters: [{$ref: '#/components/parameters/LevelId'}]
+      responses:
+        '200': {description: Level and caller-specific access state, content: {application/json: {schema: {$ref: '#/components/schemas/Level'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /plants/{plantId}:
+    get:
+      summary: Read one published plant profile
+      tags: [Content]
+      operationId: getPlant
+      security: []
+      parameters: [{$ref: '#/components/parameters/PlantId'}]
+      responses:
+        '200': {description: Published plant profile, content: {application/json: {schema: {$ref: '#/components/schemas/Plant'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /quiz-items:
+    get:
+      summary: List quiz items for a level and content version
+      tags: [Learning]
+      operationId: listQuizItems
+      parameters:
+        - name: levelId
+          in: query
+          required: true
+          schema: {$ref: '#/components/schemas/Id'}
+        - name: contentVersion
+          in: query
+          required: false
+          schema: {type: string}
+      responses:
+        '200': {description: Quiz items in an immutable order-neutral package, content: {application/json: {schema: {$ref: '#/components/schemas/QuizItemPage'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /level-attempts:
+    post:
+      summary: Start or resume an idempotent level attempt
+      tags: [Learning]
+      operationId: startLevelAttempt
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/StartLevelAttemptRequest'}}}
+      responses:
+        '201': {description: New or resumed attempt, content: {application/json: {schema: {$ref: '#/components/schemas/LevelAttempt'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /level-attempts/{attemptId}/complete:
+    post:
+      summary: Complete an attempt with server-side scoring
+      tags: [Learning]
+      operationId: completeLevelAttempt
+      parameters:
+        - {$ref: '#/components/parameters/AttemptId'}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CompleteLevelAttemptRequest'}}}
+      responses:
+        '200': {description: Server-authoritative completion, content: {application/json: {schema: {$ref: '#/components/schemas/LevelCompletion'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /learning-events/batch:
+    post:
+      summary: Submit idempotent offline learning events
+      tags: [Learning]
+      operationId: submitLearningEvents
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/LearningEventBatch'}}}
+      responses:
+        '200': {description: Every accepted client event is acknowledged exactly once, content: {application/json: {schema: {$ref: '#/components/schemas/EventBatchAck'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /progress:
+    get:
+      summary: Read server-authoritative learning progress
+      tags: [Learning]
+      operationId: getProgress
+      parameters:
+        - name: since
+          in: query
+          schema: {type: string, format: date-time}
+      responses:
+        '200': {description: Authoritative progress materialization, content: {application/json: {schema: {$ref: '#/components/schemas/ProgressSnapshot'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /achievements:
+    get:
+      summary: List earned and next learning achievements
+      tags: [Learning]
+      operationId: listAchievements
+      responses:
+        '200': {description: Caller achievement state, content: {application/json: {schema: {$ref: '#/components/schemas/AchievementPage'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /sync:
+    post:
+      summary: Synchronize a bounded offline event batch and progress cursor
+      tags: [Learning]
+      operationId: synchronize
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/SyncRequest'}}}
+      responses:
+        '200': {description: Synchronization acknowledgement and canonical progress, content: {application/json: {schema: {$ref: '#/components/schemas/SyncResponse'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /media/uploads:
+    post:
+      summary: Reserve a private media upload
+      tags: [Field]
+      operationId: createMediaUpload
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CreateUploadRequest'}}}
+      responses:
+        '201': {description: Private upload reservation, content: {application/json: {schema: {$ref: '#/components/schemas/MediaUpload'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /media/uploads/{mediaId}/content:
+    post:
+      summary: Upload bytes to a caller-owned short-lived media reservation
+      tags: [Field]
+      operationId: uploadPrivateMediaContent
+      parameters:
+        - name: mediaId
           in: path
           required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A single plant
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Plant'
-        '404':
-          description: Plant not found
-  /quizzes:
-    get:
-      summary: List quizzes
-      operationId: listQuizzes
-      responses:
-        '200':
-          description: List of quizzes
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Quiz'
-  /media:
-    get:
-      summary: List media
-      operationId: listMedia
-      responses:
-        '200':
-          description: List of media
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Media'
-  /observations:
-    get:
-      summary: List user observations (Herbarium)
-      operationId: listObservations
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: A list of observations in the user's herbarium
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Observation'
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-    post:
-      summary: Create a new observation and trigger PlantNet identification
-      operationId: createObservation
-      description: |
-        PlantNet-Adapter-Flow:
-        1. Client uploads an image with optional metadata.
-        2. Backend creates a pending observation record.
-        3. Backend async worker sends the image to the PlantNet-Mock API.
-        4. Mock API returns a probabilistic taxon match and score.
-        5. Backend compares the result with expected species or saves it to the Herbarium.
-        6. Client can poll or wait for the updated observation status.
-      security:
-        - bearerAuth: []
+          schema: {$ref: '#/components/schemas/Id'}
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required: [image]
               properties:
-                image:
-                  type: string
-                  format: binary
-                notes:
-                  type: string
-                latitude:
-                  type: number
-                longitude:
-                  type: number
+                image: {type: string, format: binary}
       responses:
-        '201':
-          description: Observation created and identification started
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Observation'
-        '400':
-          description: Bad Request (e.g. invalid image)
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /export/observations:
+        '200': {description: Private bytes stored after media-type and size verification, content: {application/json: {schema: {$ref: '#/components/schemas/MediaUpload'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /identifications:
+    post:
+      summary: Create an asynchronous identification job
+      tags: [Field]
+      operationId: createIdentification
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CreateIdentificationRequest'}}}
+      responses:
+        '202': {description: Persisted asynchronous job, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /identifications/{jobId}:
     get:
-      summary: Export structured observations data
-      operationId: exportObservations
-      description: Returns a structured data export (e.g. CSV or JSON list) of all observations. For tenant separation, an organisationId parameter can be used to filter data based on the organisation.
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: organisationId
-          in: query
-          description: Optional parameter to filter data by organisation (Tenant separation).
-          required: false
-          schema:
-            type: string
+      summary: Read a caller-owned identification job
+      tags: [Field]
+      operationId: getIdentification
+      parameters: [{$ref: '#/components/parameters/JobId'}]
       responses:
-        '200':
-          description: Structured observation data export
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Observation'
-            text/csv:
-              schema:
-                type: string
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden (insufficient permissions for the requested organisation)
-        '500':
-          description: Internal Server Error
-
+        '200': {description: Caller-owned identification status, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /identifications/{jobId}/retry:
+    post:
+      summary: Schedule a controlled identification retry
+      tags: [Field]
+      operationId: retryIdentification
+      parameters:
+        - {$ref: '#/components/parameters/JobId'}
+        - {$ref: '#/components/parameters/IdempotencyKey'}
+      responses:
+        '202': {description: Retry scheduled, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /identifications/{jobId}/confirm:
+    post:
+      summary: Confirm one candidate before it can enter the private herbarium
+      tags: [Field]
+      operationId: confirmIdentification
+      parameters: [{$ref: '#/components/parameters/JobId'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/ConfirmIdentificationRequest'}}}
+      responses:
+        '200': {description: Caller-confirmed identification, content: {application/json: {schema: {$ref: '#/components/schemas/IdentificationJob'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /observations:
+    get:
+      summary: List caller-owned herbarium observations
+      tags: [Herbarium]
+      operationId: listObservations
+      parameters:
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Caller-owned observations, content: {application/json: {schema: {$ref: '#/components/schemas/ObservationPage'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      summary: Create an idempotent private observation
+      tags: [Herbarium]
+      operationId: createObservation
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CreateObservationRequest'}}}
+      responses:
+        '201': {description: Caller-owned observation, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /observations/{observationId}:
+    get:
+      summary: Read one caller-owned observation
+      tags: [Herbarium]
+      operationId: getObservation
+      parameters: [{$ref: '#/components/parameters/ObservationId'}]
+      responses:
+        '200': {description: Caller-owned observation, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+    patch:
+      summary: Update an observation with optimistic concurrency
+      tags: [Herbarium]
+      operationId: updateObservation
+      parameters: [{$ref: '#/components/parameters/ObservationId'}, {$ref: '#/components/parameters/IfMatch'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/UpdateObservationRequest'}}}
+      responses:
+        '200': {description: Updated observation, content: {application/json: {schema: {$ref: '#/components/schemas/Observation'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+    delete:
+      summary: Create an observation tombstone
+      tags: [Herbarium]
+      operationId: deleteObservation
+      parameters: [{$ref: '#/components/parameters/ObservationId'}, {$ref: '#/components/parameters/IfMatch'}]
+      responses:
+        '202': {description: Tombstone persisted; media deletion may continue asynchronously}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /admin/content-releases:
+    post:
+      summary: Validate and publish a content release
+      tags: [Content]
+      operationId: createContentRelease
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CreateContentReleaseRequest'}}}
+      responses:
+        '202': {description: Release validation or publication job, content: {application/json: {schema: {$ref: '#/components/schemas/AdministrativeJob'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /admin/imports:
+    post:
+      summary: Validate or import versioned editorial data
+      tags: [Content]
+      operationId: createImport
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: '#/components/schemas/CreateImportRequest'}}}
+      responses:
+        '202': {description: Import validation or execution job, content: {application/json: {schema: {$ref: '#/components/schemas/AdministrativeJob'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /admin/dashboard:
+    get:
+      summary: Read privacy-preserving aggregated editorial metrics
+      tags: [Content]
+      operationId: getAdminDashboard
+      responses:
+        '200': {description: Aggregated metrics without personal content, content: {application/json: {schema: {$ref: '#/components/schemas/AdminDashboard'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /admin/users:
+    get:
+      summary: Search authorized user administration records
+      tags: [Profile]
+      operationId: listAdminUsers
+      parameters:
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Minimal authorized user representation, content: {application/json: {schema: {$ref: '#/components/schemas/AdminUserPage'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /admin/users/{userId}/suspend:
+    post:
+      summary: Suspend a user and revoke active sessions
+      tags: [Profile]
+      operationId: suspendUser
+      parameters: [{$ref: '#/components/parameters/UserId'}, {$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '202': {description: Suspension job, content: {application/json: {schema: {$ref: '#/components/schemas/AdministrativeJob'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /privacy/exports:
+    post:
+      summary: Request a caller's machine-readable data export
+      tags: [Profile]
+      operationId: createPrivacyExport
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '202': {description: Export job, content: {application/json: {schema: {$ref: '#/components/schemas/AdministrativeJob'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /privacy/deletions:
+    post:
+      summary: Request caller account deletion
+      tags: [Profile]
+      operationId: createPrivacyDeletion
+      parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
+      responses:
+        '202': {description: Deletion job, content: {application/json: {schema: {$ref: '#/components/schemas/AdministrativeJob'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+  parameters:
+    IdempotencyKey: {name: Idempotency-Key, in: header, required: true, schema: {type: string, minLength: 16, maxLength: 128}}
+    IfMatch: {name: If-Match, in: header, required: true, schema: {type: string}}
+    IfNoneMatch: {name: If-None-Match, in: header, required: false, schema: {type: string}}
+    Page: {name: page, in: query, required: false, schema: {type: integer, minimum: 1, default: 1}}
+    PageSize: {name: pageSize, in: query, required: false, schema: {type: integer, minimum: 1, maximum: 100, default: 50}}
+    EcosystemId: {name: ecosystemId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    LevelId: {name: levelId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    PlantId: {name: plantId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    AttemptId: {name: attemptId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    JobId: {name: jobId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    ObservationId: {name: observationId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    UserId: {name: userId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+  responses:
+    BadRequest: {description: Request violates a documented input invariant, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Unauthorized: {description: 'Missing, expired or invalid bearer token', content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    NotFound: {description: Resource is unavailable to this caller, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Conflict: {description: 'Version, idempotency or state conflict', content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Forbidden: {description: Caller does not have the required role or scope, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
   schemas:
+    Id: {type: string, format: uuid}
+    Problem:
+      type: object
+      required: [type, title, status, code, traceId]
+      properties:
+        type: {type: string, format: uri-reference}
+        title: {type: string}
+        status: {type: integer}
+        code: {type: string}
+        detail: {type: string}
+        traceId: {type: string}
+        fieldErrors: {type: object, additionalProperties: {type: string}}
     UserProfile:
       type: object
-      required:
-        - id
-        - username
+      required: [id, displayName, roles, locale]
       properties:
-        id:
-          type: string
-          format: uuid
-        username:
-          type: string
-        email:
-          type: string
-          format: email
-        roles:
-          type: array
-          items:
-            type: string
-    Manifest:
+        id: {$ref: '#/components/schemas/Id'}
+        displayName: {type: string}
+        locale: {type: string, example: de-DE}
+        roles: {type: array, items: {type: string, enum: [lernende, lehrende, inhaltsredaktion, botanisches_review, organisationsadministration, systemadministration]}}
+        organisationId: {$ref: '#/components/schemas/Id'}
+    UpdateProfileRequest:
       type: object
-      required:
-        - version
-        - releasedAt
+      additionalProperties: false
+      properties: {displayName: {type: string, minLength: 1, maxLength: 100}, locale: {type: string, maxLength: 35}}
+    ContentManifest:
+      type: object
+      required: [version, releasedAt, schemaVersion, minimumAppVersion, packages]
       properties:
-        version:
-          type: string
-        releasedAt:
-          type: string
-          format: date-time
-        checksums:
-          type: object
-          additionalProperties:
-            type: string
+        version: {type: string}
+        releasedAt: {type: string, format: date-time}
+        schemaVersion: {type: string}
+        minimumAppVersion: {type: string}
+        signature: {type: string}
+        packages: {type: array, items: {$ref: '#/components/schemas/ContentPackage'}}
+    ContentPackage:
+      type: object
+      required: [id, url, sha256, bytes]
+      properties:
+        id: {type: string}
+        url: {type: string, format: uri}
+        sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
+        bytes: {type: integer, minimum: 0}
+    ContentChangePage:
+      type: object
+      required: [cursor, changes]
+      properties:
+        cursor: {type: string}
+        changes: {type: array, items: {$ref: '#/components/schemas/ContentChange'}}
+    ContentChange:
+      type: object
+      required: [entity, id, operation, version]
+      properties:
+        entity: {type: string, enum: [ecosystem, level, plant, quiz_item, media]}
+        id: {$ref: '#/components/schemas/Id'}
+        operation: {type: string, enum: [upsert, delete]}
+        version: {type: string}
+    PageMeta:
+      type: object
+      required: [page, pageSize, total]
+      properties: {page: {type: integer}, pageSize: {type: integer}, total: {type: integer}}
     Ecosystem:
       type: object
-      required:
-        - id
-        - name
+      required: [id, slug, name, releaseVersion]
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
+        id: {$ref: '#/components/schemas/Id'}
+        slug: {type: string}
+        name: {type: string}
+        description: {type: string}
+        releaseVersion: {type: string}
+        levelIds: {type: array, items: {$ref: '#/components/schemas/Id'}}
+    EcosystemPage:
+      type: object
+      required: [items, page]
+      properties: {items: {type: array, items: {$ref: '#/components/schemas/Ecosystem'}}, page: {$ref: '#/components/schemas/PageMeta'}}
     Level:
       type: object
-      required:
-        - id
-        - title
+      required: [id, ecosystemId, title, sequence, completionRule, status]
       properties:
-        id:
-          type: string
-        title:
-          type: string
-        isUnlocked:
-          type: boolean
-        progress:
-          type: number
-          format: float
+        id: {$ref: '#/components/schemas/Id'}
+        ecosystemId: {$ref: '#/components/schemas/Id'}
+        title: {type: string}
+        sequence: {type: integer, minimum: 1}
+        learningGoal: {type: string}
+        plantIds: {type: array, items: {$ref: '#/components/schemas/Id'}}
+        completionRule: {$ref: '#/components/schemas/CompletionRule'}
+        status: {type: string, enum: [locked, available, in_progress, completed]}
+        progress: {type: number, minimum: 0, maximum: 1}
+    CompletionRule:
+      type: object
+      required: [minimumScore]
+      properties: {minimumScore: {type: number, minimum: 0, maximum: 1}, requiredQuizIds: {type: array, items: {$ref: '#/components/schemas/Id'}}}
     Plant:
       type: object
-      required:
-        - id
-        - scientificName
+      required: [id, scientificName, releaseVersion]
       properties:
-        id:
-          type: string
-        scientificName:
-          type: string
-        commonName:
-          type: string
-        family:
-          type: string
-        description:
-          type: string
-    Quiz:
+        id: {$ref: '#/components/schemas/Id'}
+        scientificName: {type: string}
+        commonName: {type: string}
+        family: {type: string}
+        description: {type: string}
+        warning: {type: string}
+        sources: {type: array, items: {type: string, format: uri}}
+        media: {type: array, items: {$ref: '#/components/schemas/PublicMedia'}}
+        releaseVersion: {type: string}
+    PublicMedia:
       type: object
-      required:
-        - id
-        - title
-        - quizType
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        quizType:
-          type: string
-          enum: [multiple-choice, flashcard, identification]
-        data:
-          type: object
-    Media:
+      required: [id, url, altText, license, author]
+      properties: {id: {$ref: '#/components/schemas/Id'}, url: {type: string, format: uri}, altText: {type: string}, license: {type: string}, author: {type: string}}
+    QuizItem:
       type: object
-      required:
-        - id
-        - title
-        - url
+      required: [id, levelId, type, contentVersion, prompt]
       properties:
-        id:
-          type: string
-        title:
-          type: string
-        caption:
-          type: string
-        license:
-          type: string
-        author:
-          type: string
-        url:
-          type: string
+        id: {$ref: '#/components/schemas/Id'}
+        levelId: {$ref: '#/components/schemas/Id'}
+        type: {type: string, enum: [multiple_choice, flashcard, image_identification, feature_match]}
+        contentVersion: {type: string}
+        prompt: {type: string}
+        choices: {type: array, items: {$ref: '#/components/schemas/QuizChoice'}}
+    QuizChoice:
+      type: object
+      required: [id, label]
+      properties: {id: {type: string}, label: {type: string}}
+    QuizItemPage:
+      type: object
+      required: [items]
+      properties: {items: {type: array, items: {$ref: '#/components/schemas/QuizItem'}}}
+    StartLevelAttemptRequest:
+      type: object
+      required: [levelId, clientAttemptId, contentVersion]
+      properties: {levelId: {$ref: '#/components/schemas/Id'}, clientAttemptId: {$ref: '#/components/schemas/Id'}, contentVersion: {type: string}}
+    LevelAttempt:
+      type: object
+      required: [id, levelId, status, contentVersion]
+      properties: {id: {$ref: '#/components/schemas/Id'}, levelId: {$ref: '#/components/schemas/Id'}, status: {type: string, enum: [active, completed, expired]}, contentVersion: {type: string}, startedAt: {type: string, format: date-time}}
+    CompleteLevelAttemptRequest:
+      type: object
+      required: [clientEventId, answers]
+      properties: {clientEventId: {$ref: '#/components/schemas/Id'}, answers: {type: array, minItems: 1, items: {$ref: '#/components/schemas/QuizAnswer'}}}
+    QuizAnswer:
+      type: object
+      required: [quizItemId, choiceId]
+      properties: {quizItemId: {$ref: '#/components/schemas/Id'}, choiceId: {type: string}}
+    LevelCompletion:
+      type: object
+      required: [attemptId, passed, score, status]
+      properties: {attemptId: {$ref: '#/components/schemas/Id'}, passed: {type: boolean}, score: {type: number}, status: {type: string, enum: [completed, failed]}, progress: {$ref: '#/components/schemas/ProgressSnapshot'}}
+    LearningEventBatch:
+      type: object
+      required: [events]
+      properties: {events: {type: array, minItems: 1, maxItems: 100, items: {$ref: '#/components/schemas/LearningEvent'}}}
+    LearningEvent:
+      type: object
+      required: [clientEventId, type, occurredAt, payloadVersion]
+      properties: {clientEventId: {$ref: '#/components/schemas/Id'}, type: {type: string}, occurredAt: {type: string, format: date-time}, payloadVersion: {type: integer, minimum: 1}, payload: {type: object}}
+    EventBatchAck:
+      type: object
+      required: [acceptedClientEventIds]
+      properties: {acceptedClientEventIds: {type: array, items: {$ref: '#/components/schemas/Id'}}, rejected: {type: array, items: {$ref: '#/components/schemas/Problem'}}}
+    ProgressSnapshot:
+      type: object
+      required: [updatedAt, levels]
+      properties: {updatedAt: {type: string, format: date-time}, levels: {type: array, items: {$ref: '#/components/schemas/LevelProgress'}}}
+    LevelProgress:
+      type: object
+      required: [levelId, status, percentage]
+      properties: {levelId: {$ref: '#/components/schemas/Id'}, status: {type: string, enum: [locked, available, in_progress, completed]}, percentage: {type: number, minimum: 0, maximum: 1}, completedAt: {type: string, format: date-time}}
+    AchievementPage:
+      type: object
+      required: [items]
+      properties: {items: {type: array, items: {$ref: '#/components/schemas/Achievement'}}}
+    Achievement:
+      type: object
+      required: [id, status, title]
+      properties: {id: {type: string}, status: {type: string, enum: [earned, next, locked]}, title: {type: string}, description: {type: string}, earnedAt: {type: string, format: date-time}}
+    SyncRequest:
+      type: object
+      required: [events]
+      properties: {events: {type: array, maxItems: 100, items: {$ref: '#/components/schemas/LearningEvent'}}, contentCursor: {type: string}}
+    SyncResponse:
+      type: object
+      required: [progress, acknowledgedClientEventIds]
+      properties: {progress: {$ref: '#/components/schemas/ProgressSnapshot'}, acknowledgedClientEventIds: {type: array, items: {$ref: '#/components/schemas/Id'}}, contentCursor: {type: string}}
+    CreateUploadRequest:
+      type: object
+      required: [clientMediaId, contentType, bytes]
+      properties: {clientMediaId: {$ref: '#/components/schemas/Id'}, contentType: {type: string, enum: [image/jpeg, image/png, image/webp]}, bytes: {type: integer, minimum: 1, maximum: 20971520}}
+    MediaUpload:
+      type: object
+      required: [id, expiresAt, status]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        uploadUrl: {type: string, format: uri, description: Present only while the reservation is writable.}
+        expiresAt: {type: string, format: date-time}
+        status: {type: string, enum: [reserved, uploaded]}
+    CreateIdentificationRequest:
+      type: object
+      required: [clientJobId, mediaId]
+      properties: {clientJobId: {$ref: '#/components/schemas/Id'}, mediaId: {$ref: '#/components/schemas/Id'}, expectedPlantId: {$ref: '#/components/schemas/Id'}}
+    IdentificationJob:
+      type: object
+      required: [id, status, createdAt]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        status: {type: string, enum: [pending, processing, identified, failed, cancelled]}
+        createdAt: {type: string, format: date-time}
+        retryAfter: {type: string, format: date-time}
+        candidates: {type: array, items: {$ref: '#/components/schemas/IdentificationCandidate'}}
+        failureCode: {type: string}
+        confirmedPlantId: {$ref: '#/components/schemas/Id'}
+    IdentificationCandidate:
+      type: object
+      required: [scientificName, score]
+      properties: {plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}}
+    ConfirmIdentificationRequest:
+      type: object
+      additionalProperties: false
+      required: [confirmedPlantId]
+      properties: {confirmedPlantId: {$ref: '#/components/schemas/Id'}}
+    CreateObservationRequest:
+      type: object
+      required: [clientObservationId, observedAt]
+      properties: {clientObservationId: {$ref: '#/components/schemas/Id'}, observedAt: {type: string, format: date-time}, note: {type: string, maxLength: 4000}, mediaId: {$ref: '#/components/schemas/Id'}, identificationJobId: {$ref: '#/components/schemas/Id'}, location: {$ref: '#/components/schemas/PrivateLocation'}}
+    UpdateObservationRequest:
+      type: object
+      additionalProperties: false
+      properties: {note: {type: string, maxLength: 4000}, confirmedPlantId: {$ref: '#/components/schemas/Id'}}
+    PrivateLocation:
+      type: object
+      required: [latitude, longitude, accuracyMeters]
+      properties: {latitude: {type: number, minimum: -90, maximum: 90}, longitude: {type: number, minimum: -180, maximum: 180}, accuracyMeters: {type: number, minimum: 0}}
     Observation:
       type: object
-      required:
-        - id
-        - plantName
-        - date
-      properties:
-        id:
-          type: string
-        plantName:
-          type: string
-        date:
-          type: string
-          format: date-time
-        imageUrl:
-          type: string
-        notes:
-          type: string
-        location:
-          type: object
-          description: "Privacy Note: GPS coordinates are fuzzed/coarsened on export or public views, especially for minors."
-          properties:
-            lat:
-              type: number
-            lon:
-              type: number
-        identificationScore:
-          type: number
-          format: float
+      required: [id, observedAt, version, syncStatus]
+      properties: {id: {$ref: '#/components/schemas/Id'}, observedAt: {type: string, format: date-time}, note: {type: string}, confirmedPlantId: {$ref: '#/components/schemas/Id'}, identification: {$ref: '#/components/schemas/IdentificationJob'}, version: {type: string}, syncStatus: {type: string, enum: [synced, pending, conflict, deleted]}}
+    ObservationPage:
+      type: object
+      required: [items, page]
+      properties: {items: {type: array, items: {$ref: '#/components/schemas/Observation'}}, page: {$ref: '#/components/schemas/PageMeta'}}
+    CreateContentReleaseRequest:
+      type: object
+      required: [releaseVersion]
+      properties: {releaseVersion: {type: string}, dryRun: {type: boolean, default: false}}
+    CreateImportRequest:
+      type: object
+      required: [kind, sourceVersion]
+      properties: {kind: {type: string, enum: [plants, quiz_items, translations]}, sourceVersion: {type: string}, dryRun: {type: boolean, default: true}}
+    AdministrativeJob:
+      type: object
+      required: [id, status, createdAt]
+      properties: {id: {$ref: '#/components/schemas/Id'}, status: {type: string, enum: [pending, processing, completed, failed]}, createdAt: {type: string, format: date-time}, failureCode: {type: string}}
+    AdminDashboard:
+      type: object
+      required: [generatedAt, metrics]
+      properties: {generatedAt: {type: string, format: date-time}, metrics: {type: object, additionalProperties: {type: number}}}
+    AdminUserPage:
+      type: object
+      required: [items, page]
+      properties: {items: {type: array, items: {$ref: '#/components/schemas/AdminUser'}}, page: {$ref: '#/components/schemas/PageMeta'}}
+    AdminUser:
+      type: object
+      required: [id, status, roles]
+      properties: {id: {$ref: '#/components/schemas/Id'}, status: {type: string, enum: [active, suspended]}, roles: {type: array, items: {type: string}}, organisationId: {$ref: '#/components/schemas/Id'}}

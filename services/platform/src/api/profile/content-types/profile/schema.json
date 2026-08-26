@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plantini_profiles",
+  "info": {
+    "singularName": "profile",
+    "pluralName": "profiles",
+    "displayName": "Plantini Profile",
+    "description": "Internal profile mapped one-to-one to a Keycloak subject."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "profileId": { "type": "string", "required": true, "unique": true },
+    "keycloakSubject": { "type": "string", "required": true, "unique": true },
+    "displayName": { "type": "string", "required": true },
+    "locale": { "type": "string", "required": true, "default": "de-DE" },
+    "organisationId": { "type": "string" },
+    "status": {
+      "type": "enumeration",
+      "enum": ["active", "suspended", "deletion_requested"],
+      "required": true,
+      "default": "active"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "content_releases",
+  "info": {
+    "singularName": "content-release",
+    "pluralName": "content-releases",
+    "displayName": "Content Release"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "version": { "type": "string", "required": true, "unique": true },
+    "active": { "type": "boolean", "required": true, "default": false },
+    "manifest": { "type": "json", "required": true },
+    "cursor": { "type": "string", "required": true, "unique": true },
+    "changes": { "type": "json", "default": [] }
+  }
+}

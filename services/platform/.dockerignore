@@ -1,0 +1,11 @@
+# Runtime and build output must never become part of the immutable image.
+node_modules/
+.strapi/
+.strapi-updater.json
+.tmp/
+build/
+public/uploads/
+.env
+tmp_*.json
+*.log
+coverage/
