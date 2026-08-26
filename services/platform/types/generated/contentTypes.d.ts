@@ -788,6 +788,40 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiContentReleaseContentRelease extends Schema.CollectionType {
+  collectionName: 'content_releases';
+  info: {
+    singularName: 'content-release';
+    pluralName: 'content-releases';
+    displayName: 'Content Release';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    version: Attribute.String & Attribute.Required & Attribute.Unique;
+    active: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
+    manifest: Attribute.JSON & Attribute.Required;
+    cursor: Attribute.String & Attribute.Required & Attribute.Unique;
+    changes: Attribute.JSON & Attribute.DefaultTo<[]>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::content-release.content-release',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::content-release.content-release',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiEcosystemEcosystem extends Schema.CollectionType {
   collectionName: 'ecosystems';
   info: {
@@ -799,9 +833,15 @@ export interface ApiEcosystemEcosystem extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    releaseVersion: Attribute.String & Attribute.Required;
     name: Attribute.String & Attribute.Required;
     description: Attribute.Text;
     climateZone: Attribute.String;
+    region: Attribute.String;
+    season: Attribute.String;
+    language: Attribute.String & Attribute.DefaultTo<'de'>;
     levels: Attribute.Relation<
       'api::ecosystem.ecosystem',
       'oneToMany',
@@ -825,6 +865,91 @@ export interface ApiEcosystemEcosystem extends Schema.CollectionType {
   };
 }
 
+export interface ApiIdentificationJobIdentificationJob
+  extends Schema.CollectionType {
+  collectionName: 'identification_jobs';
+  info: {
+    singularName: 'identification-job';
+    pluralName: 'identification-jobs';
+    displayName: 'Identification Job';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    ownerId: Attribute.String & Attribute.Required;
+    clientJobId: Attribute.String & Attribute.Required;
+    ownerClientJobKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    idempotencyKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    requestDigest: Attribute.String & Attribute.Required;
+    mediaId: Attribute.String & Attribute.Required;
+    expectedPlantId: Attribute.String;
+    confirmedPlantId: Attribute.String;
+    status: Attribute.Enumeration<
+      ['pending', 'processing', 'identified', 'failed', 'cancelled']
+    > &
+      Attribute.Required;
+    attempts: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<0>;
+    retryAfter: Attribute.DateTime;
+    candidates: Attribute.JSON & Attribute.DefaultTo<[]>;
+    failureCode: Attribute.String;
+    providerMetadata: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::identification-job.identification-job',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::identification-job.identification-job',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiLearningEventLearningEvent extends Schema.CollectionType {
+  collectionName: 'learning_events';
+  info: {
+    singularName: 'learning-event';
+    pluralName: 'learning-events';
+    displayName: 'Learning Event';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    ownerId: Attribute.String & Attribute.Required;
+    clientEventId: Attribute.String & Attribute.Required;
+    idempotencyKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    requestDigest: Attribute.String & Attribute.Required;
+    type: Attribute.String & Attribute.Required;
+    occurredAt: Attribute.DateTime & Attribute.Required;
+    payloadVersion: Attribute.Integer & Attribute.Required;
+    payload: Attribute.JSON & Attribute.Required;
+    receivedAt: Attribute.DateTime & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::learning-event.learning-event',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::learning-event.learning-event',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiLevelLevel extends Schema.CollectionType {
   collectionName: 'levels';
   info: {
@@ -836,9 +961,15 @@ export interface ApiLevelLevel extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    releaseVersion: Attribute.String & Attribute.Required;
     title: Attribute.String & Attribute.Required;
     levelNumber: Attribute.Integer & Attribute.Required;
+    sequence: Attribute.Integer & Attribute.Required;
     difficulty: Attribute.String;
+    learningGoal: Attribute.Text;
+    completionRule: Attribute.JSON & Attribute.Required;
     plants: Attribute.Relation<
       'api::level.level',
       'manyToMany',
@@ -872,6 +1003,54 @@ export interface ApiLevelLevel extends Schema.CollectionType {
   };
 }
 
+export interface ApiLevelAttemptLevelAttempt extends Schema.CollectionType {
+  collectionName: 'level_attempts';
+  info: {
+    singularName: 'level-attempt';
+    pluralName: 'level-attempts';
+    displayName: 'Level Attempt';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    ownerId: Attribute.String & Attribute.Required;
+    clientAttemptId: Attribute.String & Attribute.Required;
+    ownerClientAttemptKey: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique;
+    idempotencyKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    requestDigest: Attribute.String & Attribute.Required;
+    levelPublicId: Attribute.String & Attribute.Required;
+    contentVersion: Attribute.String & Attribute.Required;
+    status: Attribute.Enumeration<['active', 'completed', 'expired']> &
+      Attribute.Required;
+    startedAt: Attribute.DateTime & Attribute.Required;
+    completedAt: Attribute.DateTime;
+    completionIdempotencyKey: Attribute.String & Attribute.Unique;
+    completionDigest: Attribute.String;
+    completionClientEventId: Attribute.String;
+    score: Attribute.Decimal;
+    passed: Attribute.Boolean;
+    progress: Attribute.Decimal;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::level-attempt.level-attempt',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::level-attempt.level-attempt',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiMediaMedia extends Schema.CollectionType {
   collectionName: 'medias';
   info: {
@@ -883,6 +1062,9 @@ export interface ApiMediaMedia extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    releaseVersion: Attribute.String & Attribute.Required;
     title: Attribute.String & Attribute.Required;
     file: Attribute.Media<'images' | 'files' | 'videos' | 'audios'> &
       Attribute.Required;
@@ -926,17 +1108,35 @@ export interface ApiObservationObservation extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    userId: Attribute.String & Attribute.Required;
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    ownerId: Attribute.String & Attribute.Required;
+    clientObservationId: Attribute.String & Attribute.Required;
+    ownerClientObservationKey: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique;
+    idempotencyKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    requestDigest: Attribute.String & Attribute.Required;
+    version: Attribute.String & Attribute.Required;
+    syncStatus: Attribute.Enumeration<
+      ['synced', 'pending', 'conflict', 'deleted']
+    > &
+      Attribute.Required &
+      Attribute.DefaultTo<'synced'>;
     photo: Attribute.Relation<
       'api::observation.observation',
       'oneToOne',
       'api::media.media'
     >;
+    mediaId: Attribute.String;
     latitude: Attribute.Decimal;
     longitude: Attribute.Decimal;
+    locationAccuracyMeters: Attribute.Decimal;
     timestamp: Attribute.DateTime & Attribute.Required;
     notes: Attribute.Text;
     plantnetScores: Attribute.JSON;
+    identificationJobId: Attribute.String;
+    confirmedPlantId: Attribute.String;
+    deletedAt: Attribute.DateTime;
     plant: Attribute.Relation<
       'api::observation.observation',
       'manyToOne',
@@ -971,10 +1171,16 @@ export interface ApiPlantPlant extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    releaseVersion: Attribute.String & Attribute.Required;
     scientificName: Attribute.String & Attribute.Required;
     commonName: Attribute.String;
     family: Attribute.String;
     description: Attribute.Text;
+    warning: Attribute.Text;
+    sources: Attribute.JSON & Attribute.DefaultTo<[]>;
+    features: Attribute.JSON & Attribute.DefaultTo<[]>;
     media: Attribute.Relation<
       'api::plant.plant',
       'oneToMany',
@@ -1011,6 +1217,92 @@ export interface ApiPlantPlant extends Schema.CollectionType {
   };
 }
 
+export interface ApiPrivateMediaPrivateMedia extends Schema.CollectionType {
+  collectionName: 'private_media';
+  info: {
+    singularName: 'private-media';
+    pluralName: 'private-medias';
+    displayName: 'Private Media';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    ownerId: Attribute.String & Attribute.Required;
+    clientMediaId: Attribute.String & Attribute.Required;
+    ownerClientMediaKey: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique;
+    idempotencyKey: Attribute.String & Attribute.Required & Attribute.Unique;
+    requestDigest: Attribute.String & Attribute.Required;
+    contentType: Attribute.String & Attribute.Required;
+    bytes: Attribute.Integer & Attribute.Required;
+    status: Attribute.Enumeration<
+      ['reserved', 'uploaded', 'rejected', 'deleted']
+    > &
+      Attribute.Required;
+    expiresAt: Attribute.DateTime & Attribute.Required;
+    sha256: Attribute.String;
+    storageKey: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::private-media.private-media',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::private-media.private-media',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiProfileProfile extends Schema.CollectionType {
+  collectionName: 'plantini_profiles';
+  info: {
+    singularName: 'profile';
+    pluralName: 'profiles';
+    displayName: 'Plantini Profile';
+    description: 'Internal profile mapped one-to-one to a Keycloak subject.';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    profileId: Attribute.String & Attribute.Required & Attribute.Unique;
+    keycloakSubject: Attribute.String & Attribute.Required & Attribute.Unique;
+    displayName: Attribute.String & Attribute.Required;
+    locale: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'de-DE'>;
+    organisationId: Attribute.String;
+    status: Attribute.Enumeration<
+      ['active', 'suspended', 'deletion_requested']
+    > &
+      Attribute.Required &
+      Attribute.DefaultTo<'active'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::profile.profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::profile.profile',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiQuizQuiz extends Schema.CollectionType {
   collectionName: 'quizzes';
   info: {
@@ -1022,9 +1314,13 @@ export interface ApiQuizQuiz extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    publicId: Attribute.String & Attribute.Required & Attribute.Unique;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    releaseVersion: Attribute.String & Attribute.Required;
+    contentVersion: Attribute.String & Attribute.Required;
     title: Attribute.String & Attribute.Required;
     quizType: Attribute.Enumeration<
-      ['multiple-choice', 'flashcard', 'identification']
+      ['multiple-choice', 'flashcard', 'identification', 'feature-match']
     >;
     data: Attribute.JSON;
     level: Attribute.Relation<
@@ -1069,11 +1365,17 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::content-release.content-release': ApiContentReleaseContentRelease;
       'api::ecosystem.ecosystem': ApiEcosystemEcosystem;
+      'api::identification-job.identification-job': ApiIdentificationJobIdentificationJob;
+      'api::learning-event.learning-event': ApiLearningEventLearningEvent;
       'api::level.level': ApiLevelLevel;
+      'api::level-attempt.level-attempt': ApiLevelAttemptLevelAttempt;
       'api::media.media': ApiMediaMedia;
       'api::observation.observation': ApiObservationObservation;
       'api::plant.plant': ApiPlantPlant;
+      'api::private-media.private-media': ApiPrivateMediaPrivateMedia;
+      'api::profile.profile': ApiProfileProfile;
       'api::quiz.quiz': ApiQuizQuiz;
     }
   }

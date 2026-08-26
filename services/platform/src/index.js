@@ -3,7 +3,10 @@
 const { createIdentificationQueue, createIdentificationWorker } = require('./api/platform/services/core/field/identification-queue');
 const { seedDemoContent } = require('./api/platform/services/core/content/demo-seed');
 const { PlantNetProvider } = require('./api/platform/services/core/field/plantnet-provider');
-const { getPlatformRuntime } = require('./api/platform/services/core/platform-runtime');
+const {
+  getExistingPlatformRuntime,
+  getPlatformRuntime,
+} = require('./api/platform/services/core/platform-runtime');
 
 module.exports = {
   register() {},
@@ -36,7 +39,8 @@ module.exports = {
   },
 
   async destroy({ strapi }) {
-    const runtime = getPlatformRuntime(strapi);
+    const runtime = getExistingPlatformRuntime(strapi);
+    if (!runtime) return;
     if (runtime.identificationRecoveryTimer) clearInterval(runtime.identificationRecoveryTimer);
     await Promise.all([
       runtime.identificationWorker?.close(),

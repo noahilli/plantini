@@ -50,6 +50,13 @@ function getPlatformRuntime(strapi) {
   return runtime;
 }
 
+/// Returns a runtime only when bootstrap already constructed one. Strapi's
+/// type-generator invokes lifecycle teardown without a fully initialized
+/// entity service, so teardown must never create a second runtime there.
+function getExistingPlatformRuntime(strapi) {
+  return strapi ? runtimes.get(strapi) : undefined;
+}
+
 async function resolveActor(ctx, runtime) {
   const header = ctx.get('authorization');
   if (!header || !/^Bearer\s+\S+$/i.test(header)) {
@@ -77,6 +84,7 @@ function requiredEnvironment(name) {
 }
 
 module.exports = {
+  getExistingPlatformRuntime,
   getPlatformRuntime,
   resolveActor,
 };
