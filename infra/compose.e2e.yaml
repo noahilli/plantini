@@ -135,6 +135,7 @@ services:
       PLATFORM_OIDC_AUDIENCE: plantini-api
       PLATFORM_OIDC_JWKS_URI: http://keycloak:8080/realms/plantini/protocol/openid-connect/certs
       PLATFORM_SEED_DEMO_CONTENT: 'true'
+      PLANTNET_MODE: mock
       PLANTNET_BASE_URL: http://plantnet-mock:1080
       PLANTNET_API_KEY: e2e-mock-only
     ports:

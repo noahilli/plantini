@@ -47,12 +47,12 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-dummy_minio_user}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dummy_minio_password}
     ports:
-      - "9000:9000"
-      - "9002:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9002:9001"
     volumes:
       - object-data:/data
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9000 || exit 1'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000 || exit 1'"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -60,10 +60,10 @@ services:
   mailpit:
     image: axllent/mailpit:v1.11
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8025/api/v1/info || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8025/api/v1/info || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -71,7 +71,7 @@ services:
   plantnet-mock:
     image: mockserver/mockserver:5.15.0
     ports:
-      - "1080:1080"
+      - "127.0.0.1:1080:1080"
     healthcheck:
       test: ["CMD", "java", "-version"]
       interval: 5s
@@ -93,11 +93,11 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_BOOTSTRAP_PASSWORD:-admin}
       KC_HEALTH_ENABLED: 'true'
     ports:
-      - "8082:8080"
+      - "127.0.0.1:8082:8080"
     volumes:
       - ../services/identity/realm:/opt/keycloak/data/import:ro
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 || exit 1"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -137,6 +137,7 @@ services:
       PLATFORM_OIDC_ISSUER: http://keycloak:8080/realms/plantini
       PLATFORM_OIDC_AUDIENCE: plantini-api
       PLATFORM_OIDC_ROLE_CLIENT_ID: plantini-api
+      PLANTNET_MODE: mock
       PLANTNET_BASE_URL: http://plantnet-mock:1080
       PLANTNET_API_KEY: local-mock-only
       SMTP_HOST: mailpit
@@ -147,7 +148,7 @@ services:
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:-salt}
       JWT_SECRET: ${STRAPI_JWT_SECRET:-secret}
     ports:
-      - "1338:1337"
+      - "127.0.0.1:1338:1337"
     volumes:
       - ../services/platform:/opt/app
       - platform-node-modules:/opt/app/node_modules
@@ -155,7 +156,7 @@ services:
       test: >
         sh -c "
         if [ -f package.json ]; then
-          wget -qO- http://localhost:1337/_health || exit 1;
+          wget -qO- http://127.0.0.1:1337/api/v1/health || exit 1;
         else
           exit 0;
         fi

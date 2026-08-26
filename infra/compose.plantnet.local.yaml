@@ -1,0 +1,31 @@
+# Opt-in local development overlay for the real PlantNet provider.
+#
+# Use only together with infra/compose.yaml. It deliberately is not included
+# by CI or infra/compose.e2e.yaml, which continue to use the deterministic mock.
+# The ignored credential file must exist locally and must never be committed.
+services:
+  platform:
+    env_file:
+      - ../docs/plantnet-credentials
+    environment:
+      PLANTNET_MODE: real
+      PLANTNET_BASE_URL: https://my-api.plantnet.org
+      PLANTNET_PROJECT: ${PLANTNET_PROJECT:-all}
+      PLANTNET_LANGUAGE: ${PLANTNET_LANGUAGE:-de}
+      PLANTNET_MAX_RESULTS: ${PLANTNET_MAX_RESULTS:-3}
+      # Override the base compose mock value. The command below exports the
+      # env_file API_KEY only for the backend process, then removes API_KEY.
+      PLANTNET_API_KEY: ''
+      # Prefer IPv4 for the external hostname on hosts without usable IPv6.
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        if [ -z "$${API_KEY:-}" ]; then
+          echo 'PlantNet local credentials are missing an API_KEY.' >&2
+          exit 64
+        fi
+        export PLANTNET_API_KEY="$${API_KEY}"
+        unset API_KEY SUBSCRIPTION
+        exec npm run develop
