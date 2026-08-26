@@ -48,8 +48,8 @@ Abnahme: Eine automatisch erzeugte Übersicht nennt pro MVP-Feature Implementier
 - [x] **P1 | APP-04:** Deklaratives Routing, Deep Links und wiederherstellbare Tab-/Unterseitennavigation implementieren.
 - [x] **P1 | APP-05:** Einheitliche Zustände als Komponenten definieren: loading, empty, offline, stale, permission denied, recoverable error und fatal error.
 - [x] **P1 | APP-06:** Stille `catch`-Blöcke und fachlich falsche Fallback-Inhalte entfernen; Fehler dürfen keine erfolgreichen oder fremden Daten vortäuschen.
-- [ ] **P1 | APP-07:** Große Screens zerlegen, State Management und Dependency Injection vereinheitlichen, Seiteneffekte aus Widgets ziehen.
-- [ ] **P1 | APP-08:** Design Tokens, Abstände, Typografie, Komponenten, Icons und Tonalität vereinheitlichen; Dark Mode und große Schrift prüfen.
+- [x] **P1 | APP-07:** Große Screens zerlegen, State Management und Dependency Injection vereinheitlichen, Seiteneffekte aus Widgets ziehen.
+- [x] **P1 | APP-08:** Design Tokens, Abstände, Typografie, Komponenten, Icons und Tonalität vereinheitlichen; Dark Mode und große Schrift prüfen.
 - [ ] **P2 | APP-09:** Web, Android und iOS als reale Zielplattformen konfigurieren; Linux nur bei bestätigtem Produkt-Scope behalten.
 
 Abnahme: Alle Features verwenden dieselben Konfigurations-, Navigations-, Fehler- und Abhängigkeitsmechanismen; kein Backendfehler wird durch Demodaten verdeckt.
@@ -89,7 +89,7 @@ Abnahme: Ein neu veröffentlichtes Testlevel erscheint ohne App-Release online u
 - [x] **P1 | LEARN-03:** Quizzes nach Level/Pflanze/Release abfragen statt global die ersten fünf Datensätze zu verwenden.
 - [x] **P1 | LEARN-04:** Bewertung, Bestehensgrenzen, Versuche und Levelabschluss serverseitig autoritativ validieren; Manipulation und Wiederholung testen.
 - [x] **P1 | LEARN-05:** Pause/Resume vollständig speichern: Frage, Reihenfolge, Antworten, Contentversion und Zeitstempel; nach Neustart/Offline-Wechsel wiederherstellen.
-- [ ] **P1 | LEARN-06:** Fortschritt lokal und serverseitig modellieren, idempotent synchronisieren und geräteübergreifend konfliktfest zusammenführen.
+- [x] **P1 | LEARN-06:** Fortschritt lokal und serverseitig modellieren, idempotent synchronisieren und geräteübergreifend konfliktfest zusammenführen.
 - [ ] **P2 | LEARN-07:** Adaptive Wiederholung, nachvollziehbares Feedback, Erfolge und Fortschrittsübersicht ergänzen.
 - [ ] **P2 | LEARN-08:** Zertifikat erst nach geklärtem fachlichem und rechtlichem Scope implementieren.
 
@@ -111,7 +111,7 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 
 ## Feature 6 – Privates Herbarium, Offline und Sync (FA036–FA045)
 
-- [ ] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
+- [x] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
 - [ ] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
 - [ ] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
 - [ ] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
