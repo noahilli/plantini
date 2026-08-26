@@ -31,7 +31,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 app_dir="$(cd "$script_dir/.." && pwd)"
 
 cd "$app_dir"
-exec flutter build linux --release \
+exec flutter --no-version-check build linux --release \
   --dart-define="PLANTINI_ENV=$PLANTINI_ENV" \
   --dart-define="PLANTINI_API_BASE_URL=$PLANTINI_API_BASE_URL" \
   --dart-define="PLANTINI_OIDC_ISSUER_URL=$PLANTINI_OIDC_ISSUER_URL" \
