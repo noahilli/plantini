@@ -239,3 +239,6 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `c1ec09f` (`featre (APP-04) declarative routing with go_router and silent catch cleanup`):** Überprüfung: GoRouter-Routing mit ShellRoute/Bottom-Nav, Placeholder-Screens, stille catch-Blöcke durch Logging ersetzt.
 - [ ] **Review Commit `781117c` (`featre (OFFLINE-01) isar downgrade for web support and linux platform added`):** Überprüfung: Isar 2.X Downgrade in pubspec.yaml, Linux-Unterstützung hinzugefügt, OQ-02 in BLOCKERS.md entschieden.
 - [ ] **Review Commit `524e3fe` (`featre (OFFLINE-02) isar local database schema and models for offline content`):** Überprüfung: LocalDatabase Klasse, Isar-Modelle für Ecosystem, Level, Plant erstellt und Code via build_runner generiert.
+- [ ] **Review Commit `66f7a96` (`featre (OFFLINE-03) persistent background sync queue with exponential backoff`):** Überprüfung: IsarSyncJob Schema, SyncQueueService mit enqueueJob, processQueue, Exponential Backoff und Connectivity Trigger.
+- [ ] **Review Commit `3b07872` (`featre (CONTENT-06) atomic content release download and checksum validation`):** Überprüfung: ContentSyncService, atomarer Manifest-Download, SHA-256 Validierung, Persistenz in LocalDatabase, Fehlerabbruch.
+
