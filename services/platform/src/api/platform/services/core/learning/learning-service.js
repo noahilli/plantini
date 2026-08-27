@@ -206,7 +206,17 @@ class LearningService {
   async getLevelAccess(actor, level) {
     const progress = await this.getProgress(actor);
     const state = progress.levels.find((item) => item.levelId === level.publicId);
-    return state ? { status: state.status, progress: state.percentage } : { status: 'available', progress: 0 };
+    if (!state) return { status: 'available', progress: 0 };
+    if (state.status !== 'locked') {
+      return { status: state.status, progress: state.percentage };
+    }
+    return {
+      status: state.status,
+      progress: state.percentage,
+      // The condition is derived from the server-side completion rule.  It is
+      // deliberately generic: titles may change between content releases.
+      blockedReason: 'Schließe zuerst die vorherige Etappe ab.',
+    };
   }
 
   async scoreAnswers(level, rule, answers) {

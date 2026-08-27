@@ -103,6 +103,9 @@ function mapLevel(level, state = {}) {
     completionRule: rule,
     status: state.status || 'available',
     progress: clampProgress(state.progress),
+    ...(typeof state.blockedReason === 'string' && state.blockedReason.length > 0
+      ? { blockedReason: state.blockedReason }
+      : {}),
   };
 }
 

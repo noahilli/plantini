@@ -142,6 +142,13 @@ test('content service lists ecosystems, levels and structured plants with media'
   assert.equal(levelRes.completionRule.minimumScore, 0.8);
   assert.deepEqual(levelRes.plantIds, [ids.plant]);
 
+  const lockedLevel = await service.getLevel(
+    { id: 'actor-1' },
+    ids.level,
+    async () => ({ status: 'locked', progress: 0, blockedReason: 'Schließe zuerst die vorherige Etappe ab.' }),
+  );
+  assert.equal(lockedLevel.blockedReason, 'Schließe zuerst die vorherige Etappe ab.');
+
   const plantRes = await service.getPlant(ids.plant);
   assert.equal(plantRes.scientificName, 'Quercus robur');
   assert.equal(plantRes.commonName, 'Stieleiche');
