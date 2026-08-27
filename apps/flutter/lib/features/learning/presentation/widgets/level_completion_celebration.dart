@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/organic_tokens.dart';
-import '../../domain/learning_models.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../catalog/domain/catalog_models.dart';
+import '../../domain/learning_models.dart';
 
-class LevelCompletionCelebration extends StatelessWidget {
-  final LevelCompletion completion;
-  final Level level;
-  final Level? nextLevel;
-  final VoidCallback? onContinue;
-
+final class LevelCompletionCelebration extends StatelessWidget {
   const LevelCompletionCelebration({
     super.key,
     required this.completion,
@@ -17,134 +12,155 @@ class LevelCompletionCelebration extends StatelessWidget {
     this.nextLevel,
     this.onContinue,
   });
+  final LevelCompletion completion;
+  final Level level;
+  final Level? nextLevel;
+  final VoidCallback? onContinue;
 
   @override
   Widget build(BuildContext context) {
+    final percent = (completion.score * 100).round();
     return Semantics(
       label: 'Abschluss des Levels ${level.title}',
-      child: Container(
-        color: OrganicTokens.creamBackground,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                completion.passed
-                    ? 'Herzlichen Glückwunsch!'
-                    : 'Fast geschafft!',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: OrganicTokens.terracottaAction,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              if (completion.passed)
-                Text(
-                  'Level abgeschlossen',
-                  key: const ValueKey('learning-level-completed'),
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-              if (completion.passed) const SizedBox(height: 8),
-              Text(
-                'Du hast das Level "${level.title}" beendet.',
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(32.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: OrganicTokens.borderRadiusLarge,
-                  border: Border.all(
-                    color: OrganicTokens.sageSecondary,
-                    width: 2,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(22, 14, 22, 28),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(21),
+            decoration: BoxDecoration(
+              color: AppColors.sage800,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 86,
+                  height: 86,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.neutral100.withValues(alpha: .14),
+                    border: Border.all(color: AppColors.sage400, width: 5),
+                  ),
+                  child: Text(
+                    '$percent%',
+                    style: Theme.of(context).textTheme.headlineSmall
+                        ?.copyWith(color: AppColors.neutral100),
                   ),
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Dein Ergebnis',
-                      style: Theme.of(context).textTheme.titleMedium
-                          ?.copyWith(color: Colors.black87),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${(completion.score * 100).toInt()}%',
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        color: OrganicTokens.sageSecondary,
-                        fontWeight: FontWeight.bold,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'QUIZ BEENDET',
+                        style: Theme.of(context).textTheme.labelSmall
+                            ?.copyWith(color: AppColors.sage300),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        completion.passed
+                            ? 'Level abgeschlossen'
+                            : 'Fast geschafft!',
+                        key: const ValueKey('learning-level-completed'),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(color: AppColors.neutral100),
+                      ),
+                      if (completion.passed)
+                        const Text(
+                          'Herzlichen Glückwunsch!',
+                          style: TextStyle(
+                            color: AppColors.sage300,
+                            fontSize: 11,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          if (completion.passed && nextLevel != null)
+            Container(
+              padding: const EdgeInsets.all(17),
+              decoration: BoxDecoration(
+                color: AppColors.accent200,
+                borderRadius: BorderRadius.circular(26),
               ),
-              const SizedBox(height: 32),
-              if (completion.passed && nextLevel != null) ...[
-                Semantics(
-                  label: 'Freigeschaltet: ${nextLevel!.title}',
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: OrganicTokens.sageSecondary.withOpacity(0.1),
-                      borderRadius: OrganicTokens.borderRadiusSmall,
-                    ),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 26,
+                    backgroundColor: AppColors.terracotta,
+                    child: Icon(Icons.auto_awesome, color: AppColors.bg),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
-                          Icons.lock_open,
-                          color: OrganicTokens.sageSecondary,
-                          size: 32,
-                        ),
-                        const SizedBox(height: 8),
                         Text(
-                          'Freigeschaltet',
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: OrganicTokens.sageSecondary),
+                          'GATE OFFEN',
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(color: AppColors.accent800),
                         ),
+                        const SizedBox(height: 3),
                         Text(
                           nextLevel!.title,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                color: OrganicTokens.sageSecondary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: AppColors.accent900),
+                        ),
+                        const Text(
+                          'Die nächste Etappe wurde serverseitig freigeschaltet.',
+                          style: TextStyle(
+                            color: AppColors.accent800,
+                            fontSize: 11,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 32),
-              ],
-              ElevatedButton(
-                onPressed: onContinue,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: OrganicTokens.terracottaAction,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: OrganicTokens.borderRadiusSmall,
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  nextLevel != null && completion.passed
-                      ? 'Zum nächsten Level'
-                      : 'Zurück zur Übersicht',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                ],
               ),
-            ],
+            )
+          else
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.bg,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Text(
+                completion.passed
+                    ? 'Du hast alle derzeit veröffentlichten Etappen erreicht.'
+                    : 'Wiederhole das Quiz. Dein bisheriger Lernfortschritt bleibt erhalten.',
+                style: const TextStyle(color: AppColors.neutral700),
+              ),
+            ),
+          const SizedBox(height: 18),
+          Text(
+            level.title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
-        ),
+          const SizedBox(height: 5),
+          Text(
+            'Serverseitig bestätigtes Ergebnis: $percent %',
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.neutral700),
+          ),
+          const SizedBox(height: 24),
+          FilledButton(
+            onPressed: onContinue,
+            child: Text(
+              nextLevel != null && completion.passed
+                  ? 'Zum nächsten Level'
+                  : 'Zurück zur Übersicht',
+            ),
+          ),
+        ],
       ),
     );
   }

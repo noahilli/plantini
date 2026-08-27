@@ -1,114 +1,138 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/organic_tokens.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
 
-class LevelGateCard extends StatelessWidget {
+final class LevelGateCard extends StatelessWidget {
+  const LevelGateCard({super.key, required this.level, this.onTap});
   final Level level;
   final VoidCallback? onTap;
 
-  const LevelGateCard({super.key, required this.level, this.onTap});
-
   @override
   Widget build(BuildContext context) {
-    final bool isLocked = level.status == LevelStatus.locked;
-    final bool isCompleted = level.status == LevelStatus.completed;
-
+    final locked = level.status == LevelStatus.locked;
+    final active =
+        level.status == LevelStatus.available ||
+        level.status == LevelStatus.inProgress;
+    final completed = level.status == LevelStatus.completed;
+    final progress = level.progress?.clamp(0.0, 1.0).toDouble();
     return Semantics(
       label: 'Level-Karte: ${level.title}',
-      button: !isLocked,
-      child: Card(
+      button: !locked,
+      child: Material(
         key: ValueKey('level-card-${level.id}'),
-        color: OrganicTokens.creamBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: OrganicTokens.borderRadiusLarge,
-          side: isCompleted
-              ? const BorderSide(color: OrganicTokens.sageSecondary, width: 2)
-              : BorderSide.none,
-        ),
-        elevation: 0,
-        margin: EdgeInsets.zero,
+        color: active ? AppColors.neutral100 : AppColors.bg,
+        elevation: active ? 2 : 0,
+        shadowColor: AppColors.neutral900.withValues(alpha: .14),
+        borderRadius: BorderRadius.circular(24),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: isLocked ? null : onTap,
-          borderRadius: OrganicTokens.borderRadiusLarge,
+          onTap: locked ? null : onTap,
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 11,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _badgeColor(level.status),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (locked) ...[
+                            const Icon(
+                              Icons.lock_outline,
+                              size: 13,
+                              color: AppColors.neutral800,
+                            ),
+                            const SizedBox(width: 5),
+                          ],
+                          Text(
+                            _status(level.status),
+                            style: TextStyle(
+                              color: locked
+                                  ? AppColors.neutral800
+                                  : AppColors.neutral100,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    if (!locked)
+                      Text(
+                        '${level.plantIds.length} Arten in diesem Level',
+                        style: const TextStyle(
+                          color: AppColors.neutral700,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 9),
                 Text(
                   level.title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: isLocked ? Colors.grey : Colors.black87,
-                    fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  locked
+                      ? (level.blockedReason ??
+                            'Voraussetzung noch nicht erfüllt')
+                      : (level.learningGoal ?? 'Veröffentlichte Lernetappe'),
+                  style: const TextStyle(
+                    color: AppColors.neutral700,
+                    fontSize: 11.5,
+                    height: 1.45,
                   ),
                 ),
-                const SizedBox(height: 8),
-                if (level.learningGoal != null) ...[
-                  Text(
-                    level.learningGoal!,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: isLocked ? Colors.grey : Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-                if (isLocked)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: OrganicTokens.borderRadiusSmall,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.lock_outline,
-                          size: 16,
-                          color: Colors.grey,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            level.blockedReason ?? 'Gesperrt',
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else ...[
-                  Text(
-                    '${level.plantIds.length} Arten in diesem Level',
-                    style: const TextStyle(
-                      color: OrganicTokens.sageSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (level.progress != null)
-                    Semantics(
-                      label: 'Fortschritt: ${(level.progress! * 100).toInt()}%',
-                      child: LinearProgressIndicator(
-                        value: level.progress,
-                        backgroundColor: Colors.grey.shade300,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          OrganicTokens.terracottaAction,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                        minHeight: 8,
-                      ),
-                    )
-                  else
+                if (!locked) ...[
+                  const SizedBox(height: 11),
+                  if (level.progress == null && !completed) ...[
                     const Text(
                       'Noch nicht begonnen',
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(
+                        color: AppColors.neutral700,
+                        fontSize: 11,
+                      ),
                     ),
+                    const SizedBox(height: 7),
+                  ],
+                  if (level.progress != null || completed)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: LinearProgressIndicator(
+                        value: completed ? 1 : progress,
+                        minHeight: 8,
+                        color: AppColors.sage500,
+                        backgroundColor: AppColors.neutral200,
+                      ),
+                    ),
+                  if (active) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        onPressed: onTap,
+                        child: Text(
+                          level.status == LevelStatus.inProgress
+                              ? 'Weiterlernen →'
+                              : 'Etappe starten →',
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ],
             ),
@@ -118,3 +142,16 @@ class LevelGateCard extends StatelessWidget {
     );
   }
 }
+
+Color _badgeColor(LevelStatus status) => switch (status) {
+  LevelStatus.completed => AppColors.sage600,
+  LevelStatus.available || LevelStatus.inProgress => AppColors.sage700,
+  LevelStatus.locked => AppColors.neutral300,
+};
+
+String _status(LevelStatus status) => switch (status) {
+  LevelStatus.completed => 'abgeschlossen',
+  LevelStatus.available => 'bereit',
+  LevelStatus.inProgress => 'aktiv',
+  LevelStatus.locked => 'Gate',
+};

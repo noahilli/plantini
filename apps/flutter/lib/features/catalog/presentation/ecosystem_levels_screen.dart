@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/app_dependencies.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
 import '../domain/catalog_models.dart';
 import 'widgets/authenticated_page.dart';
@@ -99,15 +100,19 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
         if (levels.isEmpty) {
           return const AsyncStateView(kind: AsyncViewKind.empty);
         }
+        if (path == null) {
+          return const AsyncStateView(kind: AsyncViewKind.recoverableError);
+        }
         return Column(
           children: [
             _NextStepCard(
+              ecosystem: path.ecosystem,
               levels: levels,
               onOpen: (level) => context.go('/levels/${level.id}'),
             ),
             Expanded(
               child: ResearcherPathView(
-                ecosystem: path!.ecosystem,
+                ecosystem: path.ecosystem,
                 levels: levels,
                 onLevelTap: (level) {
                   if (level.isUnlocked) context.go('/levels/${level.id}');
@@ -129,8 +134,13 @@ final class _EcosystemPath {
 }
 
 final class _NextStepCard extends StatelessWidget {
-  const _NextStepCard({required this.levels, required this.onOpen});
+  const _NextStepCard({
+    required this.ecosystem,
+    required this.levels,
+    required this.onOpen,
+  });
 
+  final Ecosystem ecosystem;
   final List<Level> levels;
   final ValueChanged<Level> onOpen;
 
@@ -141,26 +151,99 @@ final class _NextStepCard extends StatelessWidget {
           (level) => level.isUnlocked && level.status != LevelStatus.completed,
         )
         .firstOrNull;
-    if (next == null) {
-      return Card(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: const ListTile(
-          leading: Icon(Icons.park_outlined),
-          title: Text('Forscherpfad abgeschlossen'),
-          subtitle: Text(
-            'Du hast alle derzeit veröffentlichten Etappen geschafft.',
+    final totalProgress = levels.isEmpty
+        ? 0.0
+        : levels.fold<double>(
+                0,
+                (sum, level) =>
+                    sum +
+                    (level.status == LevelStatus.completed
+                        ? 1
+                        : level.progress ?? 0),
+              ) /
+              levels.length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.bg,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'FORSCHERPFAD',
+                  style: Theme.of(context).textTheme.labelSmall
+                      ?.copyWith(color: AppColors.sage700),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'Dein Weg durch ${ecosystem.title}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 11),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: LinearProgressIndicator(
+                    value: totalProgress,
+                    minHeight: 9,
+                    color: AppColors.sage500,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${levels.where((level) => level.status == LevelStatus.completed).length} von ${levels.length} Etappen',
+                      style: const TextStyle(
+                        color: AppColors.neutral700,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '${(totalProgress * 100).round()} %',
+                      style: const TextStyle(
+                        color: AppColors.neutral700,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    }
-    return Card(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: ListTile(
-        leading: const Icon(Icons.explore_outlined),
-        title: const Text('Deine nächste Aufgabe'),
-        subtitle: Text('${next.sequence}. ${next.title}'),
-        trailing: const Icon(Icons.arrow_forward),
-        onTap: () => onOpen(next),
+          const SizedBox(height: 9),
+          Material(
+            color: next == null ? AppColors.sage200 : AppColors.accent200,
+            borderRadius: BorderRadius.circular(20),
+            child: ListTile(
+              leading: Icon(
+                next == null ? Icons.park_outlined : Icons.explore_outlined,
+                color: next == null ? AppColors.sage800 : AppColors.accent800,
+              ),
+              title: Text(
+                next == null
+                    ? 'Forscherpfad abgeschlossen'
+                    : 'Deine nächste Aufgabe',
+              ),
+              subtitle: Text(
+                next == null
+                    ? 'Alle veröffentlichten Etappen geschafft.'
+                    : '${next.sequence}. ${next.title}',
+              ),
+              trailing: next == null ? null : const Icon(Icons.arrow_forward),
+              onTap: next == null ? null : () => onOpen(next),
+            ),
+          ),
+        ],
       ),
     );
   }

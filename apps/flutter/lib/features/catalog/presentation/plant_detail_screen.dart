@@ -6,50 +6,71 @@ import '../domain/plant_model.dart';
 
 /// Screen presenting the detailed plant profile ("Pflanzensteckbrief").
 class PlantDetailScreen extends StatelessWidget {
-  const PlantDetailScreen({
-    super.key,
-    required this.plant,
-  });
+  const PlantDetailScreen({super.key, required this.plant});
 
   final Plant plant;
 
   @override
   Widget build(BuildContext context) {
-    final hasWarning = plant.warning != null && plant.warning!.trim().isNotEmpty;
+    final hasWarning =
+        plant.warning != null && plant.warning!.trim().isNotEmpty;
     final title = plant.commonName.isNotEmpty
         ? plant.commonName
         : plant.scientificName;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: const Text('Steckbrief')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Wissenschaftlicher Name (kursiv, groß)
+            Container(
+              height: 168,
+              width: double.infinity,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: AppColors.sage200,
+                borderRadius: BorderRadius.circular(26),
+                gradient: plant.media.isEmpty
+                    ? const LinearGradient(
+                        colors: [AppColors.sage200, AppColors.sage300],
+                      )
+                    : null,
+              ),
+              child: plant.media.isEmpty
+                  ? const Icon(
+                      Icons.local_florist,
+                      size: 76,
+                      color: AppColors.sage500,
+                    )
+                  : Image.network(
+                      plant.media.first.url,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => const Icon(
+                        Icons.local_florist,
+                        size: 76,
+                        color: AppColors.sage500,
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 16),
+
             Text(
-              plant.scientificName,
+              title,
               style: AppTypography.textTheme.headlineMedium?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: AppColors.forest,
-                fontWeight: FontWeight.bold,
+                color: AppColors.ink,
               ),
             ),
-            const SizedBox(height: 4),
-
-            // Deutscher Name (commonName)
-            if (plant.commonName.isNotEmpty) ...[
-              Text(
-                plant.commonName,
-                style: AppTypography.textTheme.titleLarge?.copyWith(
-                  color: AppColors.ink,
-                ),
+            const SizedBox(height: 3),
+            Text(
+              plant.scientificName,
+              style: AppTypography.textTheme.bodyLarge?.copyWith(
+                fontStyle: FontStyle.italic,
+                color: AppColors.neutral600,
               ),
-              const SizedBox(height: 8),
-            ],
+            ),
+            const SizedBox(height: 9),
 
             // Familie
             if (plant.family.isNotEmpty) ...[
@@ -60,7 +81,7 @@ class PlantDetailScreen extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.mint,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
                   plant.family,
@@ -80,7 +101,7 @@ class PlantDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(14.0),
                 decoration: BoxDecoration(
                   color: AppColors.warningBg,
-                  borderRadius: BorderRadius.circular(12.0),
+                  borderRadius: BorderRadius.circular(22.0),
                   border: Border.all(
                     color: AppColors.warningBorder,
                     width: 1.5,
@@ -174,7 +195,10 @@ class PlantDetailScreen extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('• ', style: TextStyle(color: AppColors.muted)),
+                      const Text(
+                        '• ',
+                        style: TextStyle(color: AppColors.muted),
+                      ),
                       Expanded(
                         child: Text(
                           source,

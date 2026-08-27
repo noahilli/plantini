@@ -1,48 +1,94 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
 import 'level_gate_card.dart';
 
-class ResearcherPathView extends StatelessWidget {
-  final Ecosystem ecosystem;
-  final List<Level> levels;
-  final void Function(Level)? onLevelTap;
-
+final class ResearcherPathView extends StatelessWidget {
   const ResearcherPathView({
     super.key,
     required this.ecosystem,
     required this.levels,
     this.onLevelTap,
   });
+  final Ecosystem ecosystem;
+  final List<Level> levels;
+  final void Function(Level)? onLevelTap;
 
   @override
   Widget build(BuildContext context) {
-    // Sort levels safely by sequence for the vertical path
-    final sortedLevels = List<Level>.from(levels)
+    final sorted = [...levels]
       ..sort((a, b) => a.sequence.compareTo(b.sequence));
-
     return Semantics(
       label: 'Forscherpfad für ${ecosystem.title}',
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-        itemCount: sortedLevels.length,
-        separatorBuilder: (context, index) {
-          // Vertical line connecting the gates/waypoints
-          return Semantics(
-            hidden: true,
-            child: SizedBox(
-              height: 40,
-              child: Center(
-                child: Container(width: 4, color: Colors.grey.shade300),
-              ),
-            ),
-          );
-        },
+      child: ListView.builder(
+        key: const ValueKey('level-list-ready'),
+        padding: const EdgeInsets.fromLTRB(22, 8, 22, 30),
+        itemCount: sorted.length,
         itemBuilder: (context, index) {
-          final level = sortedLevels[index];
-          return LevelGateCard(
-            level: level,
-            onTap: onLevelTap != null ? () => onLevelTap!(level) : null,
+          final level = sorted[index];
+          final unlocked = level.status != LevelStatus.locked;
+          return IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 45,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: unlocked
+                              ? AppColors.sage600
+                              : AppColors.neutral200,
+                          border: Border.all(
+                            color: unlocked
+                                ? AppColors.sage300
+                                : AppColors.neutral300,
+                            width: 3,
+                          ),
+                        ),
+                        child: Text(
+                          '${level.sequence}',
+                          style: TextStyle(
+                            color: unlocked
+                                ? AppColors.neutral100
+                                : AppColors.neutral700,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      if (index < sorted.length - 1)
+                        Expanded(
+                          child: Container(
+                            width: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            color: unlocked
+                                ? AppColors.sage400
+                                : AppColors.neutral400,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: LevelGateCard(
+                      level: level,
+                      onTap: onLevelTap == null
+                          ? null
+                          : () => onLevelTap!(level),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),

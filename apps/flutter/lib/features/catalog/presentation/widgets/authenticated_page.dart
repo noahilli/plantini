@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../app/app_dependencies.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// Common shell for authenticated catalog and feature pages.
 final class AuthenticatedPage extends StatelessWidget {
@@ -18,15 +20,20 @@ final class AuthenticatedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
+      leading: context.canPop()
+          ? Padding(
+              padding: const EdgeInsets.all(8),
+              child: IconButton.filled(
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.bg,
+                  foregroundColor: AppColors.ink,
+                ),
+                onPressed: context.pop,
+                icon: const Icon(Icons.arrow_back, size: 18),
+              ),
+            )
+          : null,
       title: Text(title),
-      actions: [
-        IconButton(
-          key: const ValueKey('auth-logout'),
-          tooltip: 'Abmelden',
-          onPressed: dependencies.auth.logout,
-          icon: const Icon(Icons.logout),
-        ),
-      ],
     ),
     body: body,
   );
