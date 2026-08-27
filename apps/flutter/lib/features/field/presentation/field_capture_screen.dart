@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,6 +53,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
   LocationState _locationState = LocationState.unknown;
   bool _includeLocation = false;
   bool _isWorking = false;
+  Timer? _identificationPollTimer;
   String? _observationClientId;
   String? _observationIdempotencyKey;
 
@@ -64,6 +67,12 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     _mediaService = widget.mediaService ?? MediaService();
     _locationService = widget.locationService ?? LocationService();
     _ids = widget.ids ?? SecureClientIdGenerator();
+  }
+
+  @override
+  void dispose() {
+    _identificationPollTimer?.cancel();
+    super.dispose();
   }
 
   bool get _isConfigured =>
@@ -139,6 +148,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _selectedCandidateId = _selectionFrom(value);
           _isWorking = false;
         });
+        _scheduleIdentificationPoll(value);
       case Failure<IdentificationJob>(:final failure):
         _setFailure(failure.message);
     }
@@ -161,9 +171,26 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _selectedCandidateId = _selectionFrom(value);
           _isWorking = false;
         });
+        _scheduleIdentificationPoll(value);
       case Failure<IdentificationJob>(:final failure):
         _setFailure(failure.message);
     }
+  }
+
+  void _scheduleIdentificationPoll(IdentificationJob job) {
+    _identificationPollTimer?.cancel();
+    if (!mounted || (job.status != 'pending' && job.status != 'processing')) {
+      return;
+    }
+    final now = DateTime.now();
+    final retryAfter = job.retryAfter;
+    final delay = retryAfter != null && retryAfter.isAfter(now)
+        ? retryAfter.difference(now)
+        : const Duration(seconds: 1);
+    _identificationPollTimer = Timer(
+      delay > const Duration(seconds: 10) ? const Duration(seconds: 10) : delay,
+      _refreshIdentification,
+    );
   }
 
   Future<void> _saveObservation() async {
