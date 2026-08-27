@@ -1,0 +1,146 @@
+name: plantini-production
+
+# Single-host production topology intended to run behind a host TLS reverse
+# proxy. Every image reference and secret is mandatory. Deploy only immutable
+# image references (tag plus digest); this file never builds from source.
+services:
+  postgres-platform:
+    image: ${POSTGRES_IMAGE:?set an immutable PostgreSQL image reference}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: plantini
+      POSTGRES_USER: plantini
+      POSTGRES_PASSWORD: ${PLATFORM_DB_PASSWORD:?missing PLATFORM_DB_PASSWORD}
+    volumes:
+      - platform-db:/var/lib/postgresql/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plantini -d plantini"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    security_opt: [no-new-privileges:true]
+
+  postgres-keycloak:
+    image: ${POSTGRES_IMAGE:?set an immutable PostgreSQL image reference}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?missing KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - keycloak-db:/var/lib/postgresql/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    security_opt: [no-new-privileges:true]
+
+  redis:
+    image: ${REDIS_IMAGE:?set an immutable Redis image reference}
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    volumes:
+      - redis-data:/data
+    networks: [data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    security_opt: [no-new-privileges:true]
+
+  keycloak:
+    image: ${KEYCLOAK_IMAGE:?set an immutable Keycloak image reference}
+    restart: unless-stopped
+    command: ["start", "--optimized", "--health-enabled=true"]
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?missing KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: ${AUTH_PUBLIC_HOST:?missing AUTH_PUBLIC_HOST}
+      KC_HOSTNAME_STRICT: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "127.0.0.1:${AUTH_LOOPBACK_PORT:-8082}:8080"
+    networks: [app, data]
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/9000'"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 40s
+    security_opt: [no-new-privileges:true]
+
+  platform:
+    image: ${PLATFORM_IMAGE:?set an immutable Plantini platform image reference}
+    restart: unless-stopped
+    depends_on:
+      postgres-platform:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres-platform
+      DATABASE_PORT: "5432"
+      DATABASE_NAME: plantini
+      DATABASE_USERNAME: plantini
+      DATABASE_PASSWORD: ${PLATFORM_DB_PASSWORD:?missing PLATFORM_DB_PASSWORD}
+      REDIS_URL: redis://redis:6379
+      APP_KEYS: ${STRAPI_APP_KEYS:?missing STRAPI_APP_KEYS}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?missing STRAPI_API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?missing STRAPI_ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?missing STRAPI_TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:?missing STRAPI_JWT_SECRET}
+      CORS_ORIGINS: ${WEB_PUBLIC_URL:?missing WEB_PUBLIC_URL}
+      PUBLIC_URL: ${API_PUBLIC_URL:?missing API_PUBLIC_URL}
+      PLATFORM_OIDC_ISSUER: ${AUTH_PUBLIC_URL:?missing AUTH_PUBLIC_URL}/realms/plantini
+      PLATFORM_OIDC_AUDIENCE: plantini-api
+      PLATFORM_OIDC_JWKS_URI: http://keycloak:8080/realms/plantini/protocol/openid-connect/certs
+      PRIVATE_UPLOAD_DIR: /var/lib/plantini/private-media
+      PLANTNET_MODE: real
+      PLANTNET_BASE_URL: https://my-api.plantnet.org
+      PLANTNET_API_KEY: ${PLANTNET_API_KEY:?missing PLANTNET_API_KEY}
+      PLANTNET_PROJECT: ${PLANTNET_PROJECT:-all}
+      PLANTNET_LANGUAGE: ${PLANTNET_LANGUAGE:-de}
+      PLANTNET_MAX_RESULTS: ${PLANTNET_MAX_RESULTS:-3}
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    ports:
+      - "127.0.0.1:${API_LOOPBACK_PORT:-1338}:1337"
+    volumes:
+      - private-media:/var/lib/plantini/private-media
+    networks: [app, data, provider]
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:1337/api/v1/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 40s
+    security_opt: [no-new-privileges:true]
+
+networks:
+  app:
+    internal: true
+  data:
+    internal: true
+  provider: {}
+
+volumes:
+  platform-db:
+  keycloak-db:
+  redis-data:
+  private-media:
