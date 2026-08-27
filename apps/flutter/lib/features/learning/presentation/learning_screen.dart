@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/app_dependencies.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../../catalog/presentation/widgets/authenticated_page.dart';
+import '../../catalog/domain/catalog_models.dart';
 import '../domain/learning_models.dart';
 import 'widgets/completion_view.dart';
 import 'widgets/learning_failure_view.dart';
+import 'widgets/level_completion_celebration.dart';
 import 'widgets/quiz_question_view.dart';
 
 /// Screen coordinating an interactive learning quiz session.
@@ -29,6 +32,8 @@ final class LearningScreen extends StatefulWidget {
 final class _LearningScreenState extends State<LearningScreen> {
   LearningSession? _session;
   LevelCompletion? _completion;
+  Level? _level;
+  Level? _nextLevel;
   AppFailure? _failure;
   bool _busy = true;
 
@@ -36,6 +41,30 @@ final class _LearningScreenState extends State<LearningScreen> {
   void initState() {
     super.initState();
     _load();
+    _loadLevelContext();
+  }
+
+  Future<void> _loadLevelContext() async {
+    final levelResult = await widget.dependencies.loadLevel(widget.levelId);
+    if (!mounted || levelResult is! Success<LevelContent>) return;
+    final level = levelResult.value.level;
+    setState(() => _level = level);
+  }
+
+  Future<void> _refreshNextLevel() async {
+    final level = _level;
+    if (level == null) return;
+    final result = await widget.dependencies.loadLevels(level.ecosystemId);
+    if (!mounted || result is! Success<List<Level>>) return;
+    final next = result.value
+        .where((item) => item.sequence > level.sequence)
+        .fold<Level?>(
+          null,
+          (current, item) => current == null || item.sequence < current.sequence
+              ? item
+              : current,
+        );
+    setState(() => _nextLevel = next);
   }
 
   Future<void> _load() async {
@@ -105,16 +134,19 @@ final class _LearningScreenState extends State<LearningScreen> {
     });
     final result = await widget.dependencies.learningSessions.complete(session);
     if (!mounted) return;
-    result.when(
-      success: (completion) => setState(() {
-        _completion = completion;
-        _busy = false;
-      }),
-      failure: (failure) => setState(() {
-        _failure = failure;
-        _busy = false;
-      }),
-    );
+    switch (result) {
+      case Success<LevelCompletion>(:final value):
+        setState(() {
+          _completion = value;
+          _busy = false;
+        });
+        if (value.passed) await _refreshNextLevel();
+      case Failure<LevelCompletion>(:final failure):
+        setState(() {
+          _failure = failure;
+          _busy = false;
+        });
+    }
   }
 
   @override
@@ -132,7 +164,14 @@ final class _LearningScreenState extends State<LearningScreen> {
       return LearningFailureView(failure: _failure!, onRetry: _load);
     }
     if (_completion != null) {
-      return CompletionView(completion: _completion!);
+      final level = _level;
+      if (level == null) return CompletionView(completion: _completion!);
+      return LevelCompletionCelebration(
+        completion: _completion!,
+        level: level,
+        nextLevel: _nextLevel,
+        onContinue: () => context.go('/ecosystems/${level.ecosystemId}'),
+      );
     }
     final session = _session;
     if (session == null) {
