@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 
-/// Design tokens for the Organic Theme.
-/// Contains colors, radii, and other styling constants.
-abstract class OrganicTokens {
-  // Colors
-  static const Color creamBackground = Color(0xFFF5EAD8);
-  static const Color terracottaAction = Color(0xFFC67139);
-  static const Color sageSecondary = Color(0xFF7A8A5E);
+import 'app_colors.dart';
 
-  // Radii
-  static const double radiusSmall = 20.0;
-  static const double radiusLarge = 28.0;
-
-  // Border Radii
-  static final BorderRadius borderRadiusSmall = BorderRadius.circular(
-    radiusSmall,
-  );
-  static final BorderRadius borderRadiusLarge = BorderRadius.circular(
-    radiusLarge,
-  );
+abstract final class OrganicTokens {
+  static const creamBackground = AppColors.bg;
+  static const pageBackground = AppColors.neutral100;
+  static const surface = AppColors.surface;
+  static const ink = AppColors.ink;
+  static const terracottaAction = AppColors.terracotta;
+  static const sageSecondary = AppColors.sage;
+  static const sageDark = AppColors.sage800;
+  static const muted = AppColors.neutral700;
+  static const radiusSmall = 8.0;
+  static const radiusMedium = 16.0;
+  static const radiusLarge = 28.0;
+  static const radiusPill = 999.0;
+  static final borderRadiusSmall = BorderRadius.circular(radiusSmall);
+  static final borderRadiusMedium = BorderRadius.circular(radiusMedium);
+  static final borderRadiusLarge = BorderRadius.circular(radiusLarge);
+  static final borderRadiusPill = BorderRadius.circular(radiusPill);
+  static const pagePadding = EdgeInsets.symmetric(horizontal: 22, vertical: 10);
+  static const softShadow = <BoxShadow>[
+    BoxShadow(color: Color(0x292E2B25), blurRadius: 10, offset: Offset(0, 3)),
+  ];
 }

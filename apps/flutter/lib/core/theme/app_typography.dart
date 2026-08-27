@@ -1,87 +1,75 @@
 import 'package:flutter/material.dart';
 
-/// Central typography definitions for Plantini.
-/// Follows Material 3 design and ensures text is scalable up to 200% without breaking layouts.
-class AppTypography {
+abstract final class AppTypography {
+  static const headingFamily = 'Caprasimo';
+  static const bodyFamily = 'Figtree';
+
   static const TextTheme textTheme = TextTheme(
     displayLarge: TextStyle(
-      fontSize: 57,
-      fontWeight: FontWeight.w400,
-      letterSpacing: -0.25,
+      fontFamily: headingFamily,
+      fontSize: 42,
+      height: 1.12,
     ),
     displayMedium: TextStyle(
-      fontSize: 45,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 32,
+      height: 1.12,
     ),
     displaySmall: TextStyle(
-      fontSize: 36,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 27,
+      height: 1.1,
     ),
-
     headlineLarge: TextStyle(
-      fontSize: 32,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 27,
+      height: 1.1,
     ),
     headlineMedium: TextStyle(
-      fontSize: 28,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 25,
+      height: 1.12,
     ),
     headlineSmall: TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.w600,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 20,
+      height: 1.12,
     ),
-
     titleLarge: TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0,
+      fontFamily: headingFamily,
+      fontSize: 19,
+      height: 1.15,
     ),
     titleMedium: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.15,
+      fontFamily: bodyFamily,
+      fontSize: 15,
+      height: 1.35,
+      fontWeight: FontWeight.w700,
     ),
     titleSmall: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.1,
+      fontFamily: bodyFamily,
+      fontSize: 13,
+      height: 1.35,
+      fontWeight: FontWeight.w700,
     ),
-
-    bodyLarge: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.5,
-    ),
-    bodyMedium: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.25,
-    ),
-    bodySmall: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-      letterSpacing: 0.4,
-    ),
-
+    bodyLarge: TextStyle(fontFamily: bodyFamily, fontSize: 15, height: 1.55),
+    bodyMedium: TextStyle(fontFamily: bodyFamily, fontSize: 13, height: 1.5),
+    bodySmall: TextStyle(fontFamily: bodyFamily, fontSize: 11, height: 1.45),
     labelLarge: TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.1,
+      fontFamily: bodyFamily,
+      fontSize: 13,
+      fontWeight: FontWeight.w700,
     ),
     labelMedium: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.5,
+      fontFamily: bodyFamily,
+      fontSize: 11,
+      fontWeight: FontWeight.w700,
     ),
     labelSmall: TextStyle(
-      fontSize: 11,
-      fontWeight: FontWeight.w500,
-      letterSpacing: 0.5,
+      fontFamily: bodyFamily,
+      fontSize: 10,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.1,
     ),
   );
 }

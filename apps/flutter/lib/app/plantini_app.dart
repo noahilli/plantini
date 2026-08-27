@@ -28,7 +28,7 @@ final class _PlantiniAppState extends State<PlantiniApp> {
     title: 'Plantini',
     theme: AppTheme.lightTheme,
     darkTheme: AppTheme.darkTheme,
-    themeMode: ThemeMode.system,
+    themeMode: ThemeMode.light,
     routerConfig: _router,
   );
 }

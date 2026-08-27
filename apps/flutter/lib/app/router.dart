@@ -8,12 +8,13 @@ import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
 import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
+import '../features/home/presentation/home_screen.dart';
 import '../features/learning/presentation/learning_screen.dart';
 import 'app_dependencies.dart';
 
 /// Creates the declarative [GoRouter] for Plantini.
 GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
-  initialLocation: '/ecosystems',
+  initialLocation: '/home',
   refreshListenable: dependencies.auth,
   redirect: (context, state) {
     final path = state.matchedLocation;
@@ -23,7 +24,7 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
     if (!dependencies.auth.isAuthenticated) {
       return path == '/login' ? null : '/login';
     }
-    if (path == '/boot' || path == '/login') return '/ecosystems';
+    if (path == '/boot' || path == '/login') return '/home';
     return null;
   },
   routes: [
@@ -39,6 +40,10 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
       builder: (context, state, child) =>
           AppShell(location: state.matchedLocation, child: child),
       routes: [
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => HomeScreen(dependencies: dependencies),
+        ),
         GoRoute(
           path: '/',
           builder: (context, state) =>
@@ -134,24 +139,32 @@ final class AppShell extends StatelessWidget {
   final String location;
 
   int _calculateSelectedIndex() {
-    if (location.startsWith('/herbarium') || location.startsWith('/field')) {
-      return 1;
-    }
-    if (location.startsWith('/profile')) {
+    if (location.startsWith('/home')) return 0;
+    if (location.startsWith('/field')) {
       return 2;
     }
-    return 0; // Lernen (/ecosystems, /levels, /plants, etc.)
+    if (location.startsWith('/herbarium')) return 3;
+    if (location.startsWith('/profile')) {
+      return 4;
+    }
+    return 1;
   }
 
   void _onItemTapped(BuildContext context, int index) {
     switch (index) {
       case 0:
-        context.go('/ecosystems');
+        context.go('/home');
         break;
       case 1:
-        context.go('/field');
+        context.go('/ecosystems');
         break;
       case 2:
+        context.go('/field');
+        break;
+      case 3:
+        context.go('/herbarium');
+        break;
+      case 4:
         context.go('/profile');
         break;
     }
@@ -166,14 +179,24 @@ final class AppShell extends StatelessWidget {
         onDestinationSelected: (index) => _onItemTapped(context, index),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.school_outlined),
-            selectedIcon: Icon(Icons.school),
+            icon: Icon(Icons.terrain_outlined),
+            selectedIcon: Icon(Icons.terrain),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.route_outlined),
+            selectedIcon: Icon(Icons.route),
             label: 'Lernen',
           ),
           NavigationDestination(
-            icon: Icon(Icons.eco_outlined),
-            selectedIcon: Icon(Icons.eco),
-            label: 'Feld',
+            icon: Icon(Icons.explore_outlined),
+            selectedIcon: Icon(Icons.explore),
+            label: 'Expedition',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.local_florist_outlined),
+            selectedIcon: Icon(Icons.local_florist),
+            label: 'Herbarium',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
@@ -195,53 +218,135 @@ final class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profil'),
-        actions: [
-          IconButton(
-            key: const ValueKey('auth-logout'),
-            tooltip: 'Abmelden',
-            onPressed: auth.logout,
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.person_outline,
-                size: 64,
-                color: AppColors.forest,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(22, 22, 22, 16),
+                children: [
+                  const Text(
+                    'Route: /profile',
+                    style: TextStyle(color: Colors.transparent, fontSize: 1),
+                  ),
+                  Text(
+                    'DEIN BEREICH',
+                    style: Theme.of(context).textTheme.labelSmall
+                        ?.copyWith(color: AppColors.sage700),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Profil & Datenschutz',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  const SizedBox(height: 22),
+                  Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: AppColors.sage800,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: const Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 26,
+                          backgroundColor: AppColors.sage300,
+                          child: Icon(Icons.person, color: AppColors.sage800),
+                        ),
+                        SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Plantini-Forscher:in',
+                                style: TextStyle(
+                                  color: AppColors.neutral100,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(height: 3),
+                              Text(
+                                'Deine Funde bleiben privat.',
+                                style: TextStyle(
+                                  color: AppColors.sage300,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Card(
+                    child: Column(
+                      children: [
+                        _ProfileTile(
+                          icon: Icons.language,
+                          title: 'Sprache',
+                          value: 'Deutsch',
+                        ),
+                        _ProfileTile(
+                          icon: Icons.lock_outline,
+                          title: 'Datenschutz',
+                          value: 'Privat standardmäßig',
+                        ),
+                        _ProfileTile(
+                          icon: Icons.download_outlined,
+                          title: 'Daten exportieren',
+                          value: 'Deine Daten verwalten',
+                        ),
+                        _ProfileTile(
+                          icon: Icons.help_outline,
+                          title: 'Hilfe & Feedback',
+                          value: 'Grenzen und Sicherheit',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Profil',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.forest,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Route: /profile',
-                style: TextStyle(color: AppColors.muted),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 8, 22, 18),
+              child: OutlinedButton.icon(
+                key: const ValueKey('auth-logout'),
                 onPressed: auth.logout,
                 icon: const Icon(Icons.logout),
-                label: const Text('Abmelden'),
+                label: const Text('Auf allen Geräten abmelden'),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+final class _ProfileTile extends StatelessWidget {
+  const _ProfileTile({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    leading: CircleAvatar(
+      backgroundColor: AppColors.sage200,
+      child: Icon(icon, color: AppColors.sage800, size: 19),
+    ),
+    title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+    subtitle: Text(value),
+    trailing: const Icon(Icons.chevron_right),
+  );
 }
 
 /// Startup boot splash screen.
@@ -268,38 +373,66 @@ final class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppColors.bg,
     body: SafeArea(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
+          constraints: const BoxConstraints(maxWidth: 390),
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.eco_rounded, size: 72),
-                const SizedBox(height: 20),
+                Align(
+                  child: Container(
+                    width: 88,
+                    height: 88,
+                    decoration: const BoxDecoration(
+                      color: AppColors.sage800,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(38),
+                        topRight: Radius.circular(38),
+                        bottomRight: Radius.circular(38),
+                        bottomLeft: Radius.circular(12),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.eco_rounded,
+                      color: AppColors.sage200,
+                      size: 44,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
                 Text(
                   'Plantini',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.displayMedium,
                 ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Entdecke Pflanzen und sichere deine Lernfortschritte in deinem eigenen Konto.',
+                const SizedBox(height: 8),
+                Text(
+                  'Deine spielbare Forschungsreise durch die Pflanzenwelt.',
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(color: AppColors.neutral700),
                 ),
                 if (auth.failure != null) ...[
                   const SizedBox(height: 20),
                   Text(auth.failure!.message, textAlign: TextAlign.center),
                 ],
-                const SizedBox(height: 32),
+                const SizedBox(height: 34),
                 FilledButton.icon(
                   key: const ValueKey('auth-login'),
                   onPressed: auth.login,
                   icon: const Icon(Icons.login),
                   label: const Text('Anmelden'),
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Deine Fotos und Fundorte sind nur für dich sichtbar.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.neutral700, fontSize: 11),
                 ),
               ],
             ),

@@ -24,10 +24,18 @@ import 'package:plantini_app/features/learning/domain/learning_repository.dart';
 
 final class MockAuthPlatformHelper implements AuthPlatformHelper {
   @override
-  Future<Credential?> login(String issuerUrl, String clientId, List<String> scopes) async => null;
+  Future<Credential?> login(
+    String issuerUrl,
+    String clientId,
+    List<String> scopes,
+  ) async => null;
 
   @override
-  Future<Credential?> processRedirect(String issuerUrl, String clientId, List<String> scopes) async => null;
+  Future<Credential?> processRedirect(
+    String issuerUrl,
+    String clientId,
+    List<String> scopes,
+  ) async => null;
 }
 
 final class MockCredentialStore implements CredentialStore {
@@ -43,14 +51,18 @@ final class MockCredentialStore implements CredentialStore {
 
 final class MockCatalogRepository implements CatalogRepository {
   @override
-  Future<Result<List<Ecosystem>>> listPublishedEcosystems() async => const Result.success([]);
+  Future<Result<List<Ecosystem>>> listPublishedEcosystems() async =>
+      const Result.success([]);
 
   @override
   Future<Result<LevelContent>> getPublishedLevel(String levelId) async =>
-      Result.failure(const ContractFailure(message: 'not found', missingFields: []));
+      Result.failure(
+        const ContractFailure(message: 'not found', missingFields: []),
+      );
 
   @override
-  Future<Result<List<Level>>> listPublishedLevels(String ecosystemId) async => const Result.success([]);
+  Future<Result<List<Level>>> listPublishedLevels(String ecosystemId) async =>
+      const Result.success([]);
 }
 
 final class MockLearningRepository implements LearningRepository {
@@ -60,7 +72,8 @@ final class MockLearningRepository implements LearningRepository {
     required String clientEventId,
     required List<QuizAnswer> answers,
     required String idempotencyKey,
-  }) async => Result.failure(const ContractFailure(message: 'mock', missingFields: []));
+  }) async =>
+      Result.failure(const ContractFailure(message: 'mock', missingFields: []));
 
   @override
   Future<Result<ProgressSnapshot>> getProgress({DateTime? since}) async =>
@@ -78,13 +91,15 @@ final class MockLearningRepository implements LearningRepository {
     required String clientAttemptId,
     required String contentVersion,
     required String idempotencyKey,
-  }) async => Result.failure(const ContractFailure(message: 'mock', missingFields: []));
+  }) async =>
+      Result.failure(const ContractFailure(message: 'mock', missingFields: []));
 
   @override
   Future<Result<EventBatchAcknowledgement>> submitEvents({
     required List<LearningEvent> events,
     required String idempotencyKey,
-  }) async => Result.failure(const ContractFailure(message: 'mock', missingFields: []));
+  }) async =>
+      Result.failure(const ContractFailure(message: 'mock', missingFields: []));
 }
 
 void main() {
@@ -107,7 +122,10 @@ void main() {
     final learningRepo = MockLearningRepository();
     dependencies = AppDependencies(
       auth: auth,
-      apiClient: PlatformApiClient(config: config, accessTokenProvider: () async => null),
+      apiClient: PlatformApiClient(
+        config: config,
+        accessTokenProvider: () async => null,
+      ),
       loadEcosystems: LoadPublishedEcosystems(catalogRepo),
       loadLevels: LoadPublishedLevels(catalogRepo),
       loadLevel: LoadPublishedLevel(catalogRepo),
@@ -126,18 +144,16 @@ void main() {
       await auth.initialize();
       final router = createAppRouter(dependencies);
 
-      await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-        ),
-      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       await tester.pumpAndSettle();
 
       expect(find.byType(LoginScreen), findsOneWidget);
       expect(find.text('Anmelden'), findsOneWidget);
     });
 
-    testWidgets('renders AppShell with NavigationBar destinations', (tester) async {
+    testWidgets('renders AppShell with NavigationBar destinations', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: AppShell(
@@ -147,36 +163,37 @@ void main() {
         ),
       );
 
+      expect(find.text('Home'), findsOneWidget);
       expect(find.text('Lernen'), findsOneWidget);
-      expect(find.text('Feld'), findsOneWidget);
+      expect(find.text('Expedition'), findsOneWidget);
+      expect(find.text('Herbarium'), findsOneWidget);
       expect(find.text('Profil'), findsOneWidget);
       expect(find.text('Lerninhalt'), findsOneWidget);
     });
 
     testWidgets('renders HerbariumScreen', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: HerbariumScreen(dependencies: dependencies),
-        ),
+        MaterialApp(home: HerbariumScreen(dependencies: dependencies)),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Herbarium'), findsWidgets);
-      expect(find.byKey(const ValueKey('herbarium-search-field')), findsOneWidget);
+      expect(find.text('MEIN HERBARIUM'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('herbarium-search-field')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders ProfileScreen placeholder', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ProfileScreen(auth: auth),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: ProfileScreen(auth: auth)));
 
-      expect(find.text('Profil'), findsWidgets);
+      expect(find.text('Profil & Datenschutz'), findsOneWidget);
       expect(find.text('Route: /profile'), findsOneWidget);
     });
 
-    testWidgets('renders PlantDetailScreen via router fallback', (tester) async {
+    testWidgets('renders PlantDetailScreen via router fallback', (
+      tester,
+    ) async {
       const plant = Plant(
         id: 'p-1',
         slug: 'slug-1',
@@ -192,18 +209,13 @@ void main() {
         routes: [
           GoRoute(
             path: '/plants/:plantId',
-            builder: (context, state) => PlantDetailScreen(
-              plant: (state.extra as Plant?) ?? plant,
-            ),
+            builder: (context, state) =>
+                PlantDetailScreen(plant: (state.extra as Plant?) ?? plant),
           ),
         ],
       );
 
-      await tester.pumpWidget(
-        MaterialApp.router(
-          routerConfig: router,
-        ),
-      );
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       await tester.pumpAndSettle();
 
       expect(find.text('Rosa canina'), findsWidgets);
@@ -214,11 +226,14 @@ void main() {
 
 final class _DummyStore implements LearningSessionStore {
   @override
-  Future<Result<void>> delete(String levelId) async => const Result.success(null);
+  Future<Result<void>> delete(String levelId) async =>
+      const Result.success(null);
   @override
-  Future<Result<LearningSession?>> read(String levelId) async => const Result.success(null);
+  Future<Result<LearningSession?>> read(String levelId) async =>
+      const Result.success(null);
   @override
-  Future<Result<void>> save(LearningSession session) async => const Result.success(null);
+  Future<Result<void>> save(LearningSession session) async =>
+      const Result.success(null);
 }
 
 final class _DummyIds implements ClientIdGenerator {
