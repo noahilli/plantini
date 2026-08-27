@@ -58,8 +58,7 @@ class HerbariumListView extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  emptyMessage ??
-                      'Es wurden keine Einträge für die gewählten Filter gefunden.',
+                  emptyMessage ?? 'Es wurden keine Einträge für die gewählten Filter gefunden.',
                   textAlign: TextAlign.center,
                   style: AppTypography.textTheme.bodyMedium?.copyWith(
                     color: AppColors.muted,
@@ -81,11 +80,16 @@ class HerbariumListView extends StatelessWidget {
       return emptyWidget;
     }
 
-    final listView = ListView.separated(
+    final listView = GridView.builder(
       key: const ValueKey('herbarium-list-view'),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.8,
+      ),
       itemCount: entries.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final entry = entries[index];
         return _HerbariumEntryCard(
@@ -121,107 +125,101 @@ class _HerbariumEntryCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onDelete;
 
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final year = date.year;
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-    return '$day.$month.$year, $hour:$minute Uhr';
+  String _formatDateShort(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mär',
+      'Apr',
+      'Mai',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Dez',
+    ];
+    return '${date.day}. ${months[date.month - 1]}';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.line, width: 1),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bg,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x242E2B25), // --shadow-sm roughly
+            blurRadius: 2,
+            offset: Offset(0, 1),
+          ),
+        ],
       ),
-      color: AppColors.white,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Thumbnail image
-              _HerbariumThumbnail(mediaUrl: entry.mediaUrl),
-              const SizedBox(width: 14),
-
-              // Title, scientific name, date & note snippet
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      entry.displayTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTypography.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.ink,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(9),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Thumbnail image
+                Expanded(child: _HerbariumThumbnail(mediaUrl: entry.mediaUrl)),
+                // Text Area
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 8, 4, 3),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.displayTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: AppColors.ink,
+                        ),
                       ),
-                    ),
-                    if (entry.scientificName != null &&
-                        entry.scientificName!.isNotEmpty &&
-                        entry.scientificName != entry.plantName) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        entry.scientificName!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: AppColors.forest,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_today_outlined,
-                          size: 13,
-                          color: AppColors.muted,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _formatDate(entry.observedAt),
-                          style: AppTypography.textTheme.labelSmall?.copyWith(
-                            color: AppColors.muted,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              entry.syncStatus == SyncStatus.pending ||
+                                      entry.syncStatus == SyncStatus.conflict
+                                  ? 'offline · nicht synchron'
+                                  : '${_formatDateShort(entry.observedAt)} · ${entry.identificationResult != null ? 'bestimmt' : 'manuell'}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontSize: 10,
+                                    color:
+                                        entry.syncStatus ==
+                                                SyncStatus.conflict ||
+                                            entry.syncStatus ==
+                                                SyncStatus.pending
+                                        ? AppColors.terracotta
+                                        : AppColors.neutral700,
+                                  ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    if (entry.note.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        entry.note,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTypography.textTheme.bodySmall?.copyWith(
-                          color: AppColors.muted,
-                        ),
+                          if (entry.syncStatus != SyncStatus.synced) ...[
+                            const SizedBox(width: 4),
+                            _SyncStatusIcon(status: entry.syncStatus),
+                          ],
+                        ],
                       ),
                     ],
-                  ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-
-              // Sync status icon
-              _SyncStatusIcon(status: entry.syncStatus),
-              const SizedBox(width: 4),
-              const Icon(
-                Icons.chevron_right,
-                color: AppColors.muted,
-                size: 20,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -250,11 +248,7 @@ class _HerbariumThumbnail extends StatelessWidget {
               mediaUrl!,
               fit: BoxFit.cover,
               errorBuilder: (_, _, _) => const Center(
-                child: Icon(
-                  Icons.eco_rounded,
-                  color: AppColors.sage,
-                  size: 28,
-                ),
+                child: Icon(Icons.eco_rounded, color: AppColors.sage, size: 28),
               ),
               loadingBuilder: (context, child, progress) {
                 if (progress == null) return child;
@@ -271,11 +265,7 @@ class _HerbariumThumbnail extends StatelessWidget {
               },
             )
           : const Center(
-              child: Icon(
-                Icons.eco_rounded,
-                color: AppColors.sage,
-                size: 28,
-              ),
+              child: Icon(Icons.eco_rounded, color: AppColors.sage, size: 28),
             ),
     );
   }
@@ -290,25 +280,21 @@ class _SyncStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final (icon, color, tooltip) = switch (status) {
       SyncStatus.synced => (
-          Icons.cloud_done,
-          AppColors.forest,
-          'Synchronisiert',
-        ),
+        Icons.cloud_done,
+        AppColors.forest,
+        'Synchronisiert',
+      ),
       SyncStatus.pending => (
-          Icons.cloud_upload_outlined,
-          AppColors.bark,
-          'Ausstehend (Lokal)',
-        ),
+        Icons.cloud_upload_outlined,
+        AppColors.bark,
+        'Ausstehend (Lokal)',
+      ),
       SyncStatus.conflict => (
-          Icons.warning_amber_rounded,
-          AppColors.danger,
-          'Synchronisationskonflikt',
-        ),
-      SyncStatus.deleted => (
-          Icons.delete_outline,
-          AppColors.muted,
-          'Gelöscht',
-        ),
+        Icons.warning_amber_rounded,
+        AppColors.danger,
+        'Synchronisationskonflikt',
+      ),
+      SyncStatus.deleted => (Icons.delete_outline, AppColors.muted, 'Gelöscht'),
     };
 
     return Tooltip(
@@ -319,11 +305,7 @@ class _SyncStatusIcon extends StatelessWidget {
           color: color.withOpacity(0.12),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          size: 18,
-          color: color,
-        ),
+        child: Icon(icon, size: 18, color: color),
       ),
     );
   }

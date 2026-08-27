@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../design_system/async_state_view.dart';
 import '../application/herbarium_use_cases.dart';
 import '../domain/herbarium_models.dart';
@@ -183,63 +184,112 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Herbarium'),
-        actions: [
-          IconButton(
-            key: const ValueKey('herbarium-sync-button'),
-            tooltip: 'Synchronisieren',
-            onPressed: _isSyncing ? null : _handleSync,
-            icon: _isSyncing
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.white,
-                    ),
-                  )
-                : const Icon(Icons.sync),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Search & Filter UI
-          HerbariumSearchFilterBar(
-            searchQuery: _searchQuery,
-            selectedStatus: _selectedStatus,
-            searchController: _searchController,
-            onSearchChanged: (query) {
-              setState(() => _searchQuery = query);
-            },
-            onStatusFilterChanged: (status) {
-              setState(() => _selectedStatus = status);
-            },
-          ),
-
-          // Reactive List View
-          Expanded(
-            child: _isLoading
-                ? const AsyncStateView(kind: AsyncViewKind.loading)
-                : HerbariumListView(
-                    entries: _filteredEntries,
-                    onEntryTap: _onEntryTap,
-                    onDeleteEntry: _handleDeleteEntry,
-                    onRefresh: _loadEntries,
-                    emptyMessage:
-                        _searchQuery.isNotEmpty || _selectedStatus != null
-                        ? 'Keine Funde für die aktuelle Suche oder Filterung gefunden.'
-                        : 'Noch keine Pflanzenfunde im Herbarium erfasst.',
+      backgroundColor: AppColors.neutral100,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Custom Header matching 1p
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 10, 22, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'MEIN HERBARIUM',
+                        style: AppTypography.textTheme.labelSmall?.copyWith(
+                          color: AppColors.sage700,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.3,
+                        ),
+                      ),
+                      IconButton(
+                        key: const ValueKey('herbarium-sync-button'),
+                        tooltip: 'Synchronisieren',
+                        onPressed: _isSyncing ? null : _handleSync,
+                        icon: _isSyncing
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.sage700,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.sync,
+                                color: AppColors.sage700,
+                                size: 20,
+                              ),
+                      ),
+                    ],
                   ),
-          ),
-        ],
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        '${_allEntries.length}',
+                        style: AppTypography.textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 34,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      const SizedBox(width: 9),
+                      Text(
+                        'Funde',
+                        style: AppTypography.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          color: AppColors.neutral600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Search & Filter UI
+            HerbariumSearchFilterBar(
+              searchQuery: _searchQuery,
+              selectedStatus: _selectedStatus,
+              searchController: _searchController,
+              onSearchChanged: (query) {
+                setState(() => _searchQuery = query);
+              },
+              onStatusFilterChanged: (status) {
+                setState(() => _selectedStatus = status);
+              },
+            ),
+
+            // Reactive List View
+            Expanded(
+              child: _isLoading
+                  ? const AsyncStateView(kind: AsyncViewKind.loading)
+                  : HerbariumListView(
+                      entries: _filteredEntries,
+                      onEntryTap: _onEntryTap,
+                      onDeleteEntry: _handleDeleteEntry,
+                      onRefresh: _loadEntries,
+                      emptyMessage:
+                          _searchQuery.isNotEmpty || _selectedStatus != null
+                          ? 'Keine Funde für die aktuelle Suche oder Filterung gefunden.'
+                          : 'Noch keine Pflanzenfunde im Herbarium erfasst.',
+                    ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         key: const ValueKey('herbarium-add-observation'),
         tooltip: 'Neuen Fund bestimmen',
         onPressed: _startField,
-        backgroundColor: AppColors.forest,
+        backgroundColor: AppColors.terracotta,
         foregroundColor: AppColors.white,
         child: const Icon(Icons.add_photo_alternate_outlined),
       ),

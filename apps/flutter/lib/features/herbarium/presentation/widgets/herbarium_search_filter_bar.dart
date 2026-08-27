@@ -24,17 +24,12 @@ class HerbariumSearchFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      decoration: const BoxDecoration(
-        color: AppColors.white,
-        border: Border(
-          bottom: BorderSide(color: AppColors.line, width: 1),
-        ),
-      ),
+      padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Search input field
+          // Search input field (Styled organically)
           TextField(
             key: const ValueKey('herbarium-search-field'),
             controller: searchController,
@@ -42,11 +37,11 @@ class HerbariumSearchFilterBar extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Pflanze oder Notiz suchen...',
               hintStyle: AppTypography.textTheme.bodyMedium?.copyWith(
-                color: AppColors.muted,
+                color: AppColors.neutral500,
               ),
               prefixIcon: const Icon(
                 Icons.search,
-                color: AppColors.forest,
+                color: AppColors.sage700,
                 size: 22,
               ),
               suffixIcon: searchQuery.isNotEmpty
@@ -60,24 +55,27 @@ class HerbariumSearchFilterBar extends StatelessWidget {
                     )
                   : null,
               filled: true,
-              fillColor: AppColors.cream,
+              fillColor: AppColors.white,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 10,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(999),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.forest, width: 1.5),
+                borderRadius: BorderRadius.circular(999),
+                borderSide: const BorderSide(
+                  color: AppColors.terracotta,
+                  width: 1.5,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          // Filter chips
+          // Filter chips styled as Organic tags
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -95,7 +93,9 @@ class HerbariumSearchFilterBar extends StatelessWidget {
                   icon: Icons.cloud_done_outlined,
                   isSelected: selectedStatus == SyncStatus.synced,
                   onTap: () => onStatusFilterChanged(
-                    selectedStatus == SyncStatus.synced ? null : SyncStatus.synced,
+                    selectedStatus == SyncStatus.synced
+                        ? null
+                        : SyncStatus.synced,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -105,7 +105,9 @@ class HerbariumSearchFilterBar extends StatelessWidget {
                   icon: Icons.cloud_upload_outlined,
                   isSelected: selectedStatus == SyncStatus.pending,
                   onTap: () => onStatusFilterChanged(
-                    selectedStatus == SyncStatus.pending ? null : SyncStatus.pending,
+                    selectedStatus == SyncStatus.pending
+                        ? null
+                        : SyncStatus.pending,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -115,7 +117,9 @@ class HerbariumSearchFilterBar extends StatelessWidget {
                   icon: Icons.warning_amber_rounded,
                   isSelected: selectedStatus == SyncStatus.conflict,
                   onTap: () => onStatusFilterChanged(
-                    selectedStatus == SyncStatus.conflict ? null : SyncStatus.conflict,
+                    selectedStatus == SyncStatus.conflict
+                        ? null
+                        : SyncStatus.conflict,
                   ),
                 ),
               ],
@@ -133,39 +137,41 @@ class HerbariumSearchFilterBar extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return FilterChip(
+    return InkWell(
       key: key,
-      label: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected ? AppColors.white : AppColors.forest,
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.accent100 : Colors.transparent,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: isSelected ? Colors.transparent : AppColors.terracotta,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 14,
+                color: isSelected ? AppColors.accent800 : AppColors.terracotta,
+              ),
+              const SizedBox(width: 4),
+            ],
+            Text(
+              label,
+              style: AppTypography.textTheme.bodySmall?.copyWith(
+                color: isSelected ? AppColors.accent800 : AppColors.terracotta,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 11,
+              ),
             ),
-            const SizedBox(width: 6),
           ],
-          Text(label),
-        ],
-      ),
-      selected: isSelected,
-      onSelected: (_) => onTap(),
-      selectedColor: AppColors.forest,
-      backgroundColor: AppColors.cream,
-      checkmarkColor: AppColors.white,
-      showCheckmark: false,
-      labelStyle: AppTypography.textTheme.labelMedium?.copyWith(
-        color: isSelected ? AppColors.white : AppColors.ink,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: isSelected ? AppColors.forest : AppColors.line,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     );
   }
 }

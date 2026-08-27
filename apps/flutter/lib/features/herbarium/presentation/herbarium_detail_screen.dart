@@ -59,174 +59,225 @@ class HerbariumDetailScreen extends StatelessWidget {
         entry.identificationResult!.trim().isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(entry.displayTitle),
-        actions: [
-          if (onDelete != null)
-            IconButton(
-              key: const ValueKey('herbarium-delete-button'),
-              icon: const Icon(Icons.delete_outline),
-              tooltip: 'Fund löschen',
-              onPressed: () => _confirmDelete(context),
-            ),
-        ],
-      ),
-      body: SingleChildScrollView(
+      backgroundColor: AppColors.neutral100,
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Large Hero / Cover Image
-            _DetailHeroImage(mediaUrl: entry.mediaUrl),
-
+            // Custom App Bar
             Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.fromLTRB(22, 6, 22, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Common & Scientific Name
+                  InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: const BoxDecoration(
+                        color: AppColors.bg,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        size: 16,
+                        color: AppColors.ink,
+                      ),
+                    ),
+                  ),
                   Text(
-                    entry.displayTitle,
-                    style: AppTypography.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.forest,
+                    'Fund-Detail',
+                    style: AppTypography.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.ink,
                     ),
                   ),
-                  if (entry.scientificName != null &&
-                      entry.scientificName!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                  if (onDelete != null)
+                    InkWell(
+                      key: const ValueKey('herbarium-delete-button'),
+                      onTap: () => _confirmDelete(context),
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          color: AppColors.bg,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.delete_outline,
+                          size: 16,
+                          color: AppColors.danger,
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(width: 32),
+                ],
+              ),
+            ),
+            // Body Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 12),
+                    // Large Hero Image with Status Pill
+                    Container(
+                      height: 186,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(26),
+                        color: AppColors.beige,
+                        image:
+                            entry.mediaUrl != null && entry.mediaUrl!.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(entry.mediaUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      alignment: Alignment.topRight,
+                      padding: const EdgeInsets.all(12),
+                      child: entry.mediaUrl == null || entry.mediaUrl!.isEmpty
+                          ? const Center(
+                              child: Icon(
+                                Icons.eco_rounded,
+                                size: 48,
+                                color: AppColors.sage,
+                              ),
+                            )
+                          : Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 11,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.neutral100,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.sage600,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    entry.syncStatus == SyncStatus.synced
+                                        ? 'synchronisiert'
+                                        : 'lokal',
+                                    style: AppTypography.textTheme.labelSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10.5,
+                                          color: AppColors.sage800,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Title Area
                     Text(
-                      entry.scientificName!,
-                      style: AppTypography.textTheme.titleMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: AppColors.muted,
+                      entry.displayTitle,
+                      style: AppTypography.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 25,
+                        color: AppColors.ink,
                       ),
                     ),
-                  ],
-                  const SizedBox(height: 16),
+                    if (entry.scientificName != null &&
+                        entry.scientificName!.isNotEmpty) ...[
+                      Text(
+                        entry.scientificName!,
+                        style: AppTypography.textTheme.bodyMedium?.copyWith(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                          color: AppColors.neutral600,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
 
-                  // Sync status banner
-                  _SyncStatusBanner(status: entry.syncStatus),
-                  const SizedBox(height: 20),
-
-                  // PlantNet KI Result Card
-                  if (hasPlantNetResult) ...[
-                    _PlantNetResultCard(result: entry.identificationResult!),
+                    // Sync status banner (existing)
+                    _SyncStatusBanner(status: entry.syncStatus),
                     const SizedBox(height: 20),
-                  ],
 
-                  // Notes section
-                  _SectionHeader(
-                    icon: Icons.edit_note_rounded,
-                    title: 'Notizen & Feldeindrücke',
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.cream,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.line),
+                    // PlantNet KI Result Card
+                    if (hasPlantNetResult) ...[
+                      _PlantNetResultCard(result: entry.identificationResult!),
+                      const SizedBox(height: 20),
+                    ],
+
+                    // Notes section
+                    _SectionHeader(
+                      icon: Icons.edit_note_rounded,
+                      title: 'Notizen & Feldeindrücke',
                     ),
-                    child: Text(
-                      entry.note.isNotEmpty
-                          ? entry.note
-                          : 'Keine Notizen zu diesem Fund hinterlegt.',
-                      style: AppTypography.textTheme.bodyMedium?.copyWith(
-                        color: entry.note.isNotEmpty
-                            ? AppColors.ink
-                            : AppColors.muted,
-                        height: 1.5,
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.bg,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(
+                        entry.note.isNotEmpty
+                            ? entry.note
+                            : 'Keine Notizen zu diesem Fund hinterlegt.',
+                        style: AppTypography.textTheme.bodyMedium?.copyWith(
+                          color: entry.note.isNotEmpty
+                              ? AppColors.ink
+                              : AppColors.neutral500,
+                          height: 1.5,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Funddetails / Metadata
-                  _SectionHeader(
-                    icon: Icons.info_outline_rounded,
-                    title: 'Fundinformationen',
-                  ),
-                  const SizedBox(height: 12),
-                  _MetadataTile(
-                    icon: Icons.calendar_today_outlined,
-                    label: 'Beobachtet am',
-                    value: _formatDate(entry.observedAt),
-                  ),
-                  if (entry.confirmedPlantId != null) ...[
+                    // Funddetails / Metadata
+                    _SectionHeader(
+                      icon: Icons.info_outline_rounded,
+                      title: 'Fundinformationen',
+                    ),
+                    const SizedBox(height: 12),
+                    _MetadataTile(
+                      icon: Icons.calendar_today_outlined,
+                      label: 'Beobachtet am',
+                      value: _formatDate(entry.observedAt),
+                    ),
+                    if (entry.confirmedPlantId != null) ...[
+                      const SizedBox(height: 8),
+                      _MetadataTile(
+                        icon: Icons.eco_outlined,
+                        label: 'Bestätigte Pflanzen-ID',
+                        value: entry.confirmedPlantId!,
+                      ),
+                    ],
                     const SizedBox(height: 8),
                     _MetadataTile(
-                      icon: Icons.eco_outlined,
-                      label: 'Bestätigte Pflanzen-ID',
-                      value: entry.confirmedPlantId!,
+                      icon: Icons.tag_rounded,
+                      label: 'Eintrags-ID',
+                      value: entry.id,
                     ),
+                    const SizedBox(height: 32),
                   ],
-                  const SizedBox(height: 8),
-                  _MetadataTile(
-                    icon: Icons.tag_rounded,
-                    label: 'Eintrags-ID',
-                    value: entry.id,
-                  ),
-                ],
+                ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _DetailHeroImage extends StatelessWidget {
-  const _DetailHeroImage({this.mediaUrl});
-
-  final String? mediaUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    if (mediaUrl == null || mediaUrl!.isEmpty) {
-      return Container(
-        height: 220,
-        color: AppColors.cream,
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.eco_rounded, size: 64, color: AppColors.sage),
-            SizedBox(height: 8),
-            Text(
-              'Kein Belegfoto vorhanden',
-              style: TextStyle(color: AppColors.muted),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      height: 260,
-      width: double.infinity,
-      color: AppColors.beige,
-      child: Image.network(
-        mediaUrl!,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => Container(
-          color: AppColors.cream,
-          alignment: Alignment.center,
-          child: const Icon(
-            Icons.broken_image_outlined,
-            size: 48,
-            color: AppColors.muted,
-          ),
-        ),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: AppColors.cream,
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(color: AppColors.forest),
-          );
-        },
       ),
     );
   }
