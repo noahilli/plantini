@@ -21,7 +21,9 @@ final class LevelCompletionCelebration extends StatelessWidget {
   Widget build(BuildContext context) {
     final percent = (completion.score * 100).round();
     return Semantics(
-      label: 'Abschluss des Levels ${level.title}',
+      label: completion.passed
+          ? 'Level abgeschlossen: ${level.title}'
+          : 'Level nicht abgeschlossen: ${level.title}',
       child: ListView(
         padding: const EdgeInsets.fromLTRB(22, 14, 22, 28),
         children: [

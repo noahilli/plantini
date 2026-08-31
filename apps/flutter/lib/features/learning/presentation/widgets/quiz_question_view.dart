@@ -95,8 +95,9 @@ final class QuizQuestionView extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Semantics(
-                  label: 'Quizfrage',
+                  label: 'Quizfrage ${question.prompt}',
                   container: true,
+                  excludeSemantics: true,
                   child: Text(
                     question.prompt,
                     key: const ValueKey('quiz-question'),
