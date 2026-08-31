@@ -139,6 +139,12 @@ test('FIELD-04: a submitted identification travels through the real BullMQ queue
   assert.equal(identified.candidates[0].scientificName, 'Quercus robur');
   assert.equal(identified.candidates[0].provider, 'plantnet');
   assert.equal(identified.candidates[0].modelVersion, 'test-model-1');
+  assert.equal(identified.attempts, 1);
+  assert.deepEqual(identified.providerMetadata, {
+    provider: 'plantnet',
+    modelVersion: 'test-model-1',
+    floraVersion: 'test-flora-1',
+  });
 
   // The work really happened in the worker, exactly once, on the right media.
   assert.equal(provider.calls.length, 1);

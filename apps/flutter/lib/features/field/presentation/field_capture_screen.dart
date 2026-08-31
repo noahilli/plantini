@@ -887,6 +887,15 @@ class _IdentificationCard extends StatelessWidget {
                 ),
               ),
             ),
+          if (isIdentified && job.provider != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                'Provider: ${job.provider} · Modell: ${job.modelVersion ?? 'unbekannt'} · Flora: ${job.floraVersion ?? 'unbekannt'} · Versuch ${job.attempts}',
+                key: const ValueKey('field-provider-metadata'),
+                style: TextStyle(color: AppColors.sage300, fontSize: 11),
+              ),
+            ),
           if (isIdentified)
             ...job.candidates.map((candidate) {
               final candidateId = candidate.candidateId;

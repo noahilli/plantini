@@ -196,11 +196,30 @@ Result<IdentificationJob> _identificationJob(Map<String, dynamic> body) {
       id: id,
       status: status,
       createdAt: createdAt,
+      attempts: body['attempts'] is int ? body['attempts'] as int : 0,
       retryAfter: _date(body['retryAfter']),
       candidates: candidates,
       failureCode: _optionalString(body, 'failureCode'),
       confirmedPlantId: _optionalString(body, 'confirmedPlantId'),
       confirmedCandidateId: _optionalString(body, 'confirmedCandidateId'),
+      provider: body['providerMetadata'] is Map<String, dynamic>
+          ? _optionalString(
+              body['providerMetadata'] as Map<String, dynamic>,
+              'provider',
+            )
+          : null,
+      modelVersion: body['providerMetadata'] is Map<String, dynamic>
+          ? _optionalString(
+              body['providerMetadata'] as Map<String, dynamic>,
+              'modelVersion',
+            )
+          : null,
+      floraVersion: body['providerMetadata'] is Map<String, dynamic>
+          ? _optionalString(
+              body['providerMetadata'] as Map<String, dynamic>,
+              'floraVersion',
+            )
+          : null,
     ),
   );
 }

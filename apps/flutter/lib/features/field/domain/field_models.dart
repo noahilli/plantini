@@ -77,19 +77,27 @@ final class IdentificationJob {
     required this.id,
     required this.status,
     required this.createdAt,
+    this.attempts = 0,
     this.retryAfter,
     this.candidates = const [],
     this.failureCode,
     this.confirmedPlantId,
     this.confirmedCandidateId,
+    this.provider,
+    this.modelVersion,
+    this.floraVersion,
   });
 
   final String id;
   final String status;
   final DateTime createdAt;
+  final int attempts;
   final DateTime? retryAfter;
   final List<IdentificationCandidate> candidates;
   final String? failureCode;
   final String? confirmedPlantId;
   final String? confirmedCandidateId;
+  final String? provider;
+  final String? modelVersion;
+  final String? floraVersion;
 }

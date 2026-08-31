@@ -658,13 +658,15 @@ components:
       properties: {clientJobId: {$ref: '#/components/schemas/Id'}, mediaId: {$ref: '#/components/schemas/Id'}, expectedPlantId: {$ref: '#/components/schemas/Id'}}
     IdentificationJob:
       type: object
-      required: [id, status, createdAt]
+      required: [id, status, createdAt, attempts]
       properties:
         id: {$ref: '#/components/schemas/Id'}
         status: {type: string, enum: [pending, processing, identified, failed, cancelled]}
         createdAt: {type: string, format: date-time}
+        attempts: {type: integer, minimum: 0}
         retryAfter: {type: string, format: date-time}
         candidates: {type: array, items: {$ref: '#/components/schemas/IdentificationCandidate'}}
+        providerMetadata: {$ref: '#/components/schemas/IdentificationProviderMetadata'}
         failureCode: {type: string}
         confirmedPlantId: {$ref: '#/components/schemas/Id'}
         confirmedCandidateId: {type: string, minLength: 3, maxLength: 160}
@@ -672,6 +674,13 @@ components:
       type: object
       required: [candidateId, scientificName, score]
       properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}}
+    IdentificationProviderMetadata:
+      type: object
+      required: [provider, modelVersion, floraVersion]
+      properties:
+        provider: {type: string}
+        modelVersion: {type: string}
+        floraVersion: {type: string}
     ConfirmIdentificationRequest:
       type: object
       additionalProperties: false

@@ -339,8 +339,12 @@ function mapJob(job) {
     id: job.publicId,
     status: job.status,
     createdAt: job.createdAt,
+    attempts: Number(job.attempts || 0),
     ...(job.retryAfter ? { retryAfter: job.retryAfter } : {}),
     ...(Array.isArray(job.candidates) && job.candidates.length ? { candidates: job.candidates } : {}),
+    ...(job.providerMetadata && typeof job.providerMetadata === 'object'
+      ? { providerMetadata: job.providerMetadata }
+      : {}),
     ...(job.failureCode ? { failureCode: job.failureCode } : {}),
     ...(job.confirmedPlantId ? { confirmedPlantId: job.confirmedPlantId } : {}),
     ...(job.confirmedCandidateId ? { confirmedCandidateId: job.confirmedCandidateId } : {}),

@@ -69,6 +69,12 @@ void main() {
             'id': '22222222-2222-4222-8222-222222222222',
             'status': 'identified',
             'createdAt': '2026-08-27T12:00:00.000Z',
+            'attempts': 2,
+            'providerMetadata': {
+              'provider': 'plantnet',
+              'modelVersion': '2026-test',
+              'floraVersion': 'flora-test',
+            },
             'candidates': [
               {
                 'candidateId': 'plantnet:gbif:2927079',
@@ -128,6 +134,10 @@ void main() {
         expect(value.candidates.single.commonName, 'Gänseblümchen');
         expect(value.candidates.single.candidateId, 'plantnet:gbif:2927079');
         expect(value.candidates.single.score, 0.94);
+        expect(value.attempts, 2);
+        expect(value.provider, 'plantnet');
+        expect(value.modelVersion, '2026-test');
+        expect(value.floraVersion, 'flora-test');
 
         final confirmed = await repository.confirmIdentification(
           jobId: value.id,
