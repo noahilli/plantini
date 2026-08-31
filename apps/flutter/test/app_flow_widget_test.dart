@@ -28,6 +28,9 @@ import 'package:plantini_app/features/learning/domain/learning_repository.dart';
 // ---------------------------------------------------------------------------
 
 final class WidgetFlowAuthPlatformHelper implements AuthPlatformHelper {
+  @override
+  Future<void> completeRedirect() async {}
+
   Credential? fakeCredential;
 
   Credential _createFakeCredential(String issuerUrl, String clientId) {

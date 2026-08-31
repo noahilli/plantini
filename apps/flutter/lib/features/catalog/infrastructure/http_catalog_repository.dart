@@ -33,7 +33,10 @@ final class HttpCatalogRepository implements CatalogRepository {
     final result = (ecosystem as Success<Ecosystem>).value;
     final levelResults = await Future.wait(
       result.levelIds.map((id) async {
-        final response = await _client.getJson('levels/$id');
+        final response = await _client.getJson(
+          'levels/$id',
+          requiresAuthentication: true,
+        );
         return response.when(
           success: (value) => CatalogDto.levelFromJson(value.body),
           failure: Result.failure,
@@ -54,7 +57,7 @@ final class HttpCatalogRepository implements CatalogRepository {
   @override
   Future<Result<LevelContent>> getPublishedLevel(String levelId) async {
     final responses = await Future.wait([
-      _client.getJson('levels/$levelId'),
+      _client.getJson('levels/$levelId', requiresAuthentication: true),
       _client.getJson('content/manifest'),
     ]);
     final levelResponse = responses[0];

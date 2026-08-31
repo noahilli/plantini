@@ -22,6 +22,7 @@ final class HttpHerbariumRepository implements HerbariumRepository {
     final response = await _client.getJson(
       'observations',
       queryParameters: {'page': page, 'pageSize': pageSize},
+      requiresAuthentication: true,
     );
     return response.when(
       success: (value) => _observationPage(value.body),
@@ -31,7 +32,10 @@ final class HttpHerbariumRepository implements HerbariumRepository {
 
   @override
   Future<Result<HerbariumEntry>> getEntry(String id) async {
-    final response = await _client.getJson('observations/$id');
+    final response = await _client.getJson(
+      'observations/$id',
+      requiresAuthentication: true,
+    );
     return response.when(
       success: (value) => _observation(value.body),
       failure: Result.failure,

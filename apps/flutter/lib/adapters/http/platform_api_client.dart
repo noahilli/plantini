@@ -35,18 +35,25 @@ final class PlatformApiClient {
   Future<Result<ApiJsonResponse>> getJson(
     String path, {
     Map<String, Object?> queryParameters = const {},
-  }) =>
-      _requestJson(method: 'GET', path: path, queryParameters: queryParameters);
+    bool requiresAuthentication = false,
+  }) => _requestJson(
+    method: 'GET',
+    path: path,
+    queryParameters: queryParameters,
+    requiresAuthentication: requiresAuthentication,
+  );
 
   Future<Result<ApiJsonResponse>> postJson(
     String path, {
     required Map<String, Object?> body,
     String? idempotencyKey,
+    bool requiresAuthentication = true,
   }) => _requestJson(
     method: 'POST',
     path: path,
     body: body,
     idempotencyKey: idempotencyKey,
+    requiresAuthentication: requiresAuthentication,
   );
 
   Future<Result<ApiJsonResponse>> patchJson(
@@ -54,12 +61,14 @@ final class PlatformApiClient {
     required Map<String, Object?> body,
     String? idempotencyKey,
     String? ifMatchVersion,
+    bool requiresAuthentication = true,
   }) => _requestJson(
     method: 'PATCH',
     path: path,
     body: body,
     idempotencyKey: idempotencyKey,
     ifMatchVersion: ifMatchVersion,
+    requiresAuthentication: requiresAuthentication,
   );
 
   Future<Result<ApiJsonResponse>> postMultipart(
@@ -69,6 +78,7 @@ final class PlatformApiClient {
     required String mediaType,
     required String filename,
     String? idempotencyKey,
+    bool requiresAuthentication = true,
   }) async {
     final form = FormData.fromMap({
       ...fields,
@@ -83,6 +93,7 @@ final class PlatformApiClient {
       path: path,
       body: form,
       idempotencyKey: idempotencyKey,
+      requiresAuthentication: requiresAuthentication,
     );
   }
 
@@ -90,11 +101,13 @@ final class PlatformApiClient {
     String path, {
     String? idempotencyKey,
     String? ifMatchVersion,
+    bool requiresAuthentication = true,
   }) => _requestJson(
     method: 'DELETE',
     path: path,
     idempotencyKey: idempotencyKey,
     ifMatchVersion: ifMatchVersion,
+    requiresAuthentication: requiresAuthentication,
   );
 
   Future<Result<ApiJsonResponse>> _requestJson({
@@ -104,9 +117,18 @@ final class PlatformApiClient {
     Object? body,
     String? idempotencyKey,
     String? ifMatchVersion,
+    bool requiresAuthentication = false,
   }) async {
     try {
       final token = await _accessTokenProvider();
+      if (requiresAuthentication && (token == null || token.isEmpty)) {
+        return Result.failure(
+          const UnauthorizedFailure(
+            message:
+                'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+          ),
+        );
+      }
       final response = await _dio.request<Object?>(
         _relativePath(path),
         data: body,

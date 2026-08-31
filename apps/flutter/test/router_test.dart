@@ -24,6 +24,9 @@ import 'package:plantini_app/features/learning/domain/learning_repository.dart';
 
 final class MockAuthPlatformHelper implements AuthPlatformHelper {
   @override
+  Future<void> completeRedirect() async {}
+
+  @override
   Future<Credential?> login(
     String issuerUrl,
     String clientId,

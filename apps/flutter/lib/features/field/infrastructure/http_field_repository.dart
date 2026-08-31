@@ -81,7 +81,10 @@ final class HttpFieldRepository implements FieldRepository {
 
   @override
   Future<Result<IdentificationJob>> getIdentification(String jobId) async {
-    final response = await _client.getJson('identifications/$jobId');
+    final response = await _client.getJson(
+      'identifications/$jobId',
+      requiresAuthentication: true,
+    );
     return response.when(
       success: (value) => _identificationJob(value.body),
       failure: Result.failure,

@@ -19,6 +19,7 @@ final class HttpLearningRepository implements LearningRepository {
     final response = await _client.getJson(
       'quiz-items',
       queryParameters: {'levelId': levelId, 'contentVersion': contentVersion},
+      requiresAuthentication: true,
     );
     return response.when(
       success: (value) => _quizItems(value.body),
@@ -96,6 +97,7 @@ final class HttpLearningRepository implements LearningRepository {
       queryParameters: {
         if (since != null) 'since': since.toUtc().toIso8601String(),
       },
+      requiresAuthentication: true,
     );
     return response.when(
       success: (value) => _progress(value.body),
