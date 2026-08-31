@@ -15,7 +15,11 @@ typedef SyncJobProcessor = Future<Result<void>> Function(String payload);
 /// Storage abstraction for synchronization queue operations.
 abstract interface class SyncQueueStore {
   Future<Result<IsarSyncJob>> enqueue(IsarSyncJob job);
-  Future<Result<List<IsarSyncJob>>> getPendingJobs({required DateTime now});
+  Future<Result<List<IsarSyncJob>>> getPendingJobs({
+    required DateTime now,
+    required DateTime staleRunningBefore,
+    required int maxAttempts,
+  });
   Future<Result<void>> updateJob(IsarSyncJob job);
   Future<Result<void>> deleteJob(int id);
   Future<Result<List<IsarSyncJob>>> getAllJobs();
@@ -48,6 +52,8 @@ final class IsarSyncQueueStore implements SyncQueueStore {
   @override
   Future<Result<List<IsarSyncJob>>> getPendingJobs({
     required DateTime now,
+    required DateTime staleRunningBefore,
+    required int maxAttempts,
   }) async {
     try {
       final all = await _db.syncQueue.where().findAll();
@@ -56,9 +62,14 @@ final class IsarSyncQueueStore implements SyncQueueStore {
         final isPendingOrFailed =
             job.status == SyncJobStatus.pending ||
             job.status == SyncJobStatus.failed;
+        final lastUpdatedAt = job.updatedAt ?? job.createdAt;
+        final isStaleRunning =
+            job.status == SyncJobStatus.running &&
+            !lastUpdatedAt.isAfter(staleRunningBefore);
         final isDue =
             job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
-        return isPendingOrFailed && isDue;
+        return job.attemptCount < maxAttempts &&
+            ((isPendingOrFailed && isDue) || isStaleRunning);
       }).toList();
       return Result.success(due);
     } catch (error) {
@@ -139,14 +150,21 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
   @override
   Future<Result<List<IsarSyncJob>>> getPendingJobs({
     required DateTime now,
+    required DateTime staleRunningBefore,
+    required int maxAttempts,
   }) async {
     final jobs = _storage.values.where((job) {
       final isPendingOrFailed =
           job.status == SyncJobStatus.pending ||
           job.status == SyncJobStatus.failed;
+      final lastUpdatedAt = job.updatedAt ?? job.createdAt;
+      final isStaleRunning =
+          job.status == SyncJobStatus.running &&
+          !lastUpdatedAt.isAfter(staleRunningBefore);
       final isDue =
           job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
-      return isPendingOrFailed && isDue;
+      return job.attemptCount < maxAttempts &&
+          ((isPendingOrFailed && isDue) || isStaleRunning);
     }).toList();
     jobs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Result.success(jobs);
@@ -181,6 +199,7 @@ final class SyncQueueService {
     this.baseBackoffSeconds = 2,
     this.maxBackoffSeconds = 300,
     this.maxAttempts = 5,
+    this.runningJobTimeout = const Duration(minutes: 5),
   }) : _clock = clock ?? const SystemClock();
 
   final SyncQueueStore store;
@@ -189,6 +208,7 @@ final class SyncQueueService {
   final int baseBackoffSeconds;
   final int maxBackoffSeconds;
   final int maxAttempts;
+  final Duration runningJobTimeout;
 
   /// Enqueues a new synchronization job with status `pending`.
   Future<Result<IsarSyncJob>> enqueueJob({
@@ -223,7 +243,11 @@ final class SyncQueueService {
     required SyncJobProcessor processor,
   }) async {
     final now = _clock.now();
-    final pendingResult = await store.getPendingJobs(now: now);
+    final pendingResult = await store.getPendingJobs(
+      now: now,
+      staleRunningBefore: now.subtract(runningJobTimeout),
+      maxAttempts: maxAttempts,
+    );
     if (pendingResult case Failure<List<IsarSyncJob>>(:final failure)) {
       return Result.failure(failure);
     }
@@ -233,6 +257,7 @@ final class SyncQueueService {
 
     for (final job in jobs) {
       job.status = SyncJobStatus.running;
+      job.attemptCount += 1;
       job.updatedAt = _clock.now();
       await store.updateJob(job);
 
@@ -246,7 +271,6 @@ final class SyncQueueService {
         processedCount++;
       } else {
         final failure = result.failureOrNull;
-        job.attemptCount += 1;
         job.errorReason =
             failure?.message ?? 'Unbekannter Synchronisationsfehler';
         job.status = SyncJobStatus.failed;

@@ -142,5 +142,81 @@ void main() {
       expect((result as Success<int>).value, 1);
       expect(processed, ['offline-observation']);
     });
+
+    test(
+      'processQueue recovers a running job after its lease becomes stale',
+      () async {
+        final job = IsarSyncJob()
+          ..clientId = 'interrupted-job'
+          ..payload = 'interrupted-payload'
+          ..status = SyncJobStatus.running
+          ..attemptCount = 1
+          ..nextRetryAt = initialTime
+          ..createdAt = initialTime
+          ..updatedAt = initialTime;
+        await store.enqueue(job);
+
+        clock.advance(const Duration(minutes: 4));
+        var processorCalls = 0;
+        await service.processQueue(
+          processor: (_) async {
+            processorCalls++;
+            return const Result.success(null);
+          },
+        );
+        expect(processorCalls, 0);
+
+        clock.advance(const Duration(minutes: 1));
+        final result = await service.processQueue(
+          processor: (_) async {
+            processorCalls++;
+            return const Result.success(null);
+          },
+        );
+
+        expect((result as Success<int>).value, 1);
+        expect(processorCalls, 1);
+        final jobs =
+            (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+        expect(jobs.single.status, SyncJobStatus.completed);
+        expect(jobs.single.attemptCount, 2);
+      },
+    );
+
+    test(
+      'processQueue never dispatches a job that exhausted maxAttempts',
+      () async {
+        service = SyncQueueService(
+          store: store,
+          ids: ids,
+          clock: clock,
+          maxAttempts: 2,
+        );
+        final job = IsarSyncJob()
+          ..clientId = 'exhausted-job'
+          ..payload = 'must-not-run'
+          ..status = SyncJobStatus.failed
+          ..attemptCount = 2
+          ..nextRetryAt = initialTime
+          ..createdAt = initialTime
+          ..updatedAt = initialTime;
+        await store.enqueue(job);
+
+        var processorCalls = 0;
+        final result = await service.processQueue(
+          processor: (_) async {
+            processorCalls++;
+            return const Result.success(null);
+          },
+        );
+
+        expect((result as Success<int>).value, 0);
+        expect(processorCalls, 0);
+        final jobs =
+            (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+        expect(jobs.single.status, SyncJobStatus.failed);
+        expect(jobs.single.attemptCount, 2);
+      },
+    );
   });
 }
