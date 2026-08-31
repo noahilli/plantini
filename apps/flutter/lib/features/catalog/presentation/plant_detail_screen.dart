@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -174,6 +175,21 @@ class PlantDetailScreen extends StatelessWidget {
                 color: AppColors.ink,
                 height: 1.5,
               ),
+            ),
+            const SizedBox(height: 24),
+
+            FilledButton.icon(
+              onPressed: () => context.go(
+                Uri(
+                  path: '/field',
+                  queryParameters: {
+                    'expectedPlantId': plant.id,
+                    'expectedPlantName': title,
+                  },
+                ).toString(),
+              ),
+              icon: const Icon(Icons.explore_outlined),
+              label: Text('$title in der Natur bestimmen'),
             ),
             const SizedBox(height: 24),
 

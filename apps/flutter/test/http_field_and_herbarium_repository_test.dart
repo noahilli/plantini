@@ -75,6 +75,8 @@ void main() {
               'modelVersion': '2026-test',
               'floraVersion': 'flora-test',
             },
+            'expectedPlantId': '33333333-3333-4333-8333-333333333333',
+            'expectedMatch': 'mismatch',
             'candidates': [
               {
                 'candidateId': 'plantnet:gbif:2927079',
@@ -138,10 +140,12 @@ void main() {
         expect(value.provider, 'plantnet');
         expect(value.modelVersion, '2026-test');
         expect(value.floraVersion, 'flora-test');
+        expect(value.expectedMatch, 'mismatch');
 
         final confirmed = await repository.confirmIdentification(
           jobId: value.id,
           candidateId: value.candidates.single.candidateId,
+          acceptMismatch: true,
         );
         expect(confirmed.isSuccess, isTrue);
         expect(
@@ -169,6 +173,7 @@ void main() {
         );
         expect(interceptor.requests.last.data, {
           'candidateId': 'plantnet:gbif:2927079',
+          'acceptMismatch': true,
         });
       },
     );

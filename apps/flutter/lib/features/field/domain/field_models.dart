@@ -86,6 +86,9 @@ final class IdentificationJob {
     this.provider,
     this.modelVersion,
     this.floraVersion,
+    this.expectedPlantId,
+    this.expectedMatch,
+    this.expectedCandidateId,
   });
 
   final String id;
@@ -100,4 +103,7 @@ final class IdentificationJob {
   final String? provider;
   final String? modelVersion;
   final String? floraVersion;
+  final String? expectedPlantId;
+  final String? expectedMatch;
+  final String? expectedCandidateId;
 }

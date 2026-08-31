@@ -92,6 +92,12 @@ class FieldService {
     if (!media || media.status !== 'uploaded') {
       throw invalidRequest({ mediaId: 'Die angegebene private Bilddatei ist nicht hochgeladen oder gehört nicht zu diesem Konto.' });
     }
+    if (input.expectedPlantId) {
+      const expectedPlant = await this.repository.findPublishedPlantByPublicId(input.expectedPlantId);
+      if (!expectedPlant) {
+        throw invalidRequest({ expectedPlantId: 'Die erwartete Pflanze ist nicht veröffentlicht.' });
+      }
+    }
     const clientExisting = await this.repository.findJobByClientId(actor.id, input.clientJobId);
     if (clientExisting) {
       if (clientExisting.mediaId !== input.mediaId || clientExisting.expectedPlantId !== input.expectedPlantId) {
@@ -176,6 +182,14 @@ class FieldService {
     if (!candidate) {
       throw invalidRequest({ candidateId: 'Die bestätigte Pflanze ist kein Kandidat dieses Auftrags.' });
     }
+    const selectedExpectedCandidate = !job.expectedPlantId
+      || (job.expectedCandidateId && candidate.candidateId === job.expectedCandidateId);
+    if (!selectedExpectedCandidate && input.acceptMismatch !== true) {
+      throw conflict(
+        'IDENTIFICATION_MISMATCH_NOT_ACCEPTED',
+        'Der gewählte Vorschlag weicht von der erwarteten Levelart ab und muss ausdrücklich bestätigt werden.',
+      );
+    }
     const updated = await this.repository.updateJob(job.id, {
       // A user may replace a formerly curated selection with an external
       // PlantNet candidate. Persisting null deliberately clears the stale
@@ -205,6 +219,7 @@ class FieldService {
     try {
       const result = await provider.identify({ job: processing, media });
       const candidates = validateProviderCandidates(result.candidates);
+      const expectation = await matchExpectedPlant(this.repository, processing, candidates);
       return this.repository.updateJob(processing.id, {
         status: 'identified',
         candidates,
@@ -213,6 +228,7 @@ class FieldService {
           modelVersion: result.modelVersion,
           floraVersion: result.floraVersion,
         },
+        ...expectation,
         retryAfter: null,
       });
     } catch (error) {
@@ -289,7 +305,7 @@ function validateIdentificationRequest(body) {
 
 function validateConfirmation(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['confirmedPlantId', 'candidateId']);
+  rejectUnknownFields(value, ['confirmedPlantId', 'candidateId', 'acceptMismatch']);
   const confirmedPlantId = value.confirmedPlantId === undefined
     ? undefined
     : requireUuid(value.confirmedPlantId, 'confirmedPlantId');
@@ -300,7 +316,28 @@ function validateConfirmation(body) {
       || (confirmedPlantId !== undefined && candidateId !== undefined)) {
     throw invalidRequest({ body: 'Genau candidateId oder confirmedPlantId muss gesetzt sein.' });
   }
-  return { confirmedPlantId, candidateId };
+  if (value.acceptMismatch !== undefined && typeof value.acceptMismatch !== 'boolean') {
+    throw invalidRequest({ acceptMismatch: 'acceptMismatch muss ein boolescher Wert sein.' });
+  }
+  return { confirmedPlantId, candidateId, acceptMismatch: value.acceptMismatch === true };
+}
+
+async function matchExpectedPlant(repository, job, candidates) {
+  if (!job.expectedPlantId) return {};
+  const expectedPlant = await repository.findPublishedPlantByPublicId(job.expectedPlantId);
+  if (!expectedPlant) return { expectedMatch: 'mismatch', expectedCandidateId: null };
+  const expectedScientificName = normaliseScientificName(expectedPlant.scientificName);
+  const match = candidates.find((candidate) =>
+    candidate.plantId === job.expectedPlantId
+    || normaliseScientificName(candidate.scientificName) === expectedScientificName);
+  return {
+    expectedMatch: match ? 'matched' : 'mismatch',
+    expectedCandidateId: match?.candidateId || null,
+  };
+}
+
+function normaliseScientificName(value) {
+  return typeof value === 'string' ? value.trim().toLocaleLowerCase('en-US') : '';
 }
 
 function validateProviderCandidates(candidates) {
@@ -345,6 +382,9 @@ function mapJob(job) {
     ...(job.providerMetadata && typeof job.providerMetadata === 'object'
       ? { providerMetadata: job.providerMetadata }
       : {}),
+    ...(job.expectedPlantId ? { expectedPlantId: job.expectedPlantId } : {}),
+    ...(job.expectedMatch ? { expectedMatch: job.expectedMatch } : {}),
+    ...(job.expectedCandidateId ? { expectedCandidateId: job.expectedCandidateId } : {}),
     ...(job.failureCode ? { failureCode: job.failureCode } : {}),
     ...(job.confirmedPlantId ? { confirmedPlantId: job.confirmedPlantId } : {}),
     ...(job.confirmedCandidateId ? { confirmedCandidateId: job.confirmedCandidateId } : {}),

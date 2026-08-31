@@ -25,6 +25,9 @@ function createRepositories() {
     jobs,
     observations,
     field: {
+      async findPublishedPlantByPublicId(id) {
+        return id === ids.plant ? { publicId: ids.plant, scientificName: 'Quercus robur' } : undefined;
+      },
       async findPrivateMediaByIdempotencyKey(key) { return media.find((item) => item.idempotencyKey === key); },
       async findPrivateMediaByClientId(ownerId, clientId) { return media.find((item) => item.ownerId === ownerId && item.clientMediaId === clientId); },
       async findPrivateMediaByPublicId(ownerId, id) { return media.find((item) => item.ownerId === ownerId && item.publicId === id); },
@@ -92,12 +95,52 @@ test('private uploads verify magic bytes and identification is caller-owned', as
       };
     },
   });
+  const identified = await field.getIdentification(actor, job.id);
+  assert.equal(identified.expectedMatch, 'matched');
+  assert.equal(identified.expectedCandidateId, `plantini:${ids.plant}`);
   const confirmed = await field.confirmIdentification(actor, job.id, { confirmedPlantId: ids.plant });
   assert.equal(confirmed.confirmedPlantId, ids.plant);
   await assert.rejects(
     () => field.getIdentification({ id: ids.other }, job.id),
     (error) => error instanceof ProblemError && error.status === 404,
   );
+});
+
+test('FIELD-06: a candidate deviating from the expected level plant needs explicit acceptance', async () => {
+  const repositories = createRepositories();
+  const field = new FieldService({ repository: repositories.field });
+  const externalCandidateId = 'plantnet:taxon:fagus-sylvatica';
+  repositories.jobs.push({
+    id: 1,
+    publicId: ids.clientJob,
+    ownerId: ids.owner,
+    expectedPlantId: ids.plant,
+    expectedMatch: 'mismatch',
+    status: 'identified',
+    candidates: [{
+      candidateId: externalCandidateId,
+      scientificName: 'Fagus sylvatica',
+      score: 0.82,
+    }],
+    createdAt: '2026-01-01T00:00:00.000Z',
+  });
+
+  await assert.rejects(
+    () => field.confirmIdentification(
+      { id: ids.owner },
+      ids.clientJob,
+      { candidateId: externalCandidateId },
+    ),
+    (error) => error instanceof ProblemError
+      && error.code === 'IDENTIFICATION_MISMATCH_NOT_ACCEPTED',
+  );
+
+  const confirmed = await field.confirmIdentification(
+    { id: ids.owner },
+    ids.clientJob,
+    { candidateId: externalCandidateId, acceptMismatch: true },
+  );
+  assert.equal(confirmed.confirmedCandidateId, externalCandidateId);
 });
 
 test('herbarium enforces ownership, version preconditions, and tombstones', async () => {

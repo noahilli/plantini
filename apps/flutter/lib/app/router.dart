@@ -114,8 +114,11 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
         ),
         GoRoute(
           path: '/field',
-          builder: (context, state) =>
-              FieldCaptureScreen(dependencies: dependencies),
+          builder: (context, state) => FieldCaptureScreen(
+            dependencies: dependencies,
+            expectedPlantId: state.uri.queryParameters['expectedPlantId'],
+            expectedPlantName: state.uri.queryParameters['expectedPlantName'],
+          ),
         ),
         GoRoute(
           path: '/herbarium',

@@ -37,6 +37,9 @@ function createFieldRepository() {
   return {
     media,
     jobs,
+    async findPublishedPlantByPublicId(id) {
+      return id === ids.plant ? { publicId: ids.plant, scientificName: 'Quercus robur' } : undefined;
+    },
     async findPrivateMediaByIdempotencyKey(key) { return media.find((item) => item.idempotencyKey === key); },
     async findPrivateMediaByClientId(ownerId, clientId) { return media.find((item) => item.ownerId === ownerId && item.clientMediaId === clientId); },
     async findPrivateMediaByPublicId(ownerId, id) { return media.find((item) => item.ownerId === ownerId && item.publicId === id); },

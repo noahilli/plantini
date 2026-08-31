@@ -13,6 +13,7 @@ import '../domain/field_models.dart';
 import '../domain/field_repository.dart';
 import '../infrastructure/location_service.dart';
 import '../infrastructure/media_service.dart';
+import 'widgets/expected_plant_mismatch_consent.dart';
 
 /// The online first-cut field workflow: select a privacy-sanitized image,
 /// upload it through a reservation, wait for an identification, then explicitly
@@ -26,6 +27,8 @@ class FieldCaptureScreen extends StatefulWidget {
     this.mediaService,
     this.locationService,
     this.ids,
+    this.expectedPlantId,
+    this.expectedPlantName,
   });
 
   final AppDependencies? dependencies;
@@ -34,6 +37,8 @@ class FieldCaptureScreen extends StatefulWidget {
   final MediaService? mediaService;
   final LocationService? locationService;
   final ClientIdGenerator? ids;
+  final String? expectedPlantId;
+  final String? expectedPlantName;
 
   @override
   State<FieldCaptureScreen> createState() => _FieldCaptureScreenState();
@@ -53,6 +58,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
   LocationState _locationState = LocationState.unknown;
   bool _includeLocation = false;
   bool _isWorking = false;
+  bool _acceptMismatch = false;
   Timer? _identificationPollTimer;
   String? _observationClientId;
   String? _observationIdempotencyKey;
@@ -98,6 +104,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _isWorking = false;
           _observationClientId = null;
           _observationIdempotencyKey = null;
+          _acceptMismatch = false;
         });
       case Failure<ProcessedMedia>(:final failure):
         _setFailure(failure.message);
@@ -139,6 +146,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       clientJobId: jobClientId,
       mediaId: (upload as Success<MediaUpload>).value.id,
       idempotencyKey: jobClientId,
+      expectedPlantId: widget.expectedPlantId,
     );
     if (!mounted) return;
     switch (job) {
@@ -213,6 +221,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     final confirmed = await fieldRepository.confirmIdentification(
       jobId: job.id,
       candidateId: candidateId,
+      acceptMismatch: _requiresMismatchAcceptance && _acceptMismatch,
     );
     if (confirmed case Failure<IdentificationJob>(:final failure)) {
       _setFailure(failure.message);
@@ -285,6 +294,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     final canSave =
         job?.status == 'identified' &&
         _selectedCandidateId != null &&
+        (!_requiresMismatchAcceptance || _acceptMismatch) &&
         !_isWorking;
 
     // State 1n: Identification in progress
@@ -427,12 +437,26 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
                       selectedCandidateId: _selectedCandidateId,
                       onCandidateSelected: _isWorking
                           ? null
-                          : (candidateId) => setState(
-                              () => _selectedCandidateId = candidateId,
-                            ),
+                          : (candidateId) => setState(() {
+                              _selectedCandidateId = candidateId;
+                              _acceptMismatch = false;
+                            }),
                       onRefresh: _isWorking ? null : _refreshIdentification,
                     ),
                     const SizedBox(height: 16),
+                    if (_requiresMismatchAcceptance) ...[
+                      ExpectedPlantMismatchConsent(
+                        expectedPlantName:
+                            widget.expectedPlantName ?? 'die Levelart',
+                        value: _acceptMismatch,
+                        onChanged: _isWorking
+                            ? null
+                            : (value) => setState(
+                                () => _acceptMismatch = value == true,
+                              ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                     SwitchListTile.adaptive(
                       key: const ValueKey('field-location-consent'),
                       value: _includeLocation,
@@ -710,6 +734,16 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       if (candidate.plantId == confirmedPlantId) return candidate.candidateId;
     }
     return null;
+  }
+
+  bool get _requiresMismatchAcceptance {
+    final job = _job;
+    final selected = _selectedCandidateId;
+    if (job == null || job.expectedPlantId == null || selected == null) {
+      return false;
+    }
+    return job.expectedCandidateId == null ||
+        selected != job.expectedCandidateId;
   }
 }
 

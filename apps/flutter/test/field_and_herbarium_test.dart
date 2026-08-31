@@ -80,6 +80,7 @@ final class MockFieldRepository implements FieldRepository {
     required String jobId,
     String? candidateId,
     String? confirmedPlantId,
+    bool acceptMismatch = false,
   }) async {
     return Result.success(
       IdentificationJob(

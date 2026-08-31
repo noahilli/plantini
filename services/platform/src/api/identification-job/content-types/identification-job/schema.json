@@ -16,6 +16,8 @@
     "requestDigest": { "type": "string", "required": true },
     "mediaId": { "type": "string", "required": true },
     "expectedPlantId": { "type": "string" },
+    "expectedMatch": { "type": "enumeration", "enum": ["matched", "mismatch"] },
+    "expectedCandidateId": { "type": "string" },
     "confirmedPlantId": { "type": "string" },
     "confirmedCandidateId": { "type": "string" },
     "status": { "type": "enumeration", "enum": ["pending", "processing", "identified", "failed", "cancelled"], "required": true },

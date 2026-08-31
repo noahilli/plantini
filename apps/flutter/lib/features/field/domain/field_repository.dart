@@ -30,5 +30,6 @@ abstract interface class FieldRepository {
     required String jobId,
     String? candidateId,
     String? confirmedPlantId,
+    bool acceptMismatch = false,
   });
 }

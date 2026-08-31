@@ -96,6 +96,7 @@ final class HttpFieldRepository implements FieldRepository {
     required String jobId,
     String? candidateId,
     String? confirmedPlantId,
+    bool acceptMismatch = false,
   }) async {
     final hasCandidateId = candidateId != null && candidateId.trim().isNotEmpty;
     final hasPlantId =
@@ -113,6 +114,7 @@ final class HttpFieldRepository implements FieldRepository {
       body: {
         if (hasCandidateId) 'candidateId': candidateId,
         if (hasPlantId) 'confirmedPlantId': confirmedPlantId,
+        if (acceptMismatch) 'acceptMismatch': true,
       },
     );
     return response.when(
@@ -220,6 +222,9 @@ Result<IdentificationJob> _identificationJob(Map<String, dynamic> body) {
               'floraVersion',
             )
           : null,
+      expectedPlantId: _optionalString(body, 'expectedPlantId'),
+      expectedMatch: _optionalString(body, 'expectedMatch'),
+      expectedCandidateId: _optionalString(body, 'expectedCandidateId'),
     ),
   );
 }

@@ -142,6 +142,9 @@ function createLearningRepository(entities) {
 
 function createFieldRepository(entities) {
   return {
+    findPublishedPlantByPublicId: async (publicId) => findOne(entities, 'api::plant.plant', {
+      filters: { publicId, publishedAt: { $notNull: true } },
+    }),
     findPrivateMediaByIdempotencyKey: async (idempotencyKey) => findOne(entities, 'api::private-media.private-media', {
       filters: { idempotencyKey },
     }),

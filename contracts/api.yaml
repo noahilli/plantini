@@ -667,6 +667,9 @@ components:
         retryAfter: {type: string, format: date-time}
         candidates: {type: array, items: {$ref: '#/components/schemas/IdentificationCandidate'}}
         providerMetadata: {$ref: '#/components/schemas/IdentificationProviderMetadata'}
+        expectedPlantId: {$ref: '#/components/schemas/Id'}
+        expectedMatch: {type: string, enum: [matched, mismatch]}
+        expectedCandidateId: {type: string, minLength: 3, maxLength: 160}
         failureCode: {type: string}
         confirmedPlantId: {$ref: '#/components/schemas/Id'}
         confirmedCandidateId: {type: string, minLength: 3, maxLength: 160}
@@ -687,7 +690,7 @@ components:
       oneOf:
         - required: [candidateId]
         - required: [confirmedPlantId]
-      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, confirmedPlantId: {$ref: '#/components/schemas/Id'}}
+      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, confirmedPlantId: {$ref: '#/components/schemas/Id'}, acceptMismatch: {type: boolean, default: false}}
     CreateObservationRequest:
       type: object
       required: [clientObservationId, observedAt]
