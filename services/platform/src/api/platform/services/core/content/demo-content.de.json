@@ -1,0 +1,2688 @@
+{
+  "ecosystems": [
+    {
+      "ecosystem": {
+        "slug": "mitteleuropaeischer-laubwald",
+        "name": "Mitteleuropäischer Laubwald",
+        "description": "Ein Lernset zu zehn heimischen Pflanzen der Baum-, Strauch- und Krautschicht mitteleuropäischer Laubwälder. Beobachtet werden gut sichtbare Merkmale, Jahreszeiten und Standortbezüge.",
+        "climateZone": "gemäßigte Zone",
+        "region": "Mitteleuropa",
+        "season": "ganzjährig; Schwerpunkt März bis Oktober"
+      },
+      "plants": [
+        {
+          "slug": "rotbuche",
+          "commonName": "Rotbuche",
+          "scientificName": "Fagus sylvatica",
+          "family": "Buchengewächse (Fagaceae)",
+          "description": "Bis etwa 40 Meter hoher, schattentoleranter Laubbaum mit glatter weißgrauer Rinde, langen schmalen spitzen Knospen und eiförmigen, schwach wellig gerandeten Blättern. Die dreikantigen Nüsse liegen in einem verholzenden Fruchtbecher.",
+          "warning": "Früchte und andere Pflanzenteile nicht verzehren; Beobachtung zur Bestimmung genügt.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=2357",
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ]
+        },
+        {
+          "slug": "stieleiche",
+          "commonName": "Stiel-Eiche",
+          "scientificName": "Quercus robur",
+          "family": "Buchengewächse (Fagaceae)",
+          "description": "Großer Laubbaum feuchterer, nährstoffreicher Standorte. Typisch sind sehr kurz gestielte, tief gelappte Blätter mit oft geöhrtem Blattgrund sowie Eicheln an deutlich langen Fruchtstielen.",
+          "warning": "Nicht anhand eines einzelnen Blattes bestimmen; mehrere Blätter und möglichst Früchte vergleichen.",
+          "sources": [
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/trauben-oder-stieleiche",
+            "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel"
+          ]
+        },
+        {
+          "slug": "hainbuche",
+          "commonName": "Hainbuche",
+          "scientificName": "Carpinus betulus",
+          "family": "Birkengewächse (Betulaceae)",
+          "description": "Laubbaum mit geflammter, unruhiger Rinde, oft spannrückigem Stamm und zweizeilig angeordneten, eiförmigen, gefalteten und doppelt gesägten Blättern. Die Nüsschen tragen einen auffälligen dreilappigen Flügel.",
+          "warning": "Nicht mit der Rotbuche verwechseln: Beide haben ähnliche Knospen, gehören aber verschiedenen Familien an.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=1318",
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ]
+        },
+        {
+          "slug": "bergahorn",
+          "commonName": "Berg-Ahorn",
+          "scientificName": "Acer pseudoplatanus",
+          "family": "Seifenbaumgewächse (Sapindaceae)",
+          "description": "Bis etwa 30 Meter hoher Ahorn mit gegenständigen, meist fünflappigen und unregelmäßig gekerbt-gesägten Blättern. Die Borke blättert im Alter schuppig ab; die paarigen Fruchtflügel stehen ungefähr rechtwinklig zueinander.",
+          "warning": "Bei jungen Bäumen zusätzlich Knospen und Blattstiel prüfen, da Ahornblätter verwechselt werden können.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=15",
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ]
+        },
+        {
+          "slug": "gewoehnliche-esche",
+          "commonName": "Gewöhnliche Esche",
+          "scientificName": "Fraxinus excelsior",
+          "family": "Ölbaumgewächse (Oleaceae)",
+          "description": "Hoher Laubbaum mit gegenständigen, unpaarig gefiederten Blättern und auffällig mattschwarzen Knospen. Die einsamigen, zungenförmig geflügelten Früchte hängen oft in Büscheln.",
+          "warning": "Abgestorbene Äste können herabfallen; geschädigte Eschen nur aus sicherem Abstand betrachten.",
+          "sources": [
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen",
+            "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel"
+          ]
+        },
+        {
+          "slug": "winterlinde",
+          "commonName": "Winter-Linde",
+          "scientificName": "Tilia cordata",
+          "family": "Malvengewächse (Malvaceae)",
+          "description": "Laubbaum mit wechselständigen, herzförmigen Blättern. Auf der Blattunterseite sitzen in den Nervenwinkeln rostbraune Haarbüschel. Der blassgrüne Hochblatt-Flügel bleibt mit dem Fruchtstand verbunden.",
+          "warning": "Für die Abgrenzung zur Sommer-Linde mehrere voll entwickelte Blätter prüfen.",
+          "sources": [
+            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/eichenarten-in-oesterreich",
+            "https://www.floraweb.de/artensteckbriefe/namenssuche.html"
+          ]
+        },
+        {
+          "slug": "gewoehnliche-hasel",
+          "commonName": "Gewöhnliche Hasel",
+          "scientificName": "Corylus avellana",
+          "family": "Birkengewächse (Betulaceae)",
+          "description": "Meist mehrstämmiger Strauch mit rundlich-herzförmigen, doppelt gesägten und weich behaarten Blättern. Die langen männlichen Kätzchen blühen sehr früh; die weiblichen Blüten zeigen kleine rote Narben.",
+          "warning": "Nüsse nicht sammeln oder essen; Allergien und Verwechslungen sind im Lernsetting nicht sicher beurteilbar.",
+          "sources": [
+            "https://www.floraweb.de/artensteckbriefe/namenssuche.html",
+            "https://www.floraweb.de/phaenologie/bluehphasen.html"
+          ]
+        },
+        {
+          "slug": "buschwindroeschen",
+          "commonName": "Busch-Windröschen",
+          "scientificName": "Anemone nemorosa",
+          "family": "Hahnenfußgewächse (Ranunculaceae)",
+          "description": "Frühjahrs-Geophyt frischer Laubwälder, meist 10 bis 25 Zentimeter hoch. Über einem Quirl aus drei gestielten, tief geteilten Hochblättern steht gewöhnlich eine weiße Blüte mit meist sechs bis acht Blütenhüllblättern.",
+          "warning": "Nicht berühren oder verzehren; Hahnenfußgewächse können hautreizende beziehungsweise giftige Inhaltsstoffe enthalten.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=435",
+            "https://www.floraweb.de/phaenologie/bluehphasen.html"
+          ]
+        },
+        {
+          "slug": "baerlauch",
+          "commonName": "Bär-Lauch",
+          "scientificName": "Allium ursinum",
+          "family": "Amaryllisgewächse (Amaryllidaceae)",
+          "description": "Frühjahrs-Geophyt nährstoffreicher, frischer bis feuchter Laubwälder. Er besitzt meist ein bis zwei grundständige, gestielte Blätter und weiße, sternförmige Blüten in einer Scheindolde.",
+          "warning": "Nicht sammeln oder probieren. Lebensgefährliche Verwechslungen mit Maiglöckchen, Herbstzeitlose und Aronstab sind möglich; Geruch allein ist kein sicherer Bestimmungsbeleg.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=320"
+          ]
+        },
+        {
+          "slug": "gewoehnlicher-wurmfarn",
+          "commonName": "Gewöhnlicher Wurmfarn",
+          "scientificName": "Dryopteris filix-mas",
+          "family": "Wurmfarngewächse (Dryopteridaceae)",
+          "description": "Kräftiger Waldfarn mit trichterförmig angeordneten, doppelt gefiederten Wedeln. Der Blattstiel trägt hellbraune Spreuschuppen; auf der Unterseite fertiler Fiederblättchen liegen runde Sporenhäufchen in Reihen.",
+          "warning": "Nicht verzehren; Farne nur visuell bestimmen und Wedel nicht abbrechen.",
+          "sources": [
+            "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel",
+            "https://www.floraweb.de/artensteckbriefe/namenssuche.html"
+          ]
+        }
+      ],
+      "quizzes": [
+        {
+          "slug": "laubwald-q01",
+          "title": "Laubwald-Wissen 01",
+          "plantSlug": "rotbuche",
+          "prompt": "Welches Rindenmerkmal passt besonders gut zur Rotbuche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Glatt und weißgrau"
+            },
+            {
+              "id": "b",
+              "label": "Tief gefurcht und schwarz"
+            },
+            {
+              "id": "c",
+              "label": "Papierartig weiß abrollend"
+            },
+            {
+              "id": "d",
+              "label": "Schuppig orange abblätternd"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q02",
+          "title": "Laubwald-Wissen 02",
+          "plantSlug": "rotbuche",
+          "prompt": "Wie sehen die Winterknospen der Rotbuche typischerweise aus?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Kurz, rund und schwarz"
+            },
+            {
+              "id": "b",
+              "label": "Lang, schmal und spitz"
+            },
+            {
+              "id": "c",
+              "label": "Grün und klebrig"
+            },
+            {
+              "id": "d",
+              "label": "Unter Blattstielresten verborgen"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q03",
+          "title": "Laubwald-Wissen 03",
+          "plantSlug": "rotbuche",
+          "prompt": "Welche Fruchtform gehört zur Rotbuche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Doppelflügelige Spaltfrucht"
+            },
+            {
+              "id": "b",
+              "label": "Rote Sammelsteinfrucht"
+            },
+            {
+              "id": "c",
+              "label": "Dreikantige Nuss im Fruchtbecher"
+            },
+            {
+              "id": "d",
+              "label": "Lange Hülsenfrucht"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q04",
+          "title": "Laubwald-Wissen 04",
+          "plantSlug": "stieleiche",
+          "prompt": "Welches Blattmerkmal spricht eher für die Stiel-Eiche als für die Trauben-Eiche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sehr langer Blattstiel"
+            },
+            {
+              "id": "b",
+              "label": "Ungeteilte Blattspreite"
+            },
+            {
+              "id": "c",
+              "label": "Nadelförmige Blätter"
+            },
+            {
+              "id": "d",
+              "label": "Sehr kurzer Blattstiel und oft geöhrter Grund"
+            }
+          ],
+          "correctChoiceId": "d"
+        },
+        {
+          "slug": "laubwald-q05",
+          "title": "Laubwald-Wissen 05",
+          "plantSlug": "stieleiche",
+          "prompt": "Wo sitzen die Eicheln der Stiel-Eiche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "An deutlich langen Fruchtstielen"
+            },
+            {
+              "id": "b",
+              "label": "Direkt in aufrechten Zapfen"
+            },
+            {
+              "id": "c",
+              "label": "In fleischigen roten Beeren"
+            },
+            {
+              "id": "d",
+              "label": "Unter einem grünen Hochblatt"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q06",
+          "title": "Laubwald-Wissen 06",
+          "plantSlug": "stieleiche",
+          "prompt": "Welcher Standort passt im Vergleich zur Trauben-Eiche eher zur Stiel-Eiche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Extrem trockener Fels"
+            },
+            {
+              "id": "b",
+              "label": "Gut wasserversorgter, nährstoffreicher Tieflandboden"
+            },
+            {
+              "id": "c",
+              "label": "Hochalpiner Schutt"
+            },
+            {
+              "id": "d",
+              "label": "Salzige Küstendüne"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q07",
+          "title": "Laubwald-Wissen 07",
+          "plantSlug": "hainbuche",
+          "prompt": "Zu welcher Familie gehört die Hainbuche trotz ihres Namens?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Buchengewächse"
+            },
+            {
+              "id": "b",
+              "label": "Rosengewächse"
+            },
+            {
+              "id": "c",
+              "label": "Birkengewächse"
+            },
+            {
+              "id": "d",
+              "label": "Ahorngewächse"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q08",
+          "title": "Laubwald-Wissen 08",
+          "plantSlug": "hainbuche",
+          "prompt": "Welche Kombination kennzeichnet ein Hainbuchenblatt?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Eiförmig, gefaltet und doppelt gesägt"
+            },
+            {
+              "id": "b",
+              "label": "Handförmig fünflappig"
+            },
+            {
+              "id": "c",
+              "label": "Unpaarig gefiedert"
+            },
+            {
+              "id": "d",
+              "label": "Immergrün und stachelig"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q09",
+          "title": "Laubwald-Wissen 09",
+          "plantSlug": "hainbuche",
+          "prompt": "Was unterscheidet den Stamm einer älteren Hainbuche oft von einer Rotbuche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Er ist stets hohl"
+            },
+            {
+              "id": "b",
+              "label": "Er trägt waagerechte Korkleisten"
+            },
+            {
+              "id": "c",
+              "label": "Er ist leuchtend weiß"
+            },
+            {
+              "id": "d",
+              "label": "Er ist unruhig geflammt und spannrückig"
+            }
+          ],
+          "correctChoiceId": "d"
+        },
+        {
+          "slug": "laubwald-q10",
+          "title": "Laubwald-Wissen 10",
+          "plantSlug": "bergahorn",
+          "prompt": "Wie sind die Blätter des Berg-Ahorns am Zweig angeordnet?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Gegenständig"
+            },
+            {
+              "id": "b",
+              "label": "Wechselständig"
+            },
+            {
+              "id": "c",
+              "label": "In Dreierquirlen"
+            },
+            {
+              "id": "d",
+              "label": "Nur grundständig"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q11",
+          "title": "Laubwald-Wissen 11",
+          "plantSlug": "bergahorn",
+          "prompt": "Welcher Winkel ist für die beiden Fruchtflügel des Berg-Ahorns typisch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sie liegen parallel aneinander"
+            },
+            {
+              "id": "b",
+              "label": "Ungefähr ein rechter Winkel"
+            },
+            {
+              "id": "c",
+              "label": "Ein geschlossener Kreis"
+            },
+            {
+              "id": "d",
+              "label": "Es gibt nur einen Flügel"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q12",
+          "title": "Laubwald-Wissen 12",
+          "plantSlug": "bergahorn",
+          "prompt": "Welches Borkenmerkmal kann bei älteren Berg-Ahornen auffallen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sie bleibt immer spiegelglatt"
+            },
+            {
+              "id": "b",
+              "label": "Sie ist mit langen Dornen besetzt"
+            },
+            {
+              "id": "c",
+              "label": "Sie blättert schuppig ab"
+            },
+            {
+              "id": "d",
+              "label": "Sie wird papierweiß"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q13",
+          "title": "Laubwald-Wissen 13",
+          "plantSlug": "gewoehnliche-esche",
+          "prompt": "Welche Knospenfarbe ist für die Gewöhnliche Esche besonders charakteristisch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Mattschwarz"
+            },
+            {
+              "id": "b",
+              "label": "Leuchtend gelb"
+            },
+            {
+              "id": "c",
+              "label": "Silbrig weiß"
+            },
+            {
+              "id": "d",
+              "label": "Rosa gestreift"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q14",
+          "title": "Laubwald-Wissen 14",
+          "plantSlug": "gewoehnliche-esche",
+          "prompt": "Welcher Blatttyp passt zur Gewöhnlichen Esche?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Einfach und herzförmig"
+            },
+            {
+              "id": "b",
+              "label": "Dreieckig und ungelappt"
+            },
+            {
+              "id": "c",
+              "label": "Nadelförmig"
+            },
+            {
+              "id": "d",
+              "label": "Unpaarig gefiedert"
+            }
+          ],
+          "correctChoiceId": "d"
+        },
+        {
+          "slug": "laubwald-q15",
+          "title": "Laubwald-Wissen 15",
+          "plantSlug": "gewoehnliche-esche",
+          "prompt": "Was ist beim Beobachten geschädigter Eschen besonders wichtig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Die Rinde abzulösen"
+            },
+            {
+              "id": "b",
+              "label": "Wegen möglicher Totäste Abstand zu halten"
+            },
+            {
+              "id": "c",
+              "label": "Blätter zu kosten"
+            },
+            {
+              "id": "d",
+              "label": "Auf den Baum zu klettern"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q16",
+          "title": "Laubwald-Wissen 16",
+          "plantSlug": "winterlinde",
+          "prompt": "Welches Blattmerkmal ist typisch für die Winter-Linde?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Herzförmige Spreite"
+            },
+            {
+              "id": "b",
+              "label": "Sieben schmale Fiederblättchen"
+            },
+            {
+              "id": "c",
+              "label": "Tiefe Eichenlappen"
+            },
+            {
+              "id": "d",
+              "label": "Parallele Blattadern wie bei Gras"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q17",
+          "title": "Laubwald-Wissen 17",
+          "plantSlug": "winterlinde",
+          "prompt": "Was findet man bei der Winter-Linde auf der Blattunterseite in den Nervenwinkeln?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Weiße Dornen"
+            },
+            {
+              "id": "b",
+              "label": "Blaue Drüsen"
+            },
+            {
+              "id": "c",
+              "label": "Rostbraune Haarbüschel"
+            },
+            {
+              "id": "d",
+              "label": "Schwarze Sporenlager"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q18",
+          "title": "Laubwald-Wissen 18",
+          "plantSlug": "winterlinde",
+          "prompt": "Welche Struktur unterstützt bei Linden die Ausbreitung des Fruchtstands?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Ein fleischiger Fruchtmantel"
+            },
+            {
+              "id": "b",
+              "label": "Ein blassgrünes, flügelartiges Hochblatt"
+            },
+            {
+              "id": "c",
+              "label": "Ein hakiger Kelch"
+            },
+            {
+              "id": "d",
+              "label": "Ein schwimmfähiger Zapfen"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q19",
+          "title": "Laubwald-Wissen 19",
+          "plantSlug": "gewoehnliche-hasel",
+          "prompt": "Welche Wuchsform zeigt die Gewöhnliche Hasel meistens?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Einjähriges Gras"
+            },
+            {
+              "id": "b",
+              "label": "Kletternde Liane"
+            },
+            {
+              "id": "c",
+              "label": "Einzelstämmiger Riese über 40 Meter"
+            },
+            {
+              "id": "d",
+              "label": "Mehrstämmiger Strauch"
+            }
+          ],
+          "correctChoiceId": "d"
+        },
+        {
+          "slug": "laubwald-q20",
+          "title": "Laubwald-Wissen 20",
+          "plantSlug": "gewoehnliche-hasel",
+          "prompt": "Welche Blütenstruktur ist schon sehr früh im Jahr auffällig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Lange männliche Kätzchen"
+            },
+            {
+              "id": "b",
+              "label": "Große blaue Körbchen"
+            },
+            {
+              "id": "c",
+              "label": "Weiße Scheindolden"
+            },
+            {
+              "id": "d",
+              "label": "Rote Zapfen"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q21",
+          "title": "Laubwald-Wissen 21",
+          "plantSlug": "gewoehnliche-hasel",
+          "prompt": "Woran erkennt man die unscheinbaren weiblichen Haselblüten?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "An vier großen gelben Kronblättern"
+            },
+            {
+              "id": "b",
+              "label": "An kleinen roten Narben aus der Knospe"
+            },
+            {
+              "id": "c",
+              "label": "An einem weißen Sporn"
+            },
+            {
+              "id": "d",
+              "label": "An schwarzen Beeren"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q22",
+          "title": "Laubwald-Wissen 22",
+          "plantSlug": "buschwindroeschen",
+          "prompt": "Wann blüht das Busch-Windröschen typischerweise?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Im Hochwinter"
+            },
+            {
+              "id": "b",
+              "label": "Nur im Spätherbst"
+            },
+            {
+              "id": "c",
+              "label": "Von März bis Mai"
+            },
+            {
+              "id": "d",
+              "label": "Ausschließlich im August"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q23",
+          "title": "Laubwald-Wissen 23",
+          "plantSlug": "buschwindroeschen",
+          "prompt": "Wie viele Blüten trägt ein Spross des Busch-Windröschens gewöhnlich?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Eine"
+            },
+            {
+              "id": "b",
+              "label": "Genau zwölf"
+            },
+            {
+              "id": "c",
+              "label": "Mehr als fünfzig"
+            },
+            {
+              "id": "d",
+              "label": "Keine, die Art bildet nur Sporen"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q24",
+          "title": "Laubwald-Wissen 24",
+          "plantSlug": "buschwindroeschen",
+          "prompt": "Welcher Standort ist für das Busch-Windröschen plausibel?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Salzige Schlickfläche"
+            },
+            {
+              "id": "b",
+              "label": "Frischer, krautreicher Laubwald"
+            },
+            {
+              "id": "c",
+              "label": "Trockene Hauswand"
+            },
+            {
+              "id": "d",
+              "label": "Dauerhaft überfluteter Teich"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q25",
+          "title": "Laubwald-Wissen 25",
+          "plantSlug": "baerlauch",
+          "prompt": "Welche Blütenform passt zum Bär-Lauch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Braune Kätzchen"
+            },
+            {
+              "id": "b",
+              "label": "Gelbe Lippenblüten"
+            },
+            {
+              "id": "c",
+              "label": "Rote Röhrenblüten"
+            },
+            {
+              "id": "d",
+              "label": "Weiße sternförmige Blüten in einer Scheindolde"
+            }
+          ],
+          "correctChoiceId": "d"
+        },
+        {
+          "slug": "laubwald-q26",
+          "title": "Laubwald-Wissen 26",
+          "plantSlug": "baerlauch",
+          "prompt": "Warum darf Geruch allein eine Bärlauch-Bestimmung nicht absichern?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Geruch ist grundsätzlich unsichtbar"
+            },
+            {
+              "id": "b",
+              "label": "Geruch kann an Händen haften und weitere Proben verfälschen"
+            },
+            {
+              "id": "c",
+              "label": "Bärlauch riecht immer nach Minze"
+            },
+            {
+              "id": "d",
+              "label": "Nur die Wurzel riecht"
+            }
+          ],
+          "correctChoiceId": "b"
+        },
+        {
+          "slug": "laubwald-q27",
+          "title": "Laubwald-Wissen 27",
+          "plantSlug": "baerlauch",
+          "prompt": "Wie verhältst du dich bei einer möglichen Bärlauch-Verwechslung richtig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Nichts probieren oder sammeln"
+            },
+            {
+              "id": "b",
+              "label": "Ein kleines Stück kosten"
+            },
+            {
+              "id": "c",
+              "label": "Nur unbekannte Blätter mitnehmen"
+            },
+            {
+              "id": "d",
+              "label": "Alle Pflanzen ausgraben"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q28",
+          "title": "Laubwald-Wissen 28",
+          "plantSlug": "gewoehnlicher-wurmfarn",
+          "prompt": "Wie stehen die Wedel des Gewöhnlichen Wurmfarns typischerweise?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Als schwimmende Rosette"
+            },
+            {
+              "id": "b",
+              "label": "Einzeln an einer Liane"
+            },
+            {
+              "id": "c",
+              "label": "Trichterförmig aus einem Stock"
+            },
+            {
+              "id": "d",
+              "label": "In hängenden Kätzchen"
+            }
+          ],
+          "correctChoiceId": "c"
+        },
+        {
+          "slug": "laubwald-q29",
+          "title": "Laubwald-Wissen 29",
+          "plantSlug": "gewoehnlicher-wurmfarn",
+          "prompt": "Wo befinden sich die Sporenhäufchen eines fertilen Wurmfarnwedels?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Auf der Wedelunterseite"
+            },
+            {
+              "id": "b",
+              "label": "In einer fleischigen Beere"
+            },
+            {
+              "id": "c",
+              "label": "An den Wurzeln über dem Boden"
+            },
+            {
+              "id": "d",
+              "label": "In weißen Blüten"
+            }
+          ],
+          "correctChoiceId": "a"
+        },
+        {
+          "slug": "laubwald-q30",
+          "title": "Laubwald-Wissen 30",
+          "plantSlug": "gewoehnlicher-wurmfarn",
+          "prompt": "Welche Handlung ist beim Bestimmen eines Wurmfarns angemessen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Den Wedel abbrechen und probieren"
+            },
+            {
+              "id": "b",
+              "label": "Die Pflanze vollständig ausgraben"
+            },
+            {
+              "id": "c",
+              "label": "Sporen in die Augen reiben"
+            },
+            {
+              "id": "d",
+              "label": "Merkmale ansehen und die Pflanze stehen lassen"
+            }
+          ],
+          "correctChoiceId": "d"
+        }
+      ]
+    },
+    {
+      "ecosystem": {
+        "slug": "alpenraum",
+        "name": "Alpenraum",
+        "description": "Fels, Schutt, alpine Rasen und Zwergstrauchheiden oberhalb und nahe der Waldgrenze. Die Arten sind an kurze Vegetationszeiten, Wind, Kälte und nährstoffarme Standorte angepasst.",
+        "language": "de-DE",
+        "warning": "Wildpflanzen nur beobachten und fotografieren. In Schutzgebieten nichts pflücken, ausgraben oder beschädigen. Bestimmungen dienen nicht als Verzehr- oder Heilmittelempfehlung.",
+        "climateZone": "alpin bis subalpin",
+        "region": "Alpen, Schwerpunkt Nördliche Kalkalpen",
+        "season": "April bis September, höhenabhängig"
+      },
+      "plants": [
+        {
+          "slug": "alpen-edelweiss",
+          "commonName": "Alpen-Edelweiß",
+          "scientificName": "Leontopodium alpinum",
+          "family": "Asteraceae",
+          "description": "Kleine, weißwollig-filzige Alpenpflanze. Sternförmig ausgebreitete, dicht behaarte Hochblätter umgeben mehrere kleine gelbliche Blütenköpfchen. Sie wächst vor allem in kalkreichen Steinrasen und Felsspalten.",
+          "warning": "Nicht pflücken oder ausgraben; im Nationalpark und anderen Schutzgebieten streng vor Ort schützen. Keine Nutzungsempfehlung.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=3358",
+            "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ]
+        },
+        {
+          "slug": "kalk-glocken-enzian",
+          "commonName": "Kalk-Glocken-Enzian",
+          "scientificName": "Gentiana clusii",
+          "family": "Gentianaceae",
+          "description": "Niedrige Rosettenpflanze mit einzelner, großer, tiefblauer Glockenblüte. Die zugespitzten Kelchzipfel liegen der Kronröhre an. Typisch sind kalkreiche, steinige Rasen und Quellfluren der montanen bis subalpinen Stufe.",
+          "warning": "Besonders geschützte Art: nicht pflücken, ausgraben oder beschädigen. Nicht mit ähnlich blühenden Enzianarten allein nach Farbe bestimmen.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?name-use-id=2624",
+            "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_01.pdf"
+          ]
+        },
+        {
+          "slug": "bewimperte-alpenrose",
+          "commonName": "Bewimperte Alpenrose",
+          "scientificName": "Rhododendron hirsutum",
+          "family": "Ericaceae",
+          "description": "Immergrüner Zwergstrauch mit rosaroten Trichterblüten. Die Blätter sind beiderseits grün, drüsig punktiert und am flachen Rand deutlich bewimpert. Sie besiedelt kalkreiche Felsbänder, Schotterhalden und lichte Latschengebüsche.",
+          "warning": "Pflanzenteile nicht verzehren; Alpenrosen enthalten problematische Inhaltsstoffe. Am Standort belassen und Verwechslungen mit anderen Rhododendron-Arten beachten.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=4836",
+            "https://nationalpark-berchtesgaden.bayern.de/natur/wissenswertes/flora/index.htm"
+          ]
+        },
+        {
+          "slug": "silberwurz",
+          "commonName": "Silberwurz",
+          "scientificName": "Dryas octopetala",
+          "family": "Rosaceae",
+          "description": "Niederliegender Spalierstrauch mit ledrigen, gekerbten Blättern: oben dunkelgrün, unten weißfilzig. Die meist achtzähligen weißen Blüten entwickeln auffällige, fedrig behaarte Fruchtstände. Die Art wächst auf kalkreichem Schutt und in Steinrasen.",
+          "warning": "Empfindliche Polster nicht betreten oder abreißen. Die Information ist keine Empfehlung für eine Nutzung als Heil- oder Nahrungspflanze.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=2029",
+            "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ]
+        },
+        {
+          "slug": "silberdistel",
+          "commonName": "Silberdistel",
+          "scientificName": "Carlina acaulis",
+          "family": "Asteraceae",
+          "description": "Meist bodennahe, dornige Rosettenpflanze mit großem Blütenkorb. Lange silberweiße innere Hüllblätter umgeben die Röhrenblüten und öffnen sich bei trockenem Wetter stärker. Sie wächst in mageren, basenreichen Rasen und lichten Wäldern.",
+          "warning": "In Deutschland besonders geschützt und auf der Vorwarnliste: nicht sammeln, abschneiden oder ausgraben. Vorsicht an den dornigen Blättern.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?name-use-id=1306",
+            "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ]
+        },
+        {
+          "slug": "trollblume",
+          "commonName": "Trollblume",
+          "scientificName": "Trollius europaeus",
+          "family": "Ranunculaceae",
+          "description": "Mehrjährige Pflanze feuchter Bergwiesen mit handförmig geteilten Blättern. Die zahlreichen gelben Blütenblätter bilden eine fast geschlossene Kugel. Sie bevorzugt feuchte, nährstoffreichere Wiesen, Quellfluren und Hochstaudenbereiche.",
+          "warning": "Nicht verzehren; Hahnenfußgewächse können reizende Inhaltsstoffe enthalten. Vorkommen nicht betreten oder pflücken, insbesondere auf geschützten Feuchtwiesen.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=6047",
+            "https://www.infoflora.ch/de/flora/trollius-europaeus.html"
+          ]
+        },
+        {
+          "slug": "alpen-aster",
+          "commonName": "Alpen-Aster",
+          "scientificName": "Aster alpinus",
+          "family": "Asteraceae",
+          "description": "Niedrige Staude mit meist einzelnem Blütenkorb: violette Zungenblüten umgeben eine gelbe Scheibe aus Röhrenblüten. Behaarte Stängel und Blätter sind an den rauen Standort angepasst. Sie wächst in sonnigen, kalkreichen Magerrasen und Felsspalten.",
+          "warning": "Nur fotografieren und am Standort belassen. Nicht anhand der Blütenfarbe allein bestimmen; mehrere Korbblütler sehen ähnlich aus.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=587",
+            "https://www.infoflora.ch/de/flora/aster-alpinus.html"
+          ]
+        },
+        {
+          "slug": "gegenblaettriger-steinbrech",
+          "commonName": "Gegenblättriger Steinbrech",
+          "scientificName": "Saxifraga oppositifolia",
+          "family": "Saxifragaceae",
+          "description": "Sehr niedrige Polsterpflanze mit gegenständigen, kleinen Blättern und vergleichsweise großen purpurrosa Blüten. Sie besiedelt kalte, kalkreiche Felsen, Schutt und Schneetälchen und blüht in Hochlagen oft sehr früh.",
+          "warning": "Polster nicht betreten, abreißen oder aus Felsritzen lösen. Alpine Standorte sind trittempfindlich und regenerieren langsam.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=5256",
+            "https://www.infoflora.ch/de/flora/saxifraga-oppositifolia.html"
+          ]
+        },
+        {
+          "slug": "aurikel",
+          "commonName": "Aurikel",
+          "scientificName": "Primula auricula",
+          "family": "Primulaceae",
+          "description": "Immergrüne Rosettenpflanze kalkreicher Felsen. Ihre fleischigen, oft mehlig bestäubten Blätter stehen unter einer Dolde aus leuchtend gelben, duftenden Blüten mit fünf Kronlappen.",
+          "warning": "Nicht pflücken oder aus Felsspalten lösen. Primeln können bei Hautkontakt empfindliche Personen reizen; keine Nutzungsempfehlung.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=4456",
+            "https://www.infoflora.ch/de/flora/primula-auricula.html"
+          ]
+        },
+        {
+          "slug": "alpen-kuechenschelle",
+          "commonName": "Alpen-Küchenschelle",
+          "scientificName": "Pulsatilla alpina",
+          "family": "Ranunculaceae",
+          "description": "Behaarte Bergpflanze mit großen, meist weißen, nach oben gerichteten Blüten. Nach der Blüte entstehen kugelige Fruchtstände aus langen fedrigen Griffeln. Sie wächst auf alpinen Rasen; Unterarten unterscheiden sich unter anderem in ihren Bodenansprüchen.",
+          "warning": "Nicht berühren oder verzehren; frische Küchenschellen enthalten haut- und schleimhautreizende Stoffe. Geschützte Bestände nicht pflücken oder betreten.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=4587",
+            "https://www.infoflora.ch/de/flora/pulsatilla-alpina.html"
+          ]
+        }
+      ],
+      "quizzes": [
+        {
+          "plantSlug": "alpen-edelweiss",
+          "prompt": "Welches Merkmal lässt das Alpen-Edelweiß wie einen weißen Stern erscheinen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Dicht behaarte, sternförmig angeordnete Hochblätter"
+            },
+            {
+              "id": "b",
+              "label": "Fünf große weiße Kronblätter"
+            },
+            {
+              "id": "c",
+              "label": "Ein einzelner silberner Blütenkelch"
+            },
+            {
+              "id": "d",
+              "label": "Weiße Beeren in einem Quirl"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-edelweiss-01",
+          "title": "Artenwissen: Alpen Edelweiss"
+        },
+        {
+          "plantSlug": "alpen-edelweiss",
+          "prompt": "Welcher Standort passt besonders gut zum Alpen-Edelweiß?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Nährstoffreicher Auwald"
+            },
+            {
+              "id": "b",
+              "label": "Kalkreiche Steinrasen und Felsspalten"
+            },
+            {
+              "id": "c",
+              "label": "Dauerhaft überflutetes Moor"
+            },
+            {
+              "id": "d",
+              "label": "Schattiger Erlenbruch"
+            }
+          ],
+          "correctChoiceId": "b",
+          "slug": "alpen-edelweiss-02",
+          "title": "Artenwissen: Alpen Edelweiss"
+        },
+        {
+          "plantSlug": "alpen-edelweiss",
+          "prompt": "Was ist bei einem Edelweißfund im Nationalpark richtig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Eine Blüte als Beleg mitnehmen"
+            },
+            {
+              "id": "b",
+              "label": "Die Pflanze versetzen"
+            },
+            {
+              "id": "c",
+              "label": "Nur beobachten und fotografieren"
+            },
+            {
+              "id": "d",
+              "label": "Die Hochblätter zum Trocknen sammeln"
+            }
+          ],
+          "correctChoiceId": "c",
+          "slug": "alpen-edelweiss-03",
+          "title": "Artenwissen: Alpen Edelweiss"
+        },
+        {
+          "plantSlug": "kalk-glocken-enzian",
+          "prompt": "Welche Blütenform ist typisch für den Kalk-Glocken-Enzian?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Große tiefblaue Glocke auf einer niedrigen Rosette"
+            },
+            {
+              "id": "b",
+              "label": "Weiße Dolde mit vielen Einzelblüten"
+            },
+            {
+              "id": "c",
+              "label": "Gelber kugeliger Blütenkopf"
+            },
+            {
+              "id": "d",
+              "label": "Rosa Lippenblüte an einem Strauch"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "kalk-glocken-enzian-01",
+          "title": "Artenwissen: Kalk Glocken Enzian"
+        },
+        {
+          "plantSlug": "kalk-glocken-enzian",
+          "prompt": "Welcher Bodenhinweis steckt bereits im Namen Kalk-Glocken-Enzian?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Er bevorzugt salzhaltige Küstenböden"
+            },
+            {
+              "id": "b",
+              "label": "Er ist an kalkreiche Standorte gebunden"
+            },
+            {
+              "id": "c",
+              "label": "Er wächst nur in sauren Hochmooren"
+            },
+            {
+              "id": "d",
+              "label": "Er benötigt tiefen Flussschlamm"
+            }
+          ],
+          "correctChoiceId": "b",
+          "slug": "kalk-glocken-enzian-02",
+          "title": "Artenwissen: Kalk Glocken Enzian"
+        },
+        {
+          "plantSlug": "kalk-glocken-enzian",
+          "prompt": "Warum genügt die blaue Blütenfarbe nicht für eine sichere Enzianbestimmung?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Blütenfarbe ist nur nachts sichtbar"
+            },
+            {
+              "id": "b",
+              "label": "Mehrere Enzianarten blühen ähnlich blau"
+            },
+            {
+              "id": "c",
+              "label": "Enziane ändern täglich ihre Familie"
+            },
+            {
+              "id": "d",
+              "label": "Alle Alpenpflanzen blühen blau"
+            }
+          ],
+          "correctChoiceId": "b",
+          "slug": "kalk-glocken-enzian-03",
+          "title": "Artenwissen: Kalk Glocken Enzian"
+        },
+        {
+          "plantSlug": "bewimperte-alpenrose",
+          "prompt": "Welches Blattmerkmal gab der Bewimperten Alpenrose ihren Namen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Ein flacher Rand mit deutlich sichtbaren Wimperhaaren"
+            },
+            {
+              "id": "b",
+              "label": "Silbrig gefiederte Blattspitzen"
+            },
+            {
+              "id": "c",
+              "label": "Dornen entlang der Mittelrippe"
+            },
+            {
+              "id": "d",
+              "label": "Herzförmige Schwimmblätter"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "bewimperte-alpenrose-01",
+          "title": "Artenwissen: Bewimperte Alpenrose"
+        },
+        {
+          "plantSlug": "bewimperte-alpenrose",
+          "prompt": "Auf welchem Untergrund findet man Rhododendron hirsutum typischerweise?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Auf kalkreichen Felsbändern und Schotterhalden"
+            },
+            {
+              "id": "b",
+              "label": "Im salzigen Watt"
+            },
+            {
+              "id": "c",
+              "label": "Auf tiefem Torf im Hochmoor"
+            },
+            {
+              "id": "d",
+              "label": "In regelmäßig überfluteten Auen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "bewimperte-alpenrose-02",
+          "title": "Artenwissen: Bewimperte Alpenrose"
+        },
+        {
+          "plantSlug": "bewimperte-alpenrose",
+          "prompt": "Welche Aussage zur Bewimperten Alpenrose ist sicherheitsgerecht?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Ihre Blätter eignen sich als Bergtee"
+            },
+            {
+              "id": "b",
+              "label": "Pflanzenteile nicht verzehren"
+            },
+            {
+              "id": "c",
+              "label": "Rote Blüten sind immer essbar"
+            },
+            {
+              "id": "d",
+              "label": "Vor der Bestimmung eine Kostprobe nehmen"
+            }
+          ],
+          "correctChoiceId": "b",
+          "slug": "bewimperte-alpenrose-03",
+          "title": "Artenwissen: Bewimperte Alpenrose"
+        },
+        {
+          "plantSlug": "silberwurz",
+          "prompt": "Wie unterscheiden sich Ober- und Unterseite eines Silberwurzblatts?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Oben dunkelgrün, unten weißfilzig"
+            },
+            {
+              "id": "b",
+              "label": "Oben blau, unten rot"
+            },
+            {
+              "id": "c",
+              "label": "Oben dornig, unten schuppig"
+            },
+            {
+              "id": "d",
+              "label": "Beide Seiten sind durchsichtig"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "silberwurz-01",
+          "title": "Artenwissen: Silberwurz"
+        },
+        {
+          "plantSlug": "silberwurz",
+          "prompt": "Welche Wuchsform hilft der Silberwurz am alpinen Standort?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Hoher unverzweigter Baum"
+            },
+            {
+              "id": "b",
+              "label": "Niederliegender Spalierstrauch"
+            },
+            {
+              "id": "c",
+              "label": "Frei schwimmende Wasserpflanze"
+            },
+            {
+              "id": "d",
+              "label": "Einjährige Kletterpflanze"
+            }
+          ],
+          "correctChoiceId": "b",
+          "slug": "silberwurz-02",
+          "title": "Artenwissen: Silberwurz"
+        },
+        {
+          "plantSlug": "silberwurz",
+          "prompt": "Woran erkennt man den Fruchtstand der Silberwurz?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "An fedrig verlängerten, weiß behaarten Griffeln"
+            },
+            {
+              "id": "b",
+              "label": "An einer fleischigen roten Beere"
+            },
+            {
+              "id": "c",
+              "label": "An einer großen stacheligen Nuss"
+            },
+            {
+              "id": "d",
+              "label": "An schwarzen Hülsen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "silberwurz-03",
+          "title": "Artenwissen: Silberwurz"
+        },
+        {
+          "plantSlug": "silberdistel",
+          "prompt": "Welche Teile erzeugen den silbernen Strahlenkranz der Silberdistel?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Innere Hüllblätter des Blütenkorbs"
+            },
+            {
+              "id": "b",
+              "label": "Luftwurzeln"
+            },
+            {
+              "id": "c",
+              "label": "Kelchblätter einer Einzelblüte"
+            },
+            {
+              "id": "d",
+              "label": "Fruchtflügel"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "silberdistel-01",
+          "title": "Artenwissen: Silberdistel"
+        },
+        {
+          "plantSlug": "silberdistel",
+          "prompt": "Warum wird die Silberdistel auch Wetterdistel genannt?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Ihr Blütenkorb öffnet sich bei Trockenheit stärker"
+            },
+            {
+              "id": "b",
+              "label": "Sie blüht ausschließlich im Schnee"
+            },
+            {
+              "id": "c",
+              "label": "Ihre Wurzel misst den Luftdruck"
+            },
+            {
+              "id": "d",
+              "label": "Sie dreht den Stängel nach Norden"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "silberdistel-02",
+          "title": "Artenwissen: Silberdistel"
+        },
+        {
+          "plantSlug": "silberdistel",
+          "prompt": "Welche Schutzangabe gilt für Carlina acaulis in Deutschland?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Besonders geschützt"
+            },
+            {
+              "id": "b",
+              "label": "Freigegeben zum gewerblichen Sammeln"
+            },
+            {
+              "id": "c",
+              "label": "Nur in Gärten geschützt"
+            },
+            {
+              "id": "d",
+              "label": "Als invasive Art zu entfernen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "silberdistel-03",
+          "title": "Artenwissen: Silberdistel"
+        },
+        {
+          "plantSlug": "trollblume",
+          "prompt": "Welche Gestalt hat die Blüte der Trollblume meist?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Fast kugelig und leuchtend gelb"
+            },
+            {
+              "id": "b",
+              "label": "Flach, blau und vierzählig"
+            },
+            {
+              "id": "c",
+              "label": "Röhrenförmig und schwarz"
+            },
+            {
+              "id": "d",
+              "label": "Sternförmig mit weißen Hochblättern"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "trollblume-01",
+          "title": "Artenwissen: Trollblume"
+        },
+        {
+          "plantSlug": "trollblume",
+          "prompt": "Welcher Lebensraum passt zur Trollblume?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Feuchte Bergwiesen und Quellfluren"
+            },
+            {
+              "id": "b",
+              "label": "Trockene Sanddünen"
+            },
+            {
+              "id": "c",
+              "label": "Salzige Felsspalten an der Küste"
+            },
+            {
+              "id": "d",
+              "label": "Dunkle Nadelstreu ohne Bodenfeuchte"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "trollblume-02",
+          "title": "Artenwissen: Trollblume"
+        },
+        {
+          "plantSlug": "trollblume",
+          "prompt": "Zu welcher Pflanzenfamilie gehört die Trollblume?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Hahnenfußgewächse"
+            },
+            {
+              "id": "b",
+              "label": "Rosengewächse"
+            },
+            {
+              "id": "c",
+              "label": "Heidekrautgewächse"
+            },
+            {
+              "id": "d",
+              "label": "Süßgräser"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "trollblume-03",
+          "title": "Artenwissen: Trollblume"
+        },
+        {
+          "plantSlug": "alpen-aster",
+          "prompt": "Wie ist der Blütenkorb der Alpen-Aster typischerweise gefärbt?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Violette Zungenblüten um eine gelbe Scheibe"
+            },
+            {
+              "id": "b",
+              "label": "Weiße Zungenblüten um eine schwarze Scheibe"
+            },
+            {
+              "id": "c",
+              "label": "Nur grüne, kronblattlose Blüten"
+            },
+            {
+              "id": "d",
+              "label": "Gelbe Glocken mit roten Punkten"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-aster-01",
+          "title": "Artenwissen: Alpen Aster"
+        },
+        {
+          "plantSlug": "alpen-aster",
+          "prompt": "Was bedeutet der Begriff Blütenkorb bei der Alpen-Aster?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Viele kleine Einzelblüten wirken wie eine Blüte"
+            },
+            {
+              "id": "b",
+              "label": "Eine Blüte wächst in einem Vogelnest"
+            },
+            {
+              "id": "c",
+              "label": "Vier Beeren bilden gemeinsam eine Frucht"
+            },
+            {
+              "id": "d",
+              "label": "Die Wurzeln flechten einen Korb"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-aster-02",
+          "title": "Artenwissen: Alpen Aster"
+        },
+        {
+          "plantSlug": "alpen-aster",
+          "prompt": "Welcher Standort ist für die Alpen-Aster plausibel?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sonniger kalkreicher Magerrasen"
+            },
+            {
+              "id": "b",
+              "label": "Ganzjährig überfluteter Schilfgürtel"
+            },
+            {
+              "id": "c",
+              "label": "Tiefer Schatten im Erlenbruch"
+            },
+            {
+              "id": "d",
+              "label": "Nährstoffreicher Komposthaufen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-aster-03",
+          "title": "Artenwissen: Alpen Aster"
+        },
+        {
+          "plantSlug": "gegenblaettriger-steinbrech",
+          "prompt": "Welche Blattstellung verrät der deutsche Name des Gegenblättrigen Steinbrechs?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Je zwei Blätter stehen einander gegenüber"
+            },
+            {
+              "id": "b",
+              "label": "Alle Blätter schwimmen getrennt"
+            },
+            {
+              "id": "c",
+              "label": "Die Blätter stehen nur an der Wurzel"
+            },
+            {
+              "id": "d",
+              "label": "Jedes Blatt wächst gegen den Boden"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "gegenblaettriger-steinbrech-01",
+          "title": "Artenwissen: Gegenblaettriger Steinbrech"
+        },
+        {
+          "plantSlug": "gegenblaettriger-steinbrech",
+          "prompt": "Welche Kombination kennzeichnet Saxifraga oppositifolia?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Niedriges Polster und purpurrosa Blüten"
+            },
+            {
+              "id": "b",
+              "label": "Meterhoher Strauch und gelbe Dolden"
+            },
+            {
+              "id": "c",
+              "label": "Schwimmblätter und blaue Ähren"
+            },
+            {
+              "id": "d",
+              "label": "Dornige Rosette und silberner Blütenkorb"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "gegenblaettriger-steinbrech-02",
+          "title": "Artenwissen: Gegenblaettriger Steinbrech"
+        },
+        {
+          "plantSlug": "gegenblaettriger-steinbrech",
+          "prompt": "Warum sollte man Polsterpflanzen im Hochgebirge nicht betreten?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sie wachsen langsam und sind trittempfindlich"
+            },
+            {
+              "id": "b",
+              "label": "Sie springen bei Berührung auf"
+            },
+            {
+              "id": "c",
+              "label": "Sie machen Felsen rutschfest"
+            },
+            {
+              "id": "d",
+              "label": "Ihre Samen haften dauerhaft an Schuhen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "gegenblaettriger-steinbrech-03",
+          "title": "Artenwissen: Gegenblaettriger Steinbrech"
+        },
+        {
+          "plantSlug": "aurikel",
+          "prompt": "Welche Blattbeschaffenheit ist für die Aurikel typisch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Fleischige Blätter in einer Rosette"
+            },
+            {
+              "id": "b",
+              "label": "Dünne gefiederte Unterwasserblätter"
+            },
+            {
+              "id": "c",
+              "label": "Große dornige Wedel"
+            },
+            {
+              "id": "d",
+              "label": "Nadeln in Fünferbüscheln"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "aurikel-01",
+          "title": "Artenwissen: Aurikel"
+        },
+        {
+          "plantSlug": "aurikel",
+          "prompt": "Wo wächst die Aurikel natürlicherweise besonders häufig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "In kalkreichen Felsen und Felsspalten"
+            },
+            {
+              "id": "b",
+              "label": "Im Brackwasser von Flussmündungen"
+            },
+            {
+              "id": "c",
+              "label": "In tiefem Moorwasser"
+            },
+            {
+              "id": "d",
+              "label": "Auf intensiv gedüngten Äckern"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "aurikel-02",
+          "title": "Artenwissen: Aurikel"
+        },
+        {
+          "plantSlug": "aurikel",
+          "prompt": "Wie sind die gelben Einzelblüten der Aurikel meist angeordnet?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Gemeinsam in einer Dolde über der Blattrosette"
+            },
+            {
+              "id": "b",
+              "label": "Einzeln direkt unter der Erde"
+            },
+            {
+              "id": "c",
+              "label": "In einem braunen Kolben"
+            },
+            {
+              "id": "d",
+              "label": "Als hängende Kätzchen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "aurikel-03",
+          "title": "Artenwissen: Aurikel"
+        },
+        {
+          "plantSlug": "alpen-kuechenschelle",
+          "prompt": "Was entsteht bei der Alpen-Küchenschelle nach der Blüte?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Ein kugeliger Stand aus fedrigen Griffeln"
+            },
+            {
+              "id": "b",
+              "label": "Eine einzelne blaue Beere"
+            },
+            {
+              "id": "c",
+              "label": "Eine harte Kokosnuss"
+            },
+            {
+              "id": "d",
+              "label": "Ein Maiskolben"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-kuechenschelle-01",
+          "title": "Artenwissen: Alpen Kuechenschelle"
+        },
+        {
+          "plantSlug": "alpen-kuechenschelle",
+          "prompt": "Welche Eigenschaft schützt die Alpen-Küchenschelle am rauen Standort?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Dichte Behaarung an Pflanzenteilen"
+            },
+            {
+              "id": "b",
+              "label": "Schwimmende Luftkammern"
+            },
+            {
+              "id": "c",
+              "label": "Salzausscheidende Drüsen"
+            },
+            {
+              "id": "d",
+              "label": "Ein zehn Meter hoher Stamm"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-kuechenschelle-02",
+          "title": "Artenwissen: Alpen Kuechenschelle"
+        },
+        {
+          "plantSlug": "alpen-kuechenschelle",
+          "prompt": "Was ist beim Umgang mit einer Alpen-Küchenschelle richtig?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Nicht berühren oder verzehren; nur beobachten"
+            },
+            {
+              "id": "b",
+              "label": "Durch Kauen die Art bestimmen"
+            },
+            {
+              "id": "c",
+              "label": "Die Wurzel als Probe ausgraben"
+            },
+            {
+              "id": "d",
+              "label": "Blüten für einen Rohkostsalat sammeln"
+            }
+          ],
+          "correctChoiceId": "a",
+          "slug": "alpen-kuechenschelle-03",
+          "title": "Artenwissen: Alpen Kuechenschelle"
+        }
+      ]
+    },
+    {
+      "ecosystem": {
+        "slug": "artenreiche-wiese",
+        "name": "Artenreiche Wiese",
+        "description": "Extensiv genutzte, blütenreiche Wiesen Mitteleuropas bieten zahlreichen Kräutern, Gräsern und Insekten Lebensraum. Geringe Düngung, passende Mahdtermine und das Abräumen des Mähguts helfen, lichtbedürftige Arten zu erhalten.",
+        "climateZone": "Gemäßigte Zone",
+        "region": "Mitteleuropa",
+        "season": "Frühling bis Herbst"
+      },
+      "plants": [
+        {
+          "slug": "wiesen-salbei",
+          "commonName": "Wiesen-Salbei",
+          "scientificName": "Salvia pratensis",
+          "family": "Lippenblütler (Lamiaceae)",
+          "description": "Mehrjährige Wiesenpflanze mit kräftig blauvioletten Lippenblüten in lockeren Scheinquirlen. Der vierkantige Stängel und die meist grundständigen, runzeligen Blätter sind wichtige Hinweise. Typisch sind eher trockene, sonnige und nährstoffärmere Wiesen.",
+          "warning": "Nicht allein nach der Blütenfarbe bestimmen; Lippenblütler können ähnlich aussehen. Keine Aussage zur Essbarkeit ableiten.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php?suchnr=5220",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "wiesen-margerite",
+          "commonName": "Wiesen-Margerite",
+          "scientificName": "Leucanthemum vulgare agg.",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Ausdauernde Pflanze mit großen Blütenkörben: weiße Zungenblüten umgeben gelbe Röhrenblüten. Die oberen Stängelblätter sitzen wechselständig und sind gröber gezähnt als die grundständigen Blätter. Der Name umfasst eine schwer unterscheidbare Artengruppe.",
+          "warning": "Die Arten der Margeriten-Gruppe sind im Feld oft nicht sicher trennbar; deshalb wird hier bewusst das Aggregat geführt.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "wiesen-flockenblume",
+          "commonName": "Wiesen-Flockenblume",
+          "scientificName": "Centaurea jacea",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Mehrjährige Wiesenart mit purpurfarbenen Blütenkörben. Die randlichen Blüten sind oft vergrößert; die Hüllblätter tragen trockenhäutige, unregelmäßig eingerissene Anhängsel. Sie wächst besonders in mäßig nährstoffreichen Wiesen.",
+          "warning": "Flockenblumen sind variabel und können miteinander hybridisieren. Für eine sichere Artansprache auch die Hüllblätter prüfen.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "acker-witwenblume",
+          "commonName": "Acker-Witwenblume",
+          "scientificName": "Knautia arvensis",
+          "family": "Geißblattgewächse (Caprifoliaceae)",
+          "description": "Behaarte Wiesenpflanze mit flachen, blauvioletten Blütenköpfen. Die Randblüten sind deutlich größer als die inneren Blüten. Stängelblätter sind häufig fiederteilig; die Blütenköpfe besitzen keinen gemeinsamen Außenkelch wie Skabiosen.",
+          "warning": "Nicht nur auf violette Blütenköpfe achten: Skabiosen und Teufelsabbiss können ähnlich wirken.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "gewoehnlicher-hornklee",
+          "commonName": "Gewöhnlicher Hornklee",
+          "scientificName": "Lotus corniculatus",
+          "family": "Hülsenfrüchtler (Fabaceae)",
+          "description": "Niedrige bis aufsteigende Pflanze mit gelben Schmetterlingsblüten, die außen oft rötlich überlaufen sind. Das scheinbar fünfteilige Blatt besteht aus drei Fiederblättchen und zwei großen Nebenblättern. Reife Hülsen stehen wie kleine Hörner ab.",
+          "warning": "Gelb blühende Hülsenfrüchtler ähneln einander. Blattform, Blütenstand und Früchte gemeinsam prüfen; nicht probieren.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "kleiner-klappertopf",
+          "commonName": "Kleiner Klappertopf",
+          "scientificName": "Rhinanthus minor",
+          "family": "Sommerwurzgewächse (Orobanchaceae)",
+          "description": "Einjährige, gelb blühende Wiesenpflanze mit gegenständigen, gezähnten Blättern. Die seitlich abgeflachte Kelchhülle umschließt später eine trockene Frucht, in der reife Samen hörbar klappern. Als Halbschmarotzer entzieht sie benachbarten Gräsern Wasser und Nährstoffe.",
+          "warning": "Mehrere Klappertopf-Arten ähneln sich stark. Für die Artbestimmung Blüte, Kelch und Tragblätter vergleichen.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "wiesen-bocksbart",
+          "commonName": "Wiesen-Bocksbart",
+          "scientificName": "Tragopogon pratensis",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Aufrechte Pflanze mit schmalen, grasähnlichen Blättern und gelben Blütenkörben. Die Hüllblätter stehen sternförmig um den Korb; nach der Blüte entsteht ein großer kugeliger Schirm aus federigen Früchten. Die Blütenköpfe schließen sich häufig bereits um die Mittagszeit.",
+          "warning": "Nicht mit gelben Korbblütlern nur anhand der Farbe bestimmen; Hüllblätter, Blätter und Fruchtstand beachten.",
+          "sources": [
+            "https://www.floraweb.de/php/artenhome.php",
+            "https://botanik-bochum.de/web/pflanzenbilder/Tragopogon_pratensis.htm",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "wiesen-glockenblume",
+          "commonName": "Wiesen-Glockenblume",
+          "scientificName": "Campanula patula",
+          "family": "Glockenblumengewächse (Campanulaceae)",
+          "description": "Zierliche, meist zweijährige Wiesenpflanze mit locker verzweigtem Blütenstand. Die blauviolette Krone ist tief eingeschnitten und weit glocken- bis sternförmig geöffnet. Obere Blätter sind schmaler als die gestielten Grundblätter.",
+          "warning": "Glockenblumen können ohne vollständig entwickelte Blüten schwer unterscheidbar sein. Standort und mehrere Merkmale einbeziehen.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "spitzwegerich",
+          "commonName": "Spitzwegerich",
+          "scientificName": "Plantago lanceolata",
+          "family": "Wegerichgewächse (Plantaginaceae)",
+          "description": "Ausdauernde Rosettenpflanze mit schmal lanzettlichen Blättern und deutlich parallelen Längsnerven. Blattlose, längs geriefte Schäfte tragen kurze, dunkle Blütenähren. Zur Blüte ragen helle Staubbeutel ringförmig aus der Ähre.",
+          "warning": "Breit- und Mittlerer Wegerich wachsen teils am selben Ort. Blattform, Blattnerven und Blütenstand gemeinsam prüfen.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        },
+        {
+          "slug": "gewoehnliche-schafgarbe",
+          "commonName": "Gewöhnliche Schafgarbe",
+          "scientificName": "Achillea millefolium agg.",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Ausdauernde Pflanze mit sehr fein gefiederten, wechselständigen Blättern. Viele kleine weißliche bis rosafarbene Blütenkörbe bilden eine flache Schirmrispe. Es handelt sich um eine formenreiche, taxonomisch schwierige Artengruppe.",
+          "warning": "Die Artengruppe ist schwierig zu trennen. Blütenstände anderer Pflanzen können ähnlich wirken; keine Nutzung aus einer App-Bestimmung ableiten.",
+          "sources": [
+            "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
+            "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ]
+        }
+      ],
+      "quizzes": [
+        {
+          "slug": "wiesen-salbei-01",
+          "title": "Welches Merkmal passt besonders gut zum Wiesen-Salbei?",
+          "plantSlug": "wiesen-salbei",
+          "prompt": "Welches Merkmal passt besonders gut zum Wiesen-Salbei?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Blauviolette Lippenblüten an einem vierkantigen Stängel"
+            },
+            {
+              "id": "b",
+              "label": "Weiße Zungenblüten um eine gelbe Mitte"
+            },
+            {
+              "id": "c",
+              "label": "Gelbe Schmetterlingsblüten mit Hülsen"
+            },
+            {
+              "id": "d",
+              "label": "Eine dunkle, walzenförmige Blütenähre"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Wiesen-Salbei gehört zu den Lippenblütlern; Lippenblüten und vierkantiger Stängel sind charakteristisch."
+        },
+        {
+          "slug": "wiesen-salbei-02",
+          "title": "Auf welchem Standort ist Wiesen-Salbei besonders typisch?",
+          "plantSlug": "wiesen-salbei",
+          "prompt": "Auf welchem Standort ist Wiesen-Salbei besonders typisch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Dauerhaft überstautes Röhricht"
+            },
+            {
+              "id": "b",
+              "label": "Trockene, sonnige und eher nährstoffarme Wiese"
+            },
+            {
+              "id": "c",
+              "label": "Dunkler Fichtenforst"
+            },
+            {
+              "id": "d",
+              "label": "Salzhaltige Küstendüne"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Die Art ist ein typischer Hinweis auf sonnige, eher trockene und extensiver genutzte Wiesen."
+        },
+        {
+          "slug": "wiesen-salbei-03",
+          "title": "Was sollte man für eine verlässliche Feldbestimmung zusätzlich zur Blütenfarbe prüfen?",
+          "plantSlug": "wiesen-salbei",
+          "prompt": "Was sollte man für eine verlässliche Feldbestimmung zusätzlich zur Blütenfarbe prüfen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Nur die Pflanzenhöhe"
+            },
+            {
+              "id": "b",
+              "label": "Nur den Monat"
+            },
+            {
+              "id": "c",
+              "label": "Blütenform, Stängelquerschnitt und Blätter"
+            },
+            {
+              "id": "d",
+              "label": "Ausschließlich den Geruch"
+            }
+          ],
+          "correctChoiceId": "c",
+          "explanation": "Mehrere unabhängige Merkmale reduzieren Verwechslungen mit anderen blau blühenden Arten."
+        },
+        {
+          "slug": "wiesen-margerite-01",
+          "title": "Woraus besteht der scheinbar einzelne Blütenkopf der Wiesen-Margerite?",
+          "plantSlug": "wiesen-margerite",
+          "prompt": "Woraus besteht der scheinbar einzelne Blütenkopf der Wiesen-Margerite?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Aus einer einzigen fünfzähligen Blüte"
+            },
+            {
+              "id": "b",
+              "label": "Aus weißen Zungen- und gelben Röhrenblüten"
+            },
+            {
+              "id": "c",
+              "label": "Aus gelben Schmetterlingsblüten"
+            },
+            {
+              "id": "d",
+              "label": "Aus einer Blüte mit sechs Tepalen"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Wie andere Korbblütler trägt die Margerite viele Einzelblüten in einem gemeinsamen Körbchen."
+        },
+        {
+          "slug": "wiesen-margerite-02",
+          "title": "Warum steht beim wissenschaftlichen Namen der Wiesen-Margerite der Zusatz „agg.“?",
+          "plantSlug": "wiesen-margerite",
+          "prompt": "Warum steht beim wissenschaftlichen Namen der Wiesen-Margerite der Zusatz „agg.“?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sie ist nur im Garten bekannt"
+            },
+            {
+              "id": "b",
+              "label": "Sie ist eine Kreuzung aus Grasarten"
+            },
+            {
+              "id": "c",
+              "label": "Der Name bezeichnet eine schwer trennbare Artengruppe"
+            },
+            {
+              "id": "d",
+              "label": "Die Art besitzt keine Blüten"
+            }
+          ],
+          "correctChoiceId": "c",
+          "explanation": "„Aggregat“ kennzeichnet eine Gruppe nah verwandter, morphologisch schwierig unterscheidbarer Arten."
+        },
+        {
+          "slug": "wiesen-margerite-03",
+          "title": "Welche Beobachtung widerspricht einer Wiesen-Margerite am deutlichsten?",
+          "plantSlug": "wiesen-margerite",
+          "prompt": "Welche Beobachtung widerspricht einer Wiesen-Margerite am deutlichsten?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Großer weiß-gelber Blütenkorb"
+            },
+            {
+              "id": "b",
+              "label": "Wechselständige Stängelblätter"
+            },
+            {
+              "id": "c",
+              "label": "Grobe Zähnung an Blättern"
+            },
+            {
+              "id": "d",
+              "label": "Gegenständige Blätter und gelbe Lippenblüten"
+            }
+          ],
+          "correctChoiceId": "d",
+          "explanation": "Gelbe Lippenblüten und gegenständige Blätter passen nicht zur Margerite als Korbblütler."
+        },
+        {
+          "slug": "wiesen-flockenblume-01",
+          "title": "Welches Detail ist für die Bestimmung der Wiesen-Flockenblume besonders hilfreich?",
+          "plantSlug": "wiesen-flockenblume",
+          "prompt": "Welches Detail ist für die Bestimmung der Wiesen-Flockenblume besonders hilfreich?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Trockenhäutige, eingerissene Anhängsel der Hüllblätter"
+            },
+            {
+              "id": "b",
+              "label": "Ein hohler Schachtelhalm-Stängel"
+            },
+            {
+              "id": "c",
+              "label": "Dreiteilige Kleeblätter"
+            },
+            {
+              "id": "d",
+              "label": "Eine einzelne glockenförmige Krone"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Bei Flockenblumen liefern Form und Anhängsel der Hüllblätter wichtige Bestimmungsmerkmale."
+        },
+        {
+          "slug": "wiesen-flockenblume-02",
+          "title": "Welche Blütenfarbe ist für die Wiesen-Flockenblume typisch?",
+          "plantSlug": "wiesen-flockenblume",
+          "prompt": "Welche Blütenfarbe ist für die Wiesen-Flockenblume typisch?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Rein grün"
+            },
+            {
+              "id": "b",
+              "label": "Purpurfarben"
+            },
+            {
+              "id": "c",
+              "label": "Leuchtend orange mit schwarzen Flecken"
+            },
+            {
+              "id": "d",
+              "label": "Braun ohne sichtbare Blüten"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Die Körbchen sind typischerweise purpurfarben; Randblüten können vergrößert sein."
+        },
+        {
+          "slug": "wiesen-flockenblume-03",
+          "title": "Warum genügt die purpurfarbene Blüte allein nicht zur sicheren Artbestimmung?",
+          "plantSlug": "wiesen-flockenblume",
+          "prompt": "Warum genügt die purpurfarbene Blüte allein nicht zur sicheren Artbestimmung?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Weil Flockenblumen variabel sind und hybridisieren können"
+            },
+            {
+              "id": "b",
+              "label": "Weil die Art ausschließlich nachts blüht"
+            },
+            {
+              "id": "c",
+              "label": "Weil jede Pflanze ihre Farbe täglich wechselt"
+            },
+            {
+              "id": "d",
+              "label": "Weil sie keine Hüllblätter besitzt"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Ähnliche Flockenblumen und Hybriden erfordern die Prüfung weiterer Merkmale, besonders der Hülle."
+        },
+        {
+          "slug": "acker-witwenblume-01",
+          "title": "Wie wirkt der Blütenstand der Acker-Witwenblume?",
+          "plantSlug": "acker-witwenblume",
+          "prompt": "Wie wirkt der Blütenstand der Acker-Witwenblume?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Als flacher blauvioletter Kopf mit größeren Randblüten"
+            },
+            {
+              "id": "b",
+              "label": "Als gelbe, herabhängende Kätzchen"
+            },
+            {
+              "id": "c",
+              "label": "Als weiße Dolde aus gleich großen Einzelblüten"
+            },
+            {
+              "id": "d",
+              "label": "Als einzelner roter Trichter"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Der kopfige Blütenstand und die vergrößerten Randblüten prägen das Erscheinungsbild."
+        },
+        {
+          "slug": "acker-witwenblume-02",
+          "title": "Welches Blattmerkmal findet man häufig bei der Acker-Witwenblume?",
+          "plantSlug": "acker-witwenblume",
+          "prompt": "Welches Blattmerkmal findet man häufig bei der Acker-Witwenblume?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Nadelförmige immergrüne Blätter"
+            },
+            {
+              "id": "b",
+              "label": "Rundliche Schwimmblätter"
+            },
+            {
+              "id": "c",
+              "label": "Fiederteilige Stängelblätter"
+            },
+            {
+              "id": "d",
+              "label": "Fleischige Blätter mit Dornen"
+            }
+          ],
+          "correctChoiceId": "c",
+          "explanation": "Die oberen beziehungsweise Stängelblätter sind häufig deutlich fiederteilig."
+        },
+        {
+          "slug": "acker-witwenblume-03",
+          "title": "Welche Verwechslungsgruppe sollte bei einem violetten Blütenkopf mitgeprüft werden?",
+          "plantSlug": "acker-witwenblume",
+          "prompt": "Welche Verwechslungsgruppe sollte bei einem violetten Blütenkopf mitgeprüft werden?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Farne"
+            },
+            {
+              "id": "b",
+              "label": "Skabiosen und Teufelsabbiss"
+            },
+            {
+              "id": "c",
+              "label": "Nadelbäume"
+            },
+            {
+              "id": "d",
+              "label": "Seggen ohne Blütenköpfe"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Mehrere Kardengewächse im weiteren Sinn besitzen ähnlich wirkende violette Blütenköpfe."
+        },
+        {
+          "slug": "gewoehnlicher-hornklee-01",
+          "title": "Wie erklärt sich das scheinbar fünfteilige Blatt des Gewöhnlichen Hornklees?",
+          "plantSlug": "gewoehnlicher-hornklee",
+          "prompt": "Wie erklärt sich das scheinbar fünfteilige Blatt des Gewöhnlichen Hornklees?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Fünf gleichartige Fiederblättchen"
+            },
+            {
+              "id": "b",
+              "label": "Drei Fiederblättchen und zwei große Nebenblätter"
+            },
+            {
+              "id": "c",
+              "label": "Zwei Blätter und drei Blütenblätter"
+            },
+            {
+              "id": "d",
+              "label": "Ein Blatt mit fünf Löchern"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Die zwei großen Nebenblätter sitzen nahe am Stängel und wirken wie zusätzliche Fiederblättchen."
+        },
+        {
+          "slug": "gewoehnlicher-hornklee-02",
+          "title": "Welche Frucht passt zum Gewöhnlichen Hornklee?",
+          "plantSlug": "gewoehnlicher-hornklee",
+          "prompt": "Welche Frucht passt zum Gewöhnlichen Hornklee?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Eine fleischige Beere"
+            },
+            {
+              "id": "b",
+              "label": "Eine geflügelte Nuss"
+            },
+            {
+              "id": "c",
+              "label": "Eine schmale Hülse"
+            },
+            {
+              "id": "d",
+              "label": "Eine Mohnkapsel"
+            }
+          ],
+          "correctChoiceId": "c",
+          "explanation": "Als Hülsenfrüchtler bildet Hornklee Hülsen, die im Blütenstand hornartig abstehen können."
+        },
+        {
+          "slug": "gewoehnlicher-hornklee-03",
+          "title": "Welche Blütenform kennzeichnet den Gewöhnlichen Hornklee?",
+          "plantSlug": "gewoehnlicher-hornklee",
+          "prompt": "Welche Blütenform kennzeichnet den Gewöhnlichen Hornklee?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Gelbe Schmetterlingsblüte"
+            },
+            {
+              "id": "b",
+              "label": "Blaue Glockenblüte"
+            },
+            {
+              "id": "c",
+              "label": "Braune Grasblüte"
+            },
+            {
+              "id": "d",
+              "label": "Weiße Röhrenblüte in einem Kolben"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die gelbe Schmetterlingsblüte weist auf die Familie der Hülsenfrüchtler hin."
+        },
+        {
+          "slug": "kleiner-klappertopf-01",
+          "title": "Woher stammt der Name Klappertopf?",
+          "plantSlug": "kleiner-klappertopf",
+          "prompt": "Woher stammt der Name Klappertopf?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Die Wurzel schlägt gegen Steine"
+            },
+            {
+              "id": "b",
+              "label": "Reife Samen klappern in der trockenen Frucht"
+            },
+            {
+              "id": "c",
+              "label": "Die Blätter klappen nachts zusammen"
+            },
+            {
+              "id": "d",
+              "label": "Bestäuber erzeugen ein Klopfgeräusch"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "In der trockenen, vom Kelch umgebenen Frucht bewegen sich die reifen Samen hörbar."
+        },
+        {
+          "slug": "kleiner-klappertopf-02",
+          "title": "Welche ökologische Lebensweise besitzt der Kleine Klappertopf?",
+          "plantSlug": "kleiner-klappertopf",
+          "prompt": "Welche ökologische Lebensweise besitzt der Kleine Klappertopf?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Er ist ein Halbschmarotzer an Wurzeln anderer Pflanzen"
+            },
+            {
+              "id": "b",
+              "label": "Er lebt vollständig unter Wasser"
+            },
+            {
+              "id": "c",
+              "label": "Er ist ein fleischfressender Baum"
+            },
+            {
+              "id": "d",
+              "label": "Er wächst ohne Verbindung zum Boden"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Klappertöpfe betreiben Photosynthese, zapfen aber die Wurzeln benachbarter Pflanzen, oft Gräser, an."
+        },
+        {
+          "slug": "kleiner-klappertopf-03",
+          "title": "Welche Kombination passt zum Kleinen Klappertopf?",
+          "plantSlug": "kleiner-klappertopf",
+          "prompt": "Welche Kombination passt zum Kleinen Klappertopf?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Gelbe Blüten, gegenständige gezähnte Blätter, abgeflachter Kelch"
+            },
+            {
+              "id": "b",
+              "label": "Weiße Blütenkörbe, nadelige Blätter, Beeren"
+            },
+            {
+              "id": "c",
+              "label": "Blaue Blüten, Schwimmblätter, Rhizom im Wasser"
+            },
+            {
+              "id": "d",
+              "label": "Rote Kätzchen, verholzter Stamm, Zapfen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Diese Merkmalskombination ist für Klappertöpfe typisch; für die genaue Art sind Details nötig."
+        },
+        {
+          "slug": "wiesen-bocksbart-01",
+          "title": "Zu welcher Tageszeit sind die Blütenkörbe des Wiesen-Bocksbarts häufig bereits geschlossen?",
+          "plantSlug": "wiesen-bocksbart",
+          "prompt": "Zu welcher Tageszeit sind die Blütenkörbe des Wiesen-Bocksbarts häufig bereits geschlossen?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Schon um die Mittagszeit"
+            },
+            {
+              "id": "b",
+              "label": "Nur kurz vor Mitternacht"
+            },
+            {
+              "id": "c",
+              "label": "Ausschließlich im Winter"
+            },
+            {
+              "id": "d",
+              "label": "Sie schließen sich nie"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die gelben Körbe öffnen morgens und schließen sich bei dieser Art oft schon gegen Mittag."
+        },
+        {
+          "slug": "wiesen-bocksbart-02",
+          "title": "Wie sieht der Fruchtstand des Wiesen-Bocksbarts aus?",
+          "plantSlug": "wiesen-bocksbart",
+          "prompt": "Wie sieht der Fruchtstand des Wiesen-Bocksbarts aus?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Große Kugel aus Früchten mit federigem Flugapparat"
+            },
+            {
+              "id": "b",
+              "label": "Dichte Traube blauer Beeren"
+            },
+            {
+              "id": "c",
+              "label": "Ein einzelner schwerer Stein"
+            },
+            {
+              "id": "d",
+              "label": "Eine Reihe roter Hülsen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Wie beim verwandten Löwenzahn tragen die Früchte einen Haarkranz; der gesamte Schirm ist besonders groß."
+        },
+        {
+          "slug": "wiesen-bocksbart-03",
+          "title": "Welche Blätter passen zum Wiesen-Bocksbart?",
+          "plantSlug": "wiesen-bocksbart",
+          "prompt": "Welche Blätter passen zum Wiesen-Bocksbart?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Breite herzförmige Schwimmblätter"
+            },
+            {
+              "id": "b",
+              "label": "Schmale, grasähnliche Blätter"
+            },
+            {
+              "id": "c",
+              "label": "Handförmige Blätter mit sieben Lappen"
+            },
+            {
+              "id": "d",
+              "label": "Schuppenblätter ohne Grün"
+            }
+          ],
+          "correctChoiceId": "b",
+          "explanation": "Die langen, schmalen Blätter wirken grasähnlich, obwohl die Art ein Korbblütler ist."
+        },
+        {
+          "slug": "wiesen-glockenblume-01",
+          "title": "Welche Kronenform ist typisch für die Wiesen-Glockenblume?",
+          "plantSlug": "wiesen-glockenblume",
+          "prompt": "Welche Kronenform ist typisch für die Wiesen-Glockenblume?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Weit geöffnet, blauviolett und tief in fünf Zipfel geteilt"
+            },
+            {
+              "id": "b",
+              "label": "Gelb und schmetterlingsförmig"
+            },
+            {
+              "id": "c",
+              "label": "Weißer Korb mit gelber Mitte"
+            },
+            {
+              "id": "d",
+              "label": "Unscheinbar und ohne Blütenhülle"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die tief eingeschnittene, weit geöffnete Glockenkrone unterscheidet sie von enger glockigen Arten."
+        },
+        {
+          "slug": "wiesen-glockenblume-02",
+          "title": "Wie ist der Blütenstand der Wiesen-Glockenblume meist aufgebaut?",
+          "plantSlug": "wiesen-glockenblume",
+          "prompt": "Wie ist der Blütenstand der Wiesen-Glockenblume meist aufgebaut?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Locker und verzweigt"
+            },
+            {
+              "id": "b",
+              "label": "Als dichter brauner Kolben"
+            },
+            {
+              "id": "c",
+              "label": "Als einzelnes unterirdisches Körbchen"
+            },
+            {
+              "id": "d",
+              "label": "Als verholztes Kätzchen"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die Art heißt auch Spreizende Glockenblume; ihr lockerer, verzweigter Blütenstand ist auffällig."
+        },
+        {
+          "slug": "wiesen-glockenblume-03",
+          "title": "Welche Aussage zu den Blättern der Wiesen-Glockenblume trifft zu?",
+          "plantSlug": "wiesen-glockenblume",
+          "prompt": "Welche Aussage zu den Blättern der Wiesen-Glockenblume trifft zu?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Obere Blätter sind meist schmaler als die Grundblätter"
+            },
+            {
+              "id": "b",
+              "label": "Alle Blätter sind schwimmende Kreise"
+            },
+            {
+              "id": "c",
+              "label": "Es gibt ausschließlich Nadeln"
+            },
+            {
+              "id": "d",
+              "label": "Die Pflanze besitzt überhaupt keine Blätter"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die gestielten Grundblätter und schmaleren oberen Blätter unterscheiden sich in ihrer Form."
+        },
+        {
+          "slug": "spitzwegerich-01",
+          "title": "Welches Blattmerkmal kennzeichnet den Spitzwegerich?",
+          "plantSlug": "spitzwegerich",
+          "prompt": "Welches Blattmerkmal kennzeichnet den Spitzwegerich?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Schmale Blätter mit mehreren deutlichen Längsnerven"
+            },
+            {
+              "id": "b",
+              "label": "Gefiederte Blätter mit Ranken"
+            },
+            {
+              "id": "c",
+              "label": "Runde Blätter mit netzförmiger Zeichnung"
+            },
+            {
+              "id": "d",
+              "label": "Dreieckige Schuppen am verholzten Zweig"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die lanzettlichen Rosettenblätter zeigen mehrere nahezu parallel verlaufende kräftige Nerven."
+        },
+        {
+          "slug": "spitzwegerich-02",
+          "title": "Was trägt der lange Schaft des Spitzwegerichs?",
+          "plantSlug": "spitzwegerich",
+          "prompt": "Was trägt der lange Schaft des Spitzwegerichs?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Eine kurze, dunkle Blütenähre"
+            },
+            {
+              "id": "b",
+              "label": "Eine einzelne große Beere"
+            },
+            {
+              "id": "c",
+              "label": "Eine gelbe Schmetterlingsblüte"
+            },
+            {
+              "id": "d",
+              "label": "Mehrere gefiederte Laubblätter"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Der blattlose, geriefte Schaft endet in einer kompakten Ähre mit unscheinbaren Blüten."
+        },
+        {
+          "slug": "spitzwegerich-03",
+          "title": "Welches Merkmal hilft, Spitzwegerich von Breitwegerich zu unterscheiden?",
+          "plantSlug": "spitzwegerich",
+          "prompt": "Welches Merkmal hilft, Spitzwegerich von Breitwegerich zu unterscheiden?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Die deutlich schmalere, lanzettliche Blattform"
+            },
+            {
+              "id": "b",
+              "label": "Das Vorhandensein von Wurzeln"
+            },
+            {
+              "id": "c",
+              "label": "Eine grundsätzlich blaue Blütenfarbe"
+            },
+            {
+              "id": "d",
+              "label": "Ein verholzter Stamm"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Beide bilden Rosetten und Ähren, aber die Blattproportionen unterscheiden sich deutlich."
+        },
+        {
+          "slug": "gewoehnliche-schafgarbe-01",
+          "title": "Welches Blattbild passt zur Gewöhnlichen Schafgarbe?",
+          "plantSlug": "gewoehnliche-schafgarbe",
+          "prompt": "Welches Blattbild passt zur Gewöhnlichen Schafgarbe?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Sehr fein und mehrfach gefiedert"
+            },
+            {
+              "id": "b",
+              "label": "Ungeteilt, rund und schwimmend"
+            },
+            {
+              "id": "c",
+              "label": "Dickfleischig mit Randdornen"
+            },
+            {
+              "id": "d",
+              "label": "Nadelförmig an einem verholzten Zweig"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Die fein zerteilten Blätter erklären den Namensbestandteil „millefolium“, sinngemäß tausendblättrig."
+        },
+        {
+          "slug": "gewoehnliche-schafgarbe-02",
+          "title": "Was bildet die flache weiße bis rosafarbene Fläche des Schafgarben-Blütenstands?",
+          "plantSlug": "gewoehnliche-schafgarbe",
+          "prompt": "Was bildet die flache weiße bis rosafarbene Fläche des Schafgarben-Blütenstands?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Viele kleine Blütenkörbe in einer Schirmrispe"
+            },
+            {
+              "id": "b",
+              "label": "Eine einzige riesige Blüte"
+            },
+            {
+              "id": "c",
+              "label": "Ein Pilzhut"
+            },
+            {
+              "id": "d",
+              "label": "Eine Reihe geflügelter Samen ohne Blüten"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Jeder kleine Kopf ist selbst ein Körbchen; viele davon stehen gemeinsam in einer flachen Schirmrispe."
+        },
+        {
+          "slug": "gewoehnliche-schafgarbe-03",
+          "title": "Warum wird auch die Gewöhnliche Schafgarbe hier als Artengruppe geführt?",
+          "plantSlug": "gewoehnliche-schafgarbe",
+          "prompt": "Warum wird auch die Gewöhnliche Schafgarbe hier als Artengruppe geführt?",
+          "choices": [
+            {
+              "id": "a",
+              "label": "Weil der Komplex formenreich und taxonomisch schwierig ist"
+            },
+            {
+              "id": "b",
+              "label": "Weil sie zu den Gräsern gehört"
+            },
+            {
+              "id": "c",
+              "label": "Weil sie nur als Fossil bekannt ist"
+            },
+            {
+              "id": "d",
+              "label": "Weil sie jährlich die Familie wechselt"
+            }
+          ],
+          "correctChoiceId": "a",
+          "explanation": "Mehrere nahe verwandte Sippen des Achillea-millefolium-Komplexes sind ohne vertiefte Untersuchung schwer zu trennen."
+        }
+      ]
+    }
+  ]
+}
