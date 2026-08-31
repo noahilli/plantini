@@ -99,7 +99,7 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 
 - [ ] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
 - [ ] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
-- [ ] **P1 | FIELD-03:** Idempotenten Upload mit stabiler Client-ID und Auftragsstatus definieren; Media-Pflichtfelder und Observation-Upload konsistent machen.
+- [x] **P1 | FIELD-03:** Idempotenten Upload mit stabiler Client-ID und Auftragsstatus definieren; Media-Pflichtfelder und Observation-Upload konsistent machen.
 - [x] **P1 | FIELD-04:** Persistenten Worker/Queue-Prozess bauen, der PlantNet-Mock aufruft; Redis ist aktuell nur deklariert.
 - [x] **P1 | FIELD-05:** Kandidaten mit Score, Provider-Metadaten und Modell-/Flora-Version speichern; feste Scores und Waldmeister-Ergebnis entfernen.
 - [ ] **P1 | FIELD-06:** Erwartete Levelart serverseitig abgleichen; Nutzende bestätigen oder verwerfen vor Herbariumübernahme.
@@ -114,7 +114,7 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 - [x] **P0 | OFFLINE-01:** Web-Speicher-Spike tatsächlich durchführen und OQ-02 entscheiden; Browser-Reife nicht aus einem erfolgreichen Build ableiten.
 - [x] **P1 | OFFLINE-02:** Lokales Schema versionieren und Migrationen für Content, Fortschritt, Identifikationsjobs und Herbarium definieren.
 - [ ] **P1 | OFFLINE-03:** Simulierten Queue-Erfolg durch langlebige Queue mit Client-ID, Status, Versuchen, Backoff, Fehlergrund und Connectivity-Trigger ersetzen.
-- [ ] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
+- [x] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
 - [ ] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
 - [ ] **P1 | OFFLINE-06:** Lokale und entfernte Beobachtungen über stabile IDs zusammenführen; Sync-Status, Fehler und Retry sichtbar machen.
 - [ ] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
