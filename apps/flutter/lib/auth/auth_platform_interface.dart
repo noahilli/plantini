@@ -11,6 +11,10 @@ abstract class AuthPlatformHelper {
     String clientId,
     List<String> scopes,
   );
+
+  /// Removes one-time callback parameters after the credential was persisted.
+  /// Non-browser platforms have no top-level URL to clean up.
+  Future<void> completeRedirect() async {}
 }
 
 AuthPlatformHelper getAuthPlatformHelper() => throw UnsupportedError(

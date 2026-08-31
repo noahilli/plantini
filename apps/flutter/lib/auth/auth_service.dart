@@ -42,7 +42,10 @@ final class AuthService extends ChangeNotifier {
         const ['openid', 'profile', 'email'],
       );
       _credential = credential ?? await _credentialStore.read();
-      if (credential != null) await _credentialStore.write(credential);
+      if (credential != null) {
+        await _credentialStore.write(credential);
+        await _helper.completeRedirect();
+      }
       _state = _credential == null
           ? AuthState.unauthenticated
           : AuthState.authenticated;

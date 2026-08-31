@@ -24,6 +24,9 @@ openid.Flow createDesktopPkceFlow(
 
 final class IoAuthPlatformHelper implements AuthPlatformHelper {
   @override
+  Future<void> completeRedirect() async {}
+
+  @override
   Future<openid.Credential?> login(
     String issuerUrl,
     String clientId,

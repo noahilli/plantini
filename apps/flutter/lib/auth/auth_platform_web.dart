@@ -87,11 +87,6 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
     try {
       final credential = await flow.callback(current.queryParameters);
       html.window.sessionStorage.remove(_transactionKey);
-      html.window.history.replaceState(
-        null,
-        '',
-        Uri.base.replace(path: '/', query: null, fragment: null).toString(),
-      );
       return credential;
     } catch (error) {
       debugPrint('WebAuthPlatformHelper callback failed: $error');
@@ -100,8 +95,37 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
     }
   }
 
-  Uri _callbackUri() =>
-      Uri.base.replace(path: '/auth/callback', query: null, fragment: null);
+  @override
+  Future<void> completeRedirect() async {
+    final current = Uri.parse(html.window.location.href);
+    if (!current.queryParameters.containsKey('code') &&
+        !current.queryParameters.containsKey('state') &&
+        !current.queryParameters.containsKey('session_state')) {
+      return;
+    }
+    // Persisting the credential happens before this handoff. A same-origin
+    // replacement then boots the app from a clean URL and prevents Flutter's
+    // router from restoring its startup callback location.
+    final unloading = html.window.onUnload.first;
+    html.window.location.replace('/');
+    // Do not publish authenticated router state from the callback document.
+    // The clean document restores that state from secure storage.
+    await unloading;
+  }
+
+  Uri _callbackUri() {
+    final current = Uri.base;
+    // A hash-routed Flutter page must not leak its current route into the
+    // OIDC redirect URI. Keycloak validates redirect URIs exactly, while the
+    // fragment is client-only and must never be part of that contract.
+    return Uri(
+      scheme: current.scheme,
+      userInfo: current.userInfo,
+      host: current.host,
+      port: current.hasPort ? current.port : null,
+      path: '/auth/callback',
+    );
+  }
 
   _PkceTransaction? _readTransaction() {
     final encoded = html.window.sessionStorage[_transactionKey];
@@ -133,7 +157,9 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
         scopes: rawScopes.cast<String>(),
       );
     } catch (error) {
-      debugPrint('WebAuthPlatformHelper: corrupted PKCE transaction in storage: $error');
+      debugPrint(
+        'WebAuthPlatformHelper: corrupted PKCE transaction in storage: $error',
+      );
       return null;
     }
   }
