@@ -2215,7 +2215,7 @@
           "userSetupAllowed": false
         },
         {
-          "authenticator": "conditional-otp-form",
+          "authenticator": "auth-conditional-otp-form",
           "authenticatorConfig": "plantini-systemadmin-otp",
           "authenticatorFlow": false,
           "requirement": "REQUIRED",
@@ -2224,7 +2224,7 @@
           "userSetupAllowed": false
         },
         {
-          "authenticator": "conditional-otp-form",
+          "authenticator": "auth-conditional-otp-form",
           "authenticatorConfig": "plantini-organisationadmin-otp",
           "authenticatorFlow": false,
           "requirement": "REQUIRED",

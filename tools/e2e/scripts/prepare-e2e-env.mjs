@@ -30,9 +30,9 @@ const values = {
   PLANTINI_E2E_OIDC_ISSUER_URL: 'http://127.0.0.1:8082/realms/plantini',
   PLANTINI_E2E_READINESS_URL: 'http://127.0.0.1:1338/api/v1/health',
   PLANTINI_E2E_CAPTURE_FAILURE_ARTIFACTS: 'true',
-  PLAYWRIGHT_TEST_RESULTS_DIR: 'test-results',
-  PLAYWRIGHT_HTML_REPORT_DIR: 'playwright-report',
-  PLAYWRIGHT_JUNIT_OUTPUT: 'test-results/junit.xml',
+  PLAYWRIGHT_TEST_RESULTS_DIR: '.runtime/test-results',
+  PLAYWRIGHT_HTML_REPORT_DIR: '.runtime/playwright-report',
+  PLAYWRIGHT_JUNIT_OUTPUT: '.runtime/test-results/junit.xml',
 };
 
 await mkdir(outputDirectory, { recursive: true, mode: 0o700 });

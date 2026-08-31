@@ -13,20 +13,29 @@ setDefaultResultOrder('ipv4first');
 
 const environment = optionalE2EEnvironment();
 const hostResolverRules = getBrowserHostResolverRules();
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE;
 const captureFailureArtifacts = process.env.PLANTINI_E2E_CAPTURE_FAILURE_ARTIFACTS === 'true';
-const resultDirectory = process.env.PLAYWRIGHT_TEST_RESULTS_DIR ?? 'test-results';
-const reportDirectory = process.env.PLAYWRIGHT_HTML_REPORT_DIR ?? 'playwright-report';
+// Keep generated reports inside the ignored, per-run runtime directory. This
+// also makes a previously root-owned local report unable to poison a fresh
+// developer or CI run.
+const resultDirectory = process.env.PLAYWRIGHT_TEST_RESULTS_DIR ?? '.runtime/test-results';
+const reportDirectory = process.env.PLAYWRIGHT_HTML_REPORT_DIR ?? '.runtime/playwright-report';
 const junitReport = process.env.PLAYWRIGHT_JUNIT_OUTPUT ?? `${resultDirectory}/junit.xml`;
 
 const chromiumUse = {
   ...devices['Desktop Chrome'],
   baseURL: environment?.appUrl,
-  launchOptions: hostResolverRules
-    ? { args: [`--host-resolver-rules=${hostResolverRules}`] }
+  launchOptions: hostResolverRules || chromiumExecutablePath
+    ? {
+        ...(hostResolverRules
+          ? { args: [`--host-resolver-rules=${hostResolverRules}`] }
+          : {}),
+        ...(chromiumExecutablePath ? { executablePath: chromiumExecutablePath } : {}),
+      }
     : undefined,
-  trace: captureFailureArtifacts ? 'retain-on-failure' : 'off',
-  screenshot: captureFailureArtifacts ? 'only-on-failure' : 'off',
-  video: 'off',
+  trace: captureFailureArtifacts ? ('retain-on-failure' as const) : ('off' as const),
+  screenshot: captureFailureArtifacts ? ('only-on-failure' as const) : ('off' as const),
+  video: 'off' as const,
 };
 
 export default defineConfig({
@@ -70,6 +79,12 @@ export default defineConfig({
       name: 'web-app',
       dependencies: ['health'],
       testMatch: /qa\/core-journey\.spec\.ts/,
+      use: chromiumUse,
+    },
+    {
+      name: 'auth-session',
+      dependencies: ['health'],
+      testMatch: /qa\/auth-session\.spec\.ts/,
       use: chromiumUse,
     },
     {

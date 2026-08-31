@@ -187,7 +187,7 @@ function validatePrivilegedMfa(realm, failures) {
 
   for (const [alias, role] of expected) {
     const execution = forms?.authenticationExecutions?.find(
-      (item) => item.authenticator === 'conditional-otp-form' && item.authenticatorConfig === alias,
+      (item) => item.authenticator === 'auth-conditional-otp-form' && item.authenticatorConfig === alias,
     );
     const config = configs.get(alias)?.config;
     if (execution?.requirement !== 'REQUIRED' || config?.forceOtpRole !== role || config?.defaultOtpOutcome !== 'skip') {

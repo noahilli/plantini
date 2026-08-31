@@ -15,6 +15,7 @@ export const ui = {
   },
   navigation: {
     field: 'Expedition',
+    herbarium: 'Herbarium',
     profile: 'Profil',
   },
   catalog: {
@@ -51,12 +52,20 @@ export const ui = {
  */
 export const seededJourney = {
   ecosystem: 'Mitteleuropäischer Laubwald',
-  levelCard: '1. Bäume im Laubwald',
-  levelTitle: 'Bäume im Laubwald',
-  firstQuestion: 'Welche Art trägt lang gestielte Eicheln?',
-  secondQuestion: 'Welche Art hat glattrandige, glänzende Blätter?',
-  firstCorrectAnswer: 'Stieleiche',
-  secondCorrectAnswer: 'Rotbuche',
+  levelCard: 'Deine nächste Aufgabe 1. Arten erkennen',
+  levelTitle: 'Arten erkennen',
+  quiz: [
+    ['Welches Rindenmerkmal passt besonders gut zur Rotbuche?', 'Glatt und weißgrau'],
+    ['Welches Blattmerkmal spricht eher für die Stiel-Eiche als für die Trauben-Eiche?', 'Sehr kurzer Blattstiel und oft geöhrter Grund'],
+    ['Zu welcher Familie gehört die Hainbuche trotz ihres Namens?', 'Birkengewächse'],
+    ['Wie sind die Blätter des Berg-Ahorns am Zweig angeordnet?', 'Gegenständig'],
+    ['Welche Knospenfarbe ist für die Gewöhnliche Esche besonders charakteristisch?', 'Mattschwarz'],
+    ['Welches Blattmerkmal ist typisch für die Winter-Linde?', 'Herzförmige Spreite'],
+    ['Welche Wuchsform zeigt die Gewöhnliche Hasel meistens?', 'Mehrstämmiger Strauch'],
+    ['Wann blüht das Busch-Windröschen typischerweise?', 'Von März bis Mai'],
+    ['Welche Blütenform passt zum Bär-Lauch?', 'Weiße sternförmige Blüten in einer Scheindolde'],
+    ['Wie stehen die Wedel des Gewöhnlichen Wurmfarns typischerweise?', 'Trichterförmig aus einem Stock'],
+  ],
 } as const;
 
 const exactText = (page: Page, text: string): Locator =>
@@ -87,8 +96,12 @@ export const appUi = {
   logoutButton: (page: Page): Locator => exactText(page, ui.auth.logout),
   profileRoute: (page: Page): Locator => exactText(page, ui.auth.profileRoute),
 
-  fieldNavigation: (page: Page): Locator => exactText(page, ui.navigation.field),
-  profileNavigation: (page: Page): Locator => exactText(page, ui.navigation.profile),
+  fieldNavigation: (page: Page): Locator =>
+    page.getByRole('tab', { name: ui.navigation.field, exact: true }),
+  herbariumNavigation: (page: Page): Locator =>
+    page.getByRole('tab', { name: ui.navigation.herbarium, exact: true }),
+  profileNavigation: (page: Page): Locator =>
+    page.getByRole('tab', { name: ui.navigation.profile, exact: true }),
 
   ecosystemsTitle: (page: Page): Locator => exactText(page, ui.catalog.ecosystems),
   ecosystem: (page: Page): Locator => page.getByRole('button', {
@@ -96,18 +109,24 @@ export const appUi = {
   }),
   levelsTitle: (page: Page): Locator => exactText(page, ui.catalog.levels),
   levelCard: (page: Page): Locator => page.getByRole('button', {
-    name: new RegExp(`^${escapeRegex(seededJourney.levelCard)}`),
+    name: seededJourney.levelCard,
+    exact: true,
   }),
   learningUnitTitle: (page: Page): Locator => exactText(page, ui.catalog.learningUnit),
   levelTitle: (page: Page): Locator => exactText(page, seededJourney.levelTitle),
   startQuizButton: (page: Page): Locator => namedButton(page, ui.catalog.startQuiz),
 
   quizTitle: (page: Page): Locator => exactText(page, ui.learning.quiz),
-  quizQuestion: (page: Page, question: string): Locator => exactText(page, question),
+  quizQuestion: (page: Page, question: string): Locator =>
+    exactText(page, `Quizfrage ${question}`),
   quizAnswer: (page: Page, answer: string): Locator =>
     page.getByRole('button', { name: `Antwort ${answer}`, exact: true }),
   completeLevelButton: (page: Page): Locator => namedButton(page, ui.learning.complete),
-  completedLevel: (page: Page): Locator => exactText(page, ui.learning.completed),
+  completedLevel: (page: Page): Locator =>
+    page.getByRole('group', {
+      name: `Level abgeschlossen: ${seededJourney.levelTitle}`,
+      exact: true,
+    }),
 
   fieldTitle: (page: Page): Locator => exactText(page, ui.field.title),
   chooseFromGalleryButton: (page: Page): Locator => namedButton(page, ui.field.gallery),
@@ -115,14 +134,17 @@ export const appUi = {
   identifyPlantButton: (page: Page): Locator => namedButton(page, ui.field.identify),
   selectedMedia: (page: Page): Locator => page.getByText(/e2e-leaf\.png/, { exact: false }),
   identificationProcessing: (page: Page): Locator => exactText(page, ui.field.processing),
-  identificationReady: (page: Page): Locator => exactText(page, ui.field.identified),
+  identificationReady: (page: Page): Locator =>
+    page.getByRole('group', { name: new RegExp(ui.field.identified) }),
   refreshIdentificationButton: (page: Page): Locator => namedButton(page, ui.field.refresh),
-  candidate: (page: Page, name: string): Locator => exactText(page, name),
+  candidate: (page: Page, name: string): Locator =>
+    page.getByRole('button', { name: new RegExp(`^${escapeRegex(name)}\\b`) }),
   saveObservationButton: (page: Page): Locator => namedButton(page, ui.field.save),
 
   herbariumTitle: (page: Page): Locator => exactText(page, ui.herbarium.title),
   addObservationButton: (page: Page): Locator => namedButton(page, ui.herbarium.addObservation),
-  herbariumEntry: (page: Page, name: string): Locator => exactText(page, name),
+  herbariumEntry: (page: Page, name: string): Locator =>
+    page.getByRole('button', { name: new RegExp(`^${escapeRegex(name)}\\b`) }),
 } as const;
 
 function escapeRegex(value: string): string {

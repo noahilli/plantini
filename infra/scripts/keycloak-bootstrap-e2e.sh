@@ -32,14 +32,18 @@ find_user_id() {
 # by email keeps this bootstrap idempotent even when Keycloak normalizes the
 # submitted username to that email address.
 USER_ID="$(find_user_id)"
+CREATED_USER=false
 if [ -z "$USER_ID" ]; then
   "$KCADM" create users -r plantini \
     -s "username=$E2E_USER_EMAIL" \
     -s "email=$E2E_USER_EMAIL" \
+    -s 'firstName=E2E' \
+    -s 'lastName=Learner' \
     -s 'enabled=true' \
     -s 'emailVerified=true' \
     -s 'requiredActions=[]'
   USER_ID="$(find_user_id)"
+  CREATED_USER=true
 fi
 
 if [ -z "$USER_ID" ]; then
@@ -50,8 +54,12 @@ fi
 "$KCADM" update "users/$USER_ID" -r plantini \
   -s "username=$E2E_USER_EMAIL" \
   -s "email=$E2E_USER_EMAIL" \
+  -s 'firstName=E2E' \
+  -s 'lastName=Learner' \
   -s 'enabled=true' \
   -s 'emailVerified=true' \
   -s 'requiredActions=[]'
-"$KCADM" set-password -r plantini --userid "$USER_ID" --new-password "$E2E_USER_PASSWORD"
+if [ "$CREATED_USER" = true ]; then
+  "$KCADM" set-password -r plantini --userid "$USER_ID" --new-password "$E2E_USER_PASSWORD"
+fi
 echo 'Synthetic E2E learner is ready.'
