@@ -802,7 +802,9 @@ class _IdentificationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ZIELART BESTÄTIGT',
+                      selectedCandidateId == null
+                          ? 'BESTIMMUNGSVORSCHLÄGE'
+                          : 'VORSCHLAG AUSGEWÄHLT',
                       style: AppTypography.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.1,
@@ -850,6 +852,39 @@ class _IdentificationCard extends StatelessWidget {
               child: Text(
                 'Keine Übereinstimmung gefunden.',
                 style: TextStyle(color: AppColors.neutral200),
+              ),
+            ),
+          if (isIdentified && job.candidates.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.sage900.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.sage700),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: AppColors.sage300,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'KI-Vorschläge sind keine garantierte Bestimmung. Die Erkennung kann fehlerhaft sein. Verlasse dich nicht blind auf das Ergebnis, sondern überprüfe die Merkmale der Pflanze selbst.',
+                        style: TextStyle(
+                          color: AppColors.sage100,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           if (isIdentified)
