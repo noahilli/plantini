@@ -60,7 +60,7 @@ Abnahme: Alle Features verwenden dieselben Konfigurations-, Navigations-, Fehler
 - [x] **P0 | AUTH-02:** Aus `sub` eine stabile interne Nutzer-ID auflösen; globalen Mock-User aus `/me` und Beobachtungen entfernen.
 - [x] **P0 | AUTH-03:** Objekt- und organisationsbezogene Autorisierung für alle privaten Endpunkte implementieren, besonders Beobachtung, Upload und Export; BOLA-Negativtests ergänzen.
 - [x] **P0 | AUTH-04:** Keycloak-Client härten: konkrete Redirect-URIs/Web-Origins, PKCE, keine Wildcards/Direct Access Grants und getrennte Clients je Umgebung.
-- [ ] **P1 | AUTH-05:** Tokens plattformsicher persistieren, Refresh/Ablauf behandeln sowie lokale und globale Abmeldung/Widerruf umsetzen.
+- [x] **P1 | AUTH-05:** Tokens plattformsicher persistieren, Refresh/Ablauf behandeln sowie lokale und globale Abmeldung/Widerruf umsetzen.
 - [ ] **P1 | AUTH-06:** Registrierung, E-Mail-Verifikation, Passwort-Reset, Sperrung und verständliche Fehlerzustände E2E umsetzen.
 - [ ] **P1 | AUTH-07:** Rollenmatrix für Lernende, Lehrende, Redaktion, Review, Organisations- und Systemadministration in Keycloak und API konsistent erzwingen.
 - [ ] **P2 | AUTH-08:** Administrative Einladung statt freier Backend-Selbstregistrierung implementieren und auditieren.
@@ -76,7 +76,7 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 - [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
 - [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
 - [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
-- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
+- [x] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
 
