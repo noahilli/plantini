@@ -13,13 +13,12 @@ final class SubmitObservation {
     required String mediaId,
     String? expectedPlantId,
     required String idempotencyKey,
-  }) =>
-      _repository.submitObservation(
-        clientJobId: clientJobId,
-        mediaId: mediaId,
-        expectedPlantId: expectedPlantId,
-        idempotencyKey: idempotencyKey,
-      );
+  }) => _repository.submitObservation(
+    clientJobId: clientJobId,
+    mediaId: mediaId,
+    expectedPlantId: expectedPlantId,
+    idempotencyKey: idempotencyKey,
+  );
 }
 
 /// Retrieves the status and result candidates of an identification job.
