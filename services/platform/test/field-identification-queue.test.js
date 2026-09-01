@@ -40,6 +40,15 @@ function createFieldRepository() {
     async findPublishedPlantByPublicId(id) {
       return id === ids.plant ? { publicId: ids.plant, scientificName: 'Quercus robur' } : undefined;
     },
+    async findPublishedPlantByScientificName(scientificName) {
+      return scientificName === 'Quercus robur'
+        ? {
+          publicId: ids.plant,
+          scientificName,
+          warning: 'Nicht verzehren; Schutzstatus und Verwechslungsarten prüfen.',
+        }
+        : undefined;
+    },
     async findPrivateMediaByIdempotencyKey(key) { return media.find((item) => item.idempotencyKey === key); },
     async findPrivateMediaByClientId(ownerId, clientId) { return media.find((item) => item.ownerId === ownerId && item.clientMediaId === clientId); },
     async findPrivateMediaByPublicId(ownerId, id) { return media.find((item) => item.ownerId === ownerId && item.publicId === id); },
@@ -142,6 +151,8 @@ test('FIELD-04: a submitted identification travels through the real BullMQ queue
   assert.equal(identified.candidates[0].scientificName, 'Quercus robur');
   assert.equal(identified.candidates[0].provider, 'plantnet');
   assert.equal(identified.candidates[0].modelVersion, 'test-model-1');
+  assert.equal(identified.candidates[0].plantId, ids.plant);
+  assert.match(identified.candidates[0].safetyNotice, /Nicht verzehren/);
   assert.equal(identified.attempts, 1);
   assert.deepEqual(identified.providerMetadata, {
     provider: 'plantnet',

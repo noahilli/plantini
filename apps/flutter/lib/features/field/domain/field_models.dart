@@ -55,6 +55,7 @@ final class IdentificationCandidate {
     required this.score,
     this.provider = 'plantnet',
     this.modelVersion = 'unknown',
+    this.safetyNotice,
   });
 
   /// Provider-stable reference. Unlike [plantId], this is available for
@@ -66,6 +67,7 @@ final class IdentificationCandidate {
   final double score;
   final String provider;
   final String modelVersion;
+  final String? safetyNotice;
 }
 
 /// Status of an asynchronous plant identification job.

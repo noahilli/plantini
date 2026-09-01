@@ -204,6 +204,7 @@ Result<IdentificationJob> _identificationJob(Map<String, dynamic> body) {
           provider: _optionalString(rawCandidate, 'provider') ?? 'plantnet',
           modelVersion:
               _optionalString(rawCandidate, 'modelVersion') ?? 'unknown',
+          safetyNotice: _optionalString(rawCandidate, 'safetyNotice'),
         ),
       );
     }

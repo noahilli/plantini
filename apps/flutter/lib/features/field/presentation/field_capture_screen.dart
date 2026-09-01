@@ -975,7 +975,7 @@ class _IdentificationCard extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'KI-Vorschläge sind keine garantierte Bestimmung. Die Erkennung kann fehlerhaft sein. Verlasse dich nicht blind auf das Ergebnis, sondern überprüfe die Merkmale der Pflanze selbst.',
+                        'KI-Vorschläge sind keine garantierte Bestimmung und ähnliche Arten können verwechselt werden. Pflanze nicht verzehren, berühren oder sammeln, solange Giftigkeit und Schutzstatus nicht fachlich geprüft sind.',
                         style: TextStyle(
                           color: AppColors.sage100,
                           fontSize: 12,
@@ -1041,12 +1041,26 @@ class _IdentificationCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${candidate.scientificName} · ${(candidate.score * 100).toStringAsFixed(0)} %',
+                              '${candidate.scientificName} · ${_confidenceLabel(candidate.score)}',
                               style: TextStyle(
                                 color: AppColors.sage300,
                                 fontSize: 12,
                               ),
                             ),
+                            if (candidate.safetyNotice != null) ...[
+                              const SizedBox(height: 6),
+                              Text(
+                                candidate.safetyNotice!,
+                                key: ValueKey(
+                                  'field-safety-${candidate.candidateId}',
+                                ),
+                                style: const TextStyle(
+                                  color: AppColors.accent200,
+                                  fontSize: 12,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -1058,6 +1072,13 @@ class _IdentificationCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _confidenceLabel(double score) {
+    final percent = (score * 100).round();
+    if (score >= 0.8) return 'hohe Ähnlichkeit ($percent %)';
+    if (score >= 0.5) return 'mittlere Ähnlichkeit ($percent %)';
+    return 'geringe Ähnlichkeit ($percent %)';
   }
 }
 

@@ -104,7 +104,7 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 - [x] **P1 | FIELD-05:** Kandidaten mit Score, Provider-Metadaten und Modell-/Flora-Version speichern; feste Scores und Waldmeister-Ergebnis entfernen.
 - [x] **P1 | FIELD-06:** Erwartete Levelart serverseitig abgleichen; Nutzende bestätigen oder verwerfen vor Herbariumübernahme.
 - [x] **P1 | FIELD-07:** Timeout, 429, Backoff/Jitter, Dead Letter, Circuit Breaker, Quotenreserve und manuellen Wiederanlauf umsetzen.
-- [ ] **P1 | FIELD-08:** Unsicherheit, Verwechslung und Gift-/Schutzinformationen sichtbar erklären; Ergebnis nie als garantierte Bestimmung darstellen.
+- [x] **P1 | FIELD-08:** Unsicherheit, Verwechslung und Gift-/Schutzinformationen sichtbar erklären; Ergebnis nie als garantierte Bestimmung darstellen.
 - [ ] **P2 | FIELD-09:** Echten PlantNet-Zugang erst nach Vertrag, Quote, Datenschutz, Attribution und Staging-Lasttest aktivieren.
 
 Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Netzunterbrechung weiter; Provider-Ausfall beeinträchtigt Lernkern und lokales Herbarium nicht.

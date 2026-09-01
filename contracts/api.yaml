@@ -677,7 +677,7 @@ components:
     IdentificationCandidate:
       type: object
       required: [candidateId, scientificName, score]
-      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}}
+      properties: {candidateId: {type: string, minLength: 3, maxLength: 160}, plantId: {$ref: '#/components/schemas/Id'}, scientificName: {type: string}, commonName: {type: string}, score: {type: number, minimum: 0, maximum: 1}, provider: {type: string}, modelVersion: {type: string}, safetyNotice: {type: string}}
     IdentificationProviderMetadata:
       type: object
       required: [provider, modelVersion, floraVersion]

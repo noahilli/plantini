@@ -86,6 +86,7 @@ void main() {
                 'score': 0.94,
                 'provider': 'plantnet-mock',
                 'modelVersion': 'test-v1',
+                'safetyNotice': 'Nicht verzehren; Verwechslungsgefahr.',
               },
             ],
           }),
@@ -142,6 +143,10 @@ void main() {
         expect(value.candidates.single.commonName, 'Gänseblümchen');
         expect(value.candidates.single.candidateId, 'plantnet:gbif:2927079');
         expect(value.candidates.single.score, 0.94);
+        expect(
+          value.candidates.single.safetyNotice,
+          'Nicht verzehren; Verwechslungsgefahr.',
+        );
         expect(value.attempts, 2);
         expect(value.provider, 'plantnet');
         expect(value.modelVersion, '2026-test');

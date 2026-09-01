@@ -145,6 +145,9 @@ function createFieldRepository(entities) {
     findPublishedPlantByPublicId: async (publicId) => findOne(entities, 'api::plant.plant', {
       filters: { publicId, publishedAt: { $notNull: true } },
     }),
+    findPublishedPlantByScientificName: async (scientificName) => findOne(entities, 'api::plant.plant', {
+      filters: { scientificName: { $eqi: scientificName }, publishedAt: { $notNull: true } },
+    }),
     findPrivateMediaByIdempotencyKey: async (idempotencyKey) => findOne(entities, 'api::private-media.private-media', {
       filters: { idempotencyKey },
     }),

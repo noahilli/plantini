@@ -221,7 +221,10 @@ class FieldService {
     }
     try {
       const result = await provider.identify({ job: processing, media });
-      const candidates = validateProviderCandidates(result.candidates);
+      const candidates = await enrichCandidateSafety(
+        this.repository,
+        validateProviderCandidates(result.candidates),
+      );
       const expectation = await matchExpectedPlant(this.repository, processing, candidates);
       return this.repository.updateJob(processing.id, {
         status: 'identified',
@@ -364,6 +367,25 @@ function validateProviderCandidates(candidates) {
       modelVersion: candidate.modelVersion || 'unknown',
     };
   });
+}
+
+async function enrichCandidateSafety(repository, candidates) {
+  if (typeof repository.findPublishedPlantByScientificName !== 'function') {
+    return candidates;
+  }
+  return Promise.all(candidates.map(async (candidate) => {
+    const plant = await repository.findPublishedPlantByScientificName(
+      candidate.scientificName,
+    );
+    const safetyNotice = typeof plant?.warning === 'string'
+      ? plant.warning.trim()
+      : '';
+    return {
+      ...candidate,
+      ...(plant?.publicId ? { plantId: plant.publicId } : {}),
+      ...(safetyNotice ? { safetyNotice } : {}),
+    };
+  }));
 }
 
 function mapUpload(media, uploadUrl) {
