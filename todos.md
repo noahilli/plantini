@@ -76,7 +76,7 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 - [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
 - [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
 - [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
-- [x] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
+- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
 
@@ -118,7 +118,7 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 - [x] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
 - [x] **P1 | OFFLINE-06:** Lokale und entfernte Beobachtungen über stabile IDs zusammenführen; Sync-Status, Fehler und Retry sichtbar machen.
 - [x] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
-- [x] **P1 | OFFLINE-08:** Exakte Standorte privat halten; Export/Share standardmäßig ohne oder vergröbert. Organisationsfilter nie aus ungeprüften Queryparametern übernehmen.
+- [ ] **P1 | OFFLINE-08:** Exakte Standorte privat halten; Export/Share standardmäßig ohne oder vergröbert. Organisationsfilter nie aus ungeprüften Queryparametern übernehmen.
 - [ ] **P2 | OFFLINE-09:** Einzelfund-/Gesamtexport und vollständige Löschung von Original, Derivaten, Queue- und Serverdaten umsetzen.
 - [ ] **P2 | OFFLINE-10:** Download-, Cache- und Speicherverwaltung mit Größenanzeige, Löschregeln und Speicherknappheit ergänzen.
 
@@ -237,7 +237,7 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 - [ ] **Review Commit `e298b2b` (`featre (APP-01) plant domain model, detail screen and field/herbarium module structure`):** Überprüfung: Plant-Domain-Modell, PlantDetailScreen, Field- und Herbarium-Feature-Module mit Domain/Application/Infrastructure-Schichten.
 - [ ] **Review Commit `5b99774` (`featre (APP-05) unified state widgets and remove hardcoded content values`):** Überprüfung: LoadingState, EmptyState, OfflineState, ErrorState, PermissionDeniedState Widgets und content_constants.dart.
 - [ ] **Review Commit `c1ec09f` (`featre (APP-04) declarative routing with go_router and silent catch cleanup`):** Überprüfung: GoRouter-Routing mit ShellRoute/Bottom-Nav, Placeholder-Screens, stille catch-Blöcke durch Logging ersetzt.
-- [ ] **Review Commit `781117c` (`featre (OFFLINE-01) isar downgrade for web support and linux platform added`):** Überprüfung: Isar 2.X Downgrade in pubspec.yaml, Linux-Unterstützung hinzugefügt, OQ-02 in BLOCKERS.md entschieden.
+- [x] **Review Commit `781117c` (`featre (OFFLINE-01) isar downgrade for web support and linux platform added`):** Abgelehnt und durch `10ab3d9` ersetzt: Isar Plus v4 mit nativer Isar-Engine, persistenter SQLite/WASM-Web-Engine und same-origin Runtime; Web- und Linux-Release sowie echte Browser-Kernreise geprüft.
 - [ ] **Review Commit `524e3fe` (`featre (OFFLINE-02) isar local database schema and models for offline content`):** Überprüfung: LocalDatabase Klasse, Isar-Modelle für Ecosystem, Level, Plant erstellt und Code via build_runner generiert.
 - [x] **Review Commit `66f7a96` (`featre (OFFLINE-03) persistent background sync queue with exponential backoff`):** Teilweise abgelehnt: nicht in die App integriert, `running`-Jobs werden nach Abbruch nicht zurückgewonnen und `maxAttempts` wird nicht erzwungen. Korrektur bleibt offen.
 - [x] **Review Commit `3b07872` (`featre (CONTENT-06) atomic content release download and checksum validation`):** Teilweise abgelehnt: Service ist nicht eingebunden und der Demo-Manifest enthält keine Pakete. Korrektur bleibt offen.

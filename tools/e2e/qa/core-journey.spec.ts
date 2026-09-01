@@ -21,7 +21,7 @@ test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
     });
 
     await test.step('Lernende:r meldet sich über Keycloak an', async () => {
-      await signInAsE2ELearner(page, environment);
+      await signInAsE2ELearner(page, environment, { requireCredentials: true });
       await expect(appUi.ecosystem(page)).toBeVisible();
     });
 
@@ -108,7 +108,7 @@ test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
 
     await test.step('lokaler Logout wird sichtbar und eine erneute OIDC-Anmeldung funktioniert', async () => {
       await signOutFromPlantini(page);
-      await signInAsE2ELearner(page, environment);
+      await signInAsE2ELearner(page, environment, { requireCredentials: true });
       await expect(appUi.ecosystem(page)).toBeVisible();
     });
   });

@@ -7,6 +7,7 @@ import { appUi, enableFlutterWebSemantics } from './ui';
 export async function signInAsE2ELearner(
   page: Page,
   environment: E2EEnvironment,
+  options: { requireCredentials?: boolean } = {},
 ): Promise<void> {
   const appOrigin = new URL(environment.appUrl).origin;
   const issuerOrigin = new URL(environment.oidcIssuerUrl).origin;
@@ -38,6 +39,13 @@ export async function signInAsE2ELearner(
       .then(() => 'existing-sso-session' as const),
   ]);
 
+  if (options.requireCredentials) {
+    expect(
+      flow,
+      'Global logout must end the Keycloak SSO session and require credentials again.',
+    ).toBe('credentials');
+  }
+
   if (flow === 'credentials') {
     await username.fill(environment.username);
     await page.locator('#password').fill(environment.password);
@@ -65,13 +73,14 @@ export async function signInAsE2ELearner(
 }
 
 /**
- * Verifies Plantini's current local logout contract. AuthService intentionally
- * clears only this app's credential; Keycloak's browser SSO session can make a
- * following login return without another password form.
+ * Verifies that Plantini visibly clears its local credential. Callers can then
+ * require a fresh credential form to prove that Keycloak SSO was ended too.
  */
 export async function signOutFromPlantini(page: Page): Promise<void> {
   await appUi.profileNavigation(page).click();
   await expect(appUi.profileRoute(page)).toBeVisible();
   await appUi.logoutButton(page).click();
+  await page.waitForLoadState('domcontentloaded');
+  await enableFlutterWebSemantics(page);
   await expect(appUi.loginButton(page)).toBeVisible();
 }
