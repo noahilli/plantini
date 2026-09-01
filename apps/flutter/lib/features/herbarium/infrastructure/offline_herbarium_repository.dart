@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../../field/application/sync_queue_service.dart';
+import '../../field/domain/field_models.dart';
+import '../../field/domain/location_privacy.dart';
 import '../domain/herbarium_models.dart';
 import '../domain/herbarium_repository.dart';
 
@@ -330,14 +332,22 @@ final class OfflineHerbariumRepository implements HerbariumRepository {
       );
       if (result.isSuccess) await local.remove(clientId);
     } else if (record.remoteId == null) {
+      final location = record.entry.latitude != null && record.entry.longitude != null
+          ? LocationPrivacy.coarsen(ObservationLocation(
+              latitude: record.entry.latitude!,
+              longitude: record.entry.longitude!,
+              accuracyMeters: record.entry.accuracyMeters,
+            ))
+          : null;
+
       result = await remote.createEntry(
         clientObservationId: clientId,
         observedAt: record.entry.observedAt,
         note: record.entry.note,
         identificationJobId: record.entry.identificationJobId,
-        latitude: record.entry.latitude,
-        longitude: record.entry.longitude,
-        accuracyMeters: record.entry.accuracyMeters,
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        accuracyMeters: location?.accuracyMeters,
         idempotencyKey: clientId,
       );
       if (result case Success<HerbariumEntry>(:final value)) {

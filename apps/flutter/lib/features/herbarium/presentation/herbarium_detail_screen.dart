@@ -321,6 +321,14 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                       label: 'Beobachtet am',
                       value: _formatDate(entry.observedAt),
                     ),
+                    if (entry.latitude != null && entry.longitude != null) ...[
+                      const SizedBox(height: 8),
+                      _MetadataTile(
+                        icon: Icons.location_on_outlined,
+                        label: 'Fundort',
+                        value: '${entry.latitude}, ${entry.longitude}',
+                      ),
+                    ],
                     if (entry.confirmedPlantId != null) ...[
                       const SizedBox(height: 8),
                       _MetadataTile(
