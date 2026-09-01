@@ -105,6 +105,12 @@ void main() {
               },
             ],
           }),
+          const _ApiResponse(202, {
+            'id': '22222222-2222-4222-8222-222222222222',
+            'status': 'pending',
+            'createdAt': '2026-08-27T12:00:00.000Z',
+            'attempts': 0,
+          }),
         ]);
         final repository = HttpFieldRepository(_client(interceptor));
 
@@ -175,6 +181,21 @@ void main() {
           'candidateId': 'plantnet:gbif:2927079',
           'acceptMismatch': true,
         });
+
+        final retried = await repository.retryIdentification(
+          jobId: value.id,
+          idempotencyKey: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+        );
+        expect(retried.isSuccess, isTrue);
+        expect((retried as Success).value.status, 'pending');
+        expect(
+          interceptor.requests.last.path,
+          'identifications/${value.id}/retry',
+        );
+        expect(
+          interceptor.requests.last.headers['Idempotency-Key'],
+          'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+        );
       },
     );
   });

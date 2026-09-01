@@ -25,6 +25,7 @@
     "retryAfter": { "type": "datetime" },
     "candidates": { "type": "json", "default": [] },
     "failureCode": { "type": "string" },
+    "deadLetteredAt": { "type": "datetime" },
     "providerMetadata": { "type": "json" }
   }
 }

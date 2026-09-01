@@ -143,6 +143,50 @@ test('FIELD-06: a candidate deviating from the expected level plant needs explic
   assert.equal(confirmed.confirmedCandidateId, externalCandidateId);
 });
 
+test('FIELD-07: exhausted provider work is dead-lettered and manual retry resets attempts', async () => {
+  const repositories = createRepositories();
+  const queued = [];
+  const field = new FieldService({
+    repository: repositories.field,
+    clock: () => new Date('2026-08-31T12:00:00.000Z'),
+    enqueue: async (id) => queued.push(id),
+  });
+  repositories.media.push({
+    id: 1,
+    publicId: ids.clientMedia,
+    ownerId: ids.owner,
+    status: 'uploaded',
+  });
+  repositories.jobs.push({
+    id: 1,
+    publicId: ids.clientJob,
+    ownerId: ids.owner,
+    clientJobId: ids.clientJob,
+    mediaId: ids.clientMedia,
+    status: 'pending',
+    attempts: 4,
+    createdAt: '2026-08-31T11:00:00.000Z',
+  });
+
+  const failed = await field.processIdentification(ids.clientJob, {
+    async identify() {
+      const error = new Error('provider unavailable');
+      error.code = 'PROVIDER_UNAVAILABLE';
+      throw error;
+    },
+  });
+  assert.equal(failed.failureCode, 'PROVIDER_RETRY_EXHAUSTED');
+  assert.equal(failed.deadLetteredAt, '2026-08-31T12:00:00.000Z');
+
+  const retried = await field.retryIdentification(
+    { id: ids.owner }, ids.clientJob, 'manual-retry-idempotency-01',
+  );
+  assert.equal(retried.status, 'pending');
+  assert.equal(retried.attempts, 0);
+  assert.equal(retried.deadLetteredAt, undefined);
+  assert.deepEqual(queued, [ids.clientJob]);
+});
+
 test('herbarium enforces ownership, version preconditions, and tombstones', async () => {
   const repositories = createRepositories();
   const fieldRepository = repositories.field;

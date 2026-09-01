@@ -103,7 +103,7 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 - [x] **P1 | FIELD-04:** Persistenten Worker/Queue-Prozess bauen, der PlantNet-Mock aufruft; Redis ist aktuell nur deklariert.
 - [x] **P1 | FIELD-05:** Kandidaten mit Score, Provider-Metadaten und Modell-/Flora-Version speichern; feste Scores und Waldmeister-Ergebnis entfernen.
 - [x] **P1 | FIELD-06:** Erwartete Levelart serverseitig abgleichen; Nutzende bestätigen oder verwerfen vor Herbariumübernahme.
-- [ ] **P1 | FIELD-07:** Timeout, 429, Backoff/Jitter, Dead Letter, Circuit Breaker, Quotenreserve und manuellen Wiederanlauf umsetzen.
+- [x] **P1 | FIELD-07:** Timeout, 429, Backoff/Jitter, Dead Letter, Circuit Breaker, Quotenreserve und manuellen Wiederanlauf umsetzen.
 - [ ] **P1 | FIELD-08:** Unsicherheit, Verwechslung und Gift-/Schutzinformationen sichtbar erklären; Ergebnis nie als garantierte Bestimmung darstellen.
 - [ ] **P2 | FIELD-09:** Echten PlantNet-Zugang erst nach Vertrag, Quote, Datenschutz, Attribution und Staging-Lasttest aktivieren.
 

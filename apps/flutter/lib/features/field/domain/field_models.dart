@@ -89,6 +89,7 @@ final class IdentificationJob {
     this.expectedPlantId,
     this.expectedMatch,
     this.expectedCandidateId,
+    this.deadLetteredAt,
   });
 
   final String id;
@@ -106,4 +107,5 @@ final class IdentificationJob {
   final String? expectedPlantId;
   final String? expectedMatch;
   final String? expectedCandidateId;
+  final DateTime? deadLetteredAt;
 }

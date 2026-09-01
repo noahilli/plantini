@@ -885,6 +885,8 @@ export interface ApiIdentificationJobIdentificationJob
     requestDigest: Attribute.String & Attribute.Required;
     mediaId: Attribute.String & Attribute.Required;
     expectedPlantId: Attribute.String;
+    expectedMatch: Attribute.Enumeration<['matched', 'mismatch']>;
+    expectedCandidateId: Attribute.String;
     confirmedPlantId: Attribute.String;
     confirmedCandidateId: Attribute.String;
     status: Attribute.Enumeration<
@@ -895,6 +897,7 @@ export interface ApiIdentificationJobIdentificationJob
     retryAfter: Attribute.DateTime;
     candidates: Attribute.JSON & Attribute.DefaultTo<[]>;
     failureCode: Attribute.String;
+    deadLetteredAt: Attribute.DateTime;
     providerMetadata: Attribute.JSON;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

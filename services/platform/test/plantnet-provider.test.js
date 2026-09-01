@@ -19,9 +19,15 @@ test('real PlantNet mode sends a v2 multipart request and normalises an external
   t.after(() => rm(directory, { recursive: true, force: true }));
 
   let request;
+  const guardCalls = [];
   const provider = new PlantNetProvider({
     mode: 'real',
     apiKey: 'test-key-only',
+    guard: {
+      async beforeRequest() { guardCalls.push('before'); },
+      async recordSuccess() { guardCalls.push('success'); },
+      async recordFailure() { guardCalls.push('failure'); },
+    },
     privateMediaStore: {
       resolve(storageKey) {
         assert.equal(storageKey, 'private-observation.jpg');
@@ -86,6 +92,7 @@ test('real PlantNet mode sends a v2 multipart request and normalises an external
     modelVersion: 'plantnet-model-test',
   }]);
   assert.equal(Object.hasOwn(result.candidates[0], 'plantId'), false);
+  assert.deepEqual(guardCalls, ['before', 'success']);
 });
 
 test('PlantNet Retry-After HTTP dates defer the next provider attempt', () => {

@@ -3,6 +3,7 @@
 const { createIdentificationQueue, createIdentificationWorker } = require('./api/platform/services/core/field/identification-queue');
 const { seedDemoContent } = require('./api/platform/services/core/content/demo-seed');
 const { PlantNetProvider } = require('./api/platform/services/core/field/plantnet-provider');
+const { RedisProviderGuard } = require('./api/platform/services/core/field/provider-guard');
 const {
   getExistingPlatformRuntime,
   getPlatformRuntime,
@@ -19,7 +20,11 @@ module.exports = {
     }
     const queue = createIdentificationQueue();
     runtime.identificationQueue = queue;
-    const provider = new PlantNetProvider({ privateMediaStore: runtime.privateMediaStore });
+    runtime.providerGuard = new RedisProviderGuard();
+    const provider = new PlantNetProvider({
+      privateMediaStore: runtime.privateMediaStore,
+      guard: runtime.providerGuard,
+    });
     runtime.identificationWorker = createIdentificationWorker({
       process: (jobId) => runtime.field.processIdentification(jobId, provider),
       enqueue: queue.enqueue,
@@ -45,6 +50,7 @@ module.exports = {
     await Promise.all([
       runtime.identificationWorker?.close(),
       runtime.identificationQueue?.close(),
+      runtime.providerGuard?.close(),
     ]);
   },
 };

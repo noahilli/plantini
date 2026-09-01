@@ -92,6 +92,22 @@ final class HttpFieldRepository implements FieldRepository {
   }
 
   @override
+  Future<Result<IdentificationJob>> retryIdentification({
+    required String jobId,
+    required String idempotencyKey,
+  }) async {
+    final response = await _client.postJson(
+      'identifications/$jobId/retry',
+      body: const {},
+      idempotencyKey: idempotencyKey,
+    );
+    return response.when(
+      success: (value) => _identificationJob(value.body),
+      failure: Result.failure,
+    );
+  }
+
+  @override
   Future<Result<IdentificationJob>> confirmIdentification({
     required String jobId,
     String? candidateId,
@@ -225,6 +241,7 @@ Result<IdentificationJob> _identificationJob(Map<String, dynamic> body) {
       expectedPlantId: _optionalString(body, 'expectedPlantId'),
       expectedMatch: _optionalString(body, 'expectedMatch'),
       expectedCandidateId: _optionalString(body, 'expectedCandidateId'),
+      deadLetteredAt: _date(body['deadLetteredAt']),
     ),
   );
 }

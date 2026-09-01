@@ -76,6 +76,12 @@ final class MockFieldRepository implements FieldRepository {
   }
 
   @override
+  Future<Result<IdentificationJob>> retryIdentification({
+    required String jobId,
+    required String idempotencyKey,
+  }) => getIdentification(jobId);
+
+  @override
   Future<Result<IdentificationJob>> confirmIdentification({
     required String jobId,
     String? candidateId,

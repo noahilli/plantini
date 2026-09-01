@@ -671,6 +671,7 @@ components:
         expectedMatch: {type: string, enum: [matched, mismatch]}
         expectedCandidateId: {type: string, minLength: 3, maxLength: 160}
         failureCode: {type: string}
+        deadLetteredAt: {type: string, format: date-time}
         confirmedPlantId: {$ref: '#/components/schemas/Id'}
         confirmedCandidateId: {type: string, minLength: 3, maxLength: 160}
     IdentificationCandidate:

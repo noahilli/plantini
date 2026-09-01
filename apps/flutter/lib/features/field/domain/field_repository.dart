@@ -26,6 +26,11 @@ abstract interface class FieldRepository {
 
   Future<Result<IdentificationJob>> getIdentification(String jobId);
 
+  Future<Result<IdentificationJob>> retryIdentification({
+    required String jobId,
+    required String idempotencyKey,
+  });
+
   Future<Result<IdentificationJob>> confirmIdentification({
     required String jobId,
     String? candidateId,

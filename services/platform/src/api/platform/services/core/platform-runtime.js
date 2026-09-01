@@ -37,6 +37,7 @@ function getPlatformRuntime(strapi) {
     learning: new LearningService({ repository: repositories.learning }),
     privateMediaStore: new PrivateMediaStore(),
     identificationQueue: undefined,
+    providerGuard: undefined,
   };
   runtime.field = new FieldService({
     repository: repositories.field,

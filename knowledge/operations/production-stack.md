@@ -12,6 +12,8 @@ lokale Entwicklung; `infra/compose.e2e.yaml` bleibt eine isolierte Testumgebung.
 - extern verwaltete, zufällige Secrets
 - ein vorab provisioniertes Production-Realm ohne Dev-Redirects
 - getestete Backups der beiden PostgreSQL-Volumes und des privaten Medien-Volumes
+- vertraglich bestätigtes tägliches Pl@ntNet-Limit und eine bewusst gewählte
+  Quotenreserve (`PLANTNET_DAILY_REQUEST_LIMIT`, `PLANTNET_QUOTA_RESERVE`)
 
 ## Preflight
 
@@ -45,3 +47,11 @@ Der Reverse-Proxy darf öffentlich ausschließlich HTTPS bereitstellen. Die
 Loopback-Ports 1338 und 8082 bleiben an `127.0.0.1` gebunden. Vor Freigabe sind
 Login, Lernen, Quiz, PlantNet, Herbarium, Backup und Restore gegen die konkrete
 Zielumgebung nachzuweisen.
+
+Der Identifikationsworker schützt die konfigurierte Tagesquote atomar in Redis.
+Die Reserve wird nicht für reguläre Nutzeraufträge verbraucht. Wiederholte
+transiente Providerfehler öffnen einen geteilten Circuit Breaker; nach fünf
+erfolglosen Jobversuchen bleibt der Auftrag mit `deadLetteredAt` persistent und
+kann in der App bewusst neu gestartet werden. Die Werte müssen zur tatsächlich
+gebuchten Providerquote passen und sind kein Ersatz für FIELD-09-Vertrags- und
+Datenschutzfreigaben.

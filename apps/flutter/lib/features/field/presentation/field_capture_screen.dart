@@ -185,9 +185,38 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     }
   }
 
+  Future<void> _retryIdentification() async {
+    final repository = _fieldRepository;
+    final job = _job;
+    if (repository == null || job == null || _isWorking) return;
+    setState(() {
+      _isWorking = true;
+      _workflowError = null;
+    });
+    final result = await repository.retryIdentification(
+      jobId: job.id,
+      idempotencyKey: _ids.next(),
+    );
+    if (!mounted) return;
+    switch (result) {
+      case Success<IdentificationJob>(:final value):
+        setState(() {
+          _job = value;
+          _isWorking = false;
+        });
+        _scheduleIdentificationPoll(value);
+      case Failure<IdentificationJob>(:final failure):
+        _setFailure(failure.message);
+    }
+  }
+
   void _scheduleIdentificationPoll(IdentificationJob job) {
     _identificationPollTimer?.cancel();
-    if (!mounted || (job.status != 'pending' && job.status != 'processing')) {
+    final retryScheduled = job.status == 'failed' && job.retryAfter != null;
+    if (!mounted ||
+        (job.status != 'pending' &&
+            job.status != 'processing' &&
+            !retryScheduled)) {
       return;
     }
     final now = DateTime.now();
@@ -296,11 +325,16 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
         _selectedCandidateId != null &&
         (!_requiresMismatchAcceptance || _acceptMismatch) &&
         !_isWorking;
+    final retryScheduled =
+        job?.status == 'failed' &&
+        job?.retryAfter != null &&
+        job?.deadLetteredAt == null;
 
     // State 1n: Identification in progress
     if ((_isWorking && job == null && media != null) ||
         job?.status == 'processing' ||
-        job?.status == 'pending') {
+        job?.status == 'pending' ||
+        retryScheduled) {
       return Scaffold(
         backgroundColor: AppColors.neutral100,
         body: SafeArea(
@@ -442,6 +476,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
                               _acceptMismatch = false;
                             }),
                       onRefresh: _isWorking ? null : _refreshIdentification,
+                      onRetry: _isWorking ? null : _retryIdentification,
                     ),
                     const SizedBox(height: 16),
                     if (_requiresMismatchAcceptance) ...[
@@ -797,12 +832,14 @@ class _IdentificationCard extends StatelessWidget {
     required this.selectedCandidateId,
     required this.onCandidateSelected,
     required this.onRefresh,
+    required this.onRetry,
   });
 
   final IdentificationJob job;
   final String? selectedCandidateId;
   final ValueChanged<String>? onCandidateSelected;
   final VoidCallback? onRefresh;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -871,9 +908,13 @@ class _IdentificationCard extends StatelessWidget {
             const SizedBox(height: 12),
             OutlinedButton.icon(
               key: const ValueKey('field-refresh-identification'),
-              onPressed: onRefresh,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Status aktualisieren'),
+              onPressed: job.status == 'failed' ? onRetry : onRefresh,
+              icon: Icon(job.status == 'failed' ? Icons.replay : Icons.refresh),
+              label: Text(
+                job.status == 'failed'
+                    ? 'Erneut versuchen'
+                    : 'Status aktualisieren',
+              ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.neutral100,
                 side: const BorderSide(color: AppColors.sage400),

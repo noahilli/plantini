@@ -134,13 +134,16 @@ class FieldService {
     requireIdempotencyKey(idempotencyHeader);
     const job = await this.repository.findJobByPublicId(actor.id, jobId);
     if (!job) throw notFound('IDENTIFICATION_NOT_FOUND');
-    if (!['failed', 'pending'].includes(job.status)) {
+    if (job.status === 'pending') return mapJob(job);
+    if (job.status !== 'failed' || !job.deadLetteredAt) {
       throw conflict('IDENTIFICATION_NOT_RETRYABLE', 'Dieser Identifikationsauftrag kann derzeit nicht erneut gestartet werden.');
     }
     const updated = await this.repository.updateJob(job.id, {
       status: 'pending',
       retryAfter: null,
       failureCode: null,
+      deadLetteredAt: null,
+      attempts: 0,
     });
     await this.enqueuePersistedJob(updated.publicId);
     return mapJob(updated);
@@ -239,6 +242,7 @@ class FieldService {
         status: 'failed',
         failureCode: retryAfter ? providerFailureCode(error) : 'PROVIDER_RETRY_EXHAUSTED',
         ...(retryAfter ? { retryAfter } : {}),
+        ...(!retryAfter ? { retryAfter: null, deadLetteredAt: this.clock().toISOString() } : {}),
       });
     }
   }
@@ -386,6 +390,7 @@ function mapJob(job) {
     ...(job.expectedMatch ? { expectedMatch: job.expectedMatch } : {}),
     ...(job.expectedCandidateId ? { expectedCandidateId: job.expectedCandidateId } : {}),
     ...(job.failureCode ? { failureCode: job.failureCode } : {}),
+    ...(job.deadLetteredAt ? { deadLetteredAt: job.deadLetteredAt } : {}),
     ...(job.confirmedPlantId ? { confirmedPlantId: job.confirmedPlantId } : {}),
     ...(job.confirmedCandidateId ? { confirmedCandidateId: job.confirmedCandidateId } : {}),
   };
@@ -398,7 +403,13 @@ function hasExpectedMagicBytes(bytes, contentType) {
 }
 
 function retryAfterFor(error, now, attempt, jobId) {
-  const retryable = error && (error.code === 'PROVIDER_RATE_LIMITED' || error.code === 'PROVIDER_TIMEOUT' || error.code === 'PROVIDER_UNAVAILABLE');
+  const retryable = error && (
+    error.code === 'PROVIDER_RATE_LIMITED'
+    || error.code === 'PROVIDER_TIMEOUT'
+    || error.code === 'PROVIDER_UNAVAILABLE'
+    || error.code === 'PROVIDER_QUOTA_RESERVED'
+    || error.code === 'PROVIDER_CIRCUIT_OPEN'
+  );
   if (!retryable) return undefined;
   const requestedDelay = Number(error.retryAfterMs || 1_000);
   const exponentialDelay = Math.min(60_000, 1_000 * (2 ** Math.max(0, attempt - 1)));

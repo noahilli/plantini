@@ -37,6 +37,7 @@ class PlantNetProvider {
     this.FormData = options.FormData || global.FormData;
     this.Blob = options.Blob || global.Blob;
     this.timeoutMs = options.timeoutMs || 12_000;
+    this.guard = options.guard;
     if (this.mode === 'real' && !this.apiKey) {
       throw new Error('PLANTNET_API_KEY must be configured when PLANTNET_MODE=real.');
     }
@@ -53,6 +54,7 @@ class PlantNetProvider {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
+      await this.guard?.beforeRequest();
       const response = this.mode === 'real'
         ? await this.identifyReal(media, bytes, controller.signal)
         : await this.identifyMock(job, media, bytes, controller.signal);
@@ -68,11 +70,16 @@ class PlantNetProvider {
       if (!response.ok) {
         throw providerError('PROVIDER_REJECTED', 'Plant identification provider rejected the image.');
       }
-      return normaliseProviderResponse(await response.json());
+      const result = normaliseProviderResponse(await response.json());
+      await this.guard?.recordSuccess();
+      return result;
     } catch (error) {
       if (error?.name === 'AbortError') {
-        throw providerError('PROVIDER_TIMEOUT', 'Plant identification timed out.', 5_000);
+        const timeout = providerError('PROVIDER_TIMEOUT', 'Plant identification timed out.', 5_000);
+        await this.guard?.recordFailure(timeout);
+        throw timeout;
       }
+      await this.guard?.recordFailure(error);
       throw error;
     } finally {
       clearTimeout(timeout);
