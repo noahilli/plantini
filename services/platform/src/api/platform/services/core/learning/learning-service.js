@@ -16,6 +16,7 @@ const { normaliseCompletionRule } = require('../content/content-service');
 class LearningService {
   constructor(options) {
     this.repository = options.repository;
+    this.herbariumRepository = options.herbariumRepository;
     this.clock = options.clock || (() => new Date());
   }
 
@@ -90,6 +91,7 @@ class LearningService {
     const rule = normaliseCompletionRule(level.completionRule, level.quizzes || []);
     const score = await this.scoreAnswers(level, rule, input.answers);
     const passed = score >= rule.minimumScore;
+    if (passed) await this.requireCollectedPlants(actor, level, rule);
     const completedAt = this.clock().toISOString();
     const updated = await this.repository.updateAttempt(attempt.id || attempt.publicId, {
       status: 'completed',
@@ -250,6 +252,46 @@ class LearningService {
       if (isCorrect(question, answer.choiceId)) correct += 1;
     }
     return correct / requiredIds.length;
+  }
+
+  async requireCollectedPlants(actor, level, rule) {
+    const relatedPlantIds = (level.plants || [])
+      .filter((plant) => plant && plant.publishedAt)
+      .map((plant) => plant.publicId)
+      .filter(Boolean);
+    const requiredPlantIds = rule.requiredPlantIds.length > 0
+      ? rule.requiredPlantIds
+      : relatedPlantIds.slice(0, 3);
+    if (requiredPlantIds.length === 0) {
+      throw new ProblemError('CONTENT_INTEGRITY_FAILED', {
+        status: 503,
+        detail: 'Das Level enthält keine sammelbaren Zielpflanzen.',
+      });
+    }
+    if (!this.herbariumRepository) {
+      throw new ProblemError('COLLECTION_GATE_UNAVAILABLE', {
+        status: 503,
+        detail: 'Der Herbarium-Fortschritt kann derzeit nicht geprüft werden.',
+      });
+    }
+    const result = await this.herbariumRepository.listObservations(actor.id, {
+      page: 1,
+      pageSize: 1000,
+    });
+    const collected = new Set(
+      result.items
+        .filter((entry) => entry.syncStatus !== 'deleted')
+        .map((entry) => entry.confirmedPlantId)
+        .filter(Boolean),
+    );
+    const missingPlantIds = requiredPlantIds.filter((id) => !collected.has(id));
+    if (missingPlantIds.length > 0) {
+      throw new ProblemError('LEVEL_COLLECTION_INCOMPLETE', {
+        status: 409,
+        detail: `Sammle zuerst ${missingPlantIds.length} weitere Zielpflanzen im Herbarium.`,
+        meta: { missingPlantIds },
+      });
+    }
   }
 
   async completionFromStored(actor, attempt) {

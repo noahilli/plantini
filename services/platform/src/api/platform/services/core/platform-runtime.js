@@ -34,7 +34,10 @@ function getPlatformRuntime(strapi) {
     actorService,
     profile: new ProfileService({ actorService }),
     content: new ContentService({ repository: repositories.content }),
-    learning: new LearningService({ repository: repositories.learning }),
+    learning: new LearningService({
+      repository: repositories.learning,
+      herbariumRepository: repositories.herbarium,
+    }),
     privateMediaStore: new PrivateMediaStore(),
     identificationQueue: undefined,
     providerGuard: undefined,

@@ -382,7 +382,12 @@ async function enrichCandidateSafety(repository, candidates) {
       : '';
     return {
       ...candidate,
-      ...(plant?.publicId ? { plantId: plant.publicId } : {}),
+      // A provider adapter may already have resolved the candidate against a
+      // curated expected plant. Never overwrite that stronger identity merely
+      // because a safety lookup by scientific name found another record.
+      ...(plant?.publicId && !candidate.plantId
+        ? { plantId: plant.publicId }
+        : {}),
       ...(safetyNotice ? { safetyNotice } : {}),
     };
   }));

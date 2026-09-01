@@ -14,6 +14,7 @@ const ids = {
   clientAttempt: '55555555-5555-4555-8555-555555555555',
   clientEvent: '66666666-6666-4666-8666-666666666666',
   event: '77777777-7777-4777-8777-777777777777',
+  plant: '88888888-8888-4888-8888-888888888888',
 };
 
 function createRepository() {
@@ -24,7 +25,13 @@ function createRepository() {
     publishedAt: '2026-01-01T00:00:00.000Z',
     slug: 'laubbäume-1',
     releaseVersion: 'demo.1',
-    completionRule: { minimumScore: 1, requiredQuizIds: [ids.quizOne, ids.quizTwo], requiredLevelIds: [] },
+    completionRule: {
+      minimumScore: 1,
+      requiredQuizIds: [ids.quizOne, ids.quizTwo],
+      requiredPlantIds: [ids.plant],
+      requiredLevelIds: [],
+    },
+    plants: [{ publicId: ids.plant, publishedAt: '2026-01-01T00:00:00.000Z' }],
     quizzes: [
       { publicId: ids.quizOne, publishedAt: '2026-01-01T00:00:00.000Z' },
       { publicId: ids.quizTwo, publishedAt: '2026-01-01T00:00:00.000Z' },
@@ -80,9 +87,28 @@ function createRepository() {
   };
 }
 
+function createHerbariumRepository(confirmedPlantIds = [ids.plant]) {
+  return {
+    async listObservations() {
+      return {
+        items: confirmedPlantIds.map((confirmedPlantId, index) => ({
+          publicId: `observation-${index}`,
+          confirmedPlantId,
+          syncStatus: 'synced',
+        })),
+        total: confirmedPlantIds.length,
+      };
+    },
+  };
+}
+
 test('server-authoritative attempts are idempotent and score only documented answers', async () => {
   const repository = createRepository();
-  const service = new LearningService({ repository, clock: () => new Date('2026-01-01T00:00:00.000Z') });
+  const service = new LearningService({
+    repository,
+    herbariumRepository: createHerbariumRepository(),
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
   const actor = { id: ids.actor };
   const start = { levelId: ids.level, clientAttemptId: ids.clientAttempt, contentVersion: 'demo.1' };
 
@@ -133,4 +159,31 @@ test('offline learning events are acknowledged exactly once', async () => {
   assert.deepEqual(first.acceptedClientEventIds, [ids.event]);
   assert.deepEqual(duplicate.acceptedClientEventIds, [ids.event]);
   assert.equal(repository.events.length, 1);
+});
+
+test('a passed quiz cannot complete a level before its target plants are collected', async () => {
+  const repository = createRepository();
+  const service = new LearningService({
+    repository,
+    herbariumRepository: createHerbariumRepository([]),
+    clock: () => new Date('2026-01-01T00:00:00.000Z'),
+  });
+  const actor = { id: ids.actor };
+  const started = await service.startAttempt(actor, {
+    levelId: ids.level,
+    clientAttemptId: ids.clientAttempt,
+    contentVersion: 'demo.1',
+  }, 'start-idempotency-key-collection');
+
+  await assert.rejects(
+    () => service.completeAttempt(actor, started.attempt.id, {
+      clientEventId: ids.clientEvent,
+      answers: [
+        { quizItemId: ids.quizOne, choiceId: 'oak' },
+        { quizItemId: ids.quizTwo, choiceId: 'beech' },
+      ],
+    }, 'complete-idempotency-collection'),
+    (error) => error instanceof ProblemError && error.code === 'LEVEL_COLLECTION_INCOMPLETE',
+  );
+  assert.equal(repository.attempts[0].status, 'active');
 });

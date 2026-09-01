@@ -157,7 +157,10 @@ function normaliseCompletionRule(rule, quizzes) {
   const requiredQuizIds = Array.isArray(source.requiredQuizIds) && source.requiredQuizIds.length > 0
     ? source.requiredQuizIds
     : quizzes.filter(isPublished).map((quiz) => contentId(quiz, 'QuizItem'));
-  return { minimumScore, requiredQuizIds };
+  const requiredPlantIds = Array.isArray(source.requiredPlantIds)
+    ? [...new Set(source.requiredPlantIds.filter((id) => typeof id === 'string' && id.length > 0))]
+    : [];
+  return { minimumScore, requiredQuizIds, requiredPlantIds };
 }
 
 function normaliseChoices(value) {

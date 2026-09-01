@@ -63,6 +63,7 @@ async function seedDemoContent(strapi) {
         learningGoal: definition.learningGoal,
         completionRule: {
           minimumScore: 0.7, requiredQuizIds: quizIds,
+          requiredPlantIds: levelPlantIds.slice(0, 3),
           requiredLevelIds: previousLevelId ? [previousLevelId] : [],
         },
         ecosystem: ecosystem.id, plants: levelPlantIds, publishedAt: now,
