@@ -209,6 +209,7 @@ void main() {
     test('maps caller-owned observations and preserves optimistic concurrency headers', () async {
       const observation = {
         'id': '44444444-4444-4444-8444-444444444444',
+        'clientObservationId': '66666666-6666-4666-8666-666666666666',
         'observedAt': '2026-08-27T12:00:00.000Z',
         'note': 'An der Wiese',
         'version': '55555555-5555-4555-8555-555555555555',

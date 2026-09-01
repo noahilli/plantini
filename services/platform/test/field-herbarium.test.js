@@ -208,6 +208,7 @@ test('herbarium enforces ownership, version preconditions, and tombstones', asyn
     location: { latitude: 50, longitude: 8, accuracyMeters: 10 },
   }, 'observation-key-00001');
   assert.equal(created.created, true);
+  assert.equal(created.observation.clientObservationId, ids.clientObservation);
   assert.equal(created.observation.confirmedPlantId, ids.plant);
   assert.equal(Object.hasOwn(created.observation, 'location'), false);
 

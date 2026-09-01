@@ -1,15 +1,11 @@
 /// Synchronization state of a herbarium entry with the backend platform.
-enum SyncStatus {
-  synced,
-  pending,
-  conflict,
-  deleted,
-}
+enum SyncStatus { synced, pending, conflict, deleted }
 
 /// A stored observation entry in the user's digital herbarium.
 final class HerbariumEntry {
   const HerbariumEntry({
     required this.id,
+    this.clientObservationId,
     required this.observedAt,
     this.note = '',
     this.confirmedPlantId,
@@ -22,9 +18,12 @@ final class HerbariumEntry {
     this.identificationResult,
     this.latitude,
     this.longitude,
+    this.accuracyMeters,
+    this.syncError,
   });
 
   final String id;
+  final String? clientObservationId;
   final DateTime observedAt;
   final String note;
   final String? confirmedPlantId;
@@ -37,6 +36,8 @@ final class HerbariumEntry {
   final String? identificationResult;
   final double? latitude;
   final double? longitude;
+  final double? accuracyMeters;
+  final String? syncError;
 
   /// Display title for list and detail views.
   String get displayTitle {
@@ -52,6 +53,7 @@ final class HerbariumEntry {
   /// Creates a copy of this entry with modified fields.
   HerbariumEntry copyWith({
     String? id,
+    String? clientObservationId,
     DateTime? observedAt,
     String? note,
     String? confirmedPlantId,
@@ -64,9 +66,13 @@ final class HerbariumEntry {
     String? identificationResult,
     double? latitude,
     double? longitude,
+    double? accuracyMeters,
+    String? syncError,
+    bool clearSyncError = false,
   }) {
     return HerbariumEntry(
       id: id ?? this.id,
+      clientObservationId: clientObservationId ?? this.clientObservationId,
       observedAt: observedAt ?? this.observedAt,
       note: note ?? this.note,
       confirmedPlantId: confirmedPlantId ?? this.confirmedPlantId,
@@ -79,7 +85,8 @@ final class HerbariumEntry {
       identificationResult: identificationResult ?? this.identificationResult,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      accuracyMeters: accuracyMeters ?? this.accuracyMeters,
+      syncError: clearSyncError ? null : syncError ?? this.syncError,
     );
   }
 }
-

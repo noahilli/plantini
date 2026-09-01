@@ -41,8 +41,7 @@ final class IsarSyncQueueStore implements SyncQueueStore {
     } catch (error) {
       return Result.failure(
         StorageFailure(
-          message:
-              'Der Sync-Job konnte nicht in die Warteschlange eingereiht werden.',
+          message: 'Der Sync-Job konnte nicht in die Warteschlange eingereiht werden.',
           cause: error,
         ),
       );
@@ -66,8 +65,7 @@ final class IsarSyncQueueStore implements SyncQueueStore {
         final isStaleRunning =
             job.status == SyncJobStatus.running &&
             !lastUpdatedAt.isAfter(staleRunningBefore);
-        final isDue =
-            job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
+        final isDue = job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
         return job.attemptCount < maxAttempts &&
             ((isPendingOrFailed && isDue) || isStaleRunning);
       }).toList();
@@ -140,6 +138,12 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
 
   @override
   Future<Result<IsarSyncJob>> enqueue(IsarSyncJob job) async {
+    final existing = _storage.values.where(
+      (item) => item.clientId == job.clientId,
+    );
+    if (existing.isNotEmpty) {
+      job.id = existing.first.id;
+    }
     if (job.id == Isar.autoIncrement || job.id <= 0) {
       job.id = ++_autoId;
     }
@@ -161,8 +165,7 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
       final isStaleRunning =
           job.status == SyncJobStatus.running &&
           !lastUpdatedAt.isAfter(staleRunningBefore);
-      final isDue =
-          job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
+      final isDue = job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
       return job.attemptCount < maxAttempts &&
           ((isPendingOrFailed && isDue) || isStaleRunning);
     }).toList();
@@ -291,5 +294,26 @@ final class SyncQueueService {
     required SyncJobProcessor processor,
   }) async {
     return processQueue(processor: processor);
+  }
+
+  /// Explicit user retry. Exhausted jobs are re-armed without changing their
+  /// stable client IDs, so the remote idempotency contract still applies.
+  Future<Result<int>> retryFailedJobs() async {
+    final result = await store.getAllJobs();
+    if (result case Failure<List<IsarSyncJob>>(:final failure)) {
+      return Result.failure(failure);
+    }
+    var count = 0;
+    for (final job in (result as Success<List<IsarSyncJob>>).value) {
+      if (job.status != SyncJobStatus.failed) continue;
+      job
+        ..status = SyncJobStatus.pending
+        ..attemptCount = 0
+        ..nextRetryAt = _clock.now()
+        ..updatedAt = _clock.now();
+      await store.updateJob(job);
+      count++;
+    }
+    return Result.success(count);
   }
 }

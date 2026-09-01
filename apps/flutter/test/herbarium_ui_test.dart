@@ -151,6 +151,27 @@ void main() {
         expect(deleteCalled, isTrue);
       },
     );
+
+    testWidgets('shows the concrete offline synchronization error', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: HerbariumDetailScreen(
+            entry: sampleEntries[2].copyWith(
+              syncError: 'Serverversion wurde zwischenzeitlich geändert.',
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        find.text(
+          'Letzter Fehler: Serverversion wurde zwischenzeitlich geändert.',
+        ),
+        findsOneWidget,
+      );
+    });
   });
 
   group('HerbariumSearchFilterBar Widget Tests', () {

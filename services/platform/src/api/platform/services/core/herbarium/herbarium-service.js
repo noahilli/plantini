@@ -125,6 +125,7 @@ class HerbariumService {
     }
     return {
       id: observation.publicId,
+      clientObservationId: observation.clientObservationId,
       observedAt: observation.timestamp,
       note: observation.notes || '',
       ...(observation.confirmedPlantId ? { confirmedPlantId: observation.confirmedPlantId } : {}),

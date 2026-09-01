@@ -72,6 +72,7 @@ final class LocalHerbariumRepository implements HerbariumRepository {
       syncStatus: SyncStatus.pending,
       latitude: latitude,
       longitude: longitude,
+      accuracyMeters: accuracyMeters,
     );
     _entries.removeWhere((item) => item.id == clientObservationId);
     _entries.add(entry);

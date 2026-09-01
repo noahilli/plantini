@@ -266,7 +266,7 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                     const SizedBox(height: 16),
 
                     // Sync status banner (existing)
-                    _SyncStatusBanner(status: entry.syncStatus),
+                    _SyncStatusBanner(entry: entry),
                     const SizedBox(height: 20),
 
                     // PlantNet KI Result Card
@@ -348,13 +348,19 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
 }
 
 class _SyncStatusBanner extends StatelessWidget {
-  const _SyncStatusBanner({required this.status});
+  const _SyncStatusBanner({required this.entry});
 
-  final SyncStatus status;
+  final HerbariumEntry entry;
 
   @override
   Widget build(BuildContext context) {
-    final (icon, color, bgColor, title, desc) = switch (status) {
+    final (
+      icon,
+      color,
+      bgColor,
+      title,
+      defaultDescription,
+    ) = switch (entry.syncStatus) {
       SyncStatus.synced => (
         Icons.cloud_done_rounded,
         AppColors.forest,
@@ -384,6 +390,9 @@ class _SyncStatusBanner extends StatelessWidget {
         'Dieser Eintrag ist zur Löschung vorgemerkt.',
       ),
     };
+    final description = entry.syncError?.trim().isNotEmpty == true
+        ? 'Letzter Fehler: ${entry.syncError}'
+        : defaultDescription;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -410,7 +419,7 @@ class _SyncStatusBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  desc,
+                  description,
                   style: AppTypography.textTheme.bodySmall?.copyWith(
                     color: AppColors.ink,
                   ),

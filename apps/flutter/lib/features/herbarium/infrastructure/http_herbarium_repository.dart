@@ -154,16 +154,24 @@ Result<List<HerbariumEntry>> _observationPage(Map<String, dynamic> body) {
 
 Result<HerbariumEntry> _observation(Map<String, dynamic> body) {
   final id = _requiredString(body, 'id');
+  final clientObservationId = _requiredString(body, 'clientObservationId');
   final observedAt = _date(body['observedAt']);
   final version = _requiredString(body, 'version');
   final syncStatus = _syncStatus(body['syncStatus']);
   if (id == null ||
+      clientObservationId == null ||
       observedAt == null ||
       version == null ||
       syncStatus == null) {
     return _contractFailure(
       'Der Herbarium-Eintrag enthält unvollständige Pflichtfelder.',
-      const ['id', 'observedAt', 'version', 'syncStatus'],
+      const [
+        'id',
+        'clientObservationId',
+        'observedAt',
+        'version',
+        'syncStatus',
+      ],
     );
   }
 
@@ -181,6 +189,7 @@ Result<HerbariumEntry> _observation(Map<String, dynamic> body) {
   return Result.success(
     HerbariumEntry(
       id: id,
+      clientObservationId: clientObservationId,
       observedAt: observedAt,
       note: _optionalString(body, 'note') ?? '',
       confirmedPlantId: _optionalString(body, 'confirmedPlantId'),

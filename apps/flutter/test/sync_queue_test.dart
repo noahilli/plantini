@@ -44,19 +44,22 @@ void main() {
       );
     });
 
-    test('enqueueJob creates pending job with immediate retry schedule', () async {
-      final result = await service.enqueueJob(
-        payload: '{"observationId": "obs-1"}',
-      );
+    test(
+      'enqueueJob creates pending job with immediate retry schedule',
+      () async {
+        final result = await service.enqueueJob(
+          payload: '{"observationId": "obs-1"}',
+        );
 
-      expect(result.isSuccess, isTrue);
-      final job = (result as Success<IsarSyncJob>).value;
-      expect(job.status, SyncJobStatus.pending);
-      expect(job.clientId, 'sync-id-1');
-      expect(job.attemptCount, 0);
-      expect(job.payload, '{"observationId": "obs-1"}');
-      expect(job.nextRetryAt, initialTime);
-    });
+        expect(result.isSuccess, isTrue);
+        final job = (result as Success<IsarSyncJob>).value;
+        expect(job.status, SyncJobStatus.pending);
+        expect(job.clientId, 'sync-id-1');
+        expect(job.attemptCount, 0);
+        expect(job.payload, '{"observationId": "obs-1"}');
+        expect(job.nextRetryAt, initialTime);
+      },
+    );
 
     test('processQueue completes jobs when processor succeeds', () async {
       await service.enqueueJob(payload: 'job-1');
@@ -84,9 +87,8 @@ void main() {
 
       // Attempt 1: fails -> backoff: 2 * 2^0 = 2 seconds
       final failResult = await service.processQueue(
-        processor: (payload) async => const Result.failure(
-          NetworkFailure(message: 'Server unreachable'),
-        ),
+        processor: (payload) async =>
+            const Result.failure(NetworkFailure(message: 'Server unreachable')),
       );
 
       expect(failResult.isSuccess, isTrue);
@@ -96,25 +98,32 @@ void main() {
       expect(jobs.first.status, SyncJobStatus.failed);
       expect(jobs.first.attemptCount, 1);
       expect(jobs.first.errorReason, 'Server unreachable');
-      expect(jobs.first.nextRetryAt, initialTime.add(const Duration(seconds: 2)));
+      expect(
+        jobs.first.nextRetryAt,
+        initialTime.add(const Duration(seconds: 2)),
+      );
 
       // Queue process before due time: should not process flaky-job
       clock.advance(const Duration(seconds: 1));
-      var secondRun = await service.processQueue(processor: (_) async => const Result.success(null));
+      var secondRun = await service.processQueue(
+        processor: (_) async => const Result.success(null),
+      );
       expect((secondRun as Success<int>).value, 0);
 
       // Advance past retry time: attempt 2 fails -> backoff: 2 * 2^1 = 4 seconds
       clock.advance(const Duration(seconds: 2));
       await service.processQueue(
-        processor: (payload) async => const Result.failure(
-          NetworkFailure(message: 'Server still down'),
-        ),
+        processor: (payload) async =>
+            const Result.failure(NetworkFailure(message: 'Server still down')),
       );
 
       jobs = (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
       expect(jobs.first.attemptCount, 2);
       expect(jobs.first.errorReason, 'Server still down');
-      expect(jobs.first.nextRetryAt, clock.now().add(const Duration(seconds: 4)));
+      expect(
+        jobs.first.nextRetryAt,
+        clock.now().add(const Duration(seconds: 4)),
+      );
     });
 
     test('calculateBackoff respects max backoff ceiling', () {
@@ -123,7 +132,10 @@ void main() {
       expect(service.calculateBackoff(2), const Duration(seconds: 4));
       expect(service.calculateBackoff(3), const Duration(seconds: 8));
       expect(service.calculateBackoff(4), const Duration(seconds: 16));
-      expect(service.calculateBackoff(5), const Duration(seconds: 30)); // Capped at maxBackoffSeconds (30)
+      expect(
+        service.calculateBackoff(5),
+        const Duration(seconds: 30),
+      ); // Capped at maxBackoffSeconds (30)
       expect(service.calculateBackoff(10), const Duration(seconds: 30));
     });
 
@@ -216,6 +228,30 @@ void main() {
             (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
         expect(jobs.single.status, SyncJobStatus.failed);
         expect(jobs.single.attemptCount, 2);
+      },
+    );
+
+    test(
+      'manual retry rearms an exhausted job with the same client id',
+      () async {
+        final job = IsarSyncJob()
+          ..clientId = 'stable-observation-id'
+          ..payload = 'retry-payload'
+          ..status = SyncJobStatus.failed
+          ..attemptCount = 5
+          ..errorReason = 'offline'
+          ..nextRetryAt = initialTime
+          ..createdAt = initialTime
+          ..updatedAt = initialTime;
+        await store.enqueue(job);
+
+        final retried = await service.retryFailedJobs();
+        final jobs = (await store.getAllJobs()).valueOrNull!;
+
+        expect(retried.valueOrNull, 1);
+        expect(jobs.single.clientId, 'stable-observation-id');
+        expect(jobs.single.status, SyncJobStatus.pending);
+        expect(jobs.single.attemptCount, 0);
       },
     );
   });
