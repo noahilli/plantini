@@ -1,4 +1,5 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../features/catalog/infrastructure/models/isar_ecosystem.dart';
@@ -16,12 +17,12 @@ final class LocalDatabase {
 
   Isar get isar => _isar;
 
-  IsarCollection<IsarEcosystem> get ecosystems => _isar.isarEcosystems;
-  IsarCollection<IsarLevel> get levels => _isar.isarLevels;
-  IsarCollection<IsarPlant> get plants => _isar.isarPlants;
-  IsarCollection<IsarSyncJob> get syncQueue => _isar.isarSyncJobs;
+  IsarCollection<int, IsarEcosystem> get ecosystems => _isar.isarEcosystems;
+  IsarCollection<int, IsarLevel> get levels => _isar.isarLevels;
+  IsarCollection<int, IsarPlant> get plants => _isar.isarPlants;
+  IsarCollection<int, IsarSyncJob> get syncQueue => _isar.isarSyncJobs;
 
-  static const List<CollectionSchema<dynamic>> schemas = [
+  static final List<IsarGeneratedSchema> schemas = [
     IsarEcosystemSchema,
     IsarLevelSchema,
     IsarPlantSchema,
@@ -35,17 +36,20 @@ final class LocalDatabase {
     bool inspector = false,
   }) async {
     try {
-      final existing = Isar.getInstance(name);
-      if (existing != null && existing.isOpen) {
-        return Result.success(LocalDatabase(existing));
-      }
-
+      // Keep the web database bootstrap same-origin. Depending on Isar's
+      // default CDN URL makes application startup depend on public DNS and an
+      // external service, which is unacceptable for offline-first use.
+      await Isar.initialize(kIsWeb ? '/isar_plus.wasm' : null);
       final dbDir =
-          directory ?? (await getApplicationDocumentsDirectory()).path;
-      final isarInstance = await Isar.open(
-        schemas,
+          directory ??
+          (kIsWeb ? '.' : (await getApplicationDocumentsDirectory()).path);
+      final isarInstance = Isar.open(
+        schemas: schemas,
         directory: dbDir,
         name: name,
+        // Isar Plus persists web databases through its SQLite/WASM flavor.
+        // Native targets retain the regular Isar engine and file format.
+        engine: kIsWeb ? IsarEngine.sqlite : IsarEngine.isar,
         inspector: inspector,
       );
       return Result.success(LocalDatabase(isarInstance));
@@ -62,7 +66,7 @@ final class LocalDatabase {
   /// Closes the database instance.
   Future<void> close({bool deleteFromDisk = false}) async {
     if (_isar.isOpen) {
-      await _isar.close(deleteFromDisk: deleteFromDisk);
+      _isar.close(deleteFromDisk: deleteFromDisk);
     }
   }
 }

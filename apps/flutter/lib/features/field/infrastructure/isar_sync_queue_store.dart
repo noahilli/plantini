@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
@@ -15,8 +15,10 @@ final class IsarSyncQueueStore implements app.SyncQueueStore {
   Future<Result<app.SyncJob>> enqueue(app.SyncJob job) async {
     try {
       final entity = _toEntity(job);
-      await _db.isar.writeTxn(() async {
-        job.id = await _db.syncQueue.put(entity);
+      _db.isar.write((_) {
+        if (entity.id <= 0) entity.id = _db.syncQueue.autoIncrement();
+        _db.syncQueue.put(entity);
+        job.id = entity.id;
       });
       return Result.success(job);
     } catch (error) {
@@ -57,7 +59,7 @@ final class IsarSyncQueueStore implements app.SyncQueueStore {
   @override
   Future<Result<void>> updateJob(app.SyncJob job) async {
     try {
-      await _db.isar.writeTxn(() => _db.syncQueue.put(_toEntity(job)));
+      _db.isar.write((_) => _db.syncQueue.put(_toEntity(job)));
       return const Result.success(null);
     } catch (error) {
       return Result.failure(
@@ -72,7 +74,7 @@ final class IsarSyncQueueStore implements app.SyncQueueStore {
   @override
   Future<Result<void>> deleteJob(int id) async {
     try {
-      await _db.isar.writeTxn(() => _db.syncQueue.delete(id));
+      _db.isar.write((_) => _db.syncQueue.delete(id));
       return const Result.success(null);
     } catch (error) {
       return Result.failure(
@@ -87,7 +89,7 @@ final class IsarSyncQueueStore implements app.SyncQueueStore {
   @override
   Future<Result<List<app.SyncJob>>> getAllJobs() async {
     try {
-      final entities = await _db.syncQueue.where().findAll();
+      final entities = _db.syncQueue.where().findAll();
       final jobs = entities.map(_fromEntity).toList()
         ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
       return Result.success(jobs);

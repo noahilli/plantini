@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'isar_sync_queue.g.dart';
 
@@ -8,14 +8,13 @@ enum SyncJobStatus { pending, running, failed, completed }
 /// Persistent synchronization job stored in Isar for offline field observations and sync.
 @collection
 class IsarSyncJob {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String clientId;
 
   late String payload;
 
-  @Enumerated(EnumType.name)
   @Index()
   late SyncJobStatus status;
 

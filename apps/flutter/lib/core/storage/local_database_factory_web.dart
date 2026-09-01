@@ -1,5 +1,6 @@
 import 'local_database.dart';
 
 Future<LocalDatabase?> createLocalDatabase() async {
-  return null;
+  final result = await LocalDatabase.open();
+  return result.valueOrNull;
 }

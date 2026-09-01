@@ -1,13 +1,13 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'isar_ecosystem.g.dart';
 
 /// Local Isar storage collection for cached ecosystem content.
 @collection
 class IsarEcosystem {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String publicId;
 
   late String slug;

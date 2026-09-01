@@ -4,7 +4,7 @@ import '../domain/catalog_models.dart';
 import '../domain/catalog_repository.dart';
 import 'models/isar_level.dart';
 
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 class IsarCatalogRepository implements CatalogRepository {
   IsarCatalogRepository({required this.localDb, required this.fallback});
@@ -18,7 +18,7 @@ class IsarCatalogRepository implements CatalogRepository {
     if (db == null) return fallback.listPublishedEcosystems();
 
     try {
-      final isarEcosystems = await db.ecosystems.where().findAll();
+      final isarEcosystems = db.ecosystems.where().findAll();
       if (isarEcosystems.isNotEmpty) {
         final ecosystems = isarEcosystems
             .map(
@@ -47,10 +47,7 @@ class IsarCatalogRepository implements CatalogRepository {
     if (db == null) return fallback.getPublishedLevel(levelId);
 
     try {
-      final isarLevel = await db.levels
-          .filter()
-          .publicIdEqualTo(levelId)
-          .findFirst();
+      final isarLevel = db.levels.where().publicIdEqualTo(levelId).findFirst();
       if (isarLevel != null) {
         final level = Level(
           id: isarLevel.publicId,
@@ -82,8 +79,8 @@ class IsarCatalogRepository implements CatalogRepository {
     if (db == null) return fallback.listPublishedLevels(ecosystemId);
 
     try {
-      final isarLevels = await db.levels
-          .filter()
+      final isarLevels = db.levels
+          .where()
           .ecosystemIdEqualTo(ecosystemId)
           .findAll();
       if (isarLevels.isNotEmpty) {

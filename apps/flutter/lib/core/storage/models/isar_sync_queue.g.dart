@@ -3,662 +3,471 @@
 part of 'isar_sync_queue.dart';
 
 // **************************************************************************
-// IsarCollectionGenerator
+// _IsarCollectionGenerator
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+// ignore_for_file: duplicate_ignore, invalid_use_of_protected_member, lines_longer_than_80_chars, constant_identifier_names, avoid_js_rounded_ints, no_leading_underscores_for_local_identifiers, require_trailing_commas, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_in_if_null_operators, library_private_types_in_public_api, prefer_const_constructors
+// ignore_for_file: type=lint
 
 extension GetIsarSyncJobCollection on Isar {
-  IsarCollection<IsarSyncJob> get isarSyncJobs => this.collection();
+  IsarCollection<int, IsarSyncJob> get isarSyncJobs => this.collection();
 }
 
-const IsarSyncJobSchema = CollectionSchema(
-  name: r'IsarSyncJob',
-  id: -2123335418711345851,
-  properties: {
-    r'attemptCount': PropertySchema(
-      id: 0,
-      name: r'attemptCount',
-      type: IsarType.long,
-    ),
-    r'clientId': PropertySchema(
-      id: 1,
-      name: r'clientId',
-      type: IsarType.string,
-    ),
-    r'createdAt': PropertySchema(
-      id: 2,
-      name: r'createdAt',
-      type: IsarType.dateTime,
-    ),
-    r'errorReason': PropertySchema(
-      id: 3,
-      name: r'errorReason',
-      type: IsarType.string,
-    ),
-    r'nextRetryAt': PropertySchema(
-      id: 4,
-      name: r'nextRetryAt',
-      type: IsarType.dateTime,
-    ),
-    r'payload': PropertySchema(id: 5, name: r'payload', type: IsarType.string),
-    r'status': PropertySchema(
-      id: 6,
-      name: r'status',
-      type: IsarType.string,
-      enumMap: _IsarSyncJobstatusEnumValueMap,
-    ),
-    r'updatedAt': PropertySchema(
-      id: 7,
-      name: r'updatedAt',
-      type: IsarType.dateTime,
-    ),
-  },
-  estimateSize: _isarSyncJobEstimateSize,
-  serialize: _isarSyncJobSerialize,
-  deserialize: _isarSyncJobDeserialize,
-  deserializeProp: _isarSyncJobDeserializeProp,
-  idName: r'id',
-  indexes: {
-    r'clientId': IndexSchema(
-      id: 2639372232964765565,
-      name: r'clientId',
-      unique: true,
-      replace: true,
-      properties: [
-        IndexPropertySchema(
-          name: r'clientId',
-          type: IndexType.hash,
-          caseSensitive: true,
-        ),
-      ],
-    ),
-    r'status': IndexSchema(
-      id: -107785170620420283,
-      name: r'status',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'status',
-          type: IndexType.hash,
-          caseSensitive: true,
-        ),
-      ],
-    ),
-    r'nextRetryAt': IndexSchema(
-      id: -8739505323881011336,
-      name: r'nextRetryAt',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'nextRetryAt',
-          type: IndexType.value,
-          caseSensitive: false,
-        ),
-      ],
-    ),
-  },
-  links: {},
-  embeddedSchemas: {},
-  getId: _isarSyncJobGetId,
-  getLinks: _isarSyncJobGetLinks,
-  attach: _isarSyncJobAttach,
-  version: '3.1.0+1',
+final IsarSyncJobSchema = IsarGeneratedSchema(
+  schema: IsarSchema(
+    name: 'IsarSyncJob',
+    idName: 'id',
+    embedded: false,
+    properties: [
+      IsarPropertySchema(name: 'clientId', type: IsarType.string),
+      IsarPropertySchema(name: 'payload', type: IsarType.string),
+      IsarPropertySchema(
+        name: 'status',
+        type: IsarType.byte,
+
+        enumMap: {"pending": 0, "running": 1, "failed": 2, "completed": 3},
+      ),
+      IsarPropertySchema(name: 'attemptCount', type: IsarType.long),
+      IsarPropertySchema(name: 'nextRetryAt', type: IsarType.dateTime),
+      IsarPropertySchema(name: 'errorReason', type: IsarType.string),
+      IsarPropertySchema(name: 'createdAt', type: IsarType.dateTime),
+      IsarPropertySchema(name: 'updatedAt', type: IsarType.dateTime),
+    ],
+    indexes: [
+      IsarIndexSchema(
+        name: 'clientId',
+        properties: ["clientId"],
+        unique: true,
+        hash: false,
+      ),
+      IsarIndexSchema(
+        name: 'status',
+        properties: ["status"],
+        unique: false,
+        hash: false,
+      ),
+      IsarIndexSchema(
+        name: 'nextRetryAt',
+        properties: ["nextRetryAt"],
+        unique: false,
+        hash: false,
+      ),
+    ],
+  ),
+  converter: IsarObjectConverter<int, IsarSyncJob>(
+    serialize: serializeIsarSyncJob,
+    deserialize: deserializeIsarSyncJob,
+    deserializeProperty: deserializeIsarSyncJobProp,
+  ),
+  getEmbeddedSchemas: () => [],
 );
 
-int _isarSyncJobEstimateSize(
-  IsarSyncJob object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  var bytesCount = offsets.last;
-  bytesCount += 3 + object.clientId.length * 3;
+@isarProtected
+int serializeIsarSyncJob(IsarWriter writer, IsarSyncJob object) {
+  IsarCore.writeString(writer, 1, object.clientId);
+  IsarCore.writeString(writer, 2, object.payload);
+  IsarCore.writeByte(writer, 3, object.status.index);
+  IsarCore.writeLong(writer, 4, object.attemptCount);
+  IsarCore.writeLong(
+    writer,
+    5,
+    object.nextRetryAt?.toUtc().microsecondsSinceEpoch ?? -9223372036854775808,
+  );
   {
     final value = object.errorReason;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+    if (value == null) {
+      IsarCore.writeNull(writer, 6);
+    } else {
+      IsarCore.writeString(writer, 6, value);
     }
   }
-  bytesCount += 3 + object.payload.length * 3;
-  bytesCount += 3 + object.status.name.length * 3;
-  return bytesCount;
-}
-
-void _isarSyncJobSerialize(
-  IsarSyncJob object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  writer.writeLong(offsets[0], object.attemptCount);
-  writer.writeString(offsets[1], object.clientId);
-  writer.writeDateTime(offsets[2], object.createdAt);
-  writer.writeString(offsets[3], object.errorReason);
-  writer.writeDateTime(offsets[4], object.nextRetryAt);
-  writer.writeString(offsets[5], object.payload);
-  writer.writeString(offsets[6], object.status.name);
-  writer.writeDateTime(offsets[7], object.updatedAt);
-}
-
-IsarSyncJob _isarSyncJobDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  final object = IsarSyncJob();
-  object.attemptCount = reader.readLong(offsets[0]);
-  object.clientId = reader.readString(offsets[1]);
-  object.createdAt = reader.readDateTime(offsets[2]);
-  object.errorReason = reader.readStringOrNull(offsets[3]);
-  object.id = id;
-  object.nextRetryAt = reader.readDateTimeOrNull(offsets[4]);
-  object.payload = reader.readString(offsets[5]);
-  object.status =
-      _IsarSyncJobstatusValueEnumMap[reader.readStringOrNull(offsets[6])] ??
-      SyncJobStatus.pending;
-  object.updatedAt = reader.readDateTimeOrNull(offsets[7]);
-  return object;
-}
-
-P _isarSyncJobDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
-  switch (propertyId) {
-    case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
-      return (reader.readString(offset)) as P;
-    case 2:
-      return (reader.readDateTime(offset)) as P;
-    case 3:
-      return (reader.readStringOrNull(offset)) as P;
-    case 4:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 5:
-      return (reader.readString(offset)) as P;
-    case 6:
-      return (_IsarSyncJobstatusValueEnumMap[reader.readStringOrNull(offset)] ??
-              SyncJobStatus.pending)
-          as P;
-    case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    default:
-      throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-const _IsarSyncJobstatusEnumValueMap = {
-  r'pending': r'pending',
-  r'running': r'running',
-  r'failed': r'failed',
-  r'completed': r'completed',
-};
-const _IsarSyncJobstatusValueEnumMap = {
-  r'pending': SyncJobStatus.pending,
-  r'running': SyncJobStatus.running,
-  r'failed': SyncJobStatus.failed,
-  r'completed': SyncJobStatus.completed,
-};
-
-Id _isarSyncJobGetId(IsarSyncJob object) {
+  IsarCore.writeLong(
+    writer,
+    7,
+    object.createdAt.toUtc().microsecondsSinceEpoch,
+  );
+  IsarCore.writeLong(
+    writer,
+    8,
+    object.updatedAt?.toUtc().microsecondsSinceEpoch ?? -9223372036854775808,
+  );
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _isarSyncJobGetLinks(IsarSyncJob object) {
-  return [];
+@isarProtected
+IsarSyncJob deserializeIsarSyncJob(IsarReader reader) {
+  final object = IsarSyncJob();
+  object.id = IsarCore.readId(reader);
+  object.clientId = IsarCore.readString(reader, 1) ?? '';
+  object.payload = IsarCore.readString(reader, 2) ?? '';
+  {
+    if (IsarCore.readNull(reader, 3)) {
+      object.status = SyncJobStatus.pending;
+    } else {
+      object.status =
+          _isarSyncJobStatus[IsarCore.readByte(reader, 3)] ??
+          SyncJobStatus.pending;
+    }
+  }
+  object.attemptCount = IsarCore.readLong(reader, 4);
+  {
+    final value = IsarCore.readLong(reader, 5);
+    if (value == -9223372036854775808) {
+      object.nextRetryAt = null;
+    } else {
+      object.nextRetryAt = DateTime.fromMicrosecondsSinceEpoch(
+        value,
+        isUtc: true,
+      ).toLocal();
+    }
+  }
+  object.errorReason = IsarCore.readString(reader, 6);
+  {
+    final value = IsarCore.readLong(reader, 7);
+    if (value == -9223372036854775808) {
+      object.createdAt = DateTime.fromMillisecondsSinceEpoch(
+        0,
+        isUtc: true,
+      ).toLocal();
+    } else {
+      object.createdAt = DateTime.fromMicrosecondsSinceEpoch(
+        value,
+        isUtc: true,
+      ).toLocal();
+    }
+  }
+  {
+    final value = IsarCore.readLong(reader, 8);
+    if (value == -9223372036854775808) {
+      object.updatedAt = null;
+    } else {
+      object.updatedAt = DateTime.fromMicrosecondsSinceEpoch(
+        value,
+        isUtc: true,
+      ).toLocal();
+    }
+  }
+  return object;
 }
 
-void _isarSyncJobAttach(
-  IsarCollection<dynamic> col,
-  Id id,
-  IsarSyncJob object,
-) {
-  object.id = id;
-}
-
-extension IsarSyncJobByIndex on IsarCollection<IsarSyncJob> {
-  Future<IsarSyncJob?> getByClientId(String clientId) {
-    return getByIndex(r'clientId', [clientId]);
-  }
-
-  IsarSyncJob? getByClientIdSync(String clientId) {
-    return getByIndexSync(r'clientId', [clientId]);
-  }
-
-  Future<bool> deleteByClientId(String clientId) {
-    return deleteByIndex(r'clientId', [clientId]);
-  }
-
-  bool deleteByClientIdSync(String clientId) {
-    return deleteByIndexSync(r'clientId', [clientId]);
-  }
-
-  Future<List<IsarSyncJob?>> getAllByClientId(List<String> clientIdValues) {
-    final values = clientIdValues.map((e) => [e]).toList();
-    return getAllByIndex(r'clientId', values);
-  }
-
-  List<IsarSyncJob?> getAllByClientIdSync(List<String> clientIdValues) {
-    final values = clientIdValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'clientId', values);
-  }
-
-  Future<int> deleteAllByClientId(List<String> clientIdValues) {
-    final values = clientIdValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'clientId', values);
-  }
-
-  int deleteAllByClientIdSync(List<String> clientIdValues) {
-    final values = clientIdValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'clientId', values);
-  }
-
-  Future<Id> putByClientId(IsarSyncJob object) {
-    return putByIndex(r'clientId', object);
-  }
-
-  Id putByClientIdSync(IsarSyncJob object, {bool saveLinks = true}) {
-    return putByIndexSync(r'clientId', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByClientId(List<IsarSyncJob> objects) {
-    return putAllByIndex(r'clientId', objects);
-  }
-
-  List<Id> putAllByClientIdSync(
-    List<IsarSyncJob> objects, {
-    bool saveLinks = true,
-  }) {
-    return putAllByIndexSync(r'clientId', objects, saveLinks: saveLinks);
-  }
-}
-
-extension IsarSyncJobQueryWhereSort
-    on QueryBuilder<IsarSyncJob, IsarSyncJob, QWhere> {
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhere> anyId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhere> anyNextRetryAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'nextRetryAt'),
-      );
-    });
-  }
-}
-
-extension IsarSyncJobQueryWhere
-    on QueryBuilder<IsarSyncJob, IsarSyncJob, QWhereClause> {
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> idEqualTo(Id id) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> idNotEqualTo(
-    Id id,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            )
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            )
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            );
+@isarProtected
+dynamic deserializeIsarSyncJobProp(IsarReader reader, int property) {
+  switch (property) {
+    case 0:
+      return IsarCore.readId(reader);
+    case 1:
+      return IsarCore.readString(reader, 1) ?? '';
+    case 2:
+      return IsarCore.readString(reader, 2) ?? '';
+    case 3:
+      {
+        if (IsarCore.readNull(reader, 3)) {
+          return SyncJobStatus.pending;
+        } else {
+          return _isarSyncJobStatus[IsarCore.readByte(reader, 3)] ??
+              SyncJobStatus.pending;
+        }
       }
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> idGreaterThan(
-    Id id, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> idLessThan(
-    Id id, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> idBetween(
-    Id lowerId,
-    Id upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.between(
-          lower: lowerId,
-          includeLower: includeLower,
-          upper: upperId,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> clientIdEqualTo(
-    String clientId,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'clientId', value: [clientId]),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> clientIdNotEqualTo(
-    String clientId,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'clientId',
-                lower: [],
-                upper: [clientId],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'clientId',
-                lower: [clientId],
-                includeLower: false,
-                upper: [],
-              ),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'clientId',
-                lower: [clientId],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'clientId',
-                lower: [],
-                upper: [clientId],
-                includeUpper: false,
-              ),
-            );
+    case 4:
+      return IsarCore.readLong(reader, 4);
+    case 5:
+      {
+        final value = IsarCore.readLong(reader, 5);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(
+            value,
+            isUtc: true,
+          ).toLocal();
+        }
       }
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> statusEqualTo(
-    SyncJobStatus status,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'status', value: [status]),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> statusNotEqualTo(
-    SyncJobStatus status,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [],
-                upper: [status],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [status],
-                includeLower: false,
-                upper: [],
-              ),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [status],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [],
-                upper: [status],
-                includeUpper: false,
-              ),
-            );
+    case 6:
+      return IsarCore.readString(reader, 6);
+    case 7:
+      {
+        final value = IsarCore.readLong(reader, 7);
+        if (value == -9223372036854775808) {
+          return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(
+            value,
+            isUtc: true,
+          ).toLocal();
+        }
       }
-    });
+    case 8:
+      {
+        final value = IsarCore.readLong(reader, 8);
+        if (value == -9223372036854775808) {
+          return null;
+        } else {
+          return DateTime.fromMicrosecondsSinceEpoch(
+            value,
+            isUtc: true,
+          ).toLocal();
+        }
+      }
+    default:
+      throw ArgumentError('Unknown property: $property');
   }
+}
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause>
-  nextRetryAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'nextRetryAt', value: [null]),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause>
-  nextRetryAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'nextRetryAt',
-          lower: [null],
-          includeLower: false,
-          upper: [],
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> nextRetryAtEqualTo(
+sealed class _IsarSyncJobUpdate {
+  bool call({
+    required int id,
+    String? clientId,
+    String? payload,
+    SyncJobStatus? status,
+    int? attemptCount,
     DateTime? nextRetryAt,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(
-          indexName: r'nextRetryAt',
-          value: [nextRetryAt],
-        ),
-      );
-    });
-  }
+    String? errorReason,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
+}
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause>
-  nextRetryAtNotEqualTo(DateTime? nextRetryAt) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'nextRetryAt',
-                lower: [],
-                upper: [nextRetryAt],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'nextRetryAt',
-                lower: [nextRetryAt],
-                includeLower: false,
-                upper: [],
-              ),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'nextRetryAt',
-                lower: [nextRetryAt],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'nextRetryAt',
-                lower: [],
-                upper: [nextRetryAt],
-                includeUpper: false,
-              ),
-            );
-      }
-    });
-  }
+class _IsarSyncJobUpdateImpl implements _IsarSyncJobUpdate {
+  const _IsarSyncJobUpdateImpl(this.collection);
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause>
-  nextRetryAtGreaterThan(DateTime? nextRetryAt, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'nextRetryAt',
-          lower: [nextRetryAt],
-          includeLower: include,
-          upper: [],
-        ),
-      );
-    });
-  }
+  final IsarCollection<int, IsarSyncJob> collection;
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> nextRetryAtLessThan(
-    DateTime? nextRetryAt, {
-    bool include = false,
+  @override
+  bool call({
+    required int id,
+    Object? clientId = ignore,
+    Object? payload = ignore,
+    Object? status = ignore,
+    Object? attemptCount = ignore,
+    Object? nextRetryAt = ignore,
+    Object? errorReason = ignore,
+    Object? createdAt = ignore,
+    Object? updatedAt = ignore,
   }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'nextRetryAt',
-          lower: [],
-          upper: [nextRetryAt],
-          includeUpper: include,
-        ),
-      );
-    });
+    return collection.updateProperties(
+          [id],
+          {
+            if (clientId != ignore) 1: clientId as String?,
+            if (payload != ignore) 2: payload as String?,
+            if (status != ignore) 3: status as SyncJobStatus?,
+            if (attemptCount != ignore) 4: attemptCount as int?,
+            if (nextRetryAt != ignore) 5: nextRetryAt as DateTime?,
+            if (errorReason != ignore) 6: errorReason as String?,
+            if (createdAt != ignore) 7: createdAt as DateTime?,
+            if (updatedAt != ignore) 8: updatedAt as DateTime?,
+          },
+        ) >
+        0;
   }
+}
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterWhereClause> nextRetryAtBetween(
-    DateTime? lowerNextRetryAt,
-    DateTime? upperNextRetryAt, {
-    bool includeLower = true,
-    bool includeUpper = true,
+sealed class _IsarSyncJobUpdateAll {
+  int call({
+    required List<int> id,
+    String? clientId,
+    String? payload,
+    SyncJobStatus? status,
+    int? attemptCount,
+    DateTime? nextRetryAt,
+    String? errorReason,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
+}
+
+class _IsarSyncJobUpdateAllImpl implements _IsarSyncJobUpdateAll {
+  const _IsarSyncJobUpdateAllImpl(this.collection);
+
+  final IsarCollection<int, IsarSyncJob> collection;
+
+  @override
+  int call({
+    required List<int> id,
+    Object? clientId = ignore,
+    Object? payload = ignore,
+    Object? status = ignore,
+    Object? attemptCount = ignore,
+    Object? nextRetryAt = ignore,
+    Object? errorReason = ignore,
+    Object? createdAt = ignore,
+    Object? updatedAt = ignore,
   }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'nextRetryAt',
-          lower: [lowerNextRetryAt],
-          includeLower: includeLower,
-          upper: [upperNextRetryAt],
-          includeUpper: includeUpper,
-        ),
-      );
+    return collection.updateProperties(id, {
+      if (clientId != ignore) 1: clientId as String?,
+      if (payload != ignore) 2: payload as String?,
+      if (status != ignore) 3: status as SyncJobStatus?,
+      if (attemptCount != ignore) 4: attemptCount as int?,
+      if (nextRetryAt != ignore) 5: nextRetryAt as DateTime?,
+      if (errorReason != ignore) 6: errorReason as String?,
+      if (createdAt != ignore) 7: createdAt as DateTime?,
+      if (updatedAt != ignore) 8: updatedAt as DateTime?,
     });
   }
 }
+
+extension IsarSyncJobUpdate on IsarCollection<int, IsarSyncJob> {
+  _IsarSyncJobUpdate get update => _IsarSyncJobUpdateImpl(this);
+
+  _IsarSyncJobUpdateAll get updateAll => _IsarSyncJobUpdateAllImpl(this);
+}
+
+sealed class _IsarSyncJobQueryUpdate {
+  int call({
+    String? clientId,
+    String? payload,
+    SyncJobStatus? status,
+    int? attemptCount,
+    DateTime? nextRetryAt,
+    String? errorReason,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  });
+}
+
+class _IsarSyncJobQueryUpdateImpl implements _IsarSyncJobQueryUpdate {
+  const _IsarSyncJobQueryUpdateImpl(this.query, {this.limit});
+
+  final IsarQuery<IsarSyncJob> query;
+  final int? limit;
+
+  @override
+  int call({
+    Object? clientId = ignore,
+    Object? payload = ignore,
+    Object? status = ignore,
+    Object? attemptCount = ignore,
+    Object? nextRetryAt = ignore,
+    Object? errorReason = ignore,
+    Object? createdAt = ignore,
+    Object? updatedAt = ignore,
+  }) {
+    return query.updateProperties(limit: limit, {
+      if (clientId != ignore) 1: clientId as String?,
+      if (payload != ignore) 2: payload as String?,
+      if (status != ignore) 3: status as SyncJobStatus?,
+      if (attemptCount != ignore) 4: attemptCount as int?,
+      if (nextRetryAt != ignore) 5: nextRetryAt as DateTime?,
+      if (errorReason != ignore) 6: errorReason as String?,
+      if (createdAt != ignore) 7: createdAt as DateTime?,
+      if (updatedAt != ignore) 8: updatedAt as DateTime?,
+    });
+  }
+}
+
+extension IsarSyncJobQueryUpdate on IsarQuery<IsarSyncJob> {
+  _IsarSyncJobQueryUpdate get updateFirst =>
+      _IsarSyncJobQueryUpdateImpl(this, limit: 1);
+
+  _IsarSyncJobQueryUpdate get updateAll => _IsarSyncJobQueryUpdateImpl(this);
+}
+
+class _IsarSyncJobQueryBuilderUpdateImpl implements _IsarSyncJobQueryUpdate {
+  const _IsarSyncJobQueryBuilderUpdateImpl(this.query, {this.limit});
+
+  final QueryBuilder<IsarSyncJob, IsarSyncJob, QOperations> query;
+  final int? limit;
+
+  @override
+  int call({
+    Object? clientId = ignore,
+    Object? payload = ignore,
+    Object? status = ignore,
+    Object? attemptCount = ignore,
+    Object? nextRetryAt = ignore,
+    Object? errorReason = ignore,
+    Object? createdAt = ignore,
+    Object? updatedAt = ignore,
+  }) {
+    final q = query.build();
+    try {
+      return q.updateProperties(limit: limit, {
+        if (clientId != ignore) 1: clientId as String?,
+        if (payload != ignore) 2: payload as String?,
+        if (status != ignore) 3: status as SyncJobStatus?,
+        if (attemptCount != ignore) 4: attemptCount as int?,
+        if (nextRetryAt != ignore) 5: nextRetryAt as DateTime?,
+        if (errorReason != ignore) 6: errorReason as String?,
+        if (createdAt != ignore) 7: createdAt as DateTime?,
+        if (updatedAt != ignore) 8: updatedAt as DateTime?,
+      });
+    } finally {
+      q.close();
+    }
+  }
+}
+
+extension IsarSyncJobQueryBuilderUpdate
+    on QueryBuilder<IsarSyncJob, IsarSyncJob, QOperations> {
+  _IsarSyncJobQueryUpdate get updateFirst =>
+      _IsarSyncJobQueryBuilderUpdateImpl(this, limit: 1);
+
+  _IsarSyncJobQueryUpdate get updateAll =>
+      _IsarSyncJobQueryBuilderUpdateImpl(this);
+}
+
+const _isarSyncJobStatus = {
+  0: SyncJobStatus.pending,
+  1: SyncJobStatus.running,
+  2: SyncJobStatus.failed,
+  3: SyncJobStatus.completed,
+};
 
 extension IsarSyncJobQueryFilter
     on QueryBuilder<IsarSyncJob, IsarSyncJob, QFilterCondition> {
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  attemptCountEqualTo(int value) {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idEqualTo(
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'attemptCount', value: value),
+        EqualCondition(property: 0, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idGreaterThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(property: 0, value: value),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  attemptCountGreaterThan(int value, {bool include = false}) {
+  idGreaterThanOrEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'attemptCount',
-          value: value,
-        ),
+        GreaterOrEqualCondition(property: 0, value: value),
       );
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  attemptCountLessThan(int value, {bool include = false}) {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idLessThan(
+    int value,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'attemptCount',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(LessCondition(property: 0, value: value));
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  attemptCountBetween(
+  idLessThanOrEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(property: 0, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idBetween(
     int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+    int upper,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'attemptCount',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+        BetweenCondition(property: 0, lower: lower, upper: upper),
       );
     });
   }
@@ -669,8 +478,17 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'clientId',
+        EqualCondition(property: 1, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  clientIdGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -679,16 +497,11 @@ extension IsarSyncJobQueryFilter
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  clientIdGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  clientIdGreaterThanOrEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'clientId',
+        GreaterOrEqualCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -697,16 +510,20 @@ extension IsarSyncJobQueryFilter
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  clientIdLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  clientIdLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'clientId',
+        LessCondition(property: 1, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  clientIdLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -717,18 +534,14 @@ extension IsarSyncJobQueryFilter
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> clientIdBetween(
     String lower,
     String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'clientId',
+        BetweenCondition(
+          property: 1,
           lower: lower,
-          includeLower: includeLower,
           upper: upper,
-          includeUpper: includeUpper,
           caseSensitive: caseSensitive,
         ),
       );
@@ -739,8 +552,8 @@ extension IsarSyncJobQueryFilter
   clientIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'clientId',
+        StartsWithCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -752,8 +565,8 @@ extension IsarSyncJobQueryFilter
   clientIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'clientId',
+        EndsWithCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -765,8 +578,8 @@ extension IsarSyncJobQueryFilter
   clientIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'clientId',
+        ContainsCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -780,8 +593,8 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'clientId',
+        MatchesCondition(
+          property: 1,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -793,7 +606,7 @@ extension IsarSyncJobQueryFilter
   clientIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'clientId', value: ''),
+        const EqualCondition(property: 1, value: ''),
       );
     });
   }
@@ -802,353 +615,7 @@ extension IsarSyncJobQueryFilter
   clientIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'clientId', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  createdAtEqualTo(DateTime value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'createdAt', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  createdAtGreaterThan(DateTime value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'createdAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  createdAtLessThan(DateTime value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'createdAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  createdAtBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'createdAt',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'errorReason'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'errorReason'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonEqualTo(String? value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'errorReason',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonStartsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonEndsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'errorReason',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'errorReason',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'errorReason', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  errorReasonIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'errorReason', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idEqualTo(
-    Id value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idGreaterThan(
-    Id value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idLessThan(
-    Id value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'id',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'nextRetryAt'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'nextRetryAt'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'nextRetryAt', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtGreaterThan(DateTime? value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'nextRetryAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtLessThan(DateTime? value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'nextRetryAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  nextRetryAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'nextRetryAt',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+        const GreaterCondition(property: 1, value: ''),
       );
     });
   }
@@ -1159,8 +626,17 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'payload',
+        EqualCondition(property: 2, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  payloadGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1169,16 +645,11 @@ extension IsarSyncJobQueryFilter
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  payloadGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  payloadGreaterThanOrEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'payload',
+        GreaterOrEqualCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1188,14 +659,21 @@ extension IsarSyncJobQueryFilter
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> payloadLessThan(
     String value, {
-    bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'payload',
+        LessCondition(property: 2, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  payloadLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1206,18 +684,14 @@ extension IsarSyncJobQueryFilter
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> payloadBetween(
     String lower,
     String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'payload',
+        BetweenCondition(
+          property: 2,
           lower: lower,
-          includeLower: includeLower,
           upper: upper,
-          includeUpper: includeUpper,
           caseSensitive: caseSensitive,
         ),
       );
@@ -1228,8 +702,8 @@ extension IsarSyncJobQueryFilter
   payloadStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'payload',
+        StartsWithCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1243,8 +717,8 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'payload',
+        EndsWithCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1258,8 +732,8 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'payload',
+        ContainsCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1273,8 +747,8 @@ extension IsarSyncJobQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'payload',
+        MatchesCondition(
+          property: 2,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1286,7 +760,7 @@ extension IsarSyncJobQueryFilter
   payloadIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'payload', value: ''),
+        const EqualCondition(property: 2, value: ''),
       );
     });
   }
@@ -1295,76 +769,217 @@ extension IsarSyncJobQueryFilter
   payloadIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'payload', value: ''),
+        const GreaterCondition(property: 2, value: ''),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusEqualTo(
-    SyncJobStatus value, {
-    bool caseSensitive = true,
-  }) {
+    SyncJobStatus value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'status',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        EqualCondition(property: 3, value: value.index),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  statusGreaterThan(
-    SyncJobStatus value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  statusGreaterThan(SyncJobStatus value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'status',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        GreaterCondition(property: 3, value: value.index),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  statusGreaterThanOrEqualTo(SyncJobStatus value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(property: 3, value: value.index),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusLessThan(
-    SyncJobStatus value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+    SyncJobStatus value,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'status',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
+        LessCondition(property: 3, value: value.index),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  statusLessThanOrEqualTo(SyncJobStatus value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(property: 3, value: value.index),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusBetween(
     SyncJobStatus lower,
-    SyncJobStatus upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+    SyncJobStatus upper,
+  ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'status',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
+        BetweenCondition(property: 3, lower: lower.index, upper: upper.index),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 4, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountGreaterThan(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(property: 4, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountGreaterThanOrEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(property: 4, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountLessThan(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(LessCondition(property: 4, value: value));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountLessThanOrEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(property: 4, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  attemptCountBetween(int lower, int upper) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(property: 4, lower: lower, upper: upper),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 5));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 5));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 5, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtGreaterThan(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(property: 5, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtGreaterThanOrEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(property: 5, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtLessThan(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(LessCondition(property: 5, value: value));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtLessThanOrEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(property: 5, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  nextRetryAtBetween(DateTime? lower, DateTime? upper) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(property: 5, lower: lower, upper: upper),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 6));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 6));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 6, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonGreaterThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 6,
+          value: value,
           caseSensitive: caseSensitive,
         ),
       );
@@ -1372,11 +987,11 @@ extension IsarSyncJobQueryFilter
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  statusStartsWith(String value, {bool caseSensitive = true}) {
+  errorReasonGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'status',
+        GreaterOrEqualCondition(
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1384,14 +999,21 @@ extension IsarSyncJobQueryFilter
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonLessThan(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'status',
+        LessCondition(property: 6, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonLessThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1399,14 +1021,30 @@ extension IsarSyncJobQueryFilter
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusContains(
-    String value, {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonBetween(
+    String? lower,
+    String? upper, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'status',
+        BetweenCondition(
+          property: 6,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 6,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1414,14 +1052,38 @@ extension IsarSyncJobQueryFilter
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition> statusMatches(
-    String pattern, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'status',
+        EndsWithCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  errorReasonMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 6,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1430,19 +1092,71 @@ extension IsarSyncJobQueryFilter
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  statusIsEmpty() {
+  errorReasonIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'status', value: ''),
+        const EqualCondition(property: 6, value: ''),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  statusIsNotEmpty() {
+  errorReasonIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'status', value: ''),
+        const GreaterCondition(property: 6, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 7, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtGreaterThan(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(property: 7, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtGreaterThanOrEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(property: 7, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtLessThan(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(LessCondition(property: 7, value: value));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtLessThanOrEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(property: 7, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  createdAtBetween(DateTime lower, DateTime upper) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(property: 7, lower: lower, upper: upper),
       );
     });
   }
@@ -1450,18 +1164,14 @@ extension IsarSyncJobQueryFilter
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
   updatedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'updatedAt'),
-      );
+      return query.addFilterCondition(const IsNullCondition(property: 8));
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
   updatedAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'updatedAt'),
-      );
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
     });
   }
 
@@ -1469,53 +1179,50 @@ extension IsarSyncJobQueryFilter
   updatedAtEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'updatedAt', value: value),
+        EqualCondition(property: 8, value: value),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  updatedAtGreaterThan(DateTime? value, {bool include = false}) {
+  updatedAtGreaterThan(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'updatedAt',
-          value: value,
-        ),
+        GreaterCondition(property: 8, value: value),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  updatedAtLessThan(DateTime? value, {bool include = false}) {
+  updatedAtGreaterThanOrEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'updatedAt',
-          value: value,
-        ),
+        GreaterOrEqualCondition(property: 8, value: value),
       );
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
-  updatedAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  updatedAtLessThan(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(LessCondition(property: 8, value: value));
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  updatedAtLessThanOrEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'updatedAt',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+        LessOrEqualCondition(property: 8, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterFilterCondition>
+  updatedAtBetween(DateTime? lower, DateTime? upper) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(property: 8, lower: lower, upper: upper),
       );
     });
   }
@@ -1524,333 +1231,489 @@ extension IsarSyncJobQueryFilter
 extension IsarSyncJobQueryObject
     on QueryBuilder<IsarSyncJob, IsarSyncJob, QFilterCondition> {}
 
-extension IsarSyncJobQueryLinks
-    on QueryBuilder<IsarSyncJob, IsarSyncJob, QFilterCondition> {}
-
 extension IsarSyncJobQuerySortBy
     on QueryBuilder<IsarSyncJob, IsarSyncJob, QSortBy> {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(0);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(0, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByClientId({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByClientIdDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByPayload({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByPayloadDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByAttemptCount() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'attemptCount', Sort.asc);
+      return query.addSortBy(4);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy>
   sortByAttemptCountDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'attemptCount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByClientId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'clientId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByClientIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'clientId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByCreatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByErrorReason() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'errorReason', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByErrorReasonDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'errorReason', Sort.desc);
+      return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByNextRetryAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.asc);
+      return query.addSortBy(5);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByNextRetryAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.desc);
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByPayload() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByErrorReason({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'payload', Sort.asc);
+      return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByPayloadDesc() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByErrorReasonDesc({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'payload', Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByStatus() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.asc);
+      return query.addSortBy(7);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByStatusDesc() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.desc);
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
+      return query.addSortBy(8);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
+      return query.addSortBy(8, sort: Sort.desc);
     });
   }
 }
 
 extension IsarSyncJobQuerySortThenBy
     on QueryBuilder<IsarSyncJob, IsarSyncJob, QSortThenBy> {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(0);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(0, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByClientId({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByClientIdDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByPayload({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByPayloadDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, sort: Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByAttemptCount() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'attemptCount', Sort.asc);
+      return query.addSortBy(4);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy>
   thenByAttemptCountDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'attemptCount', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByClientId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'clientId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByClientIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'clientId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByCreatedAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'createdAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByErrorReason() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'errorReason', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByErrorReasonDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'errorReason', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
+      return query.addSortBy(4, sort: Sort.desc);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByNextRetryAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.asc);
+      return query.addSortBy(5);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByNextRetryAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.desc);
+      return query.addSortBy(5, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByPayload() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByErrorReason({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'payload', Sort.asc);
+      return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByPayloadDesc() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByErrorReasonDesc({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'payload', Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByStatus() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.asc);
+      return query.addSortBy(7);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByStatusDesc() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByCreatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.desc);
+      return query.addSortBy(7, sort: Sort.desc);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.asc);
+      return query.addSortBy(8);
     });
   }
 
   QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterSortBy> thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'updatedAt', Sort.desc);
+      return query.addSortBy(8, sort: Sort.desc);
     });
   }
 }
 
 extension IsarSyncJobQueryWhereDistinct
     on QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> {
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByAttemptCount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'attemptCount');
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByClientId({
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByClientId({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'clientId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(1, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByCreatedAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'createdAt');
-    });
-  }
-
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByErrorReason({
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByPayload({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'errorReason', caseSensitive: caseSensitive);
+      return query.addDistinctBy(2, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByNextRetryAt() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByStatus() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'nextRetryAt');
+      return query.addDistinctBy(3);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByPayload({
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct>
+  distinctByAttemptCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(4);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct>
+  distinctByNextRetryAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(5);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByErrorReason({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'payload', caseSensitive: caseSensitive);
+      return query.addDistinctBy(6, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByStatus({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'status', caseSensitive: caseSensitive);
+      return query.addDistinctBy(7);
     });
   }
 
-  QueryBuilder<IsarSyncJob, IsarSyncJob, QDistinct> distinctByUpdatedAt() {
+  QueryBuilder<IsarSyncJob, IsarSyncJob, QAfterDistinct> distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'updatedAt');
+      return query.addDistinctBy(8);
     });
   }
 }
 
-extension IsarSyncJobQueryProperty
-    on QueryBuilder<IsarSyncJob, IsarSyncJob, QQueryProperty> {
-  QueryBuilder<IsarSyncJob, int, QQueryOperations> idProperty() {
+extension IsarSyncJobQueryProperty1
+    on QueryBuilder<IsarSyncJob, IsarSyncJob, QProperty> {
+  QueryBuilder<IsarSyncJob, int, QAfterProperty> idProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
+      return query.addProperty(0);
     });
   }
 
-  QueryBuilder<IsarSyncJob, int, QQueryOperations> attemptCountProperty() {
+  QueryBuilder<IsarSyncJob, String, QAfterProperty> clientIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'attemptCount');
+      return query.addProperty(1);
     });
   }
 
-  QueryBuilder<IsarSyncJob, String, QQueryOperations> clientIdProperty() {
+  QueryBuilder<IsarSyncJob, String, QAfterProperty> payloadProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'clientId');
+      return query.addProperty(2);
     });
   }
 
-  QueryBuilder<IsarSyncJob, DateTime, QQueryOperations> createdAtProperty() {
+  QueryBuilder<IsarSyncJob, SyncJobStatus, QAfterProperty> statusProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'createdAt');
+      return query.addProperty(3);
     });
   }
 
-  QueryBuilder<IsarSyncJob, String?, QQueryOperations> errorReasonProperty() {
+  QueryBuilder<IsarSyncJob, int, QAfterProperty> attemptCountProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'errorReason');
+      return query.addProperty(4);
     });
   }
 
-  QueryBuilder<IsarSyncJob, DateTime?, QQueryOperations> nextRetryAtProperty() {
+  QueryBuilder<IsarSyncJob, DateTime?, QAfterProperty> nextRetryAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'nextRetryAt');
+      return query.addProperty(5);
     });
   }
 
-  QueryBuilder<IsarSyncJob, String, QQueryOperations> payloadProperty() {
+  QueryBuilder<IsarSyncJob, String?, QAfterProperty> errorReasonProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'payload');
+      return query.addProperty(6);
     });
   }
 
-  QueryBuilder<IsarSyncJob, SyncJobStatus, QQueryOperations> statusProperty() {
+  QueryBuilder<IsarSyncJob, DateTime, QAfterProperty> createdAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'status');
+      return query.addProperty(7);
     });
   }
 
-  QueryBuilder<IsarSyncJob, DateTime?, QQueryOperations> updatedAtProperty() {
+  QueryBuilder<IsarSyncJob, DateTime?, QAfterProperty> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'updatedAt');
+      return query.addProperty(8);
+    });
+  }
+}
+
+extension IsarSyncJobQueryProperty2<R>
+    on QueryBuilder<IsarSyncJob, R, QAfterProperty> {
+  QueryBuilder<IsarSyncJob, (R, int), QAfterProperty> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(0);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, String), QAfterProperty> clientIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(1);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, String), QAfterProperty> payloadProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(2);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, SyncJobStatus), QAfterProperty>
+  statusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, int), QAfterProperty> attemptCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, DateTime?), QAfterProperty>
+  nextRetryAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, String?), QAfterProperty>
+  errorReasonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, DateTime), QAfterProperty> createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(7);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R, DateTime?), QAfterProperty>
+  updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(8);
+    });
+  }
+}
+
+extension IsarSyncJobQueryProperty3<R1, R2>
+    on QueryBuilder<IsarSyncJob, (R1, R2), QAfterProperty> {
+  QueryBuilder<IsarSyncJob, (R1, R2, int), QOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(0);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, String), QOperations> clientIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(1);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, String), QOperations> payloadProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(2);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, SyncJobStatus), QOperations>
+  statusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, int), QOperations> attemptCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, DateTime?), QOperations>
+  nextRetryAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, String?), QOperations>
+  errorReasonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, DateTime), QOperations>
+  createdAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(7);
+    });
+  }
+
+  QueryBuilder<IsarSyncJob, (R1, R2, DateTime?), QOperations>
+  updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(8);
     });
   }
 }

@@ -3,770 +3,352 @@
 part of 'isar_ecosystem.dart';
 
 // **************************************************************************
-// IsarCollectionGenerator
+// _IsarCollectionGenerator
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+// ignore_for_file: duplicate_ignore, invalid_use_of_protected_member, lines_longer_than_80_chars, constant_identifier_names, avoid_js_rounded_ints, no_leading_underscores_for_local_identifiers, require_trailing_commas, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_in_if_null_operators, library_private_types_in_public_api, prefer_const_constructors
+// ignore_for_file: type=lint
 
 extension GetIsarEcosystemCollection on Isar {
-  IsarCollection<IsarEcosystem> get isarEcosystems => this.collection();
+  IsarCollection<int, IsarEcosystem> get isarEcosystems => this.collection();
 }
 
-const IsarEcosystemSchema = CollectionSchema(
-  name: r'IsarEcosystem',
-  id: -6335849797685259107,
-  properties: {
-    r'description': PropertySchema(
-      id: 0,
-      name: r'description',
-      type: IsarType.string,
-    ),
-    r'levelIds': PropertySchema(
-      id: 1,
-      name: r'levelIds',
-      type: IsarType.stringList,
-    ),
-    r'publicId': PropertySchema(
-      id: 2,
-      name: r'publicId',
-      type: IsarType.string,
-    ),
-    r'releaseVersion': PropertySchema(
-      id: 3,
-      name: r'releaseVersion',
-      type: IsarType.string,
-    ),
-    r'slug': PropertySchema(id: 4, name: r'slug', type: IsarType.string),
-    r'title': PropertySchema(id: 5, name: r'title', type: IsarType.string),
-  },
-  estimateSize: _isarEcosystemEstimateSize,
-  serialize: _isarEcosystemSerialize,
-  deserialize: _isarEcosystemDeserialize,
-  deserializeProp: _isarEcosystemDeserializeProp,
-  idName: r'id',
-  indexes: {
-    r'publicId': IndexSchema(
-      id: 779961479559886054,
-      name: r'publicId',
-      unique: true,
-      replace: true,
-      properties: [
-        IndexPropertySchema(
-          name: r'publicId',
-          type: IndexType.hash,
-          caseSensitive: true,
-        ),
-      ],
-    ),
-  },
-  links: {},
-  embeddedSchemas: {},
-  getId: _isarEcosystemGetId,
-  getLinks: _isarEcosystemGetLinks,
-  attach: _isarEcosystemAttach,
-  version: '3.1.0+1',
+final IsarEcosystemSchema = IsarGeneratedSchema(
+  schema: IsarSchema(
+    name: 'IsarEcosystem',
+    idName: 'id',
+    embedded: false,
+    properties: [
+      IsarPropertySchema(name: 'publicId', type: IsarType.string),
+      IsarPropertySchema(name: 'slug', type: IsarType.string),
+      IsarPropertySchema(name: 'title', type: IsarType.string),
+      IsarPropertySchema(name: 'releaseVersion', type: IsarType.string),
+      IsarPropertySchema(name: 'levelIds', type: IsarType.stringList),
+      IsarPropertySchema(name: 'description', type: IsarType.string),
+    ],
+    indexes: [
+      IsarIndexSchema(
+        name: 'publicId',
+        properties: ["publicId"],
+        unique: true,
+        hash: false,
+      ),
+    ],
+  ),
+  converter: IsarObjectConverter<int, IsarEcosystem>(
+    serialize: serializeIsarEcosystem,
+    deserialize: deserializeIsarEcosystem,
+    deserializeProperty: deserializeIsarEcosystemProp,
+  ),
+  getEmbeddedSchemas: () => [],
 );
 
-int _isarEcosystemEstimateSize(
-  IsarEcosystem object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  var bytesCount = offsets.last;
+@isarProtected
+int serializeIsarEcosystem(IsarWriter writer, IsarEcosystem object) {
+  IsarCore.writeString(writer, 1, object.publicId);
+  IsarCore.writeString(writer, 2, object.slug);
+  IsarCore.writeString(writer, 3, object.title);
+  IsarCore.writeString(writer, 4, object.releaseVersion);
+  {
+    final list = object.levelIds;
+    final listWriter = IsarCore.beginList(writer, 5, list.length);
+    for (var i = 0; i < list.length; i++) {
+      IsarCore.writeString(listWriter, i, list[i]);
+    }
+    IsarCore.endList(writer, listWriter);
+  }
   {
     final value = object.description;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
+    if (value == null) {
+      IsarCore.writeNull(writer, 6);
+    } else {
+      IsarCore.writeString(writer, 6, value);
     }
   }
-  bytesCount += 3 + object.levelIds.length * 3;
-  {
-    for (var i = 0; i < object.levelIds.length; i++) {
-      final value = object.levelIds[i];
-      bytesCount += value.length * 3;
-    }
-  }
-  bytesCount += 3 + object.publicId.length * 3;
-  bytesCount += 3 + object.releaseVersion.length * 3;
-  bytesCount += 3 + object.slug.length * 3;
-  bytesCount += 3 + object.title.length * 3;
-  return bytesCount;
-}
-
-void _isarEcosystemSerialize(
-  IsarEcosystem object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  writer.writeString(offsets[0], object.description);
-  writer.writeStringList(offsets[1], object.levelIds);
-  writer.writeString(offsets[2], object.publicId);
-  writer.writeString(offsets[3], object.releaseVersion);
-  writer.writeString(offsets[4], object.slug);
-  writer.writeString(offsets[5], object.title);
-}
-
-IsarEcosystem _isarEcosystemDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  final object = IsarEcosystem();
-  object.description = reader.readStringOrNull(offsets[0]);
-  object.id = id;
-  object.levelIds = reader.readStringList(offsets[1]) ?? [];
-  object.publicId = reader.readString(offsets[2]);
-  object.releaseVersion = reader.readString(offsets[3]);
-  object.slug = reader.readString(offsets[4]);
-  object.title = reader.readString(offsets[5]);
-  return object;
-}
-
-P _isarEcosystemDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
-  switch (propertyId) {
-    case 0:
-      return (reader.readStringOrNull(offset)) as P;
-    case 1:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 2:
-      return (reader.readString(offset)) as P;
-    case 3:
-      return (reader.readString(offset)) as P;
-    case 4:
-      return (reader.readString(offset)) as P;
-    case 5:
-      return (reader.readString(offset)) as P;
-    default:
-      throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-Id _isarEcosystemGetId(IsarEcosystem object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _isarEcosystemGetLinks(IsarEcosystem object) {
-  return [];
-}
-
-void _isarEcosystemAttach(
-  IsarCollection<dynamic> col,
-  Id id,
-  IsarEcosystem object,
-) {
-  object.id = id;
-}
-
-extension IsarEcosystemByIndex on IsarCollection<IsarEcosystem> {
-  Future<IsarEcosystem?> getByPublicId(String publicId) {
-    return getByIndex(r'publicId', [publicId]);
-  }
-
-  IsarEcosystem? getByPublicIdSync(String publicId) {
-    return getByIndexSync(r'publicId', [publicId]);
-  }
-
-  Future<bool> deleteByPublicId(String publicId) {
-    return deleteByIndex(r'publicId', [publicId]);
-  }
-
-  bool deleteByPublicIdSync(String publicId) {
-    return deleteByIndexSync(r'publicId', [publicId]);
-  }
-
-  Future<List<IsarEcosystem?>> getAllByPublicId(List<String> publicIdValues) {
-    final values = publicIdValues.map((e) => [e]).toList();
-    return getAllByIndex(r'publicId', values);
-  }
-
-  List<IsarEcosystem?> getAllByPublicIdSync(List<String> publicIdValues) {
-    final values = publicIdValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'publicId', values);
-  }
-
-  Future<int> deleteAllByPublicId(List<String> publicIdValues) {
-    final values = publicIdValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'publicId', values);
-  }
-
-  int deleteAllByPublicIdSync(List<String> publicIdValues) {
-    final values = publicIdValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'publicId', values);
-  }
-
-  Future<Id> putByPublicId(IsarEcosystem object) {
-    return putByIndex(r'publicId', object);
-  }
-
-  Id putByPublicIdSync(IsarEcosystem object, {bool saveLinks = true}) {
-    return putByIndexSync(r'publicId', object, saveLinks: saveLinks);
-  }
-
-  Future<List<Id>> putAllByPublicId(List<IsarEcosystem> objects) {
-    return putAllByIndex(r'publicId', objects);
-  }
-
-  List<Id> putAllByPublicIdSync(
-    List<IsarEcosystem> objects, {
-    bool saveLinks = true,
-  }) {
-    return putAllByIndexSync(r'publicId', objects, saveLinks: saveLinks);
-  }
-}
-
-extension IsarEcosystemQueryWhereSort
-    on QueryBuilder<IsarEcosystem, IsarEcosystem, QWhere> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhere> anyId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-}
-
-extension IsarEcosystemQueryWhere
-    on QueryBuilder<IsarEcosystem, IsarEcosystem, QWhereClause> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> idEqualTo(
-    Id id,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> idNotEqualTo(
-    Id id,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            )
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            );
+@isarProtected
+IsarEcosystem deserializeIsarEcosystem(IsarReader reader) {
+  final object = IsarEcosystem();
+  object.id = IsarCore.readId(reader);
+  object.publicId = IsarCore.readString(reader, 1) ?? '';
+  object.slug = IsarCore.readString(reader, 2) ?? '';
+  object.title = IsarCore.readString(reader, 3) ?? '';
+  object.releaseVersion = IsarCore.readString(reader, 4) ?? '';
+  {
+    final length = IsarCore.readList(reader, 5, IsarCore.readerPtrPtr);
+    {
+      final reader = IsarCore.readerPtr;
+      if (reader.isNull) {
+        object.levelIds = const <String>[];
       } else {
-        return query
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            )
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            );
+        final list = List<String>.filled(length, '', growable: true);
+        for (var i = 0; i < length; i++) {
+          list[i] = IsarCore.readString(reader, i) ?? '';
+        }
+        IsarCore.freeReader(reader);
+        object.levelIds = list;
       }
-    });
+    }
   }
+  object.description = IsarCore.readString(reader, 6);
+  return object;
+}
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> idGreaterThan(
-    Id id, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> idLessThan(
-    Id id, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> idBetween(
-    Id lowerId,
-    Id upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.between(
-          lower: lowerId,
-          includeLower: includeLower,
-          upper: upperId,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause> publicIdEqualTo(
-    String publicId,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'publicId', value: [publicId]),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterWhereClause>
-  publicIdNotEqualTo(String publicId) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'publicId',
-                lower: [],
-                upper: [publicId],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'publicId',
-                lower: [publicId],
-                includeLower: false,
-                upper: [],
-              ),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'publicId',
-                lower: [publicId],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'publicId',
-                lower: [],
-                upper: [publicId],
-                includeUpper: false,
-              ),
-            );
+@isarProtected
+dynamic deserializeIsarEcosystemProp(IsarReader reader, int property) {
+  switch (property) {
+    case 0:
+      return IsarCore.readId(reader);
+    case 1:
+      return IsarCore.readString(reader, 1) ?? '';
+    case 2:
+      return IsarCore.readString(reader, 2) ?? '';
+    case 3:
+      return IsarCore.readString(reader, 3) ?? '';
+    case 4:
+      return IsarCore.readString(reader, 4) ?? '';
+    case 5:
+      {
+        final length = IsarCore.readList(reader, 5, IsarCore.readerPtrPtr);
+        {
+          final reader = IsarCore.readerPtr;
+          if (reader.isNull) {
+            return const <String>[];
+          } else {
+            final list = List<String>.filled(length, '', growable: true);
+            for (var i = 0; i < length; i++) {
+              list[i] = IsarCore.readString(reader, i) ?? '';
+            }
+            IsarCore.freeReader(reader);
+            return list;
+          }
+        }
       }
+    case 6:
+      return IsarCore.readString(reader, 6);
+    default:
+      throw ArgumentError('Unknown property: $property');
+  }
+}
+
+sealed class _IsarEcosystemUpdate {
+  bool call({
+    required int id,
+    String? publicId,
+    String? slug,
+    String? title,
+    String? releaseVersion,
+    String? description,
+  });
+}
+
+class _IsarEcosystemUpdateImpl implements _IsarEcosystemUpdate {
+  const _IsarEcosystemUpdateImpl(this.collection);
+
+  final IsarCollection<int, IsarEcosystem> collection;
+
+  @override
+  bool call({
+    required int id,
+    Object? publicId = ignore,
+    Object? slug = ignore,
+    Object? title = ignore,
+    Object? releaseVersion = ignore,
+    Object? description = ignore,
+  }) {
+    return collection.updateProperties(
+          [id],
+          {
+            if (publicId != ignore) 1: publicId as String?,
+            if (slug != ignore) 2: slug as String?,
+            if (title != ignore) 3: title as String?,
+            if (releaseVersion != ignore) 4: releaseVersion as String?,
+            if (description != ignore) 6: description as String?,
+          },
+        ) >
+        0;
+  }
+}
+
+sealed class _IsarEcosystemUpdateAll {
+  int call({
+    required List<int> id,
+    String? publicId,
+    String? slug,
+    String? title,
+    String? releaseVersion,
+    String? description,
+  });
+}
+
+class _IsarEcosystemUpdateAllImpl implements _IsarEcosystemUpdateAll {
+  const _IsarEcosystemUpdateAllImpl(this.collection);
+
+  final IsarCollection<int, IsarEcosystem> collection;
+
+  @override
+  int call({
+    required List<int> id,
+    Object? publicId = ignore,
+    Object? slug = ignore,
+    Object? title = ignore,
+    Object? releaseVersion = ignore,
+    Object? description = ignore,
+  }) {
+    return collection.updateProperties(id, {
+      if (publicId != ignore) 1: publicId as String?,
+      if (slug != ignore) 2: slug as String?,
+      if (title != ignore) 3: title as String?,
+      if (releaseVersion != ignore) 4: releaseVersion as String?,
+      if (description != ignore) 6: description as String?,
     });
   }
+}
+
+extension IsarEcosystemUpdate on IsarCollection<int, IsarEcosystem> {
+  _IsarEcosystemUpdate get update => _IsarEcosystemUpdateImpl(this);
+
+  _IsarEcosystemUpdateAll get updateAll => _IsarEcosystemUpdateAllImpl(this);
+}
+
+sealed class _IsarEcosystemQueryUpdate {
+  int call({
+    String? publicId,
+    String? slug,
+    String? title,
+    String? releaseVersion,
+    String? description,
+  });
+}
+
+class _IsarEcosystemQueryUpdateImpl implements _IsarEcosystemQueryUpdate {
+  const _IsarEcosystemQueryUpdateImpl(this.query, {this.limit});
+
+  final IsarQuery<IsarEcosystem> query;
+  final int? limit;
+
+  @override
+  int call({
+    Object? publicId = ignore,
+    Object? slug = ignore,
+    Object? title = ignore,
+    Object? releaseVersion = ignore,
+    Object? description = ignore,
+  }) {
+    return query.updateProperties(limit: limit, {
+      if (publicId != ignore) 1: publicId as String?,
+      if (slug != ignore) 2: slug as String?,
+      if (title != ignore) 3: title as String?,
+      if (releaseVersion != ignore) 4: releaseVersion as String?,
+      if (description != ignore) 6: description as String?,
+    });
+  }
+}
+
+extension IsarEcosystemQueryUpdate on IsarQuery<IsarEcosystem> {
+  _IsarEcosystemQueryUpdate get updateFirst =>
+      _IsarEcosystemQueryUpdateImpl(this, limit: 1);
+
+  _IsarEcosystemQueryUpdate get updateAll =>
+      _IsarEcosystemQueryUpdateImpl(this);
+}
+
+class _IsarEcosystemQueryBuilderUpdateImpl
+    implements _IsarEcosystemQueryUpdate {
+  const _IsarEcosystemQueryBuilderUpdateImpl(this.query, {this.limit});
+
+  final QueryBuilder<IsarEcosystem, IsarEcosystem, QOperations> query;
+  final int? limit;
+
+  @override
+  int call({
+    Object? publicId = ignore,
+    Object? slug = ignore,
+    Object? title = ignore,
+    Object? releaseVersion = ignore,
+    Object? description = ignore,
+  }) {
+    final q = query.build();
+    try {
+      return q.updateProperties(limit: limit, {
+        if (publicId != ignore) 1: publicId as String?,
+        if (slug != ignore) 2: slug as String?,
+        if (title != ignore) 3: title as String?,
+        if (releaseVersion != ignore) 4: releaseVersion as String?,
+        if (description != ignore) 6: description as String?,
+      });
+    } finally {
+      q.close();
+    }
+  }
+}
+
+extension IsarEcosystemQueryBuilderUpdate
+    on QueryBuilder<IsarEcosystem, IsarEcosystem, QOperations> {
+  _IsarEcosystemQueryUpdate get updateFirst =>
+      _IsarEcosystemQueryBuilderUpdateImpl(this, limit: 1);
+
+  _IsarEcosystemQueryUpdate get updateAll =>
+      _IsarEcosystemQueryBuilderUpdateImpl(this);
 }
 
 extension IsarEcosystemQueryFilter
     on QueryBuilder<IsarEcosystem, IsarEcosystem, QFilterCondition> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'description'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'description'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionEqualTo(String? value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'description',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionStartsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionEndsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'description',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'description',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'description', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  descriptionIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'description', value: ''),
-      );
-    });
-  }
-
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition> idEqualTo(
-    Id value,
+    int value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
+        EqualCondition(property: 0, value: value),
       );
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  idGreaterThan(Id value, {bool include = false}) {
+  idGreaterThan(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
+        GreaterCondition(property: 0, value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  idGreaterThanOrEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(property: 0, value: value),
       );
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition> idLessThan(
-    Id value, {
-    bool include = false,
-  }) {
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(LessCondition(property: 0, value: value));
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  idLessThanOrEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
+        LessOrEqualCondition(property: 0, value: value),
       );
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'id',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementEqualTo(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'levelIds',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementStartsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementEndsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'levelIds',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'levelIds',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'levelIds', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'levelIds', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'levelIds', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'levelIds', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'levelIds', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'levelIds', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'levelIds', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  levelIdsLengthBetween(
     int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+    int upper,
+  ) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'levelIds',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
+      return query.addFilterCondition(
+        BetweenCondition(property: 0, lower: lower, upper: upper),
       );
     });
   }
@@ -775,8 +357,17 @@ extension IsarEcosystemQueryFilter
   publicIdEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'publicId',
+        EqualCondition(property: 1, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  publicIdGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -785,16 +376,11 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  publicIdGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  publicIdGreaterThanOrEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'publicId',
+        GreaterOrEqualCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -803,16 +389,20 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  publicIdLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  publicIdLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'publicId',
+        LessCondition(property: 1, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  publicIdLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -821,21 +411,13 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  publicIdBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  publicIdBetween(String lower, String upper, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'publicId',
+        BetweenCondition(
+          property: 1,
           lower: lower,
-          includeLower: includeLower,
           upper: upper,
-          includeUpper: includeUpper,
           caseSensitive: caseSensitive,
         ),
       );
@@ -846,8 +428,8 @@ extension IsarEcosystemQueryFilter
   publicIdStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'publicId',
+        StartsWithCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -859,8 +441,8 @@ extension IsarEcosystemQueryFilter
   publicIdEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'publicId',
+        EndsWithCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -872,8 +454,8 @@ extension IsarEcosystemQueryFilter
   publicIdContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'publicId',
+        ContainsCondition(
+          property: 1,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -885,8 +467,8 @@ extension IsarEcosystemQueryFilter
   publicIdMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'publicId',
+        MatchesCondition(
+          property: 1,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -898,7 +480,7 @@ extension IsarEcosystemQueryFilter
   publicIdIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'publicId', value: ''),
+        const EqualCondition(property: 1, value: ''),
       );
     });
   }
@@ -907,148 +489,7 @@ extension IsarEcosystemQueryFilter
   publicIdIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'publicId', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionEqualTo(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'releaseVersion',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionStartsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionEndsWith(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'releaseVersion',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'releaseVersion',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'releaseVersion', value: ''),
-      );
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  releaseVersionIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'releaseVersion', value: ''),
+        const GreaterCondition(property: 1, value: ''),
       );
     });
   }
@@ -1059,8 +500,17 @@ extension IsarEcosystemQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'slug',
+        EqualCondition(property: 2, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  slugGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1069,16 +519,11 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  slugGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  slugGreaterThanOrEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'slug',
+        GreaterOrEqualCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1087,16 +532,20 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  slugLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  slugLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'slug',
+        LessCondition(property: 2, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  slugLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1107,18 +556,14 @@ extension IsarEcosystemQueryFilter
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition> slugBetween(
     String lower,
     String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'slug',
+        BetweenCondition(
+          property: 2,
           lower: lower,
-          includeLower: includeLower,
           upper: upper,
-          includeUpper: includeUpper,
           caseSensitive: caseSensitive,
         ),
       );
@@ -1129,8 +574,8 @@ extension IsarEcosystemQueryFilter
   slugStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'slug',
+        StartsWithCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1142,8 +587,8 @@ extension IsarEcosystemQueryFilter
   slugEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'slug',
+        EndsWithCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1155,8 +600,8 @@ extension IsarEcosystemQueryFilter
   slugContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'slug',
+        ContainsCondition(
+          property: 2,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1170,8 +615,8 @@ extension IsarEcosystemQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'slug',
+        MatchesCondition(
+          property: 2,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1183,7 +628,7 @@ extension IsarEcosystemQueryFilter
   slugIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'slug', value: ''),
+        const EqualCondition(property: 2, value: ''),
       );
     });
   }
@@ -1192,7 +637,7 @@ extension IsarEcosystemQueryFilter
   slugIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'slug', value: ''),
+        const GreaterCondition(property: 2, value: ''),
       );
     });
   }
@@ -1201,8 +646,17 @@ extension IsarEcosystemQueryFilter
   titleEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'title',
+        EqualCondition(property: 3, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  titleGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1211,16 +665,11 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  titleGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  titleGreaterThanOrEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'title',
+        GreaterOrEqualCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1229,16 +678,20 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  titleLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  titleLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'title',
+        LessCondition(property: 3, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  titleLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1247,21 +700,13 @@ extension IsarEcosystemQueryFilter
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
-  titleBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  titleBetween(String lower, String upper, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'title',
+        BetweenCondition(
+          property: 3,
           lower: lower,
-          includeLower: includeLower,
           upper: upper,
-          includeUpper: includeUpper,
           caseSensitive: caseSensitive,
         ),
       );
@@ -1272,8 +717,8 @@ extension IsarEcosystemQueryFilter
   titleStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'title',
+        StartsWithCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1285,8 +730,8 @@ extension IsarEcosystemQueryFilter
   titleEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'title',
+        EndsWithCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1298,8 +743,8 @@ extension IsarEcosystemQueryFilter
   titleContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'title',
+        ContainsCondition(
+          property: 3,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1311,8 +756,8 @@ extension IsarEcosystemQueryFilter
   titleMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'title',
+        MatchesCondition(
+          property: 3,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1324,7 +769,7 @@ extension IsarEcosystemQueryFilter
   titleIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'title', value: ''),
+        const EqualCondition(property: 3, value: ''),
       );
     });
   }
@@ -1333,7 +778,476 @@ extension IsarEcosystemQueryFilter
   titleIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'title', value: ''),
+        const GreaterCondition(property: 3, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 4, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionGreaterThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionLessThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 4, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 4,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 4,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 4,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 4, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  releaseVersionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 4, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 5, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementGreaterThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementGreaterThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementLessThan(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 5, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementLessThanOrEqualTo(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 5,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 5,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 5,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 5, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 5, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsIsEmpty() {
+    return not().levelIdsIsNotEmpty();
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  levelIdsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterOrEqualCondition(property: 5, value: null),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 6));
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 6));
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 6, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionGreaterThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionLessThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 6, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionLessThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 6,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 6,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 6,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 6, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterFilterCondition>
+  descriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 6, value: ''),
       );
     });
   }
@@ -1342,249 +1256,375 @@ extension IsarEcosystemQueryFilter
 extension IsarEcosystemQueryObject
     on QueryBuilder<IsarEcosystem, IsarEcosystem, QFilterCondition> {}
 
-extension IsarEcosystemQueryLinks
-    on QueryBuilder<IsarEcosystem, IsarEcosystem, QFilterCondition> {}
-
 extension IsarEcosystemQuerySortBy
     on QueryBuilder<IsarEcosystem, IsarEcosystem, QSortBy> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByDescription() {
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortById() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.asc);
+      return query.addSortBy(0);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(0, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByPublicId({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByPublicIdDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortBySlug({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortBySlugDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByTitle({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByTitleDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  sortByDescriptionDesc() {
+  sortByReleaseVersion({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByPublicId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'publicId', Sort.asc);
+      return query.addSortBy(4, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  sortByPublicIdDesc() {
+  sortByReleaseVersionDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'publicId', Sort.desc);
+      return query.addSortBy(4, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByDescription({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  sortByReleaseVersion() {
+  sortByDescriptionDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'releaseVersion', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  sortByReleaseVersionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'releaseVersion', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortBySlug() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'slug', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortBySlugDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'slug', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByTitle() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> sortByTitleDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
 
 extension IsarEcosystemQuerySortThenBy
     on QueryBuilder<IsarEcosystem, IsarEcosystem, QSortThenBy> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByDescription() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  thenByDescriptionDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'description', Sort.desc);
-    });
-  }
-
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
+      return query.addSortBy(0);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
+      return query.addSortBy(0, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByPublicId() {
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByPublicId({
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'publicId', Sort.asc);
+      return query.addSortBy(1, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByPublicIdDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(1, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenBySlug({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenBySlugDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(2, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByTitle({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByTitleDesc({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(3, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  thenByPublicIdDesc() {
+  thenByReleaseVersion({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'publicId', Sort.desc);
+      return query.addSortBy(4, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  thenByReleaseVersion() {
+  thenByReleaseVersionDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'releaseVersion', Sort.asc);
+      return query.addSortBy(4, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByDescription({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(6, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy>
-  thenByReleaseVersionDesc() {
+  thenByDescriptionDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'releaseVersion', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenBySlug() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'slug', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenBySlugDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'slug', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByTitle() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterSortBy> thenByTitleDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'title', Sort.desc);
+      return query.addSortBy(6, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
 
 extension IsarEcosystemQueryWhereDistinct
     on QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> {
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> distinctByDescription({
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct>
+  distinctByPublicId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(1, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct> distinctBySlug({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
+      return query.addDistinctBy(2, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> distinctByLevelIds() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'levelIds');
-    });
-  }
-
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> distinctByPublicId({
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct> distinctByTitle({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'publicId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(3, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct>
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct>
   distinctByReleaseVersion({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(
-        r'releaseVersion',
-        caseSensitive: caseSensitive,
-      );
+      return query.addDistinctBy(4, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> distinctBySlug({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct>
+  distinctByLevelIds() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'slug', caseSensitive: caseSensitive);
+      return query.addDistinctBy(5);
     });
   }
 
-  QueryBuilder<IsarEcosystem, IsarEcosystem, QDistinct> distinctByTitle({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<IsarEcosystem, IsarEcosystem, QAfterDistinct>
+  distinctByDescription({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+      return query.addDistinctBy(6, caseSensitive: caseSensitive);
     });
   }
 }
 
-extension IsarEcosystemQueryProperty
-    on QueryBuilder<IsarEcosystem, IsarEcosystem, QQueryProperty> {
-  QueryBuilder<IsarEcosystem, int, QQueryOperations> idProperty() {
+extension IsarEcosystemQueryProperty1
+    on QueryBuilder<IsarEcosystem, IsarEcosystem, QProperty> {
+  QueryBuilder<IsarEcosystem, int, QAfterProperty> idProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
+      return query.addProperty(0);
     });
   }
 
-  QueryBuilder<IsarEcosystem, String?, QQueryOperations> descriptionProperty() {
+  QueryBuilder<IsarEcosystem, String, QAfterProperty> publicIdProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'description');
+      return query.addProperty(1);
     });
   }
 
-  QueryBuilder<IsarEcosystem, List<String>, QQueryOperations>
-  levelIdsProperty() {
+  QueryBuilder<IsarEcosystem, String, QAfterProperty> slugProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'levelIds');
+      return query.addProperty(2);
     });
   }
 
-  QueryBuilder<IsarEcosystem, String, QQueryOperations> publicIdProperty() {
+  QueryBuilder<IsarEcosystem, String, QAfterProperty> titleProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'publicId');
+      return query.addProperty(3);
     });
   }
 
-  QueryBuilder<IsarEcosystem, String, QQueryOperations>
+  QueryBuilder<IsarEcosystem, String, QAfterProperty> releaseVersionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, List<String>, QAfterProperty> levelIdsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, String?, QAfterProperty> descriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
+    });
+  }
+}
+
+extension IsarEcosystemQueryProperty2<R>
+    on QueryBuilder<IsarEcosystem, R, QAfterProperty> {
+  QueryBuilder<IsarEcosystem, (R, int), QAfterProperty> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(0);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R, String), QAfterProperty> publicIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(1);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R, String), QAfterProperty> slugProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(2);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R, String), QAfterProperty> titleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R, String), QAfterProperty>
   releaseVersionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'releaseVersion');
+      return query.addProperty(4);
     });
   }
 
-  QueryBuilder<IsarEcosystem, String, QQueryOperations> slugProperty() {
+  QueryBuilder<IsarEcosystem, (R, List<String>), QAfterProperty>
+  levelIdsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'slug');
+      return query.addProperty(5);
     });
   }
 
-  QueryBuilder<IsarEcosystem, String, QQueryOperations> titleProperty() {
+  QueryBuilder<IsarEcosystem, (R, String?), QAfterProperty>
+  descriptionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'title');
+      return query.addProperty(6);
+    });
+  }
+}
+
+extension IsarEcosystemQueryProperty3<R1, R2>
+    on QueryBuilder<IsarEcosystem, (R1, R2), QAfterProperty> {
+  QueryBuilder<IsarEcosystem, (R1, R2, int), QOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(0);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, String), QOperations>
+  publicIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(1);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, String), QOperations> slugProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(2);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, String), QOperations> titleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(3);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, String), QOperations>
+  releaseVersionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(4);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, List<String>), QOperations>
+  levelIdsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(5);
+    });
+  }
+
+  QueryBuilder<IsarEcosystem, (R1, R2, String?), QOperations>
+  descriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(6);
     });
   }
 }

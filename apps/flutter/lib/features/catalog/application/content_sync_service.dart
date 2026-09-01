@@ -240,15 +240,24 @@ final class ContentSyncService {
     final localDb = localDatabase;
     if (localDb != null && localDb.isar.isOpen) {
       try {
-        await localDb.isar.writeTxn(() async {
+        localDb.isar.write((_) {
           if (downloadedEcosystems.isNotEmpty) {
-            await localDb.ecosystems.putAll(downloadedEcosystems);
+            for (final item in downloadedEcosystems) {
+              if (item.id <= 0) item.id = localDb.ecosystems.autoIncrement();
+            }
+            localDb.ecosystems.putAll(downloadedEcosystems);
           }
           if (downloadedLevels.isNotEmpty) {
-            await localDb.levels.putAll(downloadedLevels);
+            for (final item in downloadedLevels) {
+              if (item.id <= 0) item.id = localDb.levels.autoIncrement();
+            }
+            localDb.levels.putAll(downloadedLevels);
           }
           if (downloadedPlants.isNotEmpty) {
-            await localDb.plants.putAll(downloadedPlants);
+            for (final item in downloadedPlants) {
+              if (item.id <= 0) item.id = localDb.plants.autoIncrement();
+            }
+            localDb.plants.putAll(downloadedPlants);
           }
         });
       } catch (error) {

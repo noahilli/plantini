@@ -1,13 +1,13 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'isar_level.g.dart';
 
 /// Local Isar storage collection for cached level content.
 @collection
 class IsarLevel {
-  Id id = Isar.autoIncrement;
+  int id = 0;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String publicId;
 
   @Index()
@@ -16,7 +16,6 @@ class IsarLevel {
   late String title;
   late int sequence;
 
-  @Enumerated(EnumType.name)
   late IsarLevelStatus status;
 
   late double minimumScore;
