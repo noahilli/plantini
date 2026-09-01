@@ -27,6 +27,9 @@ final class IoAuthPlatformHelper implements AuthPlatformHelper {
   Future<void> completeRedirect() async {}
 
   @override
+  Future<void> logout(openid.Credential credential) async {}
+
+  @override
   Future<openid.Credential?> login(
     String issuerUrl,
     String clientId,

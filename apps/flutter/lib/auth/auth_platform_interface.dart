@@ -15,6 +15,9 @@ abstract class AuthPlatformHelper {
   /// Removes one-time callback parameters after the credential was persisted.
   /// Non-browser platforms have no top-level URL to clean up.
   Future<void> completeRedirect() async {}
+
+  /// Navigates the user to the RP-initiated logout endpoint to end the session.
+  Future<void> logout(Credential credential);
 }
 
 AuthPlatformHelper getAuthPlatformHelper() => throw UnsupportedError(

@@ -36,10 +36,57 @@ void main() {
     );
 
     expect(requested, isFalse);
-    expect(result, isA<Failure<ApiJsonResponse>>());
     expect(
       (result as Failure<ApiJsonResponse>).failure,
       isA<UnauthorizedFailure>(),
     );
+  });
+
+  test('retries request once on 401 Unauthorized', () async {
+    int providerCalls = 0;
+    int requestCalls = 0;
+
+    final dio = Dio()
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            requestCalls++;
+            if (requestCalls == 1) {
+              handler.reject(
+                DioException(
+                  requestOptions: options,
+                  response: Response(requestOptions: options, statusCode: 401),
+                ),
+              );
+            } else {
+              handler.resolve(
+                Response(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: {'data': 'ok'},
+                ),
+              );
+            }
+          },
+        ),
+      );
+
+    final client = PlatformApiClient(
+      config: _config,
+      dio: dio,
+      accessTokenProvider: () async {
+        providerCalls++;
+        return 'token';
+      },
+    );
+
+    final result = await client.getJson(
+      'some/path',
+      requiresAuthentication: true,
+    );
+
+    expect(providerCalls, equals(2));
+    expect(requestCalls, equals(2));
+    expect(result, isA<Success<ApiJsonResponse>>());
   });
 }

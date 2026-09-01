@@ -95,9 +95,15 @@ final class AuthService extends ChangeNotifier {
     final credential = _credential;
     if (credential == null) return null;
     try {
+      final oldToken = credential.response?['access_token'] as String?;
       final tokenResponse = await credential.getTokenResponse();
       final token = tokenResponse.accessToken;
-      if (token != null && token.isNotEmpty) return token;
+      if (token != null && token.isNotEmpty) {
+        if (oldToken != token) {
+          await _credentialStore.write(credential);
+        }
+        return token;
+      }
     } catch (error) {
       debugPrint('AuthService getAccessToken failed: $error');
       _credential = null;
@@ -112,9 +118,19 @@ final class AuthService extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    // The local client state is cleared immediately. Global RP-initiated
-    // logout is deliberately added only with an approved post-logout redirect
-    // per environment; no localhost fallback is guessed here.
+    final credential = _credential;
+    if (credential != null) {
+      try {
+        await credential.revoke();
+      } catch (e) {
+        debugPrint('AuthService token revocation failed: $e');
+      }
+      try {
+        await _helper.logout(credential);
+      } catch (e) {
+        debugPrint('AuthService global logout failed: $e');
+      }
+    }
     _credential = null;
     await _credentialStore.clear();
     _state = AuthState.unauthenticated;

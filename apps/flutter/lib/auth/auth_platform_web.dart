@@ -113,6 +113,22 @@ class WebAuthPlatformHelper implements AuthPlatformHelper {
     await unloading;
   }
 
+  @override
+  Future<void> logout(openid.Credential credential) async {
+    final redirectUri = Uri(
+      scheme: html.window.location.protocol.replaceFirst(':', ''),
+      host: html.window.location.hostname,
+      port: html.window.location.port.isNotEmpty
+          ? int.parse(html.window.location.port)
+          : null,
+      path: '/auth/logout-callback',
+    );
+    final uri = credential.generateLogoutUrl(redirectUri: redirectUri);
+    if (uri != null) {
+      html.window.location.assign(uri.toString());
+    }
+  }
+
   Uri _callbackUri() {
     final current = Uri.base;
     // A hash-routed Flutter page must not leak its current route into the

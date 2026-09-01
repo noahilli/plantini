@@ -119,75 +119,91 @@ final class PlatformApiClient {
     String? ifMatchVersion,
     bool requiresAuthentication = false,
   }) async {
-    try {
-      final token = await _accessTokenProvider();
-      if (requiresAuthentication && (token == null || token.isEmpty)) {
+    int attempt = 0;
+    while (attempt < 2) {
+      attempt++;
+      try {
+        final token = await _accessTokenProvider();
+        if (requiresAuthentication && (token == null || token.isEmpty)) {
+          return Result.failure(
+            const UnauthorizedFailure(
+              message:
+                  'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+            ),
+          );
+        }
+        final requestBody = body is FormData ? body.clone() : body;
+        final response = await _dio.request<Object?>(
+          _relativePath(path),
+          data: requestBody,
+          queryParameters: queryParameters,
+          options: Options(
+            method: method,
+            contentType: body is FormData
+                ? 'multipart/form-data'
+                : 'application/json',
+            headers: {
+              if (token != null && token.isNotEmpty)
+                'Authorization': 'Bearer $token',
+              if (idempotencyKey != null) 'Idempotency-Key': idempotencyKey,
+              if (ifMatchVersion != null) 'If-Match': ifMatchVersion,
+            },
+          ),
+        );
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          return Result.success(
+            ApiJsonResponse(
+              body: data,
+              statusCode: response.statusCode ?? 0,
+              traceId: _traceId(response.headers),
+            ),
+          );
+        }
+        if ((response.statusCode == 202 || response.statusCode == 204) &&
+            (data == null || data == '')) {
+          return Result.success(
+            ApiJsonResponse(
+              body: const {},
+              statusCode: response.statusCode ?? 0,
+              traceId: _traceId(response.headers),
+            ),
+          );
+        }
         return Result.failure(
-          const UnauthorizedFailure(
+          const ContractFailure(
             message:
-                'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+                'Die API lieferte kein im Vertrag vorgesehenes JSON-Objekt.',
+            missingFields: ['JSON object response body'],
+          ),
+        );
+      } on DioException catch (error) {
+        if (error.response?.statusCode == 401 && attempt == 1) {
+          continue;
+        }
+        debugPrint('PlatformApiClient: DioException on $path: $error');
+        return Result.failure(_mapDioFailure(error));
+      } on AppFailure catch (failure) {
+        debugPrint(
+          'PlatformApiClient: AppFailure on $path: ${failure.message}',
+        );
+        return Result.failure(failure);
+      } catch (error) {
+        debugPrint('PlatformApiClient: unexpected error on $path: $error');
+        return Result.failure(
+          NetworkFailure(
+            message: 'Die Verbindung zur Plantini-API konnte nicht aufgebaut werden.',
+            cause: error,
           ),
         );
       }
-      final response = await _dio.request<Object?>(
-        _relativePath(path),
-        data: body,
-        queryParameters: queryParameters,
-        options: Options(
-          method: method,
-          contentType: body is FormData
-              ? 'multipart/form-data'
-              : 'application/json',
-          headers: {
-            if (token != null && token.isNotEmpty)
-              'Authorization': 'Bearer $token',
-            if (idempotencyKey != null) 'Idempotency-Key': idempotencyKey,
-            if (ifMatchVersion != null) 'If-Match': ifMatchVersion,
-          },
-        ),
-      );
-      final data = response.data;
-      if (data is Map<String, dynamic>) {
-        return Result.success(
-          ApiJsonResponse(
-            body: data,
-            statusCode: response.statusCode ?? 0,
-            traceId: _traceId(response.headers),
-          ),
-        );
-      }
-      if ((response.statusCode == 202 || response.statusCode == 204) &&
-          (data == null || data == '')) {
-        return Result.success(
-          ApiJsonResponse(
-            body: const {},
-            statusCode: response.statusCode ?? 0,
-            traceId: _traceId(response.headers),
-          ),
-        );
-      }
-      return Result.failure(
-        const ContractFailure(
-          message: 'Die API lieferte kein im Vertrag vorgesehenes JSON-Objekt.',
-          missingFields: ['JSON object response body'],
-        ),
-      );
-    } on DioException catch (error) {
-      debugPrint('PlatformApiClient: DioException on $path: $error');
-      return Result.failure(_mapDioFailure(error));
-    } on AppFailure catch (failure) {
-      debugPrint('PlatformApiClient: AppFailure on $path: ${failure.message}');
-      return Result.failure(failure);
-    } catch (error) {
-      debugPrint('PlatformApiClient: unexpected error on $path: $error');
-      return Result.failure(
-        NetworkFailure(
-          message:
-              'Die Verbindung zur Plantini-API konnte nicht aufgebaut werden.',
-          cause: error,
-        ),
-      );
     }
+    return Result.failure(
+      const NetworkFailure(
+        message:
+            'Die Verbindung zur Plantini-API konnte nicht aufgebaut werden.',
+      ),
+    );
   }
 
   String _relativePath(String path) {
