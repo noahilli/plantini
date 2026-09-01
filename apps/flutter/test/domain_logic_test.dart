@@ -1,10 +1,52 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantini_app/features/catalog/domain/catalog_models.dart';
+import 'package:plantini_app/features/catalog/domain/level_collection_progress.dart';
 import 'package:plantini_app/features/field/domain/location_privacy.dart';
 import 'package:plantini_app/features/field/domain/field_models.dart';
 
 void main() {
   group('Level Rules', () {
+    test('collection gate requires every curated target plant', () {
+      const level = Level(
+        id: 'l0',
+        ecosystemId: 'e1',
+        title: 'Sammelmission',
+        sequence: 1,
+        status: LevelStatus.inProgress,
+        minimumScore: 0.8,
+        requiredQuizIds: [],
+        plantIds: ['p1', 'p2', 'p3', 'p4'],
+        requiredPlantIds: ['p1', 'p3'],
+      );
+
+      final partial = LevelCollectionProgress.forLevel(level, ['p1', 'p4']);
+      expect(partial.collectedCount, 1);
+      expect(partial.missingPlantIds, ['p3']);
+      expect(partial.isComplete, isFalse);
+
+      final complete = LevelCollectionProgress.forLevel(level, ['p1', 'p3']);
+      expect(complete.fraction, 1);
+      expect(complete.isComplete, isTrue);
+    });
+
+    test(
+      'legacy levels use their first three plants as collection targets',
+      () {
+        const level = Level(
+          id: 'legacy',
+          ecosystemId: 'e1',
+          title: 'Legacy',
+          sequence: 1,
+          status: LevelStatus.available,
+          minimumScore: 0.8,
+          requiredQuizIds: [],
+          plantIds: ['p1', 'p2', 'p3', 'p4'],
+        );
+
+        expect(level.collectionTargets, ['p1', 'p2', 'p3']);
+      },
+    );
+
     test(
       'isUnlocked returns true for available, inProgress, and completed',
       () {

@@ -6,7 +6,9 @@ import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
+import '../../herbarium/domain/herbarium_models.dart';
 import '../domain/catalog_models.dart';
+import '../domain/level_collection_progress.dart';
 import 'widgets/authenticated_page.dart';
 import 'widgets/researcher_path_view.dart';
 
@@ -32,13 +34,21 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
     final results = await Future.wait([
       widget.dependencies.loadEcosystems(),
       widget.dependencies.loadLevels(widget.ecosystemId),
+      if (widget.dependencies.listHerbarium != null)
+        widget.dependencies.listHerbarium!(pageSize: 100),
     ]);
     final ecosystems = results[0] as Result<List<Ecosystem>>;
     final levels = results[1] as Result<List<Level>>;
+    final herbarium = results.length > 2
+        ? results[2] as Result<List<HerbariumEntry>>
+        : null;
     if (ecosystems case Failure<List<Ecosystem>>(:final failure)) {
       return Result.failure(failure);
     }
     if (levels case Failure<List<Level>>(:final failure)) {
+      return Result.failure(failure);
+    }
+    if (herbarium case Failure<List<HerbariumEntry>>(:final failure)) {
       return Result.failure(failure);
     }
     Ecosystem? ecosystem;
@@ -60,6 +70,12 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
       _EcosystemPath(
         ecosystem: ecosystem,
         levels: (levels as Success<List<Level>>).value,
+        confirmedPlantIds: herbarium is Success<List<HerbariumEntry>>
+            ? herbarium.value
+                  .map((entry) => entry.confirmedPlantId)
+                  .whereType<String>()
+                  .toSet()
+            : const {},
       ),
     );
   }
@@ -114,6 +130,13 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
               child: ResearcherPathView(
                 ecosystem: path.ecosystem,
                 levels: levels,
+                collectionProgress: {
+                  for (final level in levels)
+                    level.id: LevelCollectionProgress.forLevel(
+                      level,
+                      path.confirmedPlantIds,
+                    ),
+                },
                 onLevelTap: (level) {
                   if (level.isUnlocked) context.go('/levels/${level.id}');
                 },
@@ -127,10 +150,15 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
 }
 
 final class _EcosystemPath {
-  const _EcosystemPath({required this.ecosystem, required this.levels});
+  const _EcosystemPath({
+    required this.ecosystem,
+    required this.levels,
+    required this.confirmedPlantIds,
+  });
 
   final Ecosystem ecosystem;
   final List<Level> levels;
+  final Set<String> confirmedPlantIds;
 }
 
 final class _NextStepCard extends StatelessWidget {

@@ -26,7 +26,7 @@ void main() {
 
     expect(find.text('Waldrand'), findsOneWidget);
     expect(find.text('Die Pflanzen am Waldrand kennenlernen'), findsOneWidget);
-    expect(find.text('3 Arten in diesem Level'), findsOneWidget);
+    expect(find.text('3 Zielarten'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
   });
 
@@ -47,7 +47,7 @@ void main() {
     await tester.pumpWidget(buildTestableWidget(LevelGateCard(level: level)));
 
     expect(find.text('Tief im Wald'), findsOneWidget);
-    expect(find.text('2 Arten in diesem Level'), findsOneWidget);
+    expect(find.text('2 Zielarten'), findsOneWidget);
   });
 
   testWidgets('shows locked level with blockedReason', (

@@ -111,6 +111,7 @@ final class CatalogDto {
         minimumScore: minimumScore.toDouble(),
         requiredQuizIds: _stringList(completionRule, 'requiredQuizIds'),
         plantIds: _stringList(json, 'plantIds'),
+        requiredPlantIds: _stringList(completionRule, 'requiredPlantIds'),
         learningGoal: _optionalString(json, 'learningGoal'),
         progress: progress?.toDouble(),
         blockedReason: _optionalString(json, 'blockedReason'),

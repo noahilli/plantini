@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
+import '../../domain/level_collection_progress.dart';
 import 'level_gate_card.dart';
 
 final class ResearcherPathView extends StatelessWidget {
@@ -9,10 +10,12 @@ final class ResearcherPathView extends StatelessWidget {
     super.key,
     required this.ecosystem,
     required this.levels,
+    this.collectionProgress = const {},
     this.onLevelTap,
   });
   final Ecosystem ecosystem;
   final List<Level> levels;
+  final Map<String, LevelCollectionProgress> collectionProgress;
   final void Function(Level)? onLevelTap;
 
   @override
@@ -81,6 +84,7 @@ final class ResearcherPathView extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 16),
                     child: LevelGateCard(
                       level: level,
+                      collectionProgress: collectionProgress[level.id],
                       onTap: onLevelTap == null
                           ? null
                           : () => onLevelTap!(level),

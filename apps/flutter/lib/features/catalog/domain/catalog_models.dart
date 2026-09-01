@@ -30,6 +30,7 @@ final class Level {
     required this.minimumScore,
     required this.requiredQuizIds,
     required this.plantIds,
+    this.requiredPlantIds = const [],
     this.learningGoal,
     this.progress,
     this.blockedReason,
@@ -43,11 +44,19 @@ final class Level {
   final double minimumScore;
   final List<String> requiredQuizIds;
   final List<String> plantIds;
+
+  /// Curated plants that must be confirmed in the herbarium to finish.
+  /// Older content falls back to the first three level plants.
+  final List<String> requiredPlantIds;
   final String? learningGoal;
   final double? progress;
   final String? blockedReason;
 
   bool get isUnlocked => status != LevelStatus.locked;
+
+  List<String> get collectionTargets => requiredPlantIds.isNotEmpty
+      ? requiredPlantIds
+      : plantIds.take(3).toList(growable: false);
 }
 
 enum LevelStatus { locked, available, inProgress, completed }

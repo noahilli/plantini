@@ -6,6 +6,8 @@ import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
 import '../domain/catalog_models.dart';
+import '../domain/level_collection_progress.dart';
+import '../../herbarium/domain/herbarium_models.dart';
 import 'widgets/authenticated_page.dart';
 
 /// Screen presenting a single level overview before beginning its quiz.
@@ -24,36 +26,63 @@ final class LevelOverviewScreen extends StatefulWidget {
 }
 
 final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
-  late Future<Result<LevelContent>> _future = widget.dependencies.loadLevel(
-    widget.levelId,
-  );
+  late Future<Result<_LevelMission>> _future = _loadMission();
 
-  void _reload() =>
-      setState(() => _future = widget.dependencies.loadLevel(widget.levelId));
+  Future<Result<_LevelMission>> _loadMission() async {
+    final contentResult = await widget.dependencies.loadLevel(widget.levelId);
+    if (contentResult case Failure<LevelContent>(:final failure)) {
+      return Result.failure(failure);
+    }
+    final content = (contentResult as Success<LevelContent>).value;
+    final herbariumResult = await widget.dependencies.listHerbarium?.call(
+      pageSize: 100,
+    );
+    if (herbariumResult case Failure<List<HerbariumEntry>>(:final failure)) {
+      return Result.failure(failure);
+    }
+    final confirmedIds = herbariumResult is Success<List<HerbariumEntry>>
+        ? herbariumResult.value
+              .map((entry) => entry.confirmedPlantId)
+              .whereType<String>()
+        : const <String>[];
+    return Result.success(
+      _LevelMission(
+        content: content,
+        collection: LevelCollectionProgress.forLevel(
+          content.level,
+          confirmedIds,
+        ),
+      ),
+    );
+  }
+
+  void _reload() => setState(() => _future = _loadMission());
 
   @override
   Widget build(BuildContext context) => AuthenticatedPage(
     dependencies: widget.dependencies,
     title: 'Lerneinheit',
-    body: FutureBuilder<Result<LevelContent>>(
+    body: FutureBuilder<Result<_LevelMission>>(
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const AsyncStateView(kind: AsyncViewKind.loading);
         }
         final result = snapshot.data;
-        if (result case Failure<LevelContent>(:final failure)) {
+        if (result case Failure<_LevelMission>(:final failure)) {
           return AsyncStateView(
             kind: AsyncViewKind.recoverableError,
             failure: failure,
             onRetry: _reload,
           );
         }
-        final content = result is Success<LevelContent> ? result.value : null;
-        if (content == null) {
+        final mission = result is Success<_LevelMission> ? result.value : null;
+        if (mission == null) {
           return const AsyncStateView(kind: AsyncViewKind.empty);
         }
+        final content = mission.content;
         final level = content.level;
+        final collection = mission.collection;
         return Column(
           children: [
             Expanded(
@@ -162,6 +191,98 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                     ),
                     const SizedBox(height: 14),
                     Container(
+                      key: const ValueKey('level-collection-mission'),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.sage800,
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.emoji_events_outlined,
+                                color: AppColors.accent200,
+                              ),
+                              const SizedBox(width: 9),
+                              Expanded(
+                                child: Text(
+                                  'SAMMELMISSION · ${collection.collectedCount}/${collection.requiredCount}',
+                                  style: const TextStyle(
+                                    color: AppColors.neutral100,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: .8,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 9,
+                            runSpacing: 9,
+                            children: [
+                              for (
+                                var index = 0;
+                                index < collection.requiredPlantIds.length;
+                                index++
+                              )
+                                _PlantToken(
+                                  number: index + 1,
+                                  collected: collection.collectedPlantIds
+                                      .contains(
+                                        collection.requiredPlantIds[index],
+                                      ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(999),
+                            child: LinearProgressIndicator(
+                              value: collection.fraction,
+                              minHeight: 10,
+                              color: AppColors.accent300,
+                              backgroundColor: AppColors.sage600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            collection.isComplete
+                                ? 'Mission erfüllt! Das Abschlussquiz ist freigeschaltet.'
+                                : 'Bestätige die Zielpflanzen im Herbarium. Erst dann kannst du dieses Level abschließen.',
+                            style: const TextStyle(
+                              color: AppColors.neutral100,
+                              fontSize: 12,
+                              height: 1.4,
+                            ),
+                          ),
+                          if (!collection.isComplete &&
+                              collection.missingPlantIds.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                key: const ValueKey('level-start-expedition'),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.accent300,
+                                  foregroundColor: AppColors.neutral900,
+                                ),
+                                onPressed: () => context.go(
+                                  '/field?expectedPlantId=${Uri.encodeComponent(collection.missingPlantIds.first)}&expectedPlantName=${Uri.encodeComponent('Zielpflanze ${collection.collectedCount + 1}')}',
+                                ),
+                                icon: const Icon(Icons.photo_camera_outlined),
+                                label: const Text('Nächste Pflanze sammeln'),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: AppColors.accent100,
@@ -195,16 +316,66 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
               padding: const EdgeInsets.fromLTRB(22, 10, 22, 18),
               child: FilledButton.icon(
                 key: const ValueKey('learning-start-quiz'),
-                onPressed: () => context.go(
-                  '/quiz/${level.id}?contentVersion=${Uri.encodeComponent(content.contentVersion)}',
-                ),
+                onPressed: collection.isComplete
+                    ? () => context.go(
+                        '/quiz/${level.id}?contentVersion=${Uri.encodeComponent(content.contentVersion)}',
+                      )
+                    : null,
                 icon: const Icon(Icons.quiz_outlined),
-                label: const Text('Quiz starten'),
+                label: Text(
+                  collection.isComplete
+                      ? 'Abschlussquiz starten'
+                      : 'Erst Sammelmission abschließen',
+                ),
               ),
             ),
           ],
         );
       },
+    ),
+  );
+}
+
+final class _LevelMission {
+  const _LevelMission({required this.content, required this.collection});
+
+  final LevelContent content;
+  final LevelCollectionProgress collection;
+}
+
+final class _PlantToken extends StatelessWidget {
+  const _PlantToken({required this.number, required this.collected});
+
+  final int number;
+  final bool collected;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 64,
+    height: 64,
+    decoration: BoxDecoration(
+      color: collected ? AppColors.sage300 : AppColors.sage700,
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: collected ? AppColors.accent200 : AppColors.sage500,
+        width: 3,
+      ),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          collected ? Icons.check : Icons.local_florist_outlined,
+          color: collected ? AppColors.sage900 : AppColors.neutral100,
+        ),
+        Text(
+          '$number',
+          style: TextStyle(
+            color: collected ? AppColors.sage900 : AppColors.neutral100,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
     ),
   );
 }

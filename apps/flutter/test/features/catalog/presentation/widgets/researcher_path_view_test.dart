@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantini_app/features/catalog/domain/catalog_models.dart';
+import 'package:plantini_app/features/catalog/domain/level_collection_progress.dart';
 import 'package:plantini_app/features/catalog/presentation/widgets/researcher_path_view.dart';
 import 'package:plantini_app/features/catalog/presentation/widgets/level_gate_card.dart';
 
@@ -65,5 +66,45 @@ void main() {
       find.byType(LevelGateCard).last,
     );
     expect(lastCard.level.title, 'Tief im Wald');
+  });
+
+  testWidgets('active level renders its herbarium collection mission', (
+    WidgetTester tester,
+  ) async {
+    const ecosystem = Ecosystem(
+      id: 'e1',
+      slug: 'wald',
+      title: 'Wald',
+      releaseVersion: '1',
+      levelIds: ['l1'],
+    );
+    const level = Level(
+      id: 'l1',
+      ecosystemId: 'e1',
+      title: 'Waldsammler',
+      sequence: 1,
+      status: LevelStatus.inProgress,
+      minimumScore: .8,
+      requiredQuizIds: [],
+      plantIds: ['p1', 'p2', 'p3'],
+    );
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ResearcherPathView(
+          ecosystem: ecosystem,
+          levels: const [level],
+          collectionProgress: const {
+            'l1': LevelCollectionProgress(
+              requiredPlantIds: ['p1', 'p2', 'p3'],
+              collectedPlantIds: {'p1'},
+            ),
+          },
+        ),
+      ),
+    );
+
+    expect(find.text('1/3 gesammelt'), findsOneWidget);
+    expect(find.text('Sammle noch 2 Zielarten'), findsOneWidget);
   });
 }

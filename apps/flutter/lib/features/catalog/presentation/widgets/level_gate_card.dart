@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
+import '../../domain/level_collection_progress.dart';
 
 final class LevelGateCard extends StatelessWidget {
-  const LevelGateCard({super.key, required this.level, this.onTap});
+  const LevelGateCard({
+    super.key,
+    required this.level,
+    this.collectionProgress,
+    this.onTap,
+  });
   final Level level;
+  final LevelCollectionProgress? collectionProgress;
   final VoidCallback? onTap;
 
   @override
@@ -16,6 +23,7 @@ final class LevelGateCard extends StatelessWidget {
         level.status == LevelStatus.inProgress;
     final completed = level.status == LevelStatus.completed;
     final progress = level.progress?.clamp(0.0, 1.0).toDouble();
+    final collection = collectionProgress;
     return Semantics(
       label: 'Level-Karte: ${level.title}',
       button: !locked,
@@ -71,7 +79,9 @@ final class LevelGateCard extends StatelessWidget {
                     const Spacer(),
                     if (!locked)
                       Text(
-                        '${level.plantIds.length} Arten in diesem Level',
+                        collection == null
+                            ? '${level.collectionTargets.length} Zielarten'
+                            : '${collection.collectedCount}/${collection.requiredCount} gesammelt',
                         style: const TextStyle(
                           color: AppColors.neutral700,
                           fontSize: 11.5,
@@ -99,6 +109,44 @@ final class LevelGateCard extends StatelessWidget {
                 ),
                 if (!locked) ...[
                   const SizedBox(height: 11),
+                  if (collection != null) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          collection.isComplete
+                              ? Icons.verified
+                              : Icons.local_florist_outlined,
+                          size: 17,
+                          color: collection.isComplete
+                              ? AppColors.sage700
+                              : AppColors.accent800,
+                        ),
+                        const SizedBox(width: 7),
+                        Expanded(
+                          child: Text(
+                            collection.isComplete
+                                ? 'Sammelauftrag erfüllt'
+                                : 'Sammle noch ${collection.requiredCount - collection.collectedCount} Zielarten',
+                            style: const TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 7),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: LinearProgressIndicator(
+                        value: collection.fraction,
+                        minHeight: 8,
+                        color: AppColors.accent500,
+                        backgroundColor: AppColors.neutral200,
+                      ),
+                    ),
+                    const SizedBox(height: 9),
+                  ],
                   if (level.progress == null && !completed) ...[
                     const Text(
                       'Noch nicht begonnen',

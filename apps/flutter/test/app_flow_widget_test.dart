@@ -326,6 +326,7 @@ AppDependencies createWidgetFlowDependencies() {
   final initialHerbariumEntries = [
     HerbariumEntry(
       id: 'herbarium-widget-flow-1',
+      confirmedPlantId: 'plant-eiche',
       observedAt: DateTime.parse('2026-08-26T09:30:00.000Z'),
       plantName: 'Stieleiche',
       scientificName: 'Quercus robur',
@@ -336,6 +337,7 @@ AppDependencies createWidgetFlowDependencies() {
     ),
     HerbariumEntry(
       id: 'herbarium-widget-flow-2',
+      confirmedPlantId: 'plant-buche',
       observedAt: DateTime.parse('2026-08-26T10:15:00.000Z'),
       plantName: 'Rotbuche',
       scientificName: 'Fagus sylvatica',

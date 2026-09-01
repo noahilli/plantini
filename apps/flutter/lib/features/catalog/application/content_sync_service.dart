@@ -339,6 +339,9 @@ final class ContentSyncService {
           (completion?['requiredQuizIds'] as List<dynamic>?)?.cast<String>() ??
           []
       ..plantIds = (map['plantIds'] as List<dynamic>?)?.cast<String>() ?? []
+      ..requiredPlantIds =
+          (completion?['requiredPlantIds'] as List<dynamic>?)?.cast<String>() ??
+          []
       ..learningGoal = map['learningGoal'] as String?
       ..contentVersion = version;
   }
