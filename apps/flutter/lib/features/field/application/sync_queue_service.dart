@@ -1,150 +1,53 @@
 import 'dart:math';
 
-import 'package:isar/isar.dart';
-
-import '../../../core/errors/app_failure.dart';
 import '../../../core/ids/client_id_generator.dart';
 import '../../../core/result.dart';
-import '../../../core/storage/local_database.dart';
-import '../../../core/storage/models/isar_sync_queue.dart';
 import '../../../core/time/clock.dart';
+
+enum SyncJobStatus { pending, running, failed, completed }
+
+final class SyncJob {
+  int id = -1;
+  late String clientId;
+  late String payload;
+  late SyncJobStatus status;
+  int attemptCount = 0;
+  DateTime? nextRetryAt;
+  String? errorReason;
+  late DateTime createdAt;
+  DateTime? updatedAt;
+}
 
 /// Processor callback representing the remote API call / identification execution.
 typedef SyncJobProcessor = Future<Result<void>> Function(String payload);
 
 /// Storage abstraction for synchronization queue operations.
 abstract interface class SyncQueueStore {
-  Future<Result<IsarSyncJob>> enqueue(IsarSyncJob job);
-  Future<Result<List<IsarSyncJob>>> getPendingJobs({
+  Future<Result<SyncJob>> enqueue(SyncJob job);
+  Future<Result<List<SyncJob>>> getPendingJobs({
     required DateTime now,
     required DateTime staleRunningBefore,
     required int maxAttempts,
   });
-  Future<Result<void>> updateJob(IsarSyncJob job);
+  Future<Result<void>> updateJob(SyncJob job);
   Future<Result<void>> deleteJob(int id);
-  Future<Result<List<IsarSyncJob>>> getAllJobs();
-}
-
-/// Isar-backed implementation of [SyncQueueStore].
-final class IsarSyncQueueStore implements SyncQueueStore {
-  const IsarSyncQueueStore(this._db);
-
-  final LocalDatabase _db;
-
-  @override
-  Future<Result<IsarSyncJob>> enqueue(IsarSyncJob job) async {
-    try {
-      await _db.isar.writeTxn(() async {
-        await _db.syncQueue.put(job);
-      });
-      return Result.success(job);
-    } catch (error) {
-      return Result.failure(
-        StorageFailure(
-          message: 'Der Sync-Job konnte nicht in die Warteschlange eingereiht werden.',
-          cause: error,
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Result<List<IsarSyncJob>>> getPendingJobs({
-    required DateTime now,
-    required DateTime staleRunningBefore,
-    required int maxAttempts,
-  }) async {
-    try {
-      final all = await _db.syncQueue.where().findAll();
-      all.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      final due = all.where((job) {
-        final isPendingOrFailed =
-            job.status == SyncJobStatus.pending ||
-            job.status == SyncJobStatus.failed;
-        final lastUpdatedAt = job.updatedAt ?? job.createdAt;
-        final isStaleRunning =
-            job.status == SyncJobStatus.running &&
-            !lastUpdatedAt.isAfter(staleRunningBefore);
-        final isDue = job.nextRetryAt == null || !job.nextRetryAt!.isAfter(now);
-        return job.attemptCount < maxAttempts &&
-            ((isPendingOrFailed && isDue) || isStaleRunning);
-      }).toList();
-      return Result.success(due);
-    } catch (error) {
-      return Result.failure(
-        StorageFailure(
-          message: 'Fällige Sync-Jobs konnten nicht geladen werden.',
-          cause: error,
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Result<void>> updateJob(IsarSyncJob job) async {
-    try {
-      await _db.isar.writeTxn(() async {
-        await _db.syncQueue.put(job);
-      });
-      return const Result.success(null);
-    } catch (error) {
-      return Result.failure(
-        StorageFailure(
-          message: 'Sync-Job-Status konnte nicht aktualisiert werden.',
-          cause: error,
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Result<void>> deleteJob(int id) async {
-    try {
-      await _db.isar.writeTxn(() async {
-        await _db.syncQueue.delete(id);
-      });
-      return const Result.success(null);
-    } catch (error) {
-      return Result.failure(
-        StorageFailure(
-          message: 'Sync-Job konnte nicht entfernt werden.',
-          cause: error,
-        ),
-      );
-    }
-  }
-
-  @override
-  Future<Result<List<IsarSyncJob>>> getAllJobs() async {
-    try {
-      final jobs = await _db.syncQueue.where().findAll();
-      jobs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      return Result.success(jobs);
-    } catch (error) {
-      return Result.failure(
-        StorageFailure(
-          message: 'Warteschlange konnte nicht gelesen werden.',
-          cause: error,
-        ),
-      );
-    }
-  }
+  Future<Result<List<SyncJob>>> getAllJobs();
 }
 
 /// In-memory queue store for unit testing.
 final class InMemorySyncQueueStore implements SyncQueueStore {
-  final Map<int, IsarSyncJob> _storage = {};
+  final Map<int, SyncJob> _storage = {};
   int _autoId = 0;
 
   @override
-  Future<Result<IsarSyncJob>> enqueue(IsarSyncJob job) async {
+  Future<Result<SyncJob>> enqueue(SyncJob job) async {
     final existing = _storage.values.where(
       (item) => item.clientId == job.clientId,
     );
     if (existing.isNotEmpty) {
       job.id = existing.first.id;
     }
-    if (job.id == Isar.autoIncrement || job.id <= 0) {
+    if (job.id <= 0) {
       job.id = ++_autoId;
     }
     _storage[job.id] = job;
@@ -152,7 +55,7 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
   }
 
   @override
-  Future<Result<List<IsarSyncJob>>> getPendingJobs({
+  Future<Result<List<SyncJob>>> getPendingJobs({
     required DateTime now,
     required DateTime staleRunningBefore,
     required int maxAttempts,
@@ -174,7 +77,7 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
   }
 
   @override
-  Future<Result<void>> updateJob(IsarSyncJob job) async {
+  Future<Result<void>> updateJob(SyncJob job) async {
     _storage[job.id] = job;
     return const Result.success(null);
   }
@@ -186,7 +89,7 @@ final class InMemorySyncQueueStore implements SyncQueueStore {
   }
 
   @override
-  Future<Result<List<IsarSyncJob>>> getAllJobs() async {
+  Future<Result<List<SyncJob>>> getAllJobs() async {
     final list = _storage.values.toList();
     list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
     return Result.success(list);
@@ -214,12 +117,12 @@ final class SyncQueueService {
   final Duration runningJobTimeout;
 
   /// Enqueues a new synchronization job with status `pending`.
-  Future<Result<IsarSyncJob>> enqueueJob({
+  Future<Result<SyncJob>> enqueueJob({
     required String payload,
     String? clientId,
   }) async {
     final now = _clock.now();
-    final job = IsarSyncJob()
+    final job = SyncJob()
       ..clientId =
           clientId ?? ids?.next() ?? 'job-${now.millisecondsSinceEpoch}'
       ..payload = payload
@@ -251,11 +154,11 @@ final class SyncQueueService {
       staleRunningBefore: now.subtract(runningJobTimeout),
       maxAttempts: maxAttempts,
     );
-    if (pendingResult case Failure<List<IsarSyncJob>>(:final failure)) {
+    if (pendingResult case Failure<List<SyncJob>>(:final failure)) {
       return Result.failure(failure);
     }
 
-    final jobs = (pendingResult as Success<List<IsarSyncJob>>).value;
+    final jobs = (pendingResult as Success<List<SyncJob>>).value;
     var processedCount = 0;
 
     for (final job in jobs) {
@@ -300,11 +203,11 @@ final class SyncQueueService {
   /// stable client IDs, so the remote idempotency contract still applies.
   Future<Result<int>> retryFailedJobs() async {
     final result = await store.getAllJobs();
-    if (result case Failure<List<IsarSyncJob>>(:final failure)) {
+    if (result case Failure<List<SyncJob>>(:final failure)) {
       return Result.failure(failure);
     }
     var count = 0;
-    for (final job in (result as Success<List<IsarSyncJob>>).value) {
+    for (final job in (result as Success<List<SyncJob>>).value) {
       if (job.status != SyncJobStatus.failed) continue;
       job
         ..status = SyncJobStatus.pending

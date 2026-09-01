@@ -9,8 +9,6 @@ import 'app/plantini_app.dart';
 import 'auth/auth_service.dart';
 import 'core/errors/app_failure.dart';
 import 'core/ids/client_id_generator.dart';
-import 'core/result.dart';
-import 'core/storage/local_database.dart';
 import 'core/theme/app_theme.dart';
 import 'core/time/clock.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
@@ -18,6 +16,7 @@ import 'features/catalog/infrastructure/cached_catalog_repository.dart';
 import 'features/catalog/infrastructure/http_catalog_repository.dart';
 import 'features/field/infrastructure/http_field_repository.dart';
 import 'features/field/application/sync_queue_service.dart';
+import 'features/field/infrastructure/sync_queue_store_factory.dart';
 import 'features/herbarium/application/herbarium_use_cases.dart';
 import 'features/herbarium/infrastructure/http_herbarium_repository.dart';
 import 'features/herbarium/infrastructure/offline_herbarium_repository.dart';
@@ -64,12 +63,8 @@ final class _AppBootstrapState extends State<AppBootstrap> {
     );
     final learningRepository = HttpLearningRepository(api);
     final fieldRepository = HttpFieldRepository(api);
-    final databaseResult = await LocalDatabase.open();
-    if (databaseResult case Failure<LocalDatabase>(:final failure)) {
-      throw failure;
-    }
     final queue = SyncQueueService(
-      store: IsarSyncQueueStore(databaseResult.valueOrNull!),
+      store: await createSyncQueueStore(),
       ids: SecureClientIdGenerator(),
     );
     final herbariumRepository = OfflineHerbariumRepository(

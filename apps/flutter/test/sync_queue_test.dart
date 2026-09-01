@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plantini_app/core/errors/app_failure.dart';
 import 'package:plantini_app/core/ids/client_id_generator.dart';
 import 'package:plantini_app/core/result.dart';
-import 'package:plantini_app/core/storage/models/isar_sync_queue.dart';
 import 'package:plantini_app/core/time/clock.dart';
 import 'package:plantini_app/features/field/application/sync_queue_service.dart';
 
@@ -52,7 +51,7 @@ void main() {
         );
 
         expect(result.isSuccess, isTrue);
-        final job = (result as Success<IsarSyncJob>).value;
+        final job = (result as Success<SyncJob>).value;
         expect(job.status, SyncJobStatus.pending);
         expect(job.clientId, 'sync-id-1');
         expect(job.attemptCount, 0);
@@ -78,7 +77,7 @@ void main() {
       expect(processedPayloads, ['job-1', 'job-2']);
 
       final allJobsResult = await store.getAllJobs();
-      final jobs = (allJobsResult as Success<List<IsarSyncJob>>).value;
+      final jobs = (allJobsResult as Success<List<SyncJob>>).value;
       expect(jobs.every((j) => j.status == SyncJobStatus.completed), isTrue);
     });
 
@@ -94,7 +93,7 @@ void main() {
       expect(failResult.isSuccess, isTrue);
       expect((failResult as Success<int>).value, 0);
 
-      var jobs = (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+      var jobs = (await store.getAllJobs() as Success<List<SyncJob>>).value;
       expect(jobs.first.status, SyncJobStatus.failed);
       expect(jobs.first.attemptCount, 1);
       expect(jobs.first.errorReason, 'Server unreachable');
@@ -117,7 +116,7 @@ void main() {
             const Result.failure(NetworkFailure(message: 'Server still down')),
       );
 
-      jobs = (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+      jobs = (await store.getAllJobs() as Success<List<SyncJob>>).value;
       expect(jobs.first.attemptCount, 2);
       expect(jobs.first.errorReason, 'Server still down');
       expect(
@@ -158,7 +157,7 @@ void main() {
     test(
       'processQueue recovers a running job after its lease becomes stale',
       () async {
-        final job = IsarSyncJob()
+        final job = SyncJob()
           ..clientId = 'interrupted-job'
           ..payload = 'interrupted-payload'
           ..status = SyncJobStatus.running
@@ -188,8 +187,7 @@ void main() {
 
         expect((result as Success<int>).value, 1);
         expect(processorCalls, 1);
-        final jobs =
-            (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+        final jobs = (await store.getAllJobs() as Success<List<SyncJob>>).value;
         expect(jobs.single.status, SyncJobStatus.completed);
         expect(jobs.single.attemptCount, 2);
       },
@@ -204,7 +202,7 @@ void main() {
           clock: clock,
           maxAttempts: 2,
         );
-        final job = IsarSyncJob()
+        final job = SyncJob()
           ..clientId = 'exhausted-job'
           ..payload = 'must-not-run'
           ..status = SyncJobStatus.failed
@@ -224,8 +222,7 @@ void main() {
 
         expect((result as Success<int>).value, 0);
         expect(processorCalls, 0);
-        final jobs =
-            (await store.getAllJobs() as Success<List<IsarSyncJob>>).value;
+        final jobs = (await store.getAllJobs() as Success<List<SyncJob>>).value;
         expect(jobs.single.status, SyncJobStatus.failed);
         expect(jobs.single.attemptCount, 2);
       },
@@ -234,7 +231,7 @@ void main() {
     test(
       'manual retry rearms an exhausted job with the same client id',
       () async {
-        final job = IsarSyncJob()
+        final job = SyncJob()
           ..clientId = 'stable-observation-id'
           ..payload = 'retry-payload'
           ..status = SyncJobStatus.failed
