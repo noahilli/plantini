@@ -34,6 +34,42 @@ test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
       await expect(appUi.learningUnitTitle(page)).toBeVisible();
     });
 
+    await test.step('Lernende:r sammelt alle drei Zielpflanzen im Herbarium', async () => {
+      for (let target = 1; target <= 3; target += 1) {
+        await appUi.startExpeditionButton(page).click();
+        await expect(appUi.fieldTitle(page)).toBeVisible();
+        await expect(appUi.emptyPhotoState(page)).toBeVisible();
+        const fileChooser = page.waitForEvent('filechooser');
+        await appUi.chooseFromGalleryButton(page).click();
+        await (await fileChooser).setFiles({
+          name: `e2e-leaf-${target}.png`,
+          mimeType: 'image/png',
+          buffer: e2eLeafImage,
+        });
+        await expect(appUi.identifyPlantButton(page)).toBeEnabled();
+        await appUi.identifyPlantButton(page).click();
+        await expect(appUi.identificationProcessing(page)).toBeVisible();
+        await expect.poll(async () => {
+          const refresh = appUi.refreshIdentificationButton(page);
+          if (await refresh.isVisible().catch(() => false)) await refresh.click();
+          return appUi.identificationReady(page).isVisible().catch(() => false);
+        }, {
+          intervals: [100, 250, 500, 1_000],
+          timeout: 15_000,
+        }).toBe(true);
+        await appUi.candidate(page, 'Stieleiche').click();
+        await appUi.saveObservationButton(page).click();
+        await expect(appUi.herbariumTitle(page)).toBeVisible();
+
+        await appUi.learningNavigation(page).click();
+        await expect(appUi.ecosystemsTitle(page)).toBeVisible();
+        await appUi.ecosystem(page).click();
+        await appUi.levelCard(page).click();
+        await expect(appUi.learningUnitTitle(page)).toBeVisible();
+      }
+      await expect(appUi.startQuizButton(page)).toBeEnabled();
+    });
+
     await test.step('Lernende:r beantwortet das servergestützte Quiz und schließt das Level ab', async () => {
       await appUi.startQuizButton(page).click();
       await expect(appUi.quizTitle(page)).toBeVisible();
@@ -57,42 +93,7 @@ test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
       await expect(appUi.completedLevel(page)).toBeVisible();
     });
 
-    await test.step('Feldfoto wird über den echten Browser-Dateidialog ausgewählt', async () => {
-      await appUi.fieldNavigation(page).click();
-      await expect(appUi.fieldTitle(page)).toBeVisible();
-      await expect(appUi.emptyPhotoState(page)).toBeVisible();
-      const fileChooser = page.waitForEvent('filechooser');
-      await appUi.chooseFromGalleryButton(page).click();
-      await (await fileChooser).setFiles({
-        name: 'e2e-leaf.png',
-        mimeType: 'image/png',
-        buffer: e2eLeafImage,
-      });
-      await expect(appUi.selectedMedia(page)).toBeVisible();
-      await expect(appUi.identifyPlantButton(page)).toBeEnabled();
-    });
-
-    await test.step('PlantNet-Mock-Auftrag wird gepollt, bewusst bestätigt und als privater Fund gespeichert', async () => {
-      await appUi.identifyPlantButton(page).click();
-      await expect(appUi.identificationProcessing(page)).toBeVisible();
-
-      await expect.poll(async () => {
-        const refresh = appUi.refreshIdentificationButton(page);
-        if (await refresh.isVisible().catch(() => false)) {
-          await refresh.click();
-        }
-        return await appUi.identificationReady(page).isVisible().catch(() => false);
-      }, {
-        intervals: [100, 250, 500, 1_000],
-        timeout: 15_000,
-      }).toBe(true);
-
-      await appUi.candidate(page, 'Stieleiche').click();
-      await expect(appUi.saveObservationButton(page)).toBeEnabled();
-      await appUi.saveObservationButton(page).click();
-      await expect(appUi.herbariumTitle(page)).toBeVisible();
-      await expect(appUi.herbariumEntry(page, 'Stieleiche')).toBeVisible();
-
+    await test.step('Sammelfortschritt bleibt nach einem Browser-Neustart erhalten', async () => {
       const beforeReload = new URL(page.url());
       expect(
         beforeReload.searchParams.has('code'),

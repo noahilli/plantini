@@ -14,6 +14,7 @@ export const ui = {
     profileRoute: 'Route: /profile',
   },
   navigation: {
+    learning: 'Lernen',
     field: 'Expedition',
     herbarium: 'Herbarium',
     profile: 'Profil',
@@ -22,7 +23,8 @@ export const ui = {
     ecosystems: 'Ökosysteme',
     levels: 'Lernpfad',
     learningUnit: 'Lerneinheit',
-    startQuiz: 'Quiz starten',
+    startQuiz: 'Abschlussquiz starten',
+    startExpedition: 'Nächste Pflanze sammeln',
   },
   learning: {
     quiz: 'Quiz',
@@ -98,6 +100,8 @@ export const appUi = {
 
   fieldNavigation: (page: Page): Locator =>
     page.getByRole('tab', { name: ui.navigation.field, exact: true }),
+  learningNavigation: (page: Page): Locator =>
+    page.getByRole('tab', { name: ui.navigation.learning, exact: true }),
   herbariumNavigation: (page: Page): Locator =>
     page.getByRole('tab', { name: ui.navigation.herbarium, exact: true }),
   profileNavigation: (page: Page): Locator =>
@@ -105,7 +109,7 @@ export const appUi = {
 
   ecosystemsTitle: (page: Page): Locator => exactText(page, ui.catalog.ecosystems),
   ecosystem: (page: Page): Locator => page.getByRole('button', {
-    name: new RegExp(`^${escapeRegex(seededJourney.ecosystem)}`),
+    name: new RegExp(`^(?:Ökosystem )?${escapeRegex(seededJourney.ecosystem)}`),
   }),
   levelsTitle: (page: Page): Locator => exactText(page, ui.catalog.levels),
   levelCard: (page: Page): Locator => page.getByRole('button', {
@@ -115,6 +119,8 @@ export const appUi = {
   learningUnitTitle: (page: Page): Locator => exactText(page, ui.catalog.learningUnit),
   levelTitle: (page: Page): Locator => exactText(page, seededJourney.levelTitle),
   startQuizButton: (page: Page): Locator => namedButton(page, ui.catalog.startQuiz),
+  startExpeditionButton: (page: Page): Locator =>
+    namedButton(page, ui.catalog.startExpedition),
 
   quizTitle: (page: Page): Locator => exactText(page, ui.learning.quiz),
   quizQuestion: (page: Page, question: string): Locator =>
@@ -144,7 +150,7 @@ export const appUi = {
   herbariumTitle: (page: Page): Locator => exactText(page, ui.herbarium.title),
   addObservationButton: (page: Page): Locator => namedButton(page, ui.herbarium.addObservation),
   herbariumEntry: (page: Page, name: string): Locator =>
-    page.getByRole('button', { name: new RegExp(`^${escapeRegex(name)}\\b`) }),
+    page.getByRole('button', { name: new RegExp(`^${escapeRegex(name)}\\b`) }).first(),
 } as const;
 
 function escapeRegex(value: string): string {
