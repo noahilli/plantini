@@ -24,6 +24,9 @@ enum LocationState {
 
   /// Location services (GPS / hardware) are disabled on the device.
   disabled,
+
+  /// A position was returned, but its measured accuracy is not useful enough.
+  inaccurate,
 }
 
 /// Geographic coordinates data transfer object with privacy helper methods.
@@ -50,10 +53,8 @@ final class LocationCoordinates {
     return LocationCoordinates(
       latitude: blurredLat,
       longitude: blurredLng,
-      accuracy:
-          accuracy != null ? (accuracy! * factor).round() / factor : null,
-      altitude:
-          altitude != null ? (altitude! * factor).round() / factor : null,
+      accuracy: accuracy != null ? (accuracy! * factor).round() / factor : null,
+      altitude: altitude != null ? (altitude! * factor).round() / factor : null,
       timestamp: timestamp,
     );
   }
@@ -78,8 +79,7 @@ final class LocationCoordinates {
   int get hashCode => latitude.hashCode ^ longitude.hashCode;
 
   @override
-  String toString() =>
-      'LocationCoordinates(lat: $latitude, lng: $longitude)';
+  String toString() => 'LocationCoordinates(lat: $latitude, lng: $longitude)';
 }
 
 /// Platform abstraction for geolocator calls to allow comprehensive testability.
@@ -87,6 +87,7 @@ abstract interface class LocationPlatformAdapter {
   Future<bool> isLocationServiceEnabled();
   Future<LocationPermission> checkPermission();
   Future<LocationPermission> requestPermission();
+  Future<LocationAccuracyStatus> getLocationAccuracy();
   Future<Position?> getCurrentPosition();
 }
 
@@ -99,12 +100,15 @@ final class GeolocatorPlatformAdapter implements LocationPlatformAdapter {
       Geolocator.isLocationServiceEnabled();
 
   @override
-  Future<LocationPermission> checkPermission() =>
-      Geolocator.checkPermission();
+  Future<LocationPermission> checkPermission() => Geolocator.checkPermission();
 
   @override
   Future<LocationPermission> requestPermission() =>
       Geolocator.requestPermission();
+
+  @override
+  Future<LocationAccuracyStatus> getLocationAccuracy() =>
+      Geolocator.getLocationAccuracy();
 
   @override
   Future<Position?> getCurrentPosition() async {
@@ -129,9 +133,11 @@ final class GeolocatorPlatformAdapter implements LocationPlatformAdapter {
 final class LocationService {
   LocationService({
     LocationPlatformAdapter? adapter,
+    this.maxUsefulAccuracyMeters = 100,
   }) : _adapter = adapter ?? const GeolocatorPlatformAdapter();
 
   final LocationPlatformAdapter _adapter;
+  final double maxUsefulAccuracyMeters;
   LocationState _state = LocationState.unknown;
 
   /// Current state of the location permission and service.
@@ -147,7 +153,7 @@ final class LocationService {
       }
 
       final permission = await _adapter.checkPermission();
-      _state = _mapPermissionToState(permission);
+      _state = await _stateForPermission(permission);
       return _state;
     } catch (error) {
       debugPrint('LocationService: Error checking status: $error');
@@ -167,7 +173,7 @@ final class LocationService {
       }
 
       final permission = await _adapter.requestPermission();
-      _state = _mapPermissionToState(permission);
+      _state = await _stateForPermission(permission);
       return _state;
     } catch (error) {
       debugPrint('LocationService: Error requesting location: $error');
@@ -187,6 +193,11 @@ final class LocationService {
 
       final position = await _adapter.getCurrentPosition();
       if (position == null) {
+        return const Result.success(null);
+      }
+
+      if (position.accuracy > maxUsefulAccuracyMeters) {
+        _state = LocationState.inaccurate;
         return const Result.success(null);
       }
 
@@ -221,14 +232,20 @@ final class LocationService {
     return const Result.success(null);
   }
 
-  LocationState _mapPermissionToState(LocationPermission permission) =>
-      switch (permission) {
-        LocationPermission.always ||
-        LocationPermission.whileInUse =>
-          LocationState.granted,
-        LocationPermission.denied ||
-        LocationPermission.deniedForever =>
-          LocationState.denied,
-        LocationPermission.unableToDetermine => LocationState.unknown,
-      };
+  Future<LocationState> _stateForPermission(
+    LocationPermission permission,
+  ) async {
+    final permissionState = switch (permission) {
+      LocationPermission.always ||
+      LocationPermission.whileInUse => LocationState.granted,
+      LocationPermission.denied ||
+      LocationPermission.deniedForever => LocationState.denied,
+      LocationPermission.unableToDetermine => LocationState.unknown,
+    };
+    if (permissionState != LocationState.granted) return permissionState;
+    final accuracy = await _adapter.getLocationAccuracy();
+    return accuracy == LocationAccuracyStatus.reduced
+        ? LocationState.restricted
+        : LocationState.granted;
+  }
 }

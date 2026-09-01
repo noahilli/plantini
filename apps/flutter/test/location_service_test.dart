@@ -5,6 +5,7 @@ import 'package:plantini_app/features/field/infrastructure/location_service.dart
 final class MockLocationPlatformAdapter implements LocationPlatformAdapter {
   bool serviceEnabled = true;
   LocationPermission permission = LocationPermission.whileInUse;
+  LocationAccuracyStatus accuracyStatus = LocationAccuracyStatus.precise;
   Position? positionToReturn;
   bool shouldThrow = false;
 
@@ -24,6 +25,12 @@ final class MockLocationPlatformAdapter implements LocationPlatformAdapter {
   Future<LocationPermission> requestPermission() async {
     if (shouldThrow) throw Exception('Permission request error');
     return permission;
+  }
+
+  @override
+  Future<LocationAccuracyStatus> getLocationAccuracy() async {
+    if (shouldThrow) throw Exception('Accuracy permission error');
+    return accuracyStatus;
   }
 
   @override
@@ -65,13 +72,16 @@ void main() {
       expect(service.state, LocationState.unknown);
     });
 
-    test('checkStatus returns disabled when location services are turned off', () async {
-      adapter.serviceEnabled = false;
+    test(
+      'checkStatus returns disabled when location services are turned off',
+      () async {
+        adapter.serviceEnabled = false;
 
-      final state = await service.checkStatus();
-      expect(state, LocationState.disabled);
-      expect(service.state, LocationState.disabled);
-    });
+        final state = await service.checkStatus();
+        expect(state, LocationState.disabled);
+        expect(service.state, LocationState.disabled);
+      },
+    );
 
     test('checkStatus returns denied when permission is denied', () async {
       adapter.serviceEnabled = true;
@@ -82,14 +92,17 @@ void main() {
       expect(service.state, LocationState.denied);
     });
 
-    test('checkStatus returns granted when permission is whileInUse or always', () async {
-      adapter.serviceEnabled = true;
-      adapter.permission = LocationPermission.whileInUse;
+    test(
+      'checkStatus returns granted when permission is whileInUse or always',
+      () async {
+        adapter.serviceEnabled = true;
+        adapter.permission = LocationPermission.whileInUse;
 
-      final state = await service.checkStatus();
-      expect(state, LocationState.granted);
-      expect(service.state, LocationState.granted);
-    });
+        final state = await service.checkStatus();
+        expect(state, LocationState.granted);
+        expect(service.state, LocationState.granted);
+      },
+    );
 
     test('requestLocation transitions through requested to granted', () async {
       adapter.serviceEnabled = true;
@@ -100,31 +113,46 @@ void main() {
       expect(service.state, LocationState.granted);
     });
 
-    test('requestLocation handles exceptions gracefully without crashing', () async {
-      adapter.shouldThrow = true;
+    test('reduced operating-system accuracy maps to restricted', () async {
+      adapter.accuracyStatus = LocationAccuracyStatus.reduced;
 
       final state = await service.requestLocation();
-      expect(state, LocationState.denied);
-      expect(service.state, LocationState.denied);
+
+      expect(state, LocationState.restricted);
+      expect(service.state, LocationState.restricted);
     });
 
-    test('getCurrentLocation returns coordinates when permission is granted', () async {
-      adapter.serviceEnabled = true;
-      adapter.permission = LocationPermission.whileInUse;
-      adapter.positionToReturn = _createPosition(
-        latitude: 52.520008,
-        longitude: 13.404954,
-        accuracy: 4.2,
-      );
+    test(
+      'requestLocation handles exceptions gracefully without crashing',
+      () async {
+        adapter.shouldThrow = true;
 
-      final result = await service.getCurrentLocation();
-      expect(result.isSuccess, isTrue);
-      final coords = result.valueOrNull;
-      expect(coords, isNotNull);
-      expect(coords!.latitude, 52.520008);
-      expect(coords.longitude, 13.404954);
-      expect(coords.accuracy, 4.2);
-    });
+        final state = await service.requestLocation();
+        expect(state, LocationState.denied);
+        expect(service.state, LocationState.denied);
+      },
+    );
+
+    test(
+      'getCurrentLocation returns coordinates when permission is granted',
+      () async {
+        adapter.serviceEnabled = true;
+        adapter.permission = LocationPermission.whileInUse;
+        adapter.positionToReturn = _createPosition(
+          latitude: 52.520008,
+          longitude: 13.404954,
+          accuracy: 4.2,
+        );
+
+        final result = await service.getCurrentLocation();
+        expect(result.isSuccess, isTrue);
+        final coords = result.valueOrNull;
+        expect(coords, isNotNull);
+        expect(coords!.latitude, 52.520008);
+        expect(coords.longitude, 13.404954);
+        expect(coords.accuracy, 4.2);
+      },
+    );
 
     test('getCurrentLocation returns null fallback when permission is denied or GPS disabled', () async {
       adapter.serviceEnabled = false;
@@ -134,38 +162,60 @@ void main() {
       expect(result.valueOrNull, isNull);
     });
 
-    test('getCurrentLocation handles unexpected adapter error with null fallback', () async {
-      adapter.serviceEnabled = true;
-      adapter.permission = LocationPermission.whileInUse;
-      adapter.shouldThrow = true;
-
-      final result = await service.getCurrentLocation();
-      expect(result.isSuccess, isTrue);
-      expect(result.valueOrNull, isNull);
-    });
-
-    test('getBlurredLocation intentionally coarsens coordinates for privacy', () async {
-      adapter.serviceEnabled = true;
-      adapter.permission = LocationPermission.whileInUse;
+    test('an inaccurate fix is rejected with an explicit state', () async {
       adapter.positionToReturn = _createPosition(
-        latitude: 52.523456,
-        longitude: 13.409876,
+        latitude: 52.520008,
+        longitude: 13.404954,
+        accuracy: 250,
       );
 
-      // Default: 2 decimal places (~1.1 km)
-      final result = await service.getBlurredLocation();
-      expect(result.isSuccess, isTrue);
-      final blurred = result.valueOrNull;
-      expect(blurred, isNotNull);
-      expect(blurred!.latitude, 52.52);
-      expect(blurred.longitude, 13.41);
+      final result = await service.getCurrentLocation();
 
-      // Custom precision: 1 decimal place
-      final coarseResult = await service.getBlurredLocation(precisionDigits: 1);
-      final coarse = coarseResult.valueOrNull;
-      expect(coarse!.latitude, 52.5);
-      expect(coarse.longitude, 13.4);
+      expect(result.isSuccess, isTrue);
+      expect(result.valueOrNull, isNull);
+      expect(service.state, LocationState.inaccurate);
     });
+
+    test(
+      'getCurrentLocation handles unexpected adapter error with null fallback',
+      () async {
+        adapter.serviceEnabled = true;
+        adapter.permission = LocationPermission.whileInUse;
+        adapter.shouldThrow = true;
+
+        final result = await service.getCurrentLocation();
+        expect(result.isSuccess, isTrue);
+        expect(result.valueOrNull, isNull);
+      },
+    );
+
+    test(
+      'getBlurredLocation intentionally coarsens coordinates for privacy',
+      () async {
+        adapter.serviceEnabled = true;
+        adapter.permission = LocationPermission.whileInUse;
+        adapter.positionToReturn = _createPosition(
+          latitude: 52.523456,
+          longitude: 13.409876,
+        );
+
+        // Default: 2 decimal places (~1.1 km)
+        final result = await service.getBlurredLocation();
+        expect(result.isSuccess, isTrue);
+        final blurred = result.valueOrNull;
+        expect(blurred, isNotNull);
+        expect(blurred!.latitude, 52.52);
+        expect(blurred.longitude, 13.41);
+
+        // Custom precision: 1 decimal place
+        final coarseResult = await service.getBlurredLocation(
+          precisionDigits: 1,
+        );
+        final coarse = coarseResult.valueOrNull;
+        expect(coarse!.latitude, 52.5);
+        expect(coarse.longitude, 13.4);
+      },
+    );
 
     test('LocationCoordinates serialization and equality', () {
       final now = DateTime.parse('2026-08-26T14:30:00Z');

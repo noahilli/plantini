@@ -295,6 +295,9 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     setState(() => _locationState = state);
     if (state != LocationState.granted) return null;
     final result = await _locationService.getCurrentLocation();
+    if (mounted && _locationService.state != state) {
+      setState(() => _locationState = _locationService.state);
+    }
     return result.valueOrNull;
   }
 
@@ -775,7 +778,10 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
         'Berechtigung verweigert. Wird ohne Standort gespeichert.',
       LocationState.disabled =>
         'Standortdienste deaktiviert. Wird ohne Standort gespeichert.',
-      LocationState.restricted => 'Standort eingeschränkt.',
+      LocationState.restricted =>
+        'Genauer Standort eingeschränkt. Wird ohne Standort gespeichert.',
+      LocationState.inaccurate =>
+        'Standort zu ungenau. Wird ohne Standort gespeichert.',
       _ => 'Wird mit Standort gespeichert. Sichtbarkeit bleibt privat.',
     };
   }
