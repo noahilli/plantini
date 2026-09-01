@@ -13,7 +13,10 @@ import 'core/theme/app_theme.dart';
 import 'core/time/clock.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
 import 'features/catalog/infrastructure/cached_catalog_repository.dart';
+import 'features/catalog/infrastructure/content_sync_factory.dart';
 import 'features/catalog/infrastructure/http_catalog_repository.dart';
+import 'features/catalog/infrastructure/isar_catalog_repository.dart';
+import 'core/storage/local_database_factory.dart';
 import 'features/field/infrastructure/http_field_repository.dart';
 import 'features/field/application/sync_queue_service.dart';
 import 'features/field/infrastructure/sync_queue_store_factory.dart';
@@ -57,10 +60,21 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       accessTokenProvider: auth.getAccessToken,
     );
     final remoteCatalog = HttpCatalogRepository(api);
-    final catalog = CachedCatalogRepository(
+    final cachedCatalog = CachedCatalogRepository(
       remote: remoteCatalog,
       preferences: preferences,
     );
+    final localDb = await createLocalDatabase();
+    final catalog = IsarCatalogRepository(
+      localDb: localDb,
+      fallback: cachedCatalog,
+    );
+
+    final contentSync = await createContentSyncService(
+      apiClient: api,
+      preferences: preferences,
+    );
+
     final learningRepository = HttpLearningRepository(api);
     final fieldRepository = HttpFieldRepository(api);
     final queue = SyncQueueService(
@@ -86,6 +100,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
         clock: const SystemClock(),
       ),
       learningRepository: learningRepository,
+      contentSync: contentSync,
       fieldRepository: fieldRepository,
       herbariumRepository: herbariumRepository,
       listHerbarium: ListHerbarium(herbariumRepository),

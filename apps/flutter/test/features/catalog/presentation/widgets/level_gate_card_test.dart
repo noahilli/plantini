@@ -5,11 +5,7 @@ import 'package:plantini_app/features/catalog/presentation/widgets/level_gate_ca
 
 void main() {
   Widget buildTestableWidget(Widget widget) {
-    return MaterialApp(
-      home: Scaffold(
-        body: widget,
-      ),
-    );
+    return MaterialApp(home: Scaffold(body: widget));
   }
 
   testWidgets('shows available level correctly', (WidgetTester tester) async {
@@ -54,7 +50,9 @@ void main() {
     expect(find.text('2 Arten in diesem Level'), findsOneWidget);
   });
 
-  testWidgets('shows locked level with blockedReason', (WidgetTester tester) async {
+  testWidgets('shows locked level with blockedReason', (
+    WidgetTester tester,
+  ) async {
     const level = Level(
       id: 'l3',
       ecosystemId: 'e1',
@@ -74,7 +72,9 @@ void main() {
     expect(find.text('1 Arten in diesem Level'), findsNothing);
   });
 
-  testWidgets('shows empty progress state when progress is null', (WidgetTester tester) async {
+  testWidgets('shows empty progress state when progress is null', (
+    WidgetTester tester,
+  ) async {
     const level = Level(
       id: 'l4',
       ecosystemId: 'e1',

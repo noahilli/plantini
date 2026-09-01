@@ -3,12 +3,7 @@ import 'package:isar/isar.dart';
 part 'isar_sync_queue.g.dart';
 
 /// Processing lifecycle states for queued synchronization jobs.
-enum SyncJobStatus {
-  pending,
-  running,
-  failed,
-  completed,
-}
+enum SyncJobStatus { pending, running, failed, completed }
 
 /// Persistent synchronization job stored in Isar for offline field observations and sync.
 @collection

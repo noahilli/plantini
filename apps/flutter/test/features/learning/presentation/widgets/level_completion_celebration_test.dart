@@ -6,14 +6,12 @@ import 'package:plantini_app/features/learning/presentation/widgets/level_comple
 
 void main() {
   Widget buildTestableWidget(Widget widget) {
-    return MaterialApp(
-      home: Scaffold(
-        body: widget,
-      ),
-    );
+    return MaterialApp(home: Scaffold(body: widget));
   }
 
-  testWidgets('shows passed celebration with next level unlocked', (WidgetTester tester) async {
+  testWidgets('shows passed celebration with next level unlocked', (
+    WidgetTester tester,
+  ) async {
     const level = Level(
       id: 'l1',
       ecosystemId: 'e1',
@@ -43,13 +41,15 @@ void main() {
       status: CompletionStatus.completed,
     );
 
-    await tester.pumpWidget(buildTestableWidget(
-      LevelCompletionCelebration(
-        completion: completion,
-        level: level,
-        nextLevel: nextLevel,
+    await tester.pumpWidget(
+      buildTestableWidget(
+        LevelCompletionCelebration(
+          completion: completion,
+          level: level,
+          nextLevel: nextLevel,
+        ),
       ),
-    ));
+    );
 
     expect(find.text('Herzlichen Glückwunsch!'), findsOneWidget);
     expect(find.textContaining('Waldrand'), findsOneWidget);
@@ -77,12 +77,11 @@ void main() {
       status: CompletionStatus.completed,
     );
 
-    await tester.pumpWidget(buildTestableWidget(
-      LevelCompletionCelebration(
-        completion: completion,
-        level: level,
+    await tester.pumpWidget(
+      buildTestableWidget(
+        LevelCompletionCelebration(completion: completion, level: level),
       ),
-    ));
+    );
 
     expect(find.text('Fast geschafft!'), findsOneWidget);
     expect(find.textContaining('Waldrand'), findsOneWidget);

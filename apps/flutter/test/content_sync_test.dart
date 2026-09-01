@@ -43,8 +43,8 @@ void main() {
           'description': 'Waldökosystem',
           'releaseVersion': '2026.08.25-1',
           'levelIds': ['lvl-1'],
-        }
-      ]
+        },
+      ],
     });
 
     final levelsJson = jsonEncode({
@@ -61,8 +61,8 @@ void main() {
           },
           'plantIds': ['plant-1'],
           'learningGoal': 'Baumarten erkennen',
-        }
-      ]
+        },
+      ],
     });
 
     final plantsJson = jsonEncode({
@@ -82,10 +82,10 @@ void main() {
               'url': 'https://media.plantini.test/buche.jpg',
               'altText': 'Rotbuche im Sommer',
               'license': 'CC-BY-4.0',
-            }
+            },
           ],
-        }
-      ]
+        },
+      ],
     });
 
     final manifestData = {
@@ -177,7 +177,9 @@ void main() {
       preferences: prefs,
       packageDownloader: (url) async {
         if (url.contains('ecosystems')) {
-          return Result.success(Uint8List.fromList(utf8.encode(ecosystemsJson)));
+          return Result.success(
+            Uint8List.fromList(utf8.encode(ecosystemsJson)),
+          );
         }
         if (url.contains('levels')) {
           return Result.success(Uint8List.fromList(utf8.encode(levelsJson)));
@@ -201,11 +203,17 @@ void main() {
   });
 
   test('syncRelease aborts atomically when SHA-256 checksum fails', () async {
-    SharedPreferences.setMockInitialValues({'plantini.content.active_version': '2026.08.20-old'});
+    SharedPreferences.setMockInitialValues({
+      'plantini.content.active_version': '2026.08.20-old',
+    });
     final prefs = await SharedPreferences.getInstance();
 
     final validJson = jsonEncode({'items': []});
-    final corruptedJson = jsonEncode({'items': [{'id': 'tampered'}]});
+    final corruptedJson = jsonEncode({
+      'items': [
+        {'id': 'tampered'},
+      ],
+    });
 
     final manifestData = {
       'version': '2026.08.25-2',
@@ -267,7 +275,9 @@ void main() {
   });
 
   test('syncRelease aborts when network fails', () async {
-    SharedPreferences.setMockInitialValues({'plantini.content.active_version': '2026.08.20-old'});
+    SharedPreferences.setMockInitialValues({
+      'plantini.content.active_version': '2026.08.20-old',
+    });
     final prefs = await SharedPreferences.getInstance();
 
     final dio = Dio();

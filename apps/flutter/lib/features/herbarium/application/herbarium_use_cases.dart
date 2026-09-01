@@ -11,8 +11,7 @@ final class ListHerbarium {
   Future<Result<List<HerbariumEntry>>> call({
     int page = 1,
     int pageSize = 20,
-  }) =>
-      _repository.listEntries(page: page, pageSize: pageSize);
+  }) => _repository.listEntries(page: page, pageSize: pageSize);
 }
 
 /// Deletes a herbarium entry with optimistic concurrency check.
@@ -24,8 +23,7 @@ final class DeleteEntry {
   Future<Result<void>> call({
     required String id,
     required String ifMatchVersion,
-  }) =>
-      _repository.deleteEntry(id: id, ifMatchVersion: ifMatchVersion);
+  }) => _repository.deleteEntry(id: id, ifMatchVersion: ifMatchVersion);
 }
 
 /// Synchronizes local and remote herbarium entries.

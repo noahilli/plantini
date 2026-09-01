@@ -21,10 +21,14 @@ import 'package:plantini_app/features/herbarium/presentation/herbarium_screen.da
 import 'package:plantini_app/features/learning/application/learning_session_service.dart';
 import 'package:plantini_app/features/learning/domain/learning_models.dart';
 import 'package:plantini_app/features/learning/domain/learning_repository.dart';
+import 'package:plantini_app/features/catalog/application/content_sync_service.dart';
 
 final class MockAuthPlatformHelper implements AuthPlatformHelper {
   @override
   Future<void> completeRedirect() async {}
+
+  @override
+  Future<void> logout(Credential credential) async {}
 
   @override
   Future<Credential?> login(
@@ -139,6 +143,12 @@ void main() {
         clock: _DummyClock(),
       ),
       learningRepository: learningRepo,
+      contentSync: ContentSyncService(
+        apiClient: PlatformApiClient(
+          config: config,
+          accessTokenProvider: () async => null,
+        ),
+      ),
     );
   });
 

@@ -63,8 +63,7 @@ final class AppConfig {
     }
     if (_isIpv6Literal(apiBaseUri) || _isIpv6Literal(oidcIssuerUri)) {
       throw const ConfigurationFailure(
-        message:
-            'PLANTINI_API_BASE_URL und PLANTINI_OIDC_ISSUER_URL dürfen keine IPv6-Literale verwenden.',
+        message: 'PLANTINI_API_BASE_URL und PLANTINI_OIDC_ISSUER_URL dürfen keine IPv6-Literale verwenden.',
       );
     }
     if (oidcClientId.trim().isEmpty) {

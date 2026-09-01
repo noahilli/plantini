@@ -18,7 +18,8 @@ final class FixedClock implements Clock {
 final class SequentialIdGenerator implements ClientIdGenerator {
   int _counter = 0;
   @override
-  String next() => '00000000-0000-4000-8000-${(++_counter).toString().padLeft(12, '0')}';
+  String next() =>
+      '00000000-0000-4000-8000-${(++_counter).toString().padLeft(12, '0')}';
 }
 
 final class InMemoryLearningStore implements LearningSessionStore {
@@ -55,7 +56,9 @@ final class MockLearningRepository implements LearningRepository {
     required String idempotencyKey,
   }) async {
     if (!startAttemptSuccess) {
-      return const Result.failure(ServerFailure(statusCode: 500, message: 'Server error'));
+      return const Result.failure(
+        ServerFailure(statusCode: 500, message: 'Server error'),
+      );
     }
     return Result.success(
       LevelAttempt(
@@ -97,7 +100,9 @@ final class MockLearningRepository implements LearningRepository {
     required String idempotencyKey,
   }) async {
     if (!completeAttemptSuccess) {
-      return const Result.failure(ServerFailure(statusCode: 500, message: 'Complete error'));
+      return const Result.failure(
+        ServerFailure(statusCode: 500, message: 'Complete error'),
+      );
     }
     return Result.success(
       LevelCompletion(
@@ -231,43 +236,49 @@ void main() {
         levelId: 'level-1',
         contentVersion: 'release-1',
       );
-      expect((resumed as Success<LearningSession>).value.clientAttemptId, session.clientAttemptId);
+      expect(
+        (resumed as Success<LearningSession>).value.clientAttemptId,
+        session.clientAttemptId,
+      );
     });
 
-    test('recordAnswer updates answers, advances question and completes level', () async {
-      final beginRes = await service.beginOrResume(
-        levelId: 'level-1',
-        contentVersion: 'release-1',
-      );
-      var session = (beginRes as Success<LearningSession>).value;
+    test(
+      'recordAnswer updates answers, advances question and completes level',
+      () async {
+        final beginRes = await service.beginOrResume(
+          levelId: 'level-1',
+          contentVersion: 'release-1',
+        );
+        var session = (beginRes as Success<LearningSession>).value;
 
-      // Answer question 1
-      final ans1Res = await service.recordAnswer(
-        session: session,
-        quizItemId: 'q1',
-        choiceId: 'c1',
-      );
-      expect(ans1Res.isSuccess, isTrue);
-      session = (ans1Res as Success<LearningSession>).value;
-      expect(session.answers.containsKey('q1'), isTrue);
-      expect(session.currentQuestionIndex, 1);
+        // Answer question 1
+        final ans1Res = await service.recordAnswer(
+          session: session,
+          quizItemId: 'q1',
+          choiceId: 'c1',
+        );
+        expect(ans1Res.isSuccess, isTrue);
+        session = (ans1Res as Success<LearningSession>).value;
+        expect(session.answers.containsKey('q1'), isTrue);
+        expect(session.currentQuestionIndex, 1);
 
-      // Answer question 2
-      final ans2Res = await service.recordAnswer(
-        session: session,
-        quizItemId: 'q2',
-        choiceId: 'c3',
-      );
-      expect(ans2Res.isSuccess, isTrue);
-      session = (ans2Res as Success<LearningSession>).value;
-      expect(session.answers.length, 2);
+        // Answer question 2
+        final ans2Res = await service.recordAnswer(
+          session: session,
+          quizItemId: 'q2',
+          choiceId: 'c3',
+        );
+        expect(ans2Res.isSuccess, isTrue);
+        session = (ans2Res as Success<LearningSession>).value;
+        expect(session.answers.length, 2);
 
-      // Complete attempt
-      final completeRes = await service.complete(session);
-      expect(completeRes.isSuccess, isTrue);
-      final completion = (completeRes as Success<LevelCompletion>).value;
-      expect(completion.passed, isTrue);
-      expect(completion.score, 1.0);
-    });
+        // Complete attempt
+        final completeRes = await service.complete(session);
+        expect(completeRes.isSuccess, isTrue);
+        final completion = (completeRes as Success<LevelCompletion>).value;
+        expect(completion.passed, isTrue);
+        expect(completion.score, 1.0);
+      },
+    );
   });
 }

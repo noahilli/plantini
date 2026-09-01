@@ -4,11 +4,7 @@ import '../../../../core/errors/app_failure.dart';
 
 /// Renders a recoverable error state during learning flow.
 final class LearningFailureView extends StatelessWidget {
-  const LearningFailureView({
-    super.key,
-    required this.failure,
-    this.onRetry,
-  });
+  const LearningFailureView({super.key, required this.failure, this.onRetry});
 
   final AppFailure failure;
   final VoidCallback? onRetry;

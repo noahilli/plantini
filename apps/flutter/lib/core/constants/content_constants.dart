@@ -13,8 +13,7 @@ abstract final class ContentConstants {
       'Lerne die Merkmale dieses Levels kennen.';
 
   /// Default text when plant description is missing.
-  static const String defaultPlantDescription =
-      'Keine Beschreibung vorhanden.';
+  static const String defaultPlantDescription = 'Keine Beschreibung vorhanden.';
 
   /// Minimum threshold score default for level completion (0.0 to 1.0).
   static const double defaultMinimumScore = 0.8;

@@ -50,7 +50,8 @@ final class ProgressSyncService {
     DateTime? since,
   }) async {
     if (pendingEvents != null && pendingEvents.isNotEmpty) {
-      final key = idempotencyKey ??
+      final key =
+          idempotencyKey ??
           ids?.next() ??
           'sync-${_clock.now().millisecondsSinceEpoch}';
       final ack = await repository.submitEvents(
@@ -71,10 +72,7 @@ final class ProgressSyncService {
     final localResult = await getLocalProgress();
     final localSnapshot = localResult.valueOrNull;
 
-    final merged = mergeProgress(
-      server: serverSnapshot,
-      local: localSnapshot,
-    );
+    final merged = mergeProgress(server: serverSnapshot, local: localSnapshot);
     await _store.save(merged);
     return Result.success(merged);
   }
@@ -106,9 +104,6 @@ final class ProgressSyncService {
         ? server.updatedAt
         : local.updatedAt;
 
-    return ProgressSnapshot(
-      updatedAt: latestUpdatedAt,
-      levels: mergedLevels,
-    );
+    return ProgressSnapshot(updatedAt: latestUpdatedAt, levels: mergedLevels);
   }
 }

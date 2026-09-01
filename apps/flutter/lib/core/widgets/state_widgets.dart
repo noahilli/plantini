@@ -5,10 +5,7 @@ import '../theme/app_typography.dart';
 
 /// Loading state widget displaying a centered progress indicator and optional message.
 class LoadingState extends StatelessWidget {
-  const LoadingState({
-    super.key,
-    this.message,
-  });
+  const LoadingState({super.key, this.message});
 
   final String? message;
 
@@ -46,12 +43,7 @@ class LoadingState extends StatelessWidget {
 
 /// Empty state widget displaying an icon, title, and optional subtitle.
 class EmptyState extends StatelessWidget {
-  const EmptyState({
-    super.key,
-    required this.title,
-    this.subtitle,
-    this.icon,
-  });
+  const EmptyState({super.key, required this.title, this.subtitle, this.icon});
 
   final String title;
   final String? subtitle;
@@ -104,10 +96,7 @@ class EmptyState extends StatelessWidget {
 
 /// Offline state widget displaying an offline icon, notice, and optional retry action.
 class OfflineState extends StatelessWidget {
-  const OfflineState({
-    super.key,
-    this.onRetry,
-  });
+  const OfflineState({super.key, this.onRetry});
 
   final VoidCallback? onRetry;
 
@@ -234,10 +223,7 @@ class ErrorState extends StatelessWidget {
 
 /// Permission denied state widget explaining the missing permission.
 class PermissionDeniedState extends StatelessWidget {
-  const PermissionDeniedState({
-    super.key,
-    required this.reason,
-  });
+  const PermissionDeniedState({super.key, required this.reason});
 
   final String reason;
 

@@ -6,14 +6,12 @@ import 'package:plantini_app/features/catalog/presentation/widgets/level_gate_ca
 
 void main() {
   Widget buildTestableWidget(Widget widget) {
-    return MaterialApp(
-      home: Scaffold(
-        body: widget,
-      ),
-    );
+    return MaterialApp(home: Scaffold(body: widget));
   }
 
-  testWidgets('ResearcherPathView displays levels sorted by sequence', (WidgetTester tester) async {
+  testWidgets('ResearcherPathView displays levels sorted by sequence', (
+    WidgetTester tester,
+  ) async {
     const ecosystem = Ecosystem(
       id: 'e1',
       slug: 'wald',
@@ -46,20 +44,26 @@ void main() {
     );
 
     // Pass them in reverse order to ensure the widget sorts them by sequence
-    await tester.pumpWidget(buildTestableWidget(
-      ResearcherPathView(
-        ecosystem: ecosystem,
-        levels: const [level2, level1],
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ResearcherPathView(
+          ecosystem: ecosystem,
+          levels: const [level2, level1],
+        ),
       ),
-    ));
+    );
 
     expect(find.byType(LevelGateCard), findsNWidgets(2));
 
     // Check if they are rendered in correct order
-    final firstCard = tester.widget<LevelGateCard>(find.byType(LevelGateCard).first);
+    final firstCard = tester.widget<LevelGateCard>(
+      find.byType(LevelGateCard).first,
+    );
     expect(firstCard.level.title, 'Waldrand');
 
-    final lastCard = tester.widget<LevelGateCard>(find.byType(LevelGateCard).last);
+    final lastCard = tester.widget<LevelGateCard>(
+      find.byType(LevelGateCard).last,
+    );
     expect(lastCard.level.title, 'Tief im Wald');
   });
 }

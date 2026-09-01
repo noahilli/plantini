@@ -1,6 +1,7 @@
 import '../adapters/http/platform_api_client.dart';
 import '../auth/auth_service.dart';
 import '../features/catalog/application/catalog_use_cases.dart';
+import '../features/catalog/application/content_sync_service.dart';
 import '../features/field/domain/field_repository.dart';
 import '../features/herbarium/application/herbarium_use_cases.dart';
 import '../features/herbarium/domain/herbarium_repository.dart';
@@ -18,6 +19,7 @@ final class AppDependencies {
     required this.loadLevel,
     required this.learningSessions,
     required this.learningRepository,
+    required this.contentSync,
     this.herbariumRepository,
     this.fieldRepository,
     this.listHerbarium,
@@ -32,6 +34,7 @@ final class AppDependencies {
   final LoadPublishedLevel loadLevel;
   final LearningSessionService learningSessions;
   final LearningRepository learningRepository;
+  final ContentSyncService contentSync;
   final HerbariumRepository? herbariumRepository;
   final FieldRepository? fieldRepository;
   final ListHerbarium? listHerbarium;

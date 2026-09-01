@@ -21,6 +21,7 @@ import 'package:plantini_app/features/herbarium/infrastructure/local_herbarium_r
 import 'package:plantini_app/features/learning/application/learning_session_service.dart';
 import 'package:plantini_app/features/learning/domain/learning_models.dart';
 import 'package:plantini_app/features/learning/domain/learning_repository.dart';
+import 'package:plantini_app/features/catalog/application/content_sync_service.dart';
 
 // ---------------------------------------------------------------------------
 // Deterministic widget-flow fakes. This test deliberately has no network,
@@ -30,6 +31,9 @@ import 'package:plantini_app/features/learning/domain/learning_repository.dart';
 final class WidgetFlowAuthPlatformHelper implements AuthPlatformHelper {
   @override
   Future<void> completeRedirect() async {}
+
+  @override
+  Future<void> logout(Credential credential) async {}
 
   Credential? fakeCredential;
 
@@ -362,6 +366,12 @@ AppDependencies createWidgetFlowDependencies() {
       clock: const WidgetFlowSystemClock(),
     ),
     learningRepository: learningRepo,
+    contentSync: ContentSyncService(
+      apiClient: PlatformApiClient(
+        config: config,
+        accessTokenProvider: auth.getAccessToken,
+      ),
+    ),
     herbariumRepository: herbariumRepo,
     listHerbarium: ListHerbarium(herbariumRepo),
     deleteHerbariumEntry: DeleteEntry(herbariumRepo),

@@ -101,43 +101,44 @@ void main() {
       );
     });
 
-    test('synchronize submits pending events and stores merged progress', () async {
-      final initialLocalSnapshot = ProgressSnapshot(
-        updatedAt: DateTime.parse('2026-08-26T10:00:00Z'),
-        levels: const [
-          LevelProgressSnapshot(
-            levelId: 'level-0',
-            status: ProgressStatus.completed,
-            percentage: 1.0,
-          ),
-        ],
-      );
-      await store.save(initialLocalSnapshot);
+    test(
+      'synchronize submits pending events and stores merged progress',
+      () async {
+        final initialLocalSnapshot = ProgressSnapshot(
+          updatedAt: DateTime.parse('2026-08-26T10:00:00Z'),
+          levels: const [
+            LevelProgressSnapshot(
+              levelId: 'level-0',
+              status: ProgressStatus.completed,
+              percentage: 1.0,
+            ),
+          ],
+        );
+        await store.save(initialLocalSnapshot);
 
-      final event = LearningEvent(
-        clientEventId: 'event-1',
-        type: 'quiz_answered',
-        occurredAt: testTime,
-        payloadVersion: 1,
-        payload: {'levelId': 'level-1'},
-      );
+        final event = LearningEvent(
+          clientEventId: 'event-1',
+          type: 'quiz_answered',
+          occurredAt: testTime,
+          payloadVersion: 1,
+          payload: {'levelId': 'level-1'},
+        );
 
-      final result = await service.synchronize(
-        pendingEvents: [event],
-      );
+        final result = await service.synchronize(pendingEvents: [event]);
 
-      expect(result.isSuccess, isTrue);
-      expect(repo.receivedEvents.length, 1);
-      expect(repo.receivedEvents.first.clientEventId, 'event-1');
+        expect(result.isSuccess, isTrue);
+        expect(repo.receivedEvents.length, 1);
+        expect(repo.receivedEvents.first.clientEventId, 'event-1');
 
-      final progress = (result as Success<ProgressSnapshot>).value;
-      expect(progress.levels.length, 2);
-      expect(progress.levels.any((l) => l.levelId == 'level-1'), isTrue);
-      expect(progress.levels.any((l) => l.levelId == 'level-0'), isTrue);
+        final progress = (result as Success<ProgressSnapshot>).value;
+        expect(progress.levels.length, 2);
+        expect(progress.levels.any((l) => l.levelId == 'level-1'), isTrue);
+        expect(progress.levels.any((l) => l.levelId == 'level-0'), isTrue);
 
-      final localRead = await service.getLocalProgress();
-      expect(localRead.valueOrNull?.levels.length, 2);
-    });
+        final localRead = await service.getLocalProgress();
+        expect(localRead.valueOrNull?.levels.length, 2);
+      },
+    );
 
     test('mergeProgress resolves conflicts with Server winning', () {
       final serverSnapshot = ProgressSnapshot(
@@ -187,7 +188,9 @@ void main() {
       final level2 = merged.levels.firstWhere((l) => l.levelId == 'level-2');
       expect(level2.status, ProgressStatus.available);
 
-      final offlineOnly = merged.levels.firstWhere((l) => l.levelId == 'level-offline-only');
+      final offlineOnly = merged.levels.firstWhere(
+        (l) => l.levelId == 'level-offline-only',
+      );
       expect(offlineOnly.status, ProgressStatus.inProgress);
       expect(offlineOnly.percentage, 0.3);
     });

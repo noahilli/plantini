@@ -27,7 +27,9 @@ final class SharedPreferencesLearningSessionStore
       }
       return Result.success(_fromJson(decoded));
     } catch (error) {
-      debugPrint('SharedPreferencesLearningSessionStore: read failed for level $levelId: $error');
+      debugPrint(
+        'SharedPreferencesLearningSessionStore: read failed for level $levelId: $error',
+      );
       await _preferences.remove(_key(levelId));
       return Result.failure(
         StorageFailure(
@@ -50,7 +52,9 @@ final class SharedPreferencesLearningSessionStore
       }
       return const Result.success(null);
     } catch (error) {
-      debugPrint('SharedPreferencesLearningSessionStore: save failed for level ${session.levelId}: $error');
+      debugPrint(
+        'SharedPreferencesLearningSessionStore: save failed for level ${session.levelId}: $error',
+      );
       return Result.failure(
         StorageFailure(
           message: 'Der Lernstand konnte nicht lokal gespeichert werden.',
@@ -71,7 +75,9 @@ final class SharedPreferencesLearningSessionStore
       }
       return const Result.success(null);
     } catch (error) {
-      debugPrint('SharedPreferencesLearningSessionStore: delete failed for level $levelId: $error');
+      debugPrint(
+        'SharedPreferencesLearningSessionStore: delete failed for level $levelId: $error',
+      );
       return Result.failure(
         StorageFailure(
           message:

@@ -33,7 +33,9 @@ final class ContentPackageDescriptor {
     final bytes = json['bytes'] as int? ?? 0;
 
     if (id == null || url == null || sha256 == null) {
-      throw const FormatException('ContentPackage contains missing required fields.');
+      throw const FormatException(
+        'ContentPackage contains missing required fields.',
+      );
     }
 
     return ContentPackageDescriptor(
@@ -76,7 +78,9 @@ final class ContentReleaseManifest {
     }
 
     final packages = rawPackages
-        .map((p) => ContentPackageDescriptor.fromJson(p as Map<String, dynamic>))
+        .map(
+          (p) => ContentPackageDescriptor.fromJson(p as Map<String, dynamic>),
+        )
         .toList(growable: false);
 
     return ContentReleaseManifest(
@@ -122,10 +126,12 @@ final class ContentSyncService {
   final SharedPreferences? preferences;
   final PackageDownloader? packageDownloader;
 
-  static const String activeContentVersionKey = 'plantini.content.active_version';
+  static const String activeContentVersionKey =
+      'plantini.content.active_version';
 
   /// Returns the currently active local content version.
-  String? get activeLocalVersion => preferences?.getString(activeContentVersionKey);
+  String? get activeLocalVersion =>
+      preferences?.getString(activeContentVersionKey);
 
   /// Fetches the manifest, downloads all packages, validates SHA-256 checksums,
   /// and atomically updates local storage.
@@ -152,7 +158,9 @@ final class ContentSyncService {
 
     // Skip if already on this version and not forcing
     if (!force && activeLocalVersion == manifest.version) {
-      debugPrint('ContentSyncService: Local content is already up-to-date (${manifest.version}).');
+      debugPrint(
+        'ContentSyncService: Local content is already up-to-date (${manifest.version}).',
+      );
       return Result.success(
         ContentSyncResult(
           version: manifest.version,
@@ -183,7 +191,8 @@ final class ContentSyncService {
       if (computedChecksum != expectedChecksum) {
         return Result.failure(
           ValidationFailure(
-            message: 'Integritätsfehler für Paket "${pkg.id}": Prüfsumme ungültig.',
+            message:
+                'Integritätsfehler für Paket "${pkg.id}": Prüfsumme ungültig.',
             fieldErrors: {
               'expected': expectedChecksum,
               'actual': computedChecksum,
@@ -201,7 +210,9 @@ final class ContentSyncService {
           case 'ecosystems':
             final items = _extractItemList(parsed);
             for (final item in items) {
-              downloadedEcosystems.add(_parseIsarEcosystem(item, manifest.version));
+              downloadedEcosystems.add(
+                _parseIsarEcosystem(item, manifest.version),
+              );
             }
           case 'levels':
             final items = _extractItemList(parsed);
@@ -243,7 +254,8 @@ final class ContentSyncService {
       } catch (error) {
         return Result.failure(
           StorageFailure(
-            message: 'Lokale Inhaltsdatenbank konnte nicht aktualisiert werden.',
+            message:
+                'Lokale Inhaltsdatenbank konnte nicht aktualisiert werden.',
             cause: error,
           ),
         );
@@ -272,8 +284,8 @@ final class ContentSyncService {
     final relative = url.startsWith('/api/v1/')
         ? url.substring('/api/v1/'.length)
         : url.startsWith('/')
-            ? url.substring(1)
-            : url;
+        ? url.substring(1)
+        : url;
 
     final response = await apiClient.getJson(relative);
     return response.when(
@@ -314,7 +326,9 @@ final class ContentSyncService {
       ..sequence = map['sequence'] as int? ?? 1
       ..status = IsarLevelStatus.available
       ..minimumScore = (completion?['minimumScore'] as num?)?.toDouble() ?? 0.8
-      ..requiredQuizIds = (completion?['requiredQuizIds'] as List<dynamic>?)?.cast<String>() ?? []
+      ..requiredQuizIds =
+          (completion?['requiredQuizIds'] as List<dynamic>?)?.cast<String>() ??
+          []
       ..plantIds = (map['plantIds'] as List<dynamic>?)?.cast<String>() ?? []
       ..learningGoal = map['learningGoal'] as String?
       ..contentVersion = version;
@@ -322,16 +336,18 @@ final class ContentSyncService {
 
   IsarPlant _parseIsarPlant(Map<String, dynamic> map, String version) {
     final rawMedia = (map['media'] as List<dynamic>?) ?? [];
-    final mediaList = rawMedia.map((m) {
-      final mediaMap = m as Map<String, dynamic>;
-      return IsarPlantMedia()
-        ..publicId = mediaMap['id'] as String? ?? ''
-        ..slug = mediaMap['slug'] as String? ?? ''
-        ..url = mediaMap['url'] as String? ?? ''
-        ..altText = mediaMap['altText'] as String? ?? ''
-        ..license = mediaMap['license'] as String? ?? 'CC-BY-4.0'
-        ..author = mediaMap['author'] as String?;
-    }).toList(growable: false);
+    final mediaList = rawMedia
+        .map((m) {
+          final mediaMap = m as Map<String, dynamic>;
+          return IsarPlantMedia()
+            ..publicId = mediaMap['id'] as String? ?? ''
+            ..slug = mediaMap['slug'] as String? ?? ''
+            ..url = mediaMap['url'] as String? ?? ''
+            ..altText = mediaMap['altText'] as String? ?? ''
+            ..license = mediaMap['license'] as String? ?? 'CC-BY-4.0'
+            ..author = mediaMap['author'] as String?;
+        })
+        .toList(growable: false);
 
     return IsarPlant()
       ..publicId = map['id'] as String? ?? ''

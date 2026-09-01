@@ -16,9 +16,25 @@ final class PlantiniApp extends StatefulWidget {
 
 final class _PlantiniAppState extends State<PlantiniApp> {
   late final GoRouter _router = createAppRouter(widget.dependencies);
+  bool _hasSynced = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.dependencies.auth.addListener(_checkAuthAndSync);
+    _checkAuthAndSync();
+  }
+
+  void _checkAuthAndSync() {
+    if (widget.dependencies.auth.isAuthenticated && !_hasSynced) {
+      _hasSynced = true;
+      widget.dependencies.contentSync.syncRelease();
+    }
+  }
 
   @override
   void dispose() {
+    widget.dependencies.auth.removeListener(_checkAuthAndSync);
     _router.dispose();
     super.dispose();
   }

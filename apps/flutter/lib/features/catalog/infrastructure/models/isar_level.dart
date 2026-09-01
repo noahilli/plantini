@@ -29,9 +29,4 @@ class IsarLevel {
 }
 
 /// Mirror of level status for local storage.
-enum IsarLevelStatus {
-  locked,
-  available,
-  inProgress,
-  completed,
-}
+enum IsarLevelStatus { locked, available, inProgress, completed }

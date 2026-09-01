@@ -21,7 +21,8 @@ void main() {
         scientificName: 'Monstera deliciosa',
         commonName: 'Fensterblatt',
         family: 'Araceae',
-        description: 'Eine beliebte Zimmerpflanze mit charakteristischen Blättern.',
+        description:
+            'Eine beliebte Zimmerpflanze mit charakteristischen Blättern.',
         warning: 'Giftig für Haustiere!',
         sources: ['https://wikipedia.org/wiki/Monstera_deliciosa'],
         releaseVersion: 'v1.0.0',
@@ -33,9 +34,15 @@ void main() {
       expect(plant.scientificName, 'Monstera deliciosa');
       expect(plant.commonName, 'Fensterblatt');
       expect(plant.family, 'Araceae');
-      expect(plant.description, 'Eine beliebte Zimmerpflanze mit charakteristischen Blättern.');
+      expect(
+        plant.description,
+        'Eine beliebte Zimmerpflanze mit charakteristischen Blättern.',
+      );
       expect(plant.warning, 'Giftig für Haustiere!');
-      expect(plant.sources, contains('https://wikipedia.org/wiki/Monstera_deliciosa'));
+      expect(
+        plant.sources,
+        contains('https://wikipedia.org/wiki/Monstera_deliciosa'),
+      );
       expect(plant.releaseVersion, 'v1.0.0');
       expect(plant.media.length, 1);
       expect(plant.media.first.id, 'media-1');
@@ -68,24 +75,30 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          home: PlantDetailScreen(plant: plant),
-        ),
+        const MaterialApp(home: PlantDetailScreen(plant: plant)),
       );
 
       // Verify text elements
       expect(find.text('Taraxacum officinale'), findsWidgets);
       expect(find.text('Gewöhnlicher Löwenzahn'), findsWidgets);
       expect(find.text('Asteraceae'), findsOneWidget);
-      expect(find.text('Sehr anpassungsfähige Wiesenpflanze mit gelben Blüten.'), findsOneWidget);
-      expect(find.text('Kann bei empfindlicher Haut Kontaktallergien auslösen.'), findsOneWidget);
+      expect(
+        find.text('Sehr anpassungsfähige Wiesenpflanze mit gelben Blüten.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Kann bei empfindlicher Haut Kontaktallergien auslösen.'),
+        findsOneWidget,
+      );
       expect(find.text('Lizenz: CC0'), findsOneWidget);
       expect(find.text('Autor: Naturfreund'), findsOneWidget);
       expect(find.text('Flora von Deutschland'), findsOneWidget);
       expect(find.text('https://floraweb.de'), findsOneWidget);
     });
 
-    testWidgets('renders cleanly without optional warning or media', (tester) async {
+    testWidgets('renders cleanly without optional warning or media', (
+      tester,
+    ) async {
       const plant = Plant(
         id: 'plant-3',
         slug: 'bellis-perennis',
@@ -97,9 +110,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        const MaterialApp(
-          home: PlantDetailScreen(plant: plant),
-        ),
+        const MaterialApp(home: PlantDetailScreen(plant: plant)),
       );
 
       expect(find.text('Bellis perennis'), findsWidgets);
