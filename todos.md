@@ -97,7 +97,7 @@ Abnahme: Das erste Level kann online begonnen, offline fortgesetzt und auf einem
 
 ## Feature 5 – Exkursion und Pflanzenidentifikation (FA030–FA035, FA040)
 
-- [ ] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
+- [x] **P1 | FIELD-01:** Kamera/Galerie mit Dateityp-, Magic-Byte-, Größen-, Auflösungs- und Metadatenprüfung implementieren; EXIF-Standort nach Nutzerwahl entfernen.
 - [ ] **P1 | FIELD-02:** Standort als separates Opt-in mit Zuständen verweigert, eingeschränkt, deaktiviert und ungenau umsetzen; Foto/Herbarium müssen ohne GPS funktionieren.
 - [x] **P1 | FIELD-03:** Idempotenten Upload mit stabiler Client-ID und Auftragsstatus definieren; Media-Pflichtfelder und Observation-Upload konsistent machen.
 - [x] **P1 | FIELD-04:** Persistenten Worker/Queue-Prozess bauen, der PlantNet-Mock aufruft; Redis ist aktuell nur deklariert.

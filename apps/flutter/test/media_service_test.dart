@@ -1,10 +1,24 @@
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:plantini_app/core/errors/app_failure.dart';
 import 'package:plantini_app/core/result.dart';
+import 'package:plantini_app/features/field/domain/field_repository.dart';
 import 'package:plantini_app/features/field/infrastructure/media_service.dart';
+import 'package:plantini_app/features/field/presentation/field_capture_screen.dart';
+import 'package:plantini_app/features/herbarium/domain/herbarium_repository.dart';
+
+final class _UnusedFieldRepository implements FieldRepository {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+final class _UnusedHerbariumRepository implements HerbariumRepository {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +35,13 @@ void main() {
   Uint8List createSampleJpg({int width = 100, int height = 100}) {
     final image = img.Image(width: width, height: height);
     img.fill(image, color: img.ColorRgb8(50, 150, 50));
+    return Uint8List.fromList(img.encodeJpg(image));
+  }
+
+  Uint8List createSampleJpgWithLocation() {
+    final image = img.Image(width: 100, height: 100);
+    img.fill(image, color: img.ColorRgb8(50, 150, 50));
+    image.exif.gpsIfd.setGpsLocation(latitude: 52.52, longitude: 13.405);
     return Uint8List.fromList(img.encodeJpg(image));
   }
 
@@ -47,7 +68,14 @@ void main() {
     });
 
     test('rejects unsupported files with ValidationFailure and UnsupportedFormatException', () async {
-      final dummyBytes = Uint8List.fromList([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]); // GIF header
+      final dummyBytes = Uint8List.fromList([
+        0x47,
+        0x49,
+        0x46,
+        0x38,
+        0x39,
+        0x61,
+      ]); // GIF header
       final result = await mediaService.processImageBytes(dummyBytes);
 
       expect(result, isA<Failure<ProcessedMedia>>());
@@ -74,8 +102,35 @@ void main() {
       expect(processed.filename, 'leaf.jpg');
       expect(processed.width, 200);
       expect(processed.height, 150);
-      expect(processed.hasStrippedLocation, isTrue);
+      expect(processed.hadLocationMetadata, isFalse);
+      expect(processed.hasStrippedLocation, isFalse);
       expect(processed.bytes.isNotEmpty, isTrue);
+    });
+
+    test('removes GPS EXIF when the user keeps the safe default', () async {
+      final result = await mediaService.processImageBytes(
+        createSampleJpgWithLocation(),
+        keepLocation: false,
+      );
+
+      final processed = (result as Success<ProcessedMedia>).value;
+      final decoded = img.decodeJpg(processed.bytes)!;
+      expect(processed.hadLocationMetadata, isTrue);
+      expect(processed.hasStrippedLocation, isTrue);
+      expect(decoded.exif.imageIfd.sub.containsKey('gps'), isFalse);
+    });
+
+    test('retains GPS EXIF only after the user opts out of removal', () async {
+      final result = await mediaService.processImageBytes(
+        createSampleJpgWithLocation(),
+        keepLocation: true,
+      );
+
+      final processed = (result as Success<ProcessedMedia>).value;
+      final decoded = img.decodeJpg(processed.bytes)!;
+      expect(processed.hadLocationMetadata, isTrue);
+      expect(processed.hasStrippedLocation, isFalse);
+      expect(decoded.exif.imageIfd.sub.containsKey('gps'), isTrue);
     });
 
     test('processes valid PNG image', () async {
@@ -121,5 +176,26 @@ void main() {
       expect(failure, isA<ValidationFailure>());
       expect(failure.cause, isA<FileTooLargeException>());
     });
+  });
+
+  testWidgets('field capture exposes safe photo location choice', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: FieldCaptureScreen(
+          fieldRepository: _UnusedFieldRepository(),
+          herbariumRepository: _UnusedHerbariumRepository(),
+        ),
+      ),
+    );
+
+    final choice = find.byKey(const ValueKey('field-remove-photo-location'));
+    expect(choice, findsOneWidget);
+    expect(tester.widget<SwitchListTile>(choice).value, isTrue);
+
+    await tester.tap(choice);
+    await tester.pump();
+    expect(tester.widget<SwitchListTile>(choice).value, isFalse);
   });
 }

@@ -57,6 +57,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
   String? _workflowError;
   LocationState _locationState = LocationState.unknown;
   bool _includeLocation = false;
+  bool _removePhotoLocation = true;
   bool _isWorking = false;
   bool _acceptMismatch = false;
   Timer? _identificationPollTimer;
@@ -91,8 +92,12 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       _workflowError = null;
     });
     final result = camera
-        ? await _mediaService.captureFromCamera(keepLocation: false)
-        : await _mediaService.pickFromGallery(keepLocation: false);
+        ? await _mediaService.captureFromCamera(
+            keepLocation: !_removePhotoLocation,
+          )
+        : await _mediaService.pickFromGallery(
+            keepLocation: !_removePhotoLocation,
+          );
     if (!mounted) return;
     switch (result) {
       case Success<ProcessedMedia>(:final value):
@@ -656,6 +661,20 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (media == null) ...[
+                    SwitchListTile.adaptive(
+                      key: const ValueKey('field-remove-photo-location'),
+                      contentPadding: EdgeInsets.zero,
+                      value: _removePhotoLocation,
+                      onChanged: _isWorking
+                          ? null
+                          : (value) =>
+                                setState(() => _removePhotoLocation = value),
+                      title: const Text('Foto-Standort entfernen'),
+                      subtitle: const Text(
+                        'Empfohlen: GPS-Metadaten vor dem Upload löschen.',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
                     FilledButton.icon(
                       key: const ValueKey('field-capture-camera'),
                       onPressed: _isWorking

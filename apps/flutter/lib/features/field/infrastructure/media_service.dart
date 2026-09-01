@@ -23,10 +23,7 @@ final class FileTooLargeException implements Exception {
 
 /// Thrown when the media format / magic bytes are not supported (only JPEG & PNG allowed).
 final class UnsupportedFormatException implements Exception {
-  const UnsupportedFormatException({
-    required this.message,
-    this.detectedMime,
-  });
+  const UnsupportedFormatException({required this.message, this.detectedMime});
 
   final String message;
   final String? detectedMime;
@@ -45,6 +42,7 @@ final class ProcessedMedia {
     required this.width,
     required this.height,
     required this.sizeBytes,
+    required this.hadLocationMetadata,
     required this.hasStrippedLocation,
   });
 
@@ -54,6 +52,7 @@ final class ProcessedMedia {
   final int width;
   final int height;
   final int sizeBytes;
+  final bool hadLocationMetadata;
   final bool hasStrippedLocation;
 }
 
@@ -73,7 +72,16 @@ final class MediaService {
   final int defaultJpegQuality;
 
   static const List<int> jpegMagic = [0xFF, 0xD8, 0xFF];
-  static const List<int> pngMagic = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+  static const List<int> pngMagic = [
+    0x89,
+    0x50,
+    0x4E,
+    0x47,
+    0x0D,
+    0x0A,
+    0x1A,
+    0x0A,
+  ];
 
   /// Captures an image from the camera and processes it safely.
   Future<Result<ProcessedMedia>> captureFromCamera({
@@ -162,7 +170,8 @@ final class MediaService {
       );
       return Result.failure(
         ValidationFailure(
-          message: 'Die Bilddatei ist mit ${(rawBytes.length / (1024 * 1024)).toStringAsFixed(1)} MB zu groß (Max: ${(effectiveMaxBytes / (1024 * 1024)).toStringAsFixed(1)} MB).',
+          message:
+              'Die Bilddatei ist mit ${(rawBytes.length / (1024 * 1024)).toStringAsFixed(1)} MB zu groß (Max: ${(effectiveMaxBytes / (1024 * 1024)).toStringAsFixed(1)} MB).',
           cause: ex,
         ),
       );
@@ -176,7 +185,8 @@ final class MediaService {
       );
       return const Result.failure(
         ValidationFailure(
-          message: 'Ungültiges Dateiformat. Bitte wähle ein JPEG- oder PNG-Foto.',
+          message:
+              'Ungültiges Dateiformat. Bitte wähle ein JPEG- oder PNG-Foto.',
           cause: ex,
         ),
       );
@@ -186,15 +196,21 @@ final class MediaService {
     final decoded = img.decodeImage(rawBytes);
     if (decoded == null) {
       return const Result.failure(
-        ValidationFailure(
-          message: 'Das Bild konnte nicht dekodiert werden.',
-        ),
+        ValidationFailure(message: 'Das Bild konnte nicht dekodiert werden.'),
       );
+    }
+
+    final hadLocationMetadata =
+        mimeType == 'image/jpeg' &&
+        decoded.exif.imageIfd.sub.containsKey('gps');
+    if (!keepLocation && hadLocationMetadata) {
+      decoded.exif.imageIfd.sub.directories.remove('gps');
     }
 
     // 4. Resize if dimensions exceed maxDimension
     img.Image workingImage = decoded;
-    if (workingImage.width > effectiveMaxDimension || workingImage.height > effectiveMaxDimension) {
+    if (workingImage.width > effectiveMaxDimension ||
+        workingImage.height > effectiveMaxDimension) {
       if (workingImage.width >= workingImage.height) {
         workingImage = img.copyResize(
           workingImage,
@@ -235,13 +251,15 @@ final class MediaService {
       );
       return Result.failure(
         ValidationFailure(
-          message: 'Das Bild überschreitet nach der Kompression die Maximalgröße.',
+          message:
+              'Das Bild überschreitet nach der Kompression die Maximalgröße.',
           cause: ex,
         ),
       );
     }
 
-    final sanitizedFilename = originalFilename != null && originalFilename.isNotEmpty
+    final sanitizedFilename =
+        originalFilename != null && originalFilename.isNotEmpty
         ? '${originalFilename.split('.').first}.$targetExtension'
         : 'observation_${DateTime.now().millisecondsSinceEpoch}.$targetExtension';
 
@@ -253,7 +271,8 @@ final class MediaService {
         width: workingImage.width,
         height: workingImage.height,
         sizeBytes: processedBytes.length,
-        hasStrippedLocation: !keepLocation,
+        hadLocationMetadata: hadLocationMetadata,
+        hasStrippedLocation: hadLocationMetadata && !keepLocation,
       ),
     );
   }
