@@ -215,8 +215,35 @@ test('herbarium enforces ownership, version preconditions, and tombstones', asyn
     () => service.get({ id: ids.other }, created.observation.id),
     (error) => error instanceof ProblemError && error.status === 404,
   );
+  for (const immutablePatch of [
+    { mediaId: ids.clientMedia },
+    { identificationJobId: ids.clientJob },
+    { location: { latitude: 51, longitude: 9, accuracyMeters: 5 } },
+    { syncStatus: 'deleted' },
+  ]) {
+    await assert.rejects(
+      () => service.update(
+        { id: ids.owner },
+        created.observation.id,
+        immutablePatch,
+        `"${created.observation.version}"`,
+      ),
+      (error) => error instanceof ProblemError
+        && error.status === 400
+        && error.fieldErrors && Object.keys(error.fieldErrors).length > 0,
+    );
+  }
   const updated = await service.update({ id: ids.owner }, created.observation.id, { note: 'Korrigierte Notiz' }, `"${created.observation.version}"`);
   assert.equal(updated.note, 'Korrigierte Notiz');
+  await assert.rejects(
+    () => service.update(
+      { id: ids.owner },
+      created.observation.id,
+      { note: 'Veraltete Änderung' },
+      `"${created.observation.version}"`,
+    ),
+    (error) => error instanceof ProblemError && error.code === 'OBSERVATION_VERSION_CONFLICT',
+  );
   await assert.rejects(
     () => service.delete({ id: ids.owner }, created.observation.id, `"${created.observation.version}"`),
     (error) => error instanceof ProblemError && error.code === 'OBSERVATION_VERSION_CONFLICT',
