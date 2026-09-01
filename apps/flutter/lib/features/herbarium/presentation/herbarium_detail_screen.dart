@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../domain/herbarium_models.dart';
 
 /// Screen presenting the detailed observation record from the digital herbarium.
-class HerbariumDetailScreen extends StatelessWidget {
-  const HerbariumDetailScreen({super.key, required this.entry, this.onDelete});
+class HerbariumDetailScreen extends StatefulWidget {
+  const HerbariumDetailScreen({
+    super.key,
+    required this.entry,
+    this.onDelete,
+    this.onUpdateNote,
+  });
 
   final HerbariumEntry entry;
   final Future<void> Function(HerbariumEntry entry)? onDelete;
+  final Future<Result<HerbariumEntry>> Function(
+    HerbariumEntry entry,
+    String note,
+  )?
+  onUpdateNote;
+
+  @override
+  State<HerbariumDetailScreen> createState() => _HerbariumDetailScreenState();
+}
+
+class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
+  late HerbariumEntry entry = widget.entry;
 
   String _formatDate(DateTime date) {
     final day = date.day.toString().padLeft(2, '0');
@@ -43,13 +61,51 @@ class HerbariumDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      if (onDelete != null) {
-        await onDelete!(entry);
+      if (widget.onDelete != null) {
+        await widget.onDelete!(entry);
       }
       if (context.mounted) {
         Navigator.of(context).pop(true);
       }
     }
+  }
+
+  Future<void> _editNote(BuildContext context) async {
+    var editedNote = entry.note;
+    final note = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Notiz bearbeiten'),
+        content: TextFormField(
+          key: const ValueKey('herbarium-note-input'),
+          initialValue: entry.note,
+          onChanged: (value) => editedNote = value,
+          maxLength: 4000,
+          maxLines: 6,
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton(
+            key: const ValueKey('herbarium-note-save'),
+            onPressed: () => Navigator.of(dialogContext).pop(editedNote),
+            child: const Text('Speichern'),
+          ),
+        ],
+      ),
+    );
+    if (note == null || !mounted || widget.onUpdateNote == null) return;
+    final result = await widget.onUpdateNote!(entry, note.trim());
+    if (!mounted) return;
+    if (result case Success<HerbariumEntry>(:final value)) {
+      setState(() => entry = value);
+      return;
+    }
+    ScaffoldMessenger.of(this.context)
+        .showSnackBar(SnackBar(content: Text(result.failureOrNull!.message)));
   }
 
   @override
@@ -93,7 +149,7 @@ class HerbariumDetailScreen extends StatelessWidget {
                       color: AppColors.ink,
                     ),
                   ),
-                  if (onDelete != null)
+                  if (widget.onDelete != null)
                     InkWell(
                       key: const ValueKey('herbarium-delete-button'),
                       onTap: () => _confirmDelete(context),
@@ -223,6 +279,14 @@ class HerbariumDetailScreen extends StatelessWidget {
                     _SectionHeader(
                       icon: Icons.edit_note_rounded,
                       title: 'Notizen & Feldeindrücke',
+                      trailing: widget.onUpdateNote == null
+                          ? null
+                          : IconButton(
+                              key: const ValueKey('herbarium-edit-note'),
+                              tooltip: 'Notiz bearbeiten',
+                              onPressed: () => _editNote(context),
+                              icon: const Icon(Icons.edit_outlined),
+                            ),
                     ),
                     const SizedBox(height: 8),
                     Container(
@@ -423,10 +487,15 @@ class _PlantNetResultCard extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.icon, required this.title});
+  const _SectionHeader({
+    required this.icon,
+    required this.title,
+    this.trailing,
+  });
 
   final IconData icon;
   final String title;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -441,6 +510,7 @@ class _SectionHeader extends StatelessWidget {
             color: AppColors.forest,
           ),
         ),
+        if (trailing != null) ...[const Spacer(), trailing!],
       ],
     );
   }

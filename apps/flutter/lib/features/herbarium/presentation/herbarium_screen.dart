@@ -142,6 +142,26 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
     }
   }
 
+  Future<Result<HerbariumEntry>> _handleUpdateNote(
+    HerbariumEntry entry,
+    String note,
+  ) async {
+    final result = await _repository.updateEntry(
+      id: entry.id,
+      note: note,
+      ifMatchVersion: entry.version,
+    );
+    if (result case Success<HerbariumEntry>(:final value)) {
+      if (mounted) {
+        setState(() {
+          final index = _allEntries.indexWhere((item) => item.id == value.id);
+          if (index >= 0) _allEntries[index] = value;
+        });
+      }
+    }
+    return result;
+  }
+
   void _startField() {
     final callback = widget.onStartField;
     if (callback != null) {
@@ -159,6 +179,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
           onDelete: (item) async {
             await _handleDeleteEntry(item);
           },
+          onUpdateNote: _handleUpdateNote,
         ),
       ),
     );

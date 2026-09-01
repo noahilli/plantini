@@ -99,6 +99,7 @@ void main() {
       (tester) async {
         final entry = sampleEntries.first;
         bool deleteCalled = false;
+        String? updatedNote;
 
         await tester.pumpWidget(
           MaterialApp(
@@ -106,6 +107,10 @@ void main() {
               entry: entry,
               onDelete: (item) async {
                 deleteCalled = true;
+              },
+              onUpdateNote: (item, note) async {
+                updatedNote = note;
+                return Result.success(item.copyWith(note: note, version: 'v2'));
               },
             ),
           ),
@@ -117,6 +122,17 @@ void main() {
         expect(find.text('PlantNet KI-Bestimmung'), findsOneWidget);
         expect(find.text('PlantNet: Quercus robur (98%)'), findsOneWidget);
         expect(find.text('Schöne Eiche im Wald'), findsOneWidget);
+
+        await tester.tap(find.byKey(const ValueKey('herbarium-edit-note')));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const ValueKey('herbarium-note-input')),
+          'Neue Feldnotiz',
+        );
+        await tester.tap(find.byKey(const ValueKey('herbarium-note-save')));
+        await tester.pumpAndSettle();
+        expect(updatedNote, 'Neue Feldnotiz');
+        expect(find.text('Neue Feldnotiz'), findsOneWidget);
 
         // Test delete button and confirmation dialog
         expect(
@@ -320,6 +336,14 @@ void main() {
       expect(entries.first.plantName, 'Sonnentau');
       expect(entries.first.syncStatus, SyncStatus.pending);
 
+      final updateRes = await repo.updateEntry(
+        id: 'c-1',
+        note: 'Aktualisierte Moor-Notiz',
+        ifMatchVersion: entries.first.version,
+      );
+      expect(updateRes.valueOrNull?.note, 'Aktualisierte Moor-Notiz');
+      expect(updateRes.valueOrNull?.syncStatus, SyncStatus.pending);
+
       // Get entry
       final getRes = await repo.getEntry('c-1');
       expect(getRes.isSuccess, isTrue);
@@ -332,7 +356,7 @@ void main() {
       // Delete entry
       final delRes = await repo.deleteEntry(
         id: 'c-1',
-        ifMatchVersion: 'local-c-1',
+        ifMatchVersion: updateRes.valueOrNull!.version,
       );
       expect(delRes.isSuccess, isTrue);
 

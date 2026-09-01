@@ -31,5 +31,11 @@ abstract interface class HerbariumRepository {
     required String ifMatchVersion,
   });
 
+  Future<Result<HerbariumEntry>> updateEntry({
+    required String id,
+    required String note,
+    required String ifMatchVersion,
+  });
+
   Future<Result<List<HerbariumEntry>>> syncEntries();
 }

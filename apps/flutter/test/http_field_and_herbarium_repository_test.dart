@@ -230,12 +230,18 @@ void main() {
           ],
         },
       };
+      final updatedObservation = <String, Object?>{
+        ...observation,
+        'note': 'Neue Notiz',
+        'version': '88888888-8888-4888-8888-888888888888',
+      };
       final interceptor = _QueuedApiInterceptor([
         const _ApiResponse(200, {
           'items': [observation],
           'page': {},
         }),
         const _ApiResponse(201, observation),
+        _ApiResponse(200, updatedObservation),
         const _ApiResponse(202, null),
       ]);
       final repository = HttpHerbariumRepository(_client(interceptor));
@@ -271,14 +277,26 @@ void main() {
         '77777777-7777-4777-8777-777777777777',
       );
 
+      final updated = await repository.updateEntry(
+        id: '44444444-4444-4444-8444-444444444444',
+        note: 'Neue Notiz',
+        ifMatchVersion: '55555555-5555-4555-8555-555555555555',
+      );
+      expect(updated.valueOrNull?.note, 'Neue Notiz');
+      expect(interceptor.requests[2].method, 'PATCH');
+      expect(
+        interceptor.requests[2].headers['If-Match'],
+        '55555555-5555-4555-8555-555555555555',
+      );
+
       final deleted = await repository.deleteEntry(
         id: '44444444-4444-4444-8444-444444444444',
-        ifMatchVersion: '55555555-5555-4555-8555-555555555555',
+        ifMatchVersion: '88888888-8888-4888-8888-888888888888',
       );
       expect(deleted.isSuccess, isTrue);
       expect(
         interceptor.requests.last.headers['If-Match'],
-        '55555555-5555-4555-8555-555555555555',
+        '88888888-8888-4888-8888-888888888888',
       );
     });
   });

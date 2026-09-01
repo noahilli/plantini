@@ -159,6 +159,18 @@ final class MockHerbariumRepository implements HerbariumRepository {
   }
 
   @override
+  Future<Result<HerbariumEntry>> updateEntry({
+    required String id,
+    required String note,
+    required String ifMatchVersion,
+  }) async {
+    final index = entries.indexWhere((entry) => entry.id == id);
+    final updated = entries[index].copyWith(note: note, version: 'v2');
+    entries[index] = updated;
+    return Result.success(updated);
+  }
+
+  @override
   Future<Result<List<HerbariumEntry>>> syncEntries() async {
     return Result.success(entries);
   }

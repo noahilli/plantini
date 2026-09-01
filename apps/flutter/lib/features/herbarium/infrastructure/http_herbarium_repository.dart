@@ -107,6 +107,23 @@ final class HttpHerbariumRepository implements HerbariumRepository {
   }
 
   @override
+  Future<Result<HerbariumEntry>> updateEntry({
+    required String id,
+    required String note,
+    required String ifMatchVersion,
+  }) async {
+    final response = await _client.patchJson(
+      'observations/$id',
+      ifMatchVersion: ifMatchVersion,
+      body: {'note': note},
+    );
+    return response.when(
+      success: (value) => _observation(value.body),
+      failure: Result.failure,
+    );
+  }
+
+  @override
   Future<Result<List<HerbariumEntry>>> syncEntries() => listEntries();
 }
 

@@ -117,7 +117,7 @@ Abnahme: Der Feldpfad läuft mit PlantNet-Mock asynchron, idempotent und nach Ne
 - [x] **P1 | OFFLINE-04:** Serverseitige Idempotency Keys und Unique Constraints ergänzen; Wiederholung darf keinen zweiten Fund erzeugen.
 - [ ] **P1 | OFFLINE-05:** Konfliktregeln pro Feld festlegen und testen; kein pauschales Last-write-wins für Bild, Identifikation, Standort oder Löschung.
 - [ ] **P1 | OFFLINE-06:** Lokale und entfernte Beobachtungen über stabile IDs zusammenführen; Sync-Status, Fehler und Retry sichtbar machen.
-- [ ] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
+- [x] **P1 | OFFLINE-07:** Liste, Detail, Suche, Filter, Notizen, Bearbeiten und Löschen real implementieren; statische Karten/Snackbars ersetzen.
 - [ ] **P1 | OFFLINE-08:** Exakte Standorte privat halten; Export/Share standardmäßig ohne oder vergröbert. Organisationsfilter nie aus ungeprüften Queryparametern übernehmen.
 - [ ] **P2 | OFFLINE-09:** Einzelfund-/Gesamtexport und vollständige Löschung von Original, Derivaten, Queue- und Serverdaten umsetzen.
 - [ ] **P2 | OFFLINE-10:** Download-, Cache- und Speicherverwaltung mit Größenanzeige, Löschregeln und Speicherknappheit ergänzen.

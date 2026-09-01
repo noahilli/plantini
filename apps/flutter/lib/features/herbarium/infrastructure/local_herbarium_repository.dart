@@ -98,6 +98,33 @@ final class LocalHerbariumRepository implements HerbariumRepository {
   }
 
   @override
+  Future<Result<HerbariumEntry>> updateEntry({
+    required String id,
+    required String note,
+    required String ifMatchVersion,
+  }) async {
+    final index = _entries.indexWhere((item) => item.id == id);
+    if (index < 0) {
+      return const Result.failure(
+        NotFoundFailure(message: 'Herbarium-Eintrag wurde nicht gefunden.'),
+      );
+    }
+    final current = _entries[index];
+    if (current.version != ifMatchVersion) {
+      return const Result.failure(
+        ConflictFailure(message: 'Der Fund wurde inzwischen geändert.'),
+      );
+    }
+    final updated = current.copyWith(
+      note: note,
+      version: 'local-${DateTime.now().microsecondsSinceEpoch}',
+      syncStatus: SyncStatus.pending,
+    );
+    _entries[index] = updated;
+    return Result.success(updated);
+  }
+
+  @override
   Future<Result<List<HerbariumEntry>>> syncEntries() async =>
       const Result.failure(
         NetworkFailure(
