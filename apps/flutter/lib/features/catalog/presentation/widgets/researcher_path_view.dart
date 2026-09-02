@@ -27,8 +27,14 @@ final class ResearcherPathView extends StatelessWidget {
       child: ListView.builder(
         key: const ValueKey('level-list-ready'),
         padding: const EdgeInsets.fromLTRB(22, 8, 22, 30),
-        itemCount: sorted.length,
+        itemCount: sorted.length + 1,
         itemBuilder: (context, index) {
+          if (index == sorted.length) {
+            final completed =
+                sorted.isNotEmpty &&
+                sorted.every((level) => level.status == LevelStatus.completed);
+            return _PathFinale(ecosystem: ecosystem, completed: completed);
+          }
           final level = sorted[index];
           final unlocked = level.status != LevelStatus.locked;
           return IntrinsicHeight(
@@ -65,7 +71,7 @@ final class ResearcherPathView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (index < sorted.length - 1)
+                      if (index < sorted.length)
                         Expanded(
                           child: Container(
                             width: 2,
@@ -80,14 +86,22 @@ final class ResearcherPathView extends StatelessWidget {
                 ),
                 const SizedBox(width: 13),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: LevelGateCard(
-                      level: level,
-                      collectionProgress: collectionProgress[level.id],
-                      onTap: onLevelTap == null
-                          ? null
-                          : () => onLevelTap!(level),
+                  child: Align(
+                    alignment: index.isEven
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: FractionallySizedBox(
+                      widthFactor: .94,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: LevelGateCard(
+                          level: level,
+                          collectionProgress: collectionProgress[level.id],
+                          onTap: onLevelTap == null
+                              ? null
+                              : () => onLevelTap!(level),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -98,4 +112,78 @@ final class ResearcherPathView extends StatelessWidget {
       ),
     );
   }
+}
+
+final class _PathFinale extends StatelessWidget {
+  const _PathFinale({required this.ecosystem, required this.completed});
+
+  final Ecosystem ecosystem;
+  final bool completed;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      SizedBox(
+        width: 45,
+        child: Container(
+          key: const ValueKey('level-path-finale'),
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: completed ? AppColors.accent300 : AppColors.neutral200,
+            border: Border.all(
+              color: completed ? AppColors.accent700 : AppColors.neutral400,
+              width: 3,
+            ),
+          ),
+          child: Icon(
+            completed ? Icons.emoji_events : Icons.flag_outlined,
+            color: completed ? AppColors.accent800 : AppColors.neutral700,
+          ),
+        ),
+      ),
+      const SizedBox(width: 13),
+      Expanded(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: completed ? AppColors.accent100 : AppColors.bg,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: completed ? AppColors.accent300 : AppColors.neutral300,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                completed ? 'FORSCHUNGSZIEL ERREICHT' : 'DEIN ENDZIEL',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: completed ? AppColors.accent800 : AppColors.neutral700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${ecosystem.title} meistern',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                completed
+                    ? 'Du hast alle Zielpflanzen gesammelt und jede Etappe abgeschlossen.'
+                    : 'Sammle die Zielpflanzen jeder Etappe und bestehe alle Abschlussquizze.',
+                style: const TextStyle(
+                  color: AppColors.neutral700,
+                  fontSize: 11.5,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
 }

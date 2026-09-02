@@ -155,6 +155,8 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                       style: const TextStyle(color: AppColors.neutral700),
                     ),
                     const SizedBox(height: 18),
+                    _QuestStages(collection: collection),
+                    const SizedBox(height: 14),
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -341,6 +343,147 @@ final class _LevelMission {
 
   final LevelContent content;
   final LevelCollectionProgress collection;
+}
+
+final class _QuestStages extends StatelessWidget {
+  const _QuestStages({required this.collection});
+
+  final LevelCollectionProgress collection;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    key: const ValueKey('level-quest-stages'),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: AppColors.neutral100,
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: AppColors.sage200),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'SO SCHAFFST DU DIESES LEVEL',
+          style: Theme.of(context).textTheme.labelSmall
+              ?.copyWith(color: AppColors.sage700),
+        ),
+        const SizedBox(height: 14),
+        _QuestStage(
+          number: 1,
+          icon: Icons.menu_book_outlined,
+          title: 'Arten entdecken',
+          detail: 'Lerne Merkmale und Lebensraum kennen',
+          state: _QuestStageState.complete,
+        ),
+        _QuestConnector(complete: collection.isComplete),
+        _QuestStage(
+          number: 2,
+          icon: Icons.photo_camera_outlined,
+          title: 'Zielpflanzen sammeln',
+          detail:
+              '${collection.collectedCount} von ${collection.requiredCount} im Herbarium bestätigt',
+          state: collection.isComplete
+              ? _QuestStageState.complete
+              : _QuestStageState.active,
+        ),
+        _QuestConnector(complete: collection.isComplete),
+        _QuestStage(
+          number: 3,
+          icon: Icons.workspace_premium_outlined,
+          title: 'Abschlussprüfung',
+          detail: collection.isComplete
+              ? 'Freigeschaltet – beweise dein Pflanzenwissen'
+              : 'Wird erst durch die Sammelmission freigeschaltet',
+          state: collection.isComplete
+              ? _QuestStageState.active
+              : _QuestStageState.locked,
+        ),
+      ],
+    ),
+  );
+}
+
+enum _QuestStageState { complete, active, locked }
+
+final class _QuestStage extends StatelessWidget {
+  const _QuestStage({
+    required this.number,
+    required this.icon,
+    required this.title,
+    required this.detail,
+    required this.state,
+  });
+
+  final int number;
+  final IconData icon;
+  final String title;
+  final String detail;
+  final _QuestStageState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = state != _QuestStageState.locked;
+    return Row(
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: state == _QuestStageState.complete
+                ? AppColors.sage500
+                : state == _QuestStageState.active
+                ? AppColors.accent300
+                : AppColors.neutral200,
+          ),
+          child: state == _QuestStageState.complete
+              ? const Icon(Icons.check, color: AppColors.neutral100)
+              : Icon(
+                  state == _QuestStageState.locked ? Icons.lock_outline : icon,
+                  color: active ? AppColors.accent800 : AppColors.neutral600,
+                ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$number. $title',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: active ? AppColors.neutral900 : AppColors.neutral600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                detail,
+                style: const TextStyle(
+                  color: AppColors.neutral700,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+final class _QuestConnector extends StatelessWidget {
+  const _QuestConnector({required this.complete});
+
+  final bool complete;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 3,
+    height: 18,
+    margin: const EdgeInsets.only(left: 20, top: 3, bottom: 3),
+    color: complete ? AppColors.sage400 : AppColors.neutral300,
+  );
 }
 
 final class _PlantToken extends StatelessWidget {

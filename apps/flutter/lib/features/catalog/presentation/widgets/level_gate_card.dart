@@ -24,6 +24,7 @@ final class LevelGateCard extends StatelessWidget {
     final completed = level.status == LevelStatus.completed;
     final progress = level.progress?.clamp(0.0, 1.0).toDouble();
     final collection = collectionProgress;
+    final collectionComplete = collection?.isComplete ?? false;
     return Semantics(
       label: 'Level-Karte: ${level.title}',
       button: !locked,
@@ -43,6 +44,33 @@ final class LevelGateCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: completed
+                            ? AppColors.sage200
+                            : active
+                            ? AppColors.accent100
+                            : AppColors.neutral200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        completed
+                            ? Icons.workspace_premium
+                            : locked
+                            ? Icons.lock_outline
+                            : Icons.explore_outlined,
+                        size: 20,
+                        color: completed
+                            ? AppColors.sage800
+                            : active
+                            ? AppColors.accent800
+                            : AppColors.neutral700,
+                      ),
+                    ),
+                    const SizedBox(width: 9),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 11,
@@ -64,7 +92,7 @@ final class LevelGateCard extends StatelessWidget {
                             const SizedBox(width: 5),
                           ],
                           Text(
-                            _status(level.status),
+                            'LEVEL ${level.sequence} · ${_status(level.status)}',
                             style: TextStyle(
                               color: locked
                                   ? AppColors.neutral800
@@ -112,21 +140,47 @@ final class LevelGateCard extends StatelessWidget {
                   if (collection != null) ...[
                     Row(
                       children: [
+                        for (
+                          var index = 0;
+                          index < collection.requiredCount;
+                          index++
+                        ) ...[
+                          _SpecimenSlot(
+                            collected: collection.collectedPlantIds.contains(
+                              collection.requiredPlantIds[index],
+                            ),
+                          ),
+                          if (index < collection.requiredCount - 1)
+                            const SizedBox(width: 6),
+                        ],
+                        const Spacer(),
+                        Text(
+                          '${collection.collectedCount}/${collection.requiredCount}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.sage800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 9),
+                    Row(
+                      children: [
                         Icon(
-                          collection.isComplete
+                          collectionComplete
                               ? Icons.verified
                               : Icons.local_florist_outlined,
                           size: 17,
-                          color: collection.isComplete
+                          color: collectionComplete
                               ? AppColors.sage700
                               : AppColors.accent800,
                         ),
                         const SizedBox(width: 7),
                         Expanded(
                           child: Text(
-                            collection.isComplete
-                                ? 'Sammelauftrag erfüllt'
-                                : 'Sammle noch ${collection.requiredCount - collection.collectedCount} Zielarten',
+                            collectionComplete
+                                ? 'Herbarium-Schlüssel freigeschaltet'
+                                : 'Mission: Sammle noch ${collection.requiredCount - collection.collectedCount} Zielarten',
                             style: const TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w700,
@@ -174,9 +228,9 @@ final class LevelGateCard extends StatelessWidget {
                       child: FilledButton(
                         onPressed: onTap,
                         child: Text(
-                          level.status == LevelStatus.inProgress
-                              ? 'Weiterlernen →'
-                              : 'Etappe starten →',
+                          collectionComplete
+                              ? 'Abschlussprüfung starten →'
+                              : 'Sammelmission starten →',
                         ),
                       ),
                     ),
@@ -189,6 +243,31 @@ final class LevelGateCard extends StatelessWidget {
       ),
     );
   }
+}
+
+final class _SpecimenSlot extends StatelessWidget {
+  const _SpecimenSlot({required this.collected});
+
+  final bool collected;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 28,
+    height: 28,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: collected ? AppColors.sage300 : AppColors.neutral200,
+      border: Border.all(
+        color: collected ? AppColors.sage600 : AppColors.neutral400,
+        width: 2,
+      ),
+    ),
+    child: Icon(
+      collected ? Icons.check : Icons.local_florist_outlined,
+      size: 15,
+      color: collected ? AppColors.sage900 : AppColors.neutral600,
+    ),
+  );
 }
 
 Color _badgeColor(LevelStatus status) => switch (status) {

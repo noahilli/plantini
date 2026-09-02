@@ -438,6 +438,12 @@ void main() {
         expect(find.text('Lerneinheit'), findsOneWidget);
         expect(find.text('Heimische Laubbäume'), findsOneWidget);
         expect(
+          find.byKey(const ValueKey('level-quest-stages')),
+          findsOneWidget,
+        );
+        expect(find.text('2. Zielpflanzen sammeln'), findsOneWidget);
+        expect(find.text('3. Abschlussprüfung'), findsOneWidget);
+        expect(
           find.byKey(const ValueKey('learning-start-quiz')),
           findsOneWidget,
         );

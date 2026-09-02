@@ -124,6 +124,13 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
             _NextStepCard(
               ecosystem: path.ecosystem,
               levels: levels,
+              collectionProgress: {
+                for (final level in levels)
+                  level.id: LevelCollectionProgress.forLevel(
+                    level,
+                    path.confirmedPlantIds,
+                  ),
+              },
               onOpen: (level) => context.go('/levels/${level.id}'),
             ),
             Expanded(
@@ -165,11 +172,13 @@ final class _NextStepCard extends StatelessWidget {
   const _NextStepCard({
     required this.ecosystem,
     required this.levels,
+    required this.collectionProgress,
     required this.onOpen,
   });
 
   final Ecosystem ecosystem;
   final List<Level> levels;
+  final Map<String, LevelCollectionProgress> collectionProgress;
   final ValueChanged<Level> onOpen;
 
   @override
@@ -181,15 +190,22 @@ final class _NextStepCard extends StatelessWidget {
         .firstOrNull;
     final totalProgress = levels.isEmpty
         ? 0.0
-        : levels.fold<double>(
-                0,
-                (sum, level) =>
-                    sum +
-                    (level.status == LevelStatus.completed
-                        ? 1
-                        : level.progress ?? 0),
-              ) /
+        : levels.fold<double>(0, (sum, level) {
+                if (level.status == LevelStatus.completed) return sum + 1;
+                final collection = collectionProgress[level.id];
+                // The field mission is the first half of a level. The
+                // server-authoritative quiz completion supplies the rest.
+                return sum + ((collection?.fraction ?? 0) * .5);
+              }) /
               levels.length;
+    final collected = collectionProgress.values.fold<int>(
+      0,
+      (sum, mission) => sum + mission.collectedCount,
+    );
+    final required = collectionProgress.values.fold<int>(
+      0,
+      (sum, mission) => sum + mission.requiredCount,
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
       child: Column(
@@ -240,6 +256,25 @@ final class _NextStepCard extends StatelessWidget {
                       style: const TextStyle(
                         color: AppColors.neutral700,
                         fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 9),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.collections_bookmark_outlined,
+                      size: 16,
+                      color: AppColors.sage700,
+                    ),
+                    const SizedBox(width: 7),
+                    Text(
+                      '$collected von $required Zielpflanzen im Herbarium',
+                      style: const TextStyle(
+                        color: AppColors.sage800,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

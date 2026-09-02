@@ -55,6 +55,8 @@ void main() {
     );
 
     expect(find.byType(LevelGateCard), findsNWidgets(2));
+    expect(find.byKey(const ValueKey('level-path-finale')), findsOneWidget);
+    expect(find.text('DEIN ENDZIEL'), findsOneWidget);
 
     // Check if they are rendered in correct order
     final firstCard = tester.widget<LevelGateCard>(
@@ -105,6 +107,36 @@ void main() {
     );
 
     expect(find.text('1/3 gesammelt'), findsOneWidget);
-    expect(find.text('Sammle noch 2 Zielarten'), findsOneWidget);
+    expect(find.text('Mission: Sammle noch 2 Zielarten'), findsOneWidget);
+    expect(find.text('Sammelmission starten →'), findsOneWidget);
+  });
+
+  testWidgets('completed path celebrates the ecosystem goal', (tester) async {
+    const ecosystem = Ecosystem(
+      id: 'e1',
+      slug: 'wald',
+      title: 'Wald',
+      releaseVersion: '1',
+      levelIds: ['l1'],
+    );
+    const level = Level(
+      id: 'l1',
+      ecosystemId: 'e1',
+      title: 'Waldmeister',
+      sequence: 1,
+      status: LevelStatus.completed,
+      minimumScore: .8,
+      requiredQuizIds: [],
+      plantIds: ['p1'],
+    );
+
+    await tester.pumpWidget(
+      buildTestableWidget(
+        ResearcherPathView(ecosystem: ecosystem, levels: const [level]),
+      ),
+    );
+
+    expect(find.text('FORSCHUNGSZIEL ERREICHT'), findsOneWidget);
+    expect(find.text('Wald meistern'), findsOneWidget);
   });
 }
