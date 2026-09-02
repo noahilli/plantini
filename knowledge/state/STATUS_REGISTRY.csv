@@ -93,7 +93,7 @@ ADMIN-08,work_item,P3,deferred,product-manager,FA075,NONE,NONE,NONE,post-pilot,2
 API-01,work_item,P0,ready,orchestrator,NFA004;NFA021,NONE,NONE,B-OQ-03,foundation,2026-08-25,Run sync and worker boundary spike
 API-02,work_item,P0,verified,backend-api,NFA004;NFA022,API-01,E-API-02,NONE,foundation,2026-09-02,Keep implemented and planned operation boundaries explicit in the canonical contract
 API-03,work_item,P0,verified,backend-api,NFA004;NFA023,API-02;INFRA-03,E-API-03,NONE,foundation,2026-09-02,Keep generation digests route checks and Dart client builds blocking in CI
-API-04,work_item,P0,planned,backend-api,NFA004;NFA021,API-02,NONE,NONE,foundation,2026-08-25,Specify reusable API conventions
+API-04,work_item,P0,verified,backend-api,NFA004;NFA021,API-02,E-API-04,NONE,foundation,2026-09-03,Keep convention tests and generated client drift checks blocking
 API-05,work_item,P1,planned,backend-api,NFA021,API-02;API-04,NONE,NONE,alpha,2026-08-25,Move logic into testable services
 API-06,work_item,P1,planned,backend-api,NFA022,API-02;API-05;INFRA-04,NONE,B-ENV-01,alpha,2026-08-25,Test against real backing services
 API-07,work_item,P1,planned,backend-api,NFA020;NFA021,API-05,NONE,NONE,alpha,2026-08-25,Version constraints and migrations
@@ -101,7 +101,7 @@ API-08,work_item,P2,planned,backend-api,NFA005;NFA022,API-06;INFRA-10,NONE,NONE,
 INFRA-01,work_item,P0,blocked,devops-release,NFA023,B-REMOTE-01,NONE,B-REMOTE-01,foundation,2026-08-25,Publish only with authorised remote access and preserve proof
 INFRA-02,work_item,P0,verified,devops-release,NFA023,STATUS-02,E-INFRA-02,NONE,foundation,2026-09-02,Keep the canonical versions enforced by CI configuration validation
 INFRA-03,work_item,P0,verified,devops-release,NFA022;NFA023,STATUS-02,E-INFRA-03,NONE,foundation,2026-09-02,Collect remote pipeline proof under INFRA-01 without weakening any gate
-INFRA-04,work_item,P0,verified,devops-release,NFA022;NFA023,INFRA-03;STATUS-06,E-INFRA-04,NONE,foundation,2026-09-02,Keep the isolated IPv4 stack and seven-project suite repeatable
+INFRA-04,work_item,P0,verified,devops-release,NFA022;NFA023,INFRA-03;STATUS-06,E-INFRA-04,NONE,foundation,2026-09-03,Keep the isolated IPv4 stack and eight-test suite repeatable
 INFRA-05,work_item,P0,verified,devops-release,NFA023,INFRA-03,E-INFRA-05,NONE,foundation,2026-09-02,Retain runtime reports only as bounded CI artifacts
 INFRA-06,work_item,P1,planned,devops-release,NFA023;NFA009,INFRA-02,NONE,NONE,alpha,2026-08-25,Split development and production posture
 INFRA-07,work_item,P1,planned,devops-release,NFA023;NFA026,INFRA-06,NONE,NONE,alpha,2026-08-25,Define image and migration lifecycle
