@@ -216,8 +216,12 @@ async function execute(ctx, action) {
   } catch (error) {
     const problem = asProblem(error, traceId, ctx.path);
     ctx.status = problem.status;
-    ctx.type = 'application/problem+json';
     ctx.body = problem;
+    // Koa derives application/json when an object body is assigned. Set the
+    // RFC 9457 media type afterwards so framework inference cannot overwrite
+    // the public error contract.
+    ctx.type = 'application/problem+json';
+    ctx.set('Content-Type', 'application/problem+json');
   }
 }
 
