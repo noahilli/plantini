@@ -25,6 +25,7 @@ jobs:
       - name: Validate OpenAPI Contract
         run: |
           node tools/scripts/validate-ci-config.mjs
+          node tools/scripts/validate-api-contract.mjs
           npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml
           python3 knowledge/scripts/validate_knowledge.py
 
@@ -66,7 +67,19 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          cd packages/api && dart pub get
+          cd ../..
           cd apps/flutter && flutter pub get
+
+      - name: Validate Generated Dart API Client
+        run: |
+          cd packages/api
+          dart run build_runner build
+          dart format --output=none --set-exit-if-changed lib test
+          dart analyze
+          dart test
+          cd ../..
+          git diff --exit-code -- packages/api
 
       - name: Run Flutter Static Analysis
         run: |

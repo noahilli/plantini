@@ -18,6 +18,7 @@ ci:configuration:
     - apt-get install --yes python3
   script:
     - node tools/scripts/validate-ci-config.mjs
+    - node tools/scripts/validate-api-contract.mjs
     - npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml
     - python3 knowledge/scripts/validate_knowledge.py
 
@@ -38,6 +39,14 @@ flutter:test:
   stage: test
   image: ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}
   script:
+    - cd packages/api
+    - dart pub get
+    - dart run build_runner build
+    - dart format --output=none --set-exit-if-changed lib test
+    - dart analyze
+    - dart test
+    - cd ../..
+    - git diff --exit-code -- packages/api
     - cd apps/flutter
     - flutter pub get
     - dart format --output=none --set-exit-if-changed lib test

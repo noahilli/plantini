@@ -31,6 +31,7 @@ if (platformPackage.devDependencies?.eslint !== '10.9.1') {
 
 for (const [scope, source] of [['GitLab CI', gitlab], ['GitHub CI', github]]) {
   requireText(source, 'node tools/scripts/validate-ci-config.mjs', scope);
+  requireText(source, 'node tools/scripts/validate-api-contract.mjs', scope);
   requireText(source, '@redocly/cli@1.34.3 lint contracts/api.yaml', scope);
   requireText(source, 'knowledge/scripts/validate_knowledge.py', scope);
   requireText(source, 'npm run stack:up', scope);
@@ -44,6 +45,8 @@ for (const [scope, source] of [['GitLab CI', gitlab], ['GitHub CI', github]]) {
   requireText(source, 'dart format --output=none --set-exit-if-changed lib test', scope);
   requireText(source, 'flutter analyze', scope);
   requireText(source, 'flutter test', scope);
+  requireText(source, 'dart run build_runner build', scope);
+  requireText(source, 'git diff --exit-code -- packages/api', scope);
 }
 
 if (/3\.24\./.test(`${gitlab}\n${github}\n${e2eRunner}`)) {
