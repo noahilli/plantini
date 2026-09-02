@@ -7,7 +7,10 @@ echo "==================================================="
 
 echo "[1/4] Backend & Identity Tests..."
 cd "$SCRIPT_DIR/services/platform"
+npm run lint
+npm run check
 npm test
+npm run build
 cd "$SCRIPT_DIR"
 node --test services/identity/test/*.test.mjs
 

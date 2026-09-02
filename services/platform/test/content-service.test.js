@@ -3,14 +3,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const {
-  ContentService,
-  mapEcosystem,
-  mapLevel,
-  mapPlant,
-  mapQuizItem,
-  validateManifest,
-} = require('../src/api/platform/services/core/content/content-service');
+const { ContentService } = require('../src/api/platform/services/core/content/content-service');
 const { ProblemError } = require('../src/api/platform/services/core/errors');
 
 const ids = {
@@ -107,7 +100,7 @@ function createMockRepository() {
 
   return {
     async findActiveRelease() { return activeRelease; },
-    async listPublishedEcosystems(page) { return { items: [ecosystem], total: 1 }; },
+    async listPublishedEcosystems() { return { items: [ecosystem], total: 1 }; },
     async findPublishedEcosystem(id) { return id === ids.ecosystem ? ecosystem : null; },
     async findPublishedLevel(id) { return id === ids.level ? level : null; },
     async findPublishedPlant(id) { return id === ids.plant ? plant : null; },

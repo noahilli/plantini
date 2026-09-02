@@ -2,7 +2,7 @@
 
 const { createHash } = require('crypto');
 
-const { ProblemError, conflict, invalidRequest, notFound } = require('../errors');
+const { conflict, invalidRequest, notFound } = require('../errors');
 const { newId, payloadDigest, requireIdempotencyKey, requireUuid, scopedIdempotencyKey } = require('../ids');
 const { optionalString, requireInteger, requirePlainObject, requireString, rejectUnknownFields } = require('../validation');
 

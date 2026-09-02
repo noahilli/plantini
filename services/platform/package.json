@@ -11,6 +11,7 @@
     "deploy": "strapi deploy",
     "test": "node --test test/*.test.js",
     "test:unit": "node --test test/*.test.js",
+    "lint": "eslint config src test",
     "check": "node --check src/index.js && node --check src/api/platform/controllers/platform.js"
   },
   "dependencies": {
@@ -37,5 +38,9 @@
     "node": ">=18.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.9.1"
+  }
 }

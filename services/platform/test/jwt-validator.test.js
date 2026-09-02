@@ -4,8 +4,8 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const crypto = require('node:crypto');
 
-const { KeycloakJwtValidator, authenticationError } = require('../src/api/platform/services/core/auth/jwt-validator');
-const { ActorService, extractRoles, normalizeRole } = require('../src/api/platform/services/core/auth/actor-service');
+const { KeycloakJwtValidator } = require('../src/api/platform/services/core/auth/jwt-validator');
+const { ActorService } = require('../src/api/platform/services/core/auth/actor-service');
 const { ProblemError } = require('../src/api/platform/services/core/errors');
 
 // Helper to generate an RSA keypair and sign test JWTs

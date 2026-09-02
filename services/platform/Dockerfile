@@ -12,7 +12,7 @@ FROM dependencies AS build
 
 COPY . ./
 ENV NODE_ENV=production
-RUN npm run check && npm run build
+RUN npm run lint && npm run check && npm test && npm run build
 
 FROM node:20.20.2-bookworm-slim AS runtime
 

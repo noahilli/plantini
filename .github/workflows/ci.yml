@@ -32,9 +32,13 @@ jobs:
         run: |
           cd services/platform && npm ci
 
-      - name: Run Backend Unit Tests
+      - name: Run Backend Quality Gates
         run: |
-          cd services/platform && npm test
+          cd services/platform
+          npm run lint
+          npm run check
+          npm test
+          npm run build
 
       - name: Run Identity Realm Security Tests
         run: |
