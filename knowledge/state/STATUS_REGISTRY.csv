@@ -91,8 +91,8 @@ ADMIN-06,work_item,P2,blocked,product-manager,FA070-FA074;NFA012,B-OQ-04,NONE,B-
 ADMIN-07,work_item,P2,blocked,security-privacy,FA009;FA074;NFA012,ADMIN-06,NONE,B-OQ-04,pilot,2026-08-25,Define retention only after legal basis is fixed
 ADMIN-08,work_item,P3,deferred,product-manager,FA075,NONE,NONE,NONE,post-pilot,2026-08-25,Reassess after core support ownership is funded
 API-01,work_item,P0,ready,orchestrator,NFA004;NFA021,NONE,NONE,B-OQ-03,foundation,2026-08-25,Run sync and worker boundary spike
-API-02,work_item,P0,planned,backend-api,NFA004;NFA022,API-01,NONE,B-OQ-03,foundation,2026-08-25,Complete canonical OpenAPI contract
-API-03,work_item,P0,planned,backend-api,NFA004;NFA023,API-02;INFRA-03,NONE,B-CI-01,foundation,2026-08-25,Pin code generation and fail divergence
+API-02,work_item,P0,verified,backend-api,NFA004;NFA022,API-01,E-API-02,NONE,foundation,2026-09-02,Keep implemented and planned operation boundaries explicit in the canonical contract
+API-03,work_item,P0,verified,backend-api,NFA004;NFA023,API-02;INFRA-03,E-API-03,NONE,foundation,2026-09-02,Keep generation digests route checks and Dart client builds blocking in CI
 API-04,work_item,P0,planned,backend-api,NFA004;NFA021,API-02,NONE,NONE,foundation,2026-08-25,Specify reusable API conventions
 API-05,work_item,P1,planned,backend-api,NFA021,API-02;API-04,NONE,NONE,alpha,2026-08-25,Move logic into testable services
 API-06,work_item,P1,planned,backend-api,NFA022,API-02;API-05;INFRA-04,NONE,B-ENV-01,alpha,2026-08-25,Test against real backing services

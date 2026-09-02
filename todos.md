@@ -154,7 +154,7 @@ Abnahme: Organisationsadmins sehen nur ihren Scope; Widerruf stoppt künftige Fo
 
 - [ ] **P0 | API-01:** OQ-03 per Sync-/Worker-Spike entscheiden: dünne Strapi-Erweiterung oder separater TypeScript-Fachdienst.
 - [x] **P0 | API-02:** OpenAPI als kanonischen Vertrag vervollständigen: Content-Releases, Fortschritt, Queue-Status, Identifikation, Bearbeitung/Löschung, Account und Admin.
-- [ ] **P0 | API-03:** Client-/Servergenerierung pinnen und in CI prüfen, dass Spezifikation, Server und Dart-Client nicht auseinanderlaufen.
+- [x] **P0 | API-03:** Client-/Servergenerierung pinnen und in CI prüfen, dass Spezifikation, Server und Dart-Client nicht auseinanderlaufen.
 - [ ] **P0 | API-04:** Einheitliches Fehlerformat, Correlation-ID, Pagination, Filter, Zeitformat, Idempotency und API-Versionierung definieren.
 - [ ] **P1 | API-05:** Controllerlogik in testbare Services/Use Cases verschieben; Eingaben validieren und interne Fehler nicht ungefiltert loggen.
 - [ ] **P1 | API-06:** Contract-/Integrationstests gegen PostgreSQL, Keycloak, Storage, Redis und PlantNet-Mock mit Positiv-, Negativ- und Retry-Fällen ergänzen.
