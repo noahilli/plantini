@@ -33,8 +33,9 @@ function requireArray(value, field, options = {}) {
 }
 
 function requireDate(value, field) {
-  if (typeof value !== 'string' || Number.isNaN(Date.parse(value))) {
-    throw invalidRequest({ [field]: 'Muss ein ISO-8601-Zeitstempel sein.' });
+  const rfc3339 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+  if (typeof value !== 'string' || !rfc3339.test(value) || Number.isNaN(Date.parse(value))) {
+    throw invalidRequest({ [field]: 'Muss ein RFC-3339-Zeitstempel mit Zeitzone sein.' });
   }
   return new Date(value).toISOString();
 }
@@ -71,12 +72,22 @@ function rejectUnknownFields(value, allowed) {
 }
 
 function pageFromQuery(query = {}) {
+  rejectUnknownQuery(query, ['page', 'pageSize']);
   const page = query.page === undefined ? 1 : Number(query.page);
   const pageSize = query.pageSize === undefined ? 50 : Number(query.pageSize);
   if (!Number.isInteger(page) || page < 1 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
     throw invalidRequest({ page: 'page muss mindestens 1 sein.', pageSize: 'pageSize muss zwischen 1 und 100 liegen.' });
   }
   return { page, pageSize };
+}
+
+function rejectUnknownQuery(query = {}, allowed = []) {
+  const unknown = Object.keys(query).filter((key) => !allowed.includes(key));
+  if (unknown.length > 0) {
+    throw invalidRequest(
+      Object.fromEntries(unknown.map((key) => [key, 'Dieser Filter ist nicht im API-Vertrag definiert.']))
+    );
+  }
 }
 
 function parseIfMatch(value) {
@@ -97,5 +108,6 @@ module.exports = {
   requireInteger,
   rejectUnknownFields,
   pageFromQuery,
+  rejectUnknownQuery,
   parseIfMatch,
 };

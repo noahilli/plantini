@@ -6,6 +6,7 @@ const {
   requireArray,
   requireDate,
   requireInteger,
+  optionalDate,
   requirePlainObject,
   requireString,
   optionalString,
@@ -163,12 +164,10 @@ class LearningService {
   }
 
   async getProgress(actor, since) {
-    if (since !== undefined && (typeof since !== 'string' || Number.isNaN(Date.parse(since)))) {
-      throw invalidRequest({ since: 'Muss ein ISO-8601-Zeitstempel sein.' });
-    }
+    const normalizedSince = optionalDate(since, 'since');
     const [levels, attempts] = await Promise.all([
       this.repository.listPublishedLevels(),
-      this.repository.listAttemptsByOwner(actor.id, since),
+      this.repository.listAttemptsByOwner(actor.id, normalizedSince),
     ]);
     const attemptsByLevel = new Map();
     for (const attempt of attempts) {

@@ -14,6 +14,14 @@ servers:
     description: IPv4 development default; generated clients override this per environment
 security:
   - bearerAuth: []
+x-plantini-api-conventions:
+  version: v1
+  versionHeader: X-API-Version
+  correlationHeader: X-Correlation-Id
+  errorMediaType: application/problem+json
+  pagination: {pageParameter: page, pageSizeParameter: pageSize, maximumPageSize: 100}
+  timestamps: RFC3339 UTC on output; timezone required on input
+  idempotency: Idempotency-Key is required on retryable command operations
 tags:
   - name: Profile
     description: Authenticated person and preferences.
@@ -458,12 +466,15 @@ components:
     JobId: {name: jobId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
     ObservationId: {name: observationId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
     UserId: {name: userId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+  headers:
+    CorrelationId: {description: Stable request trace identifier, schema: {type: string, minLength: 8, maxLength: 128, pattern: '^[A-Za-z0-9._-]+$'}}
+    ApiVersion: {description: Served major API boundary, schema: {type: string, enum: [v1]}}
   responses:
-    BadRequest: {description: Request violates a documented input invariant, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
-    Unauthorized: {description: 'Missing, expired or invalid bearer token', content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
-    NotFound: {description: Resource is unavailable to this caller, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
-    Conflict: {description: 'Version, idempotency or state conflict', content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
-    Forbidden: {description: Caller does not have the required role or scope, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    BadRequest: {description: Request violates a documented input invariant, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Unauthorized: {description: 'Missing, expired or invalid bearer token', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    NotFound: {description: Resource is unavailable to this caller, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Conflict: {description: 'Version, idempotency or state conflict', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    Forbidden: {description: Caller does not have the required role or scope, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
   schemas:
     Id: {type: string, format: uuid}
     Problem:

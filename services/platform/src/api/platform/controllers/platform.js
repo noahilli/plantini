@@ -1,14 +1,15 @@
 'use strict';
 
-const { randomUUID } = require('crypto');
 const { readFile } = require('fs/promises');
 
 const { asProblem, invalidRequest, ProblemError } = require('../services/core/errors');
+const { API_VERSION, applyResponseConventions } = require('../services/core/http-conventions');
 const { getPlatformRuntime, resolveActor } = require('../services/core/platform-runtime');
+const { rejectUnknownQuery } = require('../services/core/validation');
 
 module.exports = {
   async health(ctx) {
-    return execute(ctx, async () => ({ status: 'ok', apiVersion: 'v1' }));
+    return execute(ctx, async () => ({ status: 'ok', apiVersion: API_VERSION }));
   },
 
   async getMe(ctx) {
@@ -32,7 +33,10 @@ module.exports = {
   },
 
   async getContentChanges(ctx) {
-    return execute(ctx, async (runtime) => runtime.repositories.content.findChangesSince(ctx.query.since));
+    return execute(ctx, async (runtime) => {
+      rejectUnknownQuery(ctx.query, ['since']);
+      return runtime.repositories.content.findChangesSince(ctx.query.since);
+    });
   },
 
   async listEcosystems(ctx) {
@@ -56,11 +60,14 @@ module.exports = {
   },
 
   async listQuizItems(ctx) {
-    return withActor(ctx, (runtime, actor) => runtime.content.listQuizItems(
-      actor,
-      ctx.query.levelId,
-      typeof ctx.query.contentVersion === 'string' ? ctx.query.contentVersion : undefined,
-    ));
+    return withActor(ctx, (runtime, actor) => {
+      rejectUnknownQuery(ctx.query, ['levelId', 'contentVersion']);
+      return runtime.content.listQuizItems(
+        actor,
+        ctx.query.levelId,
+        typeof ctx.query.contentVersion === 'string' ? ctx.query.contentVersion : undefined,
+      );
+    });
   },
 
   async startLevelAttempt(ctx) {
@@ -91,7 +98,10 @@ module.exports = {
   },
 
   async getProgress(ctx) {
-    return withActor(ctx, (runtime, actor) => runtime.learning.getProgress(actor, ctx.query.since));
+    return withActor(ctx, (runtime, actor) => {
+      rejectUnknownQuery(ctx.query, ['since']);
+      return runtime.learning.getProgress(actor, ctx.query.since);
+    });
   },
 
   async synchronize(ctx) {
@@ -203,8 +213,7 @@ async function withActor(ctx, action) {
 }
 
 async function execute(ctx, action) {
-  const traceId = correlationId(ctx);
-  ctx.set('X-Correlation-Id', traceId);
+  const traceId = applyResponseConventions(ctx);
   try {
     const runtime = getPlatformRuntime(strapi);
     const body = await action(runtime, traceId);
@@ -223,13 +232,6 @@ async function execute(ctx, action) {
     ctx.type = 'application/problem+json';
     ctx.set('Content-Type', 'application/problem+json');
   }
-}
-
-function correlationId(ctx) {
-  const requested = ctx.get('x-correlation-id');
-  return typeof requested === 'string' && /^[A-Za-z0-9._-]{8,128}$/.test(requested)
-    ? requested
-    : randomUUID();
 }
 
 function extractOneFile(files) {
