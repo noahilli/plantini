@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -11,19 +12,31 @@ part 'ecosystem.g.dart';
 /// Ecosystem
 ///
 /// Properties:
-/// * [id] 
-/// * [name] 
-/// * [description] 
+/// * [id]
+/// * [slug]
+/// * [name]
+/// * [description]
+/// * [releaseVersion]
+/// * [levelIds]
 @BuiltValue()
 abstract class Ecosystem implements Built<Ecosystem, EcosystemBuilder> {
   @BuiltValueField(wireName: r'id')
   String get id;
+
+  @BuiltValueField(wireName: r'slug')
+  String get slug;
 
   @BuiltValueField(wireName: r'name')
   String get name;
 
   @BuiltValueField(wireName: r'description')
   String? get description;
+
+  @BuiltValueField(wireName: r'releaseVersion')
+  String get releaseVersion;
+
+  @BuiltValueField(wireName: r'levelIds')
+  BuiltList<String>? get levelIds;
 
   Ecosystem._();
 
@@ -53,6 +66,11 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
       object.id,
       specifiedType: const FullType(String),
     );
+    yield r'slug';
+    yield serializers.serialize(
+      object.slug,
+      specifiedType: const FullType(String),
+    );
     yield r'name';
     yield serializers.serialize(
       object.name,
@@ -65,6 +83,18 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
         specifiedType: const FullType(String),
       );
     }
+    yield r'releaseVersion';
+    yield serializers.serialize(
+      object.releaseVersion,
+      specifiedType: const FullType(String),
+    );
+    if (object.levelIds != null) {
+      yield r'levelIds';
+      yield serializers.serialize(
+        object.levelIds,
+        specifiedType: const FullType(BuiltList, [FullType(String)]),
+      );
+    }
   }
 
   @override
@@ -73,7 +103,9 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
     Ecosystem object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -95,6 +127,13 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
           ) as String;
           result.id = valueDes;
           break;
+        case r'slug':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.slug = valueDes;
+          break;
         case r'name':
           final valueDes = serializers.deserialize(
             value,
@@ -109,6 +148,22 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
           ) as String?;
           if (valueDes == null) continue;
           result.description = valueDes;
+          break;
+        case r'releaseVersion':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.releaseVersion = valueDes;
+          break;
+        case r'levelIds':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType:
+                const FullType.nullable(BuiltList, [FullType(String)]),
+          ) as BuiltList<String>?;
+          if (valueDes == null) continue;
+          result.levelIds.replace(valueDes);
           break;
         default:
           unhandled.add(key);
@@ -138,5 +193,3 @@ class _$EcosystemSerializer implements PrimitiveSerializer<Ecosystem> {
     return result.build();
   }
 }
-
-

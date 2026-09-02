@@ -3,6 +3,8 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:built_collection/built_collection.dart';
+import 'package:openapi/src/model/public_media.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -11,11 +13,15 @@ part 'plant.g.dart';
 /// Plant
 ///
 /// Properties:
-/// * [id] 
-/// * [scientificName] 
-/// * [commonName] 
-/// * [family] 
-/// * [description] 
+/// * [id]
+/// * [scientificName]
+/// * [commonName]
+/// * [family]
+/// * [description]
+/// * [warning]
+/// * [sources]
+/// * [media]
+/// * [releaseVersion]
 @BuiltValue()
 abstract class Plant implements Built<Plant, PlantBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -32,6 +38,18 @@ abstract class Plant implements Built<Plant, PlantBuilder> {
 
   @BuiltValueField(wireName: r'description')
   String? get description;
+
+  @BuiltValueField(wireName: r'warning')
+  String? get warning;
+
+  @BuiltValueField(wireName: r'sources')
+  BuiltList<String>? get sources;
+
+  @BuiltValueField(wireName: r'media')
+  BuiltList<PublicMedia>? get media;
+
+  @BuiltValueField(wireName: r'releaseVersion')
+  String get releaseVersion;
 
   Plant._();
 
@@ -87,6 +105,32 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
         specifiedType: const FullType(String),
       );
     }
+    if (object.warning != null) {
+      yield r'warning';
+      yield serializers.serialize(
+        object.warning,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.sources != null) {
+      yield r'sources';
+      yield serializers.serialize(
+        object.sources,
+        specifiedType: const FullType(BuiltList, [FullType(String)]),
+      );
+    }
+    if (object.media != null) {
+      yield r'media';
+      yield serializers.serialize(
+        object.media,
+        specifiedType: const FullType(BuiltList, [FullType(PublicMedia)]),
+      );
+    }
+    yield r'releaseVersion';
+    yield serializers.serialize(
+      object.releaseVersion,
+      specifiedType: const FullType(String),
+    );
   }
 
   @override
@@ -95,7 +139,9 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
     Plant object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -148,6 +194,39 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
           if (valueDes == null) continue;
           result.description = valueDes;
           break;
+        case r'warning':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.warning = valueDes;
+          break;
+        case r'sources':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType:
+                const FullType.nullable(BuiltList, [FullType(String)]),
+          ) as BuiltList<String>?;
+          if (valueDes == null) continue;
+          result.sources.replace(valueDes);
+          break;
+        case r'media':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType:
+                const FullType.nullable(BuiltList, [FullType(PublicMedia)]),
+          ) as BuiltList<PublicMedia>?;
+          if (valueDes == null) continue;
+          result.media.replace(valueDes);
+          break;
+        case r'releaseVersion':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.releaseVersion = valueDes;
+          break;
         default:
           unhandled.add(key);
           unhandled.add(value);
@@ -176,5 +255,3 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
     return result.build();
   }
 }
-
-

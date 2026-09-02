@@ -17,6 +17,14 @@ class _$Plant extends Plant {
   final String? family;
   @override
   final String? description;
+  @override
+  final String? warning;
+  @override
+  final BuiltList<String>? sources;
+  @override
+  final BuiltList<PublicMedia>? media;
+  @override
+  final String releaseVersion;
 
   factory _$Plant([void Function(PlantBuilder)? updates]) =>
       (PlantBuilder()..update(updates))._build();
@@ -26,7 +34,11 @@ class _$Plant extends Plant {
       required this.scientificName,
       this.commonName,
       this.family,
-      this.description})
+      this.description,
+      this.warning,
+      this.sources,
+      this.media,
+      required this.releaseVersion})
       : super._();
   @override
   Plant rebuild(void Function(PlantBuilder) updates) =>
@@ -43,7 +55,11 @@ class _$Plant extends Plant {
         scientificName == other.scientificName &&
         commonName == other.commonName &&
         family == other.family &&
-        description == other.description;
+        description == other.description &&
+        warning == other.warning &&
+        sources == other.sources &&
+        media == other.media &&
+        releaseVersion == other.releaseVersion;
   }
 
   @override
@@ -54,6 +70,10 @@ class _$Plant extends Plant {
     _$hash = $jc(_$hash, commonName.hashCode);
     _$hash = $jc(_$hash, family.hashCode);
     _$hash = $jc(_$hash, description.hashCode);
+    _$hash = $jc(_$hash, warning.hashCode);
+    _$hash = $jc(_$hash, sources.hashCode);
+    _$hash = $jc(_$hash, media.hashCode);
+    _$hash = $jc(_$hash, releaseVersion.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -65,7 +85,11 @@ class _$Plant extends Plant {
           ..add('scientificName', scientificName)
           ..add('commonName', commonName)
           ..add('family', family)
-          ..add('description', description))
+          ..add('description', description)
+          ..add('warning', warning)
+          ..add('sources', sources)
+          ..add('media', media)
+          ..add('releaseVersion', releaseVersion))
         .toString();
   }
 }
@@ -94,6 +118,24 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
   String? get description => _$this._description;
   set description(String? description) => _$this._description = description;
 
+  String? _warning;
+  String? get warning => _$this._warning;
+  set warning(String? warning) => _$this._warning = warning;
+
+  ListBuilder<String>? _sources;
+  ListBuilder<String> get sources => _$this._sources ??= ListBuilder<String>();
+  set sources(ListBuilder<String>? sources) => _$this._sources = sources;
+
+  ListBuilder<PublicMedia>? _media;
+  ListBuilder<PublicMedia> get media =>
+      _$this._media ??= ListBuilder<PublicMedia>();
+  set media(ListBuilder<PublicMedia>? media) => _$this._media = media;
+
+  String? _releaseVersion;
+  String? get releaseVersion => _$this._releaseVersion;
+  set releaseVersion(String? releaseVersion) =>
+      _$this._releaseVersion = releaseVersion;
+
   PlantBuilder() {
     Plant._defaults(this);
   }
@@ -106,6 +148,10 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
       _commonName = $v.commonName;
       _family = $v.family;
       _description = $v.description;
+      _warning = $v.warning;
+      _sources = $v.sources?.toBuilder();
+      _media = $v.media?.toBuilder();
+      _releaseVersion = $v.releaseVersion;
       _$v = null;
     }
     return this;
@@ -125,15 +171,34 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
   Plant build() => _build();
 
   _$Plant _build() {
-    final _$result = _$v ??
-        _$Plant._(
-          id: BuiltValueNullFieldError.checkNotNull(id, r'Plant', 'id'),
-          scientificName: BuiltValueNullFieldError.checkNotNull(
-              scientificName, r'Plant', 'scientificName'),
-          commonName: commonName,
-          family: family,
-          description: description,
-        );
+    _$Plant _$result;
+    try {
+      _$result = _$v ??
+          _$Plant._(
+            id: BuiltValueNullFieldError.checkNotNull(id, r'Plant', 'id'),
+            scientificName: BuiltValueNullFieldError.checkNotNull(
+                scientificName, r'Plant', 'scientificName'),
+            commonName: commonName,
+            family: family,
+            description: description,
+            warning: warning,
+            sources: _sources?.build(),
+            media: _media?.build(),
+            releaseVersion: BuiltValueNullFieldError.checkNotNull(
+                releaseVersion, r'Plant', 'releaseVersion'),
+          );
+    } catch (_) {
+      late String _$failedField;
+      try {
+        _$failedField = 'sources';
+        _sources?.build();
+        _$failedField = 'media';
+        _media?.build();
+      } catch (e) {
+        throw BuiltValueNestedFieldError(r'Plant', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

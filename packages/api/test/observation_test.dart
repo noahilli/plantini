@@ -12,35 +12,39 @@ void main() {
       // TODO
     });
 
-    // String plantName
-    test('to test the property `plantName`', () async {
+    // String clientObservationId
+    test('to test the property `clientObservationId`', () async {
       // TODO
     });
 
-    // DateTime date
-    test('to test the property `date`', () async {
+    // DateTime observedAt
+    test('to test the property `observedAt`', () async {
       // TODO
     });
 
-    // String imageUrl
-    test('to test the property `imageUrl`', () async {
+    // String note
+    test('to test the property `note`', () async {
       // TODO
     });
 
-    // String notes
-    test('to test the property `notes`', () async {
+    // String confirmedPlantId
+    test('to test the property `confirmedPlantId`', () async {
       // TODO
     });
 
-    // ObservationLocation location
-    test('to test the property `location`', () async {
+    // IdentificationJob identification
+    test('to test the property `identification`', () async {
       // TODO
     });
 
-    // double identificationScore
-    test('to test the property `identificationScore`', () async {
+    // String version
+    test('to test the property `version`', () async {
       // TODO
     });
 
+    // String syncStatus
+    test('to test the property `syncStatus`', () async {
+      // TODO
+    });
   });
 }

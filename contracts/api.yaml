@@ -10,8 +10,8 @@ info:
     niemals direkt mit Strapi oder einem Identifikationsprovider. Alle schreibenden
     Aufrufe sind über Idempotency-Key oder clientEventId wiederholbar.
 servers:
-  - url: /api/v1
-    description: Reverse-proxy prefix for development, staging and production
+  - url: http://127.0.0.1:1338/api/v1
+    description: IPv4 development default; generated clients override this per environment
 security:
   - bearerAuth: []
 tags:
@@ -188,6 +188,7 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
   /achievements:
     get:
+      x-plantini-implementation-status: planned
       summary: List earned and next learning achievements
       tags: [Learning]
       operationId: listAchievements
@@ -358,6 +359,7 @@ paths:
         '409': {$ref: '#/components/responses/Conflict'}
   /admin/content-releases:
     post:
+      x-plantini-implementation-status: planned
       summary: Validate and publish a content release
       tags: [Content]
       operationId: createContentRelease
@@ -372,6 +374,7 @@ paths:
         '403': {$ref: '#/components/responses/Forbidden'}
   /admin/imports:
     post:
+      x-plantini-implementation-status: planned
       summary: Validate or import versioned editorial data
       tags: [Content]
       operationId: createImport
@@ -386,6 +389,7 @@ paths:
         '403': {$ref: '#/components/responses/Forbidden'}
   /admin/dashboard:
     get:
+      x-plantini-implementation-status: planned
       summary: Read privacy-preserving aggregated editorial metrics
       tags: [Content]
       operationId: getAdminDashboard
@@ -395,6 +399,7 @@ paths:
         '403': {$ref: '#/components/responses/Forbidden'}
   /admin/users:
     get:
+      x-plantini-implementation-status: planned
       summary: Search authorized user administration records
       tags: [Profile]
       operationId: listAdminUsers
@@ -407,6 +412,7 @@ paths:
         '403': {$ref: '#/components/responses/Forbidden'}
   /admin/users/{userId}/suspend:
     post:
+      x-plantini-implementation-status: planned
       summary: Suspend a user and revoke active sessions
       tags: [Profile]
       operationId: suspendUser
@@ -418,6 +424,7 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
   /privacy/exports:
     post:
+      x-plantini-implementation-status: planned
       summary: Request a caller's machine-readable data export
       tags: [Profile]
       operationId: createPrivacyExport
@@ -427,6 +434,7 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
   /privacy/deletions:
     post:
+      x-plantini-implementation-status: planned
       summary: Request caller account deletion
       tags: [Profile]
       operationId: createPrivacyDeletion

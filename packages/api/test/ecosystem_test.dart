@@ -12,6 +12,11 @@ void main() {
       // TODO
     });
 
+    // String slug
+    test('to test the property `slug`', () async {
+      // TODO
+    });
+
     // String name
     test('to test the property `name`', () async {
       // TODO
@@ -22,5 +27,14 @@ void main() {
       // TODO
     });
 
+    // String releaseVersion
+    test('to test the property `releaseVersion`', () async {
+      // TODO
+    });
+
+    // BuiltList<String> levelIds
+    test('to test the property `levelIds`', () async {
+      // TODO
+    });
   });
 }

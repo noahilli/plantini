@@ -3,6 +3,8 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:built_collection/built_collection.dart';
+import 'package:openapi/src/model/completion_rule.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -11,23 +13,44 @@ part 'level.g.dart';
 /// Level
 ///
 /// Properties:
-/// * [id] 
-/// * [title] 
-/// * [isUnlocked] 
-/// * [progress] 
+/// * [id]
+/// * [ecosystemId]
+/// * [title]
+/// * [sequence]
+/// * [learningGoal]
+/// * [plantIds]
+/// * [completionRule]
+/// * [status]
+/// * [progress]
 @BuiltValue()
 abstract class Level implements Built<Level, LevelBuilder> {
   @BuiltValueField(wireName: r'id')
   String get id;
 
+  @BuiltValueField(wireName: r'ecosystemId')
+  String get ecosystemId;
+
   @BuiltValueField(wireName: r'title')
   String get title;
 
-  @BuiltValueField(wireName: r'isUnlocked')
-  bool? get isUnlocked;
+  @BuiltValueField(wireName: r'sequence')
+  int get sequence;
+
+  @BuiltValueField(wireName: r'learningGoal')
+  String? get learningGoal;
+
+  @BuiltValueField(wireName: r'plantIds')
+  BuiltList<String>? get plantIds;
+
+  @BuiltValueField(wireName: r'completionRule')
+  CompletionRule get completionRule;
+
+  @BuiltValueField(wireName: r'status')
+  LevelStatusEnum get status;
+  // enum statusEnum {  locked,  available,  in_progress,  completed,  };
 
   @BuiltValueField(wireName: r'progress')
-  double? get progress;
+  num? get progress;
 
   Level._();
 
@@ -57,23 +80,50 @@ class _$LevelSerializer implements PrimitiveSerializer<Level> {
       object.id,
       specifiedType: const FullType(String),
     );
+    yield r'ecosystemId';
+    yield serializers.serialize(
+      object.ecosystemId,
+      specifiedType: const FullType(String),
+    );
     yield r'title';
     yield serializers.serialize(
       object.title,
       specifiedType: const FullType(String),
     );
-    if (object.isUnlocked != null) {
-      yield r'isUnlocked';
+    yield r'sequence';
+    yield serializers.serialize(
+      object.sequence,
+      specifiedType: const FullType(int),
+    );
+    if (object.learningGoal != null) {
+      yield r'learningGoal';
       yield serializers.serialize(
-        object.isUnlocked,
-        specifiedType: const FullType(bool),
+        object.learningGoal,
+        specifiedType: const FullType(String),
       );
     }
+    if (object.plantIds != null) {
+      yield r'plantIds';
+      yield serializers.serialize(
+        object.plantIds,
+        specifiedType: const FullType(BuiltList, [FullType(String)]),
+      );
+    }
+    yield r'completionRule';
+    yield serializers.serialize(
+      object.completionRule,
+      specifiedType: const FullType(CompletionRule),
+    );
+    yield r'status';
+    yield serializers.serialize(
+      object.status,
+      specifiedType: const FullType(LevelStatusEnum),
+    );
     if (object.progress != null) {
       yield r'progress';
       yield serializers.serialize(
         object.progress,
-        specifiedType: const FullType(double),
+        specifiedType: const FullType(num),
       );
     }
   }
@@ -84,7 +134,9 @@ class _$LevelSerializer implements PrimitiveSerializer<Level> {
     Level object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -106,6 +158,13 @@ class _$LevelSerializer implements PrimitiveSerializer<Level> {
           ) as String;
           result.id = valueDes;
           break;
+        case r'ecosystemId':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.ecosystemId = valueDes;
+          break;
         case r'title':
           final valueDes = serializers.deserialize(
             value,
@@ -113,19 +172,49 @@ class _$LevelSerializer implements PrimitiveSerializer<Level> {
           ) as String;
           result.title = valueDes;
           break;
-        case r'isUnlocked':
+        case r'sequence':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType.nullable(bool),
-          ) as bool?;
+            specifiedType: const FullType(int),
+          ) as int;
+          result.sequence = valueDes;
+          break;
+        case r'learningGoal':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
           if (valueDes == null) continue;
-          result.isUnlocked = valueDes;
+          result.learningGoal = valueDes;
+          break;
+        case r'plantIds':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType:
+                const FullType.nullable(BuiltList, [FullType(String)]),
+          ) as BuiltList<String>?;
+          if (valueDes == null) continue;
+          result.plantIds.replace(valueDes);
+          break;
+        case r'completionRule':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(CompletionRule),
+          ) as CompletionRule;
+          result.completionRule.replace(valueDes);
+          break;
+        case r'status':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(LevelStatusEnum),
+          ) as LevelStatusEnum;
+          result.status = valueDes;
           break;
         case r'progress':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType.nullable(double),
-          ) as double?;
+            specifiedType: const FullType.nullable(num),
+          ) as num?;
           if (valueDes == null) continue;
           result.progress = valueDes;
           break;
@@ -158,4 +247,21 @@ class _$LevelSerializer implements PrimitiveSerializer<Level> {
   }
 }
 
+class LevelStatusEnum extends EnumClass {
+  @BuiltValueEnumConst(wireName: r'locked')
+  static const LevelStatusEnum locked = _$levelStatusEnum_locked;
+  @BuiltValueEnumConst(wireName: r'available')
+  static const LevelStatusEnum available = _$levelStatusEnum_available;
+  @BuiltValueEnumConst(wireName: r'in_progress')
+  static const LevelStatusEnum inProgress = _$levelStatusEnum_inProgress;
+  @BuiltValueEnumConst(wireName: r'completed')
+  static const LevelStatusEnum completed = _$levelStatusEnum_completed;
 
+  static Serializer<LevelStatusEnum> get serializer =>
+      _$levelStatusEnumSerializer;
+
+  const LevelStatusEnum._(String name) : super(name);
+
+  static BuiltSet<LevelStatusEnum> get values => _$levelStatusEnumValues;
+  static LevelStatusEnum valueOf(String name) => _$levelStatusEnumValueOf(name);
+}

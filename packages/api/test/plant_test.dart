@@ -32,5 +32,24 @@ void main() {
       // TODO
     });
 
+    // String warning
+    test('to test the property `warning`', () async {
+      // TODO
+    });
+
+    // BuiltList<String> sources
+    test('to test the property `sources`', () async {
+      // TODO
+    });
+
+    // BuiltList<PublicMedia> media
+    test('to test the property `media`', () async {
+      // TODO
+    });
+
+    // String releaseVersion
+    test('to test the property `releaseVersion`', () async {
+      // TODO
+    });
   });
 }

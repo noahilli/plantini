@@ -12,23 +12,28 @@ part 'user_profile.g.dart';
 /// UserProfile
 ///
 /// Properties:
-/// * [id] 
-/// * [username] 
-/// * [email] 
-/// * [roles] 
+/// * [id]
+/// * [displayName]
+/// * [locale]
+/// * [roles]
+/// * [organisationId]
 @BuiltValue()
 abstract class UserProfile implements Built<UserProfile, UserProfileBuilder> {
   @BuiltValueField(wireName: r'id')
   String get id;
 
-  @BuiltValueField(wireName: r'username')
-  String get username;
+  @BuiltValueField(wireName: r'displayName')
+  String get displayName;
 
-  @BuiltValueField(wireName: r'email')
-  String? get email;
+  @BuiltValueField(wireName: r'locale')
+  String get locale;
 
   @BuiltValueField(wireName: r'roles')
-  BuiltList<String>? get roles;
+  BuiltList<UserProfileRolesEnum> get roles;
+  // enum rolesEnum {  lernende,  lehrende,  inhaltsredaktion,  botanisches_review,  organisationsadministration,  systemadministration,  };
+
+  @BuiltValueField(wireName: r'organisationId')
+  String? get organisationId;
 
   UserProfile._();
 
@@ -58,23 +63,27 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
       object.id,
       specifiedType: const FullType(String),
     );
-    yield r'username';
+    yield r'displayName';
     yield serializers.serialize(
-      object.username,
+      object.displayName,
       specifiedType: const FullType(String),
     );
-    if (object.email != null) {
-      yield r'email';
+    yield r'locale';
+    yield serializers.serialize(
+      object.locale,
+      specifiedType: const FullType(String),
+    );
+    yield r'roles';
+    yield serializers.serialize(
+      object.roles,
+      specifiedType:
+          const FullType(BuiltList, [FullType(UserProfileRolesEnum)]),
+    );
+    if (object.organisationId != null) {
+      yield r'organisationId';
       yield serializers.serialize(
-        object.email,
+        object.organisationId,
         specifiedType: const FullType(String),
-      );
-    }
-    if (object.roles != null) {
-      yield r'roles';
-      yield serializers.serialize(
-        object.roles,
-        specifiedType: const FullType(BuiltList, [FullType(String)]),
       );
     }
   }
@@ -85,7 +94,9 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
     UserProfile object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -107,28 +118,35 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
           ) as String;
           result.id = valueDes;
           break;
-        case r'username':
+        case r'displayName':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(String),
           ) as String;
-          result.username = valueDes;
+          result.displayName = valueDes;
           break;
-        case r'email':
+        case r'locale':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.locale = valueDes;
+          break;
+        case r'roles':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType:
+                const FullType(BuiltList, [FullType(UserProfileRolesEnum)]),
+          ) as BuiltList<UserProfileRolesEnum>;
+          result.roles.replace(valueDes);
+          break;
+        case r'organisationId':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType.nullable(String),
           ) as String?;
           if (valueDes == null) continue;
-          result.email = valueDes;
-          break;
-        case r'roles':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType.nullable(BuiltList, [FullType(String)]),
-          ) as BuiltList<String>?;
-          if (valueDes == null) continue;
-          result.roles.replace(valueDes);
+          result.organisationId = valueDes;
           break;
         default:
           unhandled.add(key);
@@ -159,4 +177,31 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
   }
 }
 
+class UserProfileRolesEnum extends EnumClass {
+  @BuiltValueEnumConst(wireName: r'lernende')
+  static const UserProfileRolesEnum lernende = _$userProfileRolesEnum_lernende;
+  @BuiltValueEnumConst(wireName: r'lehrende')
+  static const UserProfileRolesEnum lehrende = _$userProfileRolesEnum_lehrende;
+  @BuiltValueEnumConst(wireName: r'inhaltsredaktion')
+  static const UserProfileRolesEnum inhaltsredaktion =
+      _$userProfileRolesEnum_inhaltsredaktion;
+  @BuiltValueEnumConst(wireName: r'botanisches_review')
+  static const UserProfileRolesEnum botanischesReview =
+      _$userProfileRolesEnum_botanischesReview;
+  @BuiltValueEnumConst(wireName: r'organisationsadministration')
+  static const UserProfileRolesEnum organisationsadministration =
+      _$userProfileRolesEnum_organisationsadministration;
+  @BuiltValueEnumConst(wireName: r'systemadministration')
+  static const UserProfileRolesEnum systemadministration =
+      _$userProfileRolesEnum_systemadministration;
 
+  static Serializer<UserProfileRolesEnum> get serializer =>
+      _$userProfileRolesEnumSerializer;
+
+  const UserProfileRolesEnum._(String name) : super(name);
+
+  static BuiltSet<UserProfileRolesEnum> get values =>
+      _$userProfileRolesEnumValues;
+  static UserProfileRolesEnum valueOf(String name) =>
+      _$userProfileRolesEnumValueOf(name);
+}

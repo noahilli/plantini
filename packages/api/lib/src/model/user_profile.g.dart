@@ -6,21 +6,108 @@ part of 'user_profile.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const UserProfileRolesEnum _$userProfileRolesEnum_lernende =
+    const UserProfileRolesEnum._('lernende');
+const UserProfileRolesEnum _$userProfileRolesEnum_lehrende =
+    const UserProfileRolesEnum._('lehrende');
+const UserProfileRolesEnum _$userProfileRolesEnum_inhaltsredaktion =
+    const UserProfileRolesEnum._('inhaltsredaktion');
+const UserProfileRolesEnum _$userProfileRolesEnum_botanischesReview =
+    const UserProfileRolesEnum._('botanischesReview');
+const UserProfileRolesEnum _$userProfileRolesEnum_organisationsadministration =
+    const UserProfileRolesEnum._('organisationsadministration');
+const UserProfileRolesEnum _$userProfileRolesEnum_systemadministration =
+    const UserProfileRolesEnum._('systemadministration');
+
+UserProfileRolesEnum _$userProfileRolesEnumValueOf(String name) {
+  switch (name) {
+    case 'lernende':
+      return _$userProfileRolesEnum_lernende;
+    case 'lehrende':
+      return _$userProfileRolesEnum_lehrende;
+    case 'inhaltsredaktion':
+      return _$userProfileRolesEnum_inhaltsredaktion;
+    case 'botanischesReview':
+      return _$userProfileRolesEnum_botanischesReview;
+    case 'organisationsadministration':
+      return _$userProfileRolesEnum_organisationsadministration;
+    case 'systemadministration':
+      return _$userProfileRolesEnum_systemadministration;
+    default:
+      throw ArgumentError(name);
+  }
+}
+
+final BuiltSet<UserProfileRolesEnum> _$userProfileRolesEnumValues =
+    BuiltSet<UserProfileRolesEnum>(const <UserProfileRolesEnum>[
+  _$userProfileRolesEnum_lernende,
+  _$userProfileRolesEnum_lehrende,
+  _$userProfileRolesEnum_inhaltsredaktion,
+  _$userProfileRolesEnum_botanischesReview,
+  _$userProfileRolesEnum_organisationsadministration,
+  _$userProfileRolesEnum_systemadministration,
+]);
+
+Serializer<UserProfileRolesEnum> _$userProfileRolesEnumSerializer =
+    _$UserProfileRolesEnumSerializer();
+
+class _$UserProfileRolesEnumSerializer
+    implements PrimitiveSerializer<UserProfileRolesEnum> {
+  static const Map<String, Object> _toWire = const <String, Object>{
+    'lernende': 'lernende',
+    'lehrende': 'lehrende',
+    'inhaltsredaktion': 'inhaltsredaktion',
+    'botanischesReview': 'botanisches_review',
+    'organisationsadministration': 'organisationsadministration',
+    'systemadministration': 'systemadministration',
+  };
+  static const Map<Object, String> _fromWire = const <Object, String>{
+    'lernende': 'lernende',
+    'lehrende': 'lehrende',
+    'inhaltsredaktion': 'inhaltsredaktion',
+    'botanisches_review': 'botanischesReview',
+    'organisationsadministration': 'organisationsadministration',
+    'systemadministration': 'systemadministration',
+  };
+
+  @override
+  final Iterable<Type> types = const <Type>[UserProfileRolesEnum];
+  @override
+  final String wireName = 'UserProfileRolesEnum';
+
+  @override
+  Object serialize(Serializers serializers, UserProfileRolesEnum object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      _toWire[object.name] ?? object.name;
+
+  @override
+  UserProfileRolesEnum deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      UserProfileRolesEnum.valueOf(
+          _fromWire[serialized] ?? (serialized is String ? serialized : ''));
+}
+
 class _$UserProfile extends UserProfile {
   @override
   final String id;
   @override
-  final String username;
+  final String displayName;
   @override
-  final String? email;
+  final String locale;
   @override
-  final BuiltList<String>? roles;
+  final BuiltList<UserProfileRolesEnum> roles;
+  @override
+  final String? organisationId;
 
   factory _$UserProfile([void Function(UserProfileBuilder)? updates]) =>
       (UserProfileBuilder()..update(updates))._build();
 
   _$UserProfile._(
-      {required this.id, required this.username, this.email, this.roles})
+      {required this.id,
+      required this.displayName,
+      required this.locale,
+      required this.roles,
+      this.organisationId})
       : super._();
   @override
   UserProfile rebuild(void Function(UserProfileBuilder) updates) =>
@@ -34,18 +121,20 @@ class _$UserProfile extends UserProfile {
     if (identical(other, this)) return true;
     return other is UserProfile &&
         id == other.id &&
-        username == other.username &&
-        email == other.email &&
-        roles == other.roles;
+        displayName == other.displayName &&
+        locale == other.locale &&
+        roles == other.roles &&
+        organisationId == other.organisationId;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
     _$hash = $jc(_$hash, id.hashCode);
-    _$hash = $jc(_$hash, username.hashCode);
-    _$hash = $jc(_$hash, email.hashCode);
+    _$hash = $jc(_$hash, displayName.hashCode);
+    _$hash = $jc(_$hash, locale.hashCode);
     _$hash = $jc(_$hash, roles.hashCode);
+    _$hash = $jc(_$hash, organisationId.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -54,9 +143,10 @@ class _$UserProfile extends UserProfile {
   String toString() {
     return (newBuiltValueToStringHelper(r'UserProfile')
           ..add('id', id)
-          ..add('username', username)
-          ..add('email', email)
-          ..add('roles', roles))
+          ..add('displayName', displayName)
+          ..add('locale', locale)
+          ..add('roles', roles)
+          ..add('organisationId', organisationId))
         .toString();
   }
 }
@@ -68,17 +158,23 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
   String? get id => _$this._id;
   set id(String? id) => _$this._id = id;
 
-  String? _username;
-  String? get username => _$this._username;
-  set username(String? username) => _$this._username = username;
+  String? _displayName;
+  String? get displayName => _$this._displayName;
+  set displayName(String? displayName) => _$this._displayName = displayName;
 
-  String? _email;
-  String? get email => _$this._email;
-  set email(String? email) => _$this._email = email;
+  String? _locale;
+  String? get locale => _$this._locale;
+  set locale(String? locale) => _$this._locale = locale;
 
-  ListBuilder<String>? _roles;
-  ListBuilder<String> get roles => _$this._roles ??= ListBuilder<String>();
-  set roles(ListBuilder<String>? roles) => _$this._roles = roles;
+  ListBuilder<UserProfileRolesEnum>? _roles;
+  ListBuilder<UserProfileRolesEnum> get roles =>
+      _$this._roles ??= ListBuilder<UserProfileRolesEnum>();
+  set roles(ListBuilder<UserProfileRolesEnum>? roles) => _$this._roles = roles;
+
+  String? _organisationId;
+  String? get organisationId => _$this._organisationId;
+  set organisationId(String? organisationId) =>
+      _$this._organisationId = organisationId;
 
   UserProfileBuilder() {
     UserProfile._defaults(this);
@@ -88,9 +184,10 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
     final $v = _$v;
     if ($v != null) {
       _id = $v.id;
-      _username = $v.username;
-      _email = $v.email;
-      _roles = $v.roles?.toBuilder();
+      _displayName = $v.displayName;
+      _locale = $v.locale;
+      _roles = $v.roles.toBuilder();
+      _organisationId = $v.organisationId;
       _$v = null;
     }
     return this;
@@ -115,16 +212,18 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
       _$result = _$v ??
           _$UserProfile._(
             id: BuiltValueNullFieldError.checkNotNull(id, r'UserProfile', 'id'),
-            username: BuiltValueNullFieldError.checkNotNull(
-                username, r'UserProfile', 'username'),
-            email: email,
-            roles: _roles?.build(),
+            displayName: BuiltValueNullFieldError.checkNotNull(
+                displayName, r'UserProfile', 'displayName'),
+            locale: BuiltValueNullFieldError.checkNotNull(
+                locale, r'UserProfile', 'locale'),
+            roles: roles.build(),
+            organisationId: organisationId,
           );
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'roles';
-        _roles?.build();
+        roles.build();
       } catch (e) {
         throw BuiltValueNestedFieldError(
             r'UserProfile', _$failedField, e.toString());

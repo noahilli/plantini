@@ -12,13 +12,13 @@ void main() {
       // TODO
     });
 
-    // String username
-    test('to test the property `username`', () async {
+    // String displayName
+    test('to test the property `displayName`', () async {
       // TODO
     });
 
-    // String email
-    test('to test the property `email`', () async {
+    // String locale
+    test('to test the property `locale`', () async {
       // TODO
     });
 
@@ -27,5 +27,9 @@ void main() {
       // TODO
     });
 
+    // String organisationId
+    test('to test the property `organisationId`', () async {
+      // TODO
+    });
   });
 }

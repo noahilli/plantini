@@ -1,3 +1,6 @@
+# Overlay applied after OpenAPI generation. Generator-owned APIs can contain
+# imports needed only for selected response shapes; they remain checked for all
+# type and compilation errors while this known template warning is suppressed.
 analyzer:
   language:
     strict-inference: true
@@ -7,3 +10,4 @@ analyzer:
     - test/*.dart
   errors:
     deprecated_member_use_from_same_package: ignore
+    unused_import: ignore

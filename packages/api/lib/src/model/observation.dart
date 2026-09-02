@@ -3,7 +3,8 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:openapi/src/model/observation_location.dart';
+import 'package:openapi/src/model/identification_job.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -12,35 +13,40 @@ part 'observation.g.dart';
 /// Observation
 ///
 /// Properties:
-/// * [id] 
-/// * [plantName] 
-/// * [date] 
-/// * [imageUrl] 
-/// * [notes] 
-/// * [location] 
-/// * [identificationScore] 
+/// * [id]
+/// * [clientObservationId]
+/// * [observedAt]
+/// * [note]
+/// * [confirmedPlantId]
+/// * [identification]
+/// * [version]
+/// * [syncStatus]
 @BuiltValue()
 abstract class Observation implements Built<Observation, ObservationBuilder> {
   @BuiltValueField(wireName: r'id')
   String get id;
 
-  @BuiltValueField(wireName: r'plantName')
-  String get plantName;
+  @BuiltValueField(wireName: r'clientObservationId')
+  String get clientObservationId;
 
-  @BuiltValueField(wireName: r'date')
-  DateTime get date;
+  @BuiltValueField(wireName: r'observedAt')
+  DateTime get observedAt;
 
-  @BuiltValueField(wireName: r'imageUrl')
-  String? get imageUrl;
+  @BuiltValueField(wireName: r'note')
+  String? get note;
 
-  @BuiltValueField(wireName: r'notes')
-  String? get notes;
+  @BuiltValueField(wireName: r'confirmedPlantId')
+  String? get confirmedPlantId;
 
-  @BuiltValueField(wireName: r'location')
-  ObservationLocation? get location;
+  @BuiltValueField(wireName: r'identification')
+  IdentificationJob? get identification;
 
-  @BuiltValueField(wireName: r'identificationScore')
-  double? get identificationScore;
+  @BuiltValueField(wireName: r'version')
+  String get version;
+
+  @BuiltValueField(wireName: r'syncStatus')
+  ObservationSyncStatusEnum get syncStatus;
+  // enum syncStatusEnum {  synced,  pending,  conflict,  deleted,  };
 
   Observation._();
 
@@ -70,44 +76,47 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
       object.id,
       specifiedType: const FullType(String),
     );
-    yield r'plantName';
+    yield r'clientObservationId';
     yield serializers.serialize(
-      object.plantName,
+      object.clientObservationId,
       specifiedType: const FullType(String),
     );
-    yield r'date';
+    yield r'observedAt';
     yield serializers.serialize(
-      object.date,
+      object.observedAt,
       specifiedType: const FullType(DateTime),
     );
-    if (object.imageUrl != null) {
-      yield r'imageUrl';
+    if (object.note != null) {
+      yield r'note';
       yield serializers.serialize(
-        object.imageUrl,
+        object.note,
         specifiedType: const FullType(String),
       );
     }
-    if (object.notes != null) {
-      yield r'notes';
+    if (object.confirmedPlantId != null) {
+      yield r'confirmedPlantId';
       yield serializers.serialize(
-        object.notes,
+        object.confirmedPlantId,
         specifiedType: const FullType(String),
       );
     }
-    if (object.location != null) {
-      yield r'location';
+    if (object.identification != null) {
+      yield r'identification';
       yield serializers.serialize(
-        object.location,
-        specifiedType: const FullType(ObservationLocation),
+        object.identification,
+        specifiedType: const FullType(IdentificationJob),
       );
     }
-    if (object.identificationScore != null) {
-      yield r'identificationScore';
-      yield serializers.serialize(
-        object.identificationScore,
-        specifiedType: const FullType(double),
-      );
-    }
+    yield r'version';
+    yield serializers.serialize(
+      object.version,
+      specifiedType: const FullType(String),
+    );
+    yield r'syncStatus';
+    yield serializers.serialize(
+      object.syncStatus,
+      specifiedType: const FullType(ObservationSyncStatusEnum),
+    );
   }
 
   @override
@@ -116,7 +125,9 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
     Observation object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -138,51 +149,57 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
           ) as String;
           result.id = valueDes;
           break;
-        case r'plantName':
+        case r'clientObservationId':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(String),
           ) as String;
-          result.plantName = valueDes;
+          result.clientObservationId = valueDes;
           break;
-        case r'date':
+        case r'observedAt':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType(DateTime),
           ) as DateTime;
-          result.date = valueDes;
+          result.observedAt = valueDes;
           break;
-        case r'imageUrl':
+        case r'note':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType.nullable(String),
           ) as String?;
           if (valueDes == null) continue;
-          result.imageUrl = valueDes;
+          result.note = valueDes;
           break;
-        case r'notes':
+        case r'confirmedPlantId':
           final valueDes = serializers.deserialize(
             value,
             specifiedType: const FullType.nullable(String),
           ) as String?;
           if (valueDes == null) continue;
-          result.notes = valueDes;
+          result.confirmedPlantId = valueDes;
           break;
-        case r'location':
+        case r'identification':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType.nullable(ObservationLocation),
-          ) as ObservationLocation?;
+            specifiedType: const FullType.nullable(IdentificationJob),
+          ) as IdentificationJob?;
           if (valueDes == null) continue;
-          result.location.replace(valueDes);
+          result.identification.replace(valueDes);
           break;
-        case r'identificationScore':
+        case r'version':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType.nullable(double),
-          ) as double?;
-          if (valueDes == null) continue;
-          result.identificationScore = valueDes;
+            specifiedType: const FullType(String),
+          ) as String;
+          result.version = valueDes;
+          break;
+        case r'syncStatus':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(ObservationSyncStatusEnum),
+          ) as ObservationSyncStatusEnum;
+          result.syncStatus = valueDes;
           break;
         default:
           unhandled.add(key);
@@ -213,4 +230,27 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
   }
 }
 
+class ObservationSyncStatusEnum extends EnumClass {
+  @BuiltValueEnumConst(wireName: r'synced')
+  static const ObservationSyncStatusEnum synced =
+      _$observationSyncStatusEnum_synced;
+  @BuiltValueEnumConst(wireName: r'pending')
+  static const ObservationSyncStatusEnum pending =
+      _$observationSyncStatusEnum_pending;
+  @BuiltValueEnumConst(wireName: r'conflict')
+  static const ObservationSyncStatusEnum conflict =
+      _$observationSyncStatusEnum_conflict;
+  @BuiltValueEnumConst(wireName: r'deleted')
+  static const ObservationSyncStatusEnum deleted =
+      _$observationSyncStatusEnum_deleted;
 
+  static Serializer<ObservationSyncStatusEnum> get serializer =>
+      _$observationSyncStatusEnumSerializer;
+
+  const ObservationSyncStatusEnum._(String name) : super(name);
+
+  static BuiltSet<ObservationSyncStatusEnum> get values =>
+      _$observationSyncStatusEnumValues;
+  static ObservationSyncStatusEnum valueOf(String name) =>
+      _$observationSyncStatusEnumValueOf(name);
+}
