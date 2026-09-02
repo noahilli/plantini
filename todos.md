@@ -167,7 +167,7 @@ Abnahme: Contract-Tests beweisen jeden MVP-Endpunkt gegen eine frische reale Tes
 
 - [ ] **P0 | INFRA-01:** Die zehn lokalen Commits veröffentlichen und eine echte Remote-Pipeline nachweisen; vorher existiert kein CI-Nachweis für diesen Stand.
 - [x] **P0 | INFRA-02:** Toolversionen konsistent pinnen: Flutter 3.47.1 aus `.flutter-version`, Dart 3.13.1, Node 20.20.2, Playwright 1.55.0 und Redocly 1.34.3 an den CI-Grenzen.
-- [ ] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
+- [x] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
 - [x] **P0 | INFRA-04:** E2E-Pipeline reparieren: Umgebung seeden, Testnutzer anlegen, Flutter Web starten, Readiness abwarten, dann CMS-/Auth-/QA-Tests ausführen.
 - [x] **P0 | INFRA-05:** Playwright-Reports, `test-results`, leere temporäre JSONs und Laufzeitartefakte aus Git entfernen/ignorieren; Reports als CI-Artefakte speichern.
 - [ ] **P1 | INFRA-06:** Dev-Compose von Staging/Produktion trennen; keine Dummy-Defaults, Dev-Admins, `start-dev`, Bind-Mounts oder öffentliche Adminports in Produktion.

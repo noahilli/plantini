@@ -4,7 +4,9 @@ The executable definitions are `.github/workflows/ci.yml` and
 `.gitlab-ci.yml`. Both consume Flutter from the repository-level
 `.flutter-version`, validate their shared invariants with
 `tools/scripts/validate-ci-config.mjs`, lint `contracts/api.yaml`, validate the
-knowledgebase and block on backend, identity and Flutter tests.
+knowledgebase and block on backend lint/check/test/build, identity tests and
+Flutter format/analyze/test/build. The platform uses one npm lockfile; ESLint
+10.9.1 and its flat configuration are part of the reproducible backend gate.
 
 The integration stage uses the isolated IPv4 stack. GitHub builds it directly;
 GitLab reuses the correctly configured Flutter web artifact from its build
