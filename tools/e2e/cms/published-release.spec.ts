@@ -60,5 +60,23 @@ test.describe('CMS published release contract', () => {
 
     expect(response.status()).toBe(404);
     expect(response.headers()['content-type']).toContain('application/problem+json');
+    expect(response.headers()['x-api-version']).toBe('v1');
+    const problem = await response.json() as { traceId: string; status: number };
+    expect(problem.status).toBe(404);
+    expect(problem.traceId).toBe(response.headers()['x-correlation-id']);
+  });
+
+  test('rejects undocumented list filters instead of silently widening scope', async ({ request }) => {
+    const environment = requireE2EEnvironment();
+    const response = await request.get(
+      appendPath(environment.apiUrl, '/ecosystems?organisationId=foreign-scope'),
+    );
+
+    expect(response.status()).toBe(400);
+    expect(response.headers()['content-type']).toContain('application/problem+json');
+    expect(await response.json()).toEqual(expect.objectContaining({
+      code: 'VALIDATION_FAILED',
+      fieldErrors: { organisationId: expect.any(String) },
+    }));
   });
 });
