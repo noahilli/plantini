@@ -41,8 +41,6 @@ const chromiumUse = {
 export default defineConfig({
   testDir: '.',
   testIgnore: [
-    '**/auth/**',
-    '**/cms/**',
     '**/node_modules/**',
     '**/playwright-report/**',
     '**/test-results/**',
@@ -73,6 +71,18 @@ export default defineConfig({
       name: 'contract',
       dependencies: ['health'],
       testMatch: /contract\/.*\.spec\.ts/,
+      use: chromiumUse,
+    },
+    {
+      name: 'auth-contract',
+      dependencies: ['health'],
+      testMatch: /auth\/.*\.spec\.ts/,
+      use: chromiumUse,
+    },
+    {
+      name: 'cms-contract',
+      dependencies: ['health'],
+      testMatch: /cms\/.*\.spec\.ts/,
       use: chromiumUse,
     },
     {

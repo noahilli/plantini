@@ -7,6 +7,8 @@ export interface E2EEnvironment {
   readinessUrl: string;
   username: string;
   password: string;
+  keycloakAdminUsername: string;
+  keycloakAdminPassword: string;
   ipv4Hosts: Map<string, string>;
 }
 
@@ -21,6 +23,8 @@ const requiredVariables = [
   ...Object.values(urlVariables),
   'E2E_USERNAME',
   'E2E_USER_PASSWORD',
+  'E2E_KEYCLOAK_ADMIN_USERNAME',
+  'E2E_KEYCLOAK_ADMIN_PASSWORD',
 ];
 
 function parseUrl(variable: string, value: string, errors: string[]): URL | undefined {
@@ -112,6 +116,8 @@ export function requireE2EEnvironment(source: NodeJS.ProcessEnv = process.env): 
     readinessUrl: source.PLANTINI_E2E_READINESS_URL!,
     username: source.E2E_USERNAME!,
     password: source.E2E_USER_PASSWORD!,
+    keycloakAdminUsername: source.E2E_KEYCLOAK_ADMIN_USERNAME!,
+    keycloakAdminPassword: source.E2E_KEYCLOAK_ADMIN_PASSWORD!,
     ipv4Hosts: parseIpv4Hosts(source.PLANTINI_E2E_IPV4_HOSTS),
   };
 }

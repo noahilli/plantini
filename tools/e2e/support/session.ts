@@ -1,7 +1,64 @@
-import { expect, type Page } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
+
+import { expect, type APIRequestContext, type Page } from '@playwright/test';
 
 import type { E2EEnvironment } from './environment';
 import { appUi, enableFlutterWebSemantics } from './ui';
+
+/** Creates a fresh learner so a rerun never inherits completed levels. */
+export async function provisionIsolatedLearner(
+  request: APIRequestContext,
+  environment: E2EEnvironment,
+  purpose: string,
+): Promise<E2EEnvironment> {
+  const suffix = randomUUID();
+  const username = `e2e-${purpose}-${suffix}@plantini.test`;
+  const password = `Aa1!${randomUUID()}${randomUUID()}`;
+  const keycloakOrigin = new URL(environment.oidcIssuerUrl).origin;
+  const tokenResponse = await request.post(
+    `${keycloakOrigin}/realms/master/protocol/openid-connect/token`,
+    {
+      form: {
+        client_id: 'admin-cli',
+        grant_type: 'password',
+        username: environment.keycloakAdminUsername,
+        password: environment.keycloakAdminPassword,
+      },
+    },
+  );
+  expect(tokenResponse.status()).toBe(200);
+  const { access_token: accessToken } = await tokenResponse.json() as { access_token?: string };
+  expect(accessToken).toEqual(expect.any(String));
+
+  const createResponse = await request.post(`${keycloakOrigin}/admin/realms/plantini/users`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    data: {
+      username,
+      email: username,
+      firstName: 'E2E',
+      lastName: 'Journey',
+      enabled: true,
+      emailVerified: true,
+      requiredActions: [],
+    },
+  });
+  expect(createResponse.status()).toBe(201);
+  const location = createResponse.headers().location;
+  expect(location).toEqual(expect.any(String));
+  const userId = location?.split('/').at(-1);
+  expect(userId).toEqual(expect.any(String));
+
+  const passwordResponse = await request.put(
+    `${keycloakOrigin}/admin/realms/plantini/users/${userId}/reset-password`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      data: { type: 'password', value: password, temporary: false },
+    },
+  );
+  expect(passwordResponse.status()).toBe(204);
+
+  return { ...environment, username, password };
+}
 
 /** Signs in through the real browser-facing Keycloak Authorization Code + PKCE flow. */
 export async function signInAsE2ELearner(

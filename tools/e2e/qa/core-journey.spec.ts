@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 import { requireE2EEnvironment } from '../support/environment';
-import { signInAsE2ELearner, signOutFromPlantini } from '../support/session';
+import {
+  provisionIsolatedLearner,
+  signInAsE2ELearner,
+  signOutFromPlantini,
+} from '../support/session';
 import { appUi, enableFlutterWebSemantics, seededJourney } from '../support/ui';
 
 const e2eLeafImage = Buffer.from(
@@ -10,9 +14,13 @@ const e2eLeafImage = Buffer.from(
 );
 
 test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
-  test('Keycloak-Login → veröffentlichter Inhalt → Quiz → Feld → Herbarium → Re-Login', async ({ page }) => {
+  test('Keycloak-Login → veröffentlichter Inhalt → Quiz → Feld → Herbarium → Re-Login', async ({ page, request }) => {
     test.setTimeout(120_000);
-    const environment = requireE2EEnvironment();
+    const environment = await provisionIsolatedLearner(
+      request,
+      requireE2EEnvironment(),
+      'core',
+    );
     page.on('console', (message) => {
       const text = message.text();
       if (/^(AuthService|SecureCredentialStore|WebAuthPlatformHelper)/.test(text)) {

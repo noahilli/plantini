@@ -13,9 +13,11 @@
     "playwright.config.ts",
     "support/**/*.ts",
     "health/**/*.ts",
+    "auth/**/*.ts",
+    "cms/**/*.ts",
     "contract/**/*.ts",
     "qa/**/*.ts",
     "accessibility/**/*.ts"
   ],
-  "exclude": ["auth/**", "cms/**", "node_modules/**", "playwright-report/**", "test-results/**"]
+  "exclude": ["node_modules/**", "playwright-report/**", "test-results/**"]
 }
