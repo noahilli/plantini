@@ -5,16 +5,41 @@ stages:
   - integration
 
 variables:
+  FLUTTER_VERSION: "3.47.1"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
   DOCKER_DRIVER: overlay2
-  FLUTTER_VERSION: "3.24.5"
 
-# ── Flutter Stage ──────────────────────────────────────────────────
-flutter:analyze_and_test:
+ci:configuration:
+  stage: lint
+  image: node:20.20.2-bookworm-slim
+  before_script:
+    - apt-get update
+    - apt-get install --yes python3
+  script:
+    - node tools/scripts/validate-ci-config.mjs
+    - npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml
+    - python3 knowledge/scripts/validate_knowledge.py
+
+backend:test:
+  stage: test
+  image: node:20.20.2-bookworm-slim
+  script:
+    - cd services/platform
+    - npm ci
+    - npm run check
+    - npm test
+    - npm run build
+    - cd ../..
+    - node --test services/identity/test/*.test.mjs
+
+flutter:test:
   stage: test
   image: ghcr.io/cirruslabs/flutter:${FLUTTER_VERSION}
   script:
     - cd apps/flutter
     - flutter pub get
+    - dart format --output=none --set-exit-if-changed lib test
     - flutter analyze
     - flutter test
 
@@ -24,35 +49,40 @@ flutter:build_web:
   script:
     - cd apps/flutter
     - flutter pub get
-    - flutter build web
+    - >-
+      flutter build web --release
+      --dart-define=PLANTINI_ENV=development
+      --dart-define=PLANTINI_API_BASE_URL=http://127.0.0.1:1338/api/v1
+      --dart-define=PLANTINI_OIDC_ISSUER_URL=http://127.0.0.1:8082/realms/plantini
+      --dart-define=PLANTINI_OIDC_CLIENT_ID=plantini-web-dev
   artifacts:
     paths:
       - apps/flutter/build/web/
     expire_in: 1 week
 
-# ── Backend & OpenAPI Stage ────────────────────────────────────────
-backend:test:
-  stage: test
-  image: node:20-alpine
-  script:
-    - cd services/platform
-    - npm ci
-    - npm test
-    - cd ../..
-    - node --test services/identity/test/*.test.mjs
-
-# ── E2E Integration ────────────────────────────────────────────────
 e2e:playwright:
   stage: integration
-  image: mcr.microsoft.com/playwright:v1.40.0-jammy
+  image: mcr.microsoft.com/playwright:v1.55.0-noble
   services:
-    - docker:dind
+    - name: docker:27.5-dind
+      alias: docker
+  before_script:
+    - apt-get update
+    - apt-get install --yes docker.io docker-compose-v2
+    - docker info
   script:
     - cd tools/e2e
     - npm ci
-    - npx playwright test
+    - npm run stack:up
+    - npm test
+  variables:
+    PLANTINI_E2E_SKIP_WEB_BUILD: "true"
+  after_script:
+    - cd tools/e2e
+    - if [ -f .runtime/e2e.env ]; then npm run stack:down; fi
   artifacts:
     when: always
     paths:
-      - tools/e2e/playwright-report/
+      - tools/e2e/.runtime/playwright-report/
+      - tools/e2e/.runtime/test-results/
     expire_in: 1 week

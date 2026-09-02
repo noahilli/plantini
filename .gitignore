@@ -13,6 +13,7 @@ continue-codex
 # Temporary test data
 dummy.png
 mock.json
+.runtime/
 
 # Logs
 npm-debug.log*

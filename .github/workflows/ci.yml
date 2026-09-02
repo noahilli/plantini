@@ -18,13 +18,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 20.20.2
           cache: 'npm'
           cache-dependency-path: services/platform/package-lock.json
 
       - name: Validate OpenAPI Contract
         run: |
-          npx @redocly/cli lint contracts/api.yaml
+          node tools/scripts/validate-ci-config.mjs
+          npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml
+          python3 knowledge/scripts/validate_knowledge.py
 
       - name: Install Platform Dependencies
         run: |
@@ -54,7 +56,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.1'
+          flutter-version-file: '.flutter-version'
           channel: 'stable'
           cache: true
 
@@ -64,7 +66,9 @@ jobs:
 
       - name: Run Flutter Static Analysis
         run: |
-          cd apps/flutter && flutter analyze
+          cd apps/flutter
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze
 
       - name: Run Unit & Widget Tests
         run: |
@@ -95,14 +99,14 @@ jobs:
       - name: Setup Node.js for Playwright
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 20.20.2
           cache: 'npm'
           cache-dependency-path: tools/e2e/package-lock.json
 
       - name: Setup Flutter for the isolated E2E web build
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.1'
+          flutter-version-file: '.flutter-version'
           channel: 'stable'
           cache: true
 
@@ -115,8 +119,6 @@ jobs:
       - name: Start isolated IPv4 E2E stack
         working-directory: tools/e2e
         run: npm run stack:up
-        env:
-          PLANTINI_E2E_FLUTTER_VERSION: '3.47.1'
 
       - name: Run Playwright E2E Tests
         working-directory: tools/e2e
