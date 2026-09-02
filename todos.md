@@ -10,9 +10,9 @@ Plantini ist derzeit ein breiter UI- und Infrastruktur-Prototyp, kein Release Ca
 - [x] Flutter `analyze` läuft lokal ohne Befund.
 - [x] Der einzige Flutter-Smoke-Test ist lokal grün; fachliche Unit-, Widget- und Integrationstests fehlen weitgehend.
 - [x] `docker compose config` ist syntaktisch gültig.
-- [ ] Die Plantini-Container laufen aktuell nicht; ein integrierter Smoke-Test ist nicht bestätigt.
-- [ ] Die gespeicherten Playwright-Ergebnisse enthalten drei fehlgeschlagene CMS-Tests.
-- [ ] Die CI startet für QA-E2E keine Flutter-Web-App auf Port 3000.
+- [x] Der isolierte IPv4-E2E-Stack läuft frisch und Health, Contract, Auth-Session sowie Kernreise sind lokal bestätigt.
+- [x] Playwright-Laufzeitergebnisse liegen nur noch im ignorierten `.runtime`-Pfad; zwei aufeinanderfolgende Läufe umfassen jeweils sieben bestandene Tests.
+- [x] GitHub- und GitLab-CI bauen beziehungsweise übernehmen die Flutter-Web-App, starten den frischen Stack auf Port 3000 und warten auf Readiness.
 - [x] OpenAPI- und Backend-Prüfungen sind durch `|| true` nicht blockierend; der GitLab-Backend-Job ist kein echter Lint/Test (behoben via INFRA-03).
 - [x] Der lokale Backend-Build ist ohne installierte Node-Abhängigkeiten nicht ausführbar; Backendtests fehlen (behoben, Backend-Tests vorhanden und grün).
 - [x] Alle 95 Anforderungen stehen in `requirements/features.csv` auf `planned`, während Projektstatus und Backlog 100 % Fertigstellung behaupten (behoben, veraltete Quellen als deprecated markiert und Status konsolidiert).
@@ -166,10 +166,10 @@ Abnahme: Contract-Tests beweisen jeden MVP-Endpunkt gegen eine frische reale Tes
 ## Feature 10 – Infrastruktur, CI/CD und Betrieb (NFA023–NFA031)
 
 - [ ] **P0 | INFRA-01:** Die zehn lokalen Commits veröffentlichen und eine echte Remote-Pipeline nachweisen; vorher existiert kein CI-Nachweis für diesen Stand.
-- [ ] **P0 | INFRA-02:** Toolversionen konsistent pinnen. Lokal: Flutter 3.47.1/Dart 3.13.1; CI/SBOM: Flutter 3.24.x; `pubspec.yaml`: Dart 3.13.1.
+- [x] **P0 | INFRA-02:** Toolversionen konsistent pinnen: Flutter 3.47.1 aus `.flutter-version`, Dart 3.13.1, Node 20.20.2, Playwright 1.55.0 und Redocly 1.34.3 an den CI-Grenzen.
 - [ ] **P0 | INFRA-03:** `|| true` aus Pflicht-Gates entfernen; OpenAPI-Lint, Backend-Lint/Build/Test, Flutter-Format/Analyze/Test und Knowledge-Abgleich müssen blockieren.
-- [ ] **P0 | INFRA-04:** E2E-Pipeline reparieren: Umgebung seeden, Testnutzer anlegen, Flutter Web starten, Readiness abwarten, dann CMS-/Auth-/QA-Tests ausführen.
-- [ ] **P0 | INFRA-05:** Playwright-Reports, `test-results`, leere temporäre JSONs und Laufzeitartefakte aus Git entfernen/ignorieren; Reports als CI-Artefakte speichern.
+- [x] **P0 | INFRA-04:** E2E-Pipeline reparieren: Umgebung seeden, Testnutzer anlegen, Flutter Web starten, Readiness abwarten, dann CMS-/Auth-/QA-Tests ausführen.
+- [x] **P0 | INFRA-05:** Playwright-Reports, `test-results`, leere temporäre JSONs und Laufzeitartefakte aus Git entfernen/ignorieren; Reports als CI-Artefakte speichern.
 - [ ] **P1 | INFRA-06:** Dev-Compose von Staging/Produktion trennen; keine Dummy-Defaults, Dev-Admins, `start-dev`, Bind-Mounts oder öffentliche Adminports in Produktion.
 - [ ] **P1 | INFRA-07:** Immutable Images bauen, per Digest pinnen, als non-root betreiben und Health-, Readiness- und Migrationsschritte definieren.
 - [ ] **P1 | INFRA-08:** TLS, Reverse Proxy, CORS/CSP, Rate Limits, Uploadlimits, Netzwerksegmentierung und Secret-Store konfigurieren.
