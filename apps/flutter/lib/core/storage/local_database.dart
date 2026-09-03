@@ -42,7 +42,7 @@ final class LocalDatabase {
       await Isar.initialize(kIsWeb ? '/isar_plus.wasm' : null);
       final dbDir =
           directory ??
-          (kIsWeb ? '.' : (await getApplicationDocumentsDirectory()).path);
+          (kIsWeb ? '.' : (await getApplicationSupportDirectory()).path);
       final isarInstance = Isar.open(
         schemas: schemas,
         directory: dbDir,
@@ -53,7 +53,9 @@ final class LocalDatabase {
         inspector: inspector,
       );
       return Result.success(LocalDatabase(isarInstance));
-    } catch (error) {
+    } catch (error, stackTrace) {
+      debugPrint('LocalDatabase.open($name) failed in $directory: $error');
+      debugPrintStack(stackTrace: stackTrace);
       return Result.failure(
         StorageFailure(
           message: 'Die lokale Datenbank konnte nicht geöffnet werden.',
