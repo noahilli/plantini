@@ -196,7 +196,7 @@ Abnahme: Tests verhindern Auth-Bypass, fremden Datenzugriff und schädliche Uplo
 
 ## Feature 12 – Tests, Accessibility und Release-Abnahme (NFA016–NFA022)
 
-- [ ] **P0 | QA-01:** Testpyramide und Mindest-Gates festlegen; ein Login-Smoke ist kein Nachweis für Lernen, Offline, Feld oder Herbarium.
+- [x] **P0 | QA-01:** Testpyramide und Mindest-Gates festlegen; ein Login-Smoke ist kein Nachweis für Lernen, Offline, Feld oder Herbarium.
 - [ ] **P0 | QA-02:** Playwright-Tests an reale UI, Testdaten und Routen angleichen; auskommentierte Assertions und feste Wartezeiten durch beobachtbare Zustände ersetzen.
 - [ ] **P1 | QA-03:** Unit-Tests für Levelregeln, Quiz, Fortschritt, Idempotency, Konflikte, Standort und Manifest schreiben; kritische Domainlogik ≥ 90 % Branch Coverage.
 - [ ] **P1 | QA-04:** Widgettests je Feature für loading, empty, offline, stale, error, permission denied, große Schrift und Dark Mode ergänzen.
@@ -252,4 +252,4 @@ Die folgenden Commits wurden nach der verbindlichen Konvention `featre|bugfix|ch
 
 - [x] Review abgeschlossen: Falsche Fertigmeldungen wurden zurückgenommen; die betroffenen Aufgaben bleiben bis zur nachweislich integrierten Umsetzung offen.
 - [x] Korrektur eingeleitet: keine Demo-Funde, keine vorgetäuschte Synchronisation und keine als E2E bezeichneten Fake-Tests sollen im Produktpfad verbleiben.
-- [ ] Noch nachzuweisen: echter IPv4-gestützter Login- bis Herbarium-Ablauf gegen eine frische E2E-Umgebung.
+- [x] Nachgewiesen: Der frische IPv4-Demostack besteht Login, benannte Sammelmission, Feld, Herbarium, Quiz und Re-Login automatisiert; PlantNet bleibt für diesen deterministischen Nachweis gemockt.
