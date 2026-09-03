@@ -17,6 +17,7 @@ final class AppDependencies {
     required this.loadEcosystems,
     required this.loadLevels,
     required this.loadLevel,
+    required this.loadPlant,
     required this.learningSessions,
     required this.learningRepository,
     required this.contentSync,
@@ -32,6 +33,7 @@ final class AppDependencies {
   final LoadPublishedEcosystems loadEcosystems;
   final LoadPublishedLevels loadLevels;
   final LoadPublishedLevel loadLevel;
+  final LoadPublishedPlant loadPlant;
   final LearningSessionService learningSessions;
   final LearningRepository learningRepository;
   final ContentSyncService contentSync;

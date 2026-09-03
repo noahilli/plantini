@@ -58,6 +58,12 @@ final class MockCredentialStore implements CredentialStore {
 
 final class MockCatalogRepository implements CatalogRepository {
   @override
+  Future<Result<Plant>> getPublishedPlant(String plantId) async =>
+      Result.failure(
+        const ContractFailure(message: 'not found', missingFields: []),
+      );
+
+  @override
   Future<Result<List<Ecosystem>>> listPublishedEcosystems() async =>
       const Result.success([]);
 
@@ -136,6 +142,7 @@ void main() {
       loadEcosystems: LoadPublishedEcosystems(catalogRepo),
       loadLevels: LoadPublishedLevels(catalogRepo),
       loadLevel: LoadPublishedLevel(catalogRepo),
+      loadPlant: LoadPublishedPlant(catalogRepo),
       learningSessions: LearningSessionService(
         repository: learningRepo,
         store: _DummyStore(),

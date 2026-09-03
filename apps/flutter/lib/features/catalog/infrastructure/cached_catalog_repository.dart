@@ -53,6 +53,14 @@ final class CachedCatalogRepository implements CatalogRepository {
   );
 
   @override
+  Future<Result<Plant>> getPublishedPlant(String plantId) => _cached(
+    key: 'plantini.catalog.plant.$plantId.v1',
+    loadRemote: () => _remote.getPublishedPlant(plantId),
+    encode: _plantToJson,
+    decode: (value) => _plantFromJson(_map(value)),
+  );
+
+  @override
   Future<Result<List<Level>>> listPublishedLevels(String ecosystemId) =>
       _cached(
         key: 'plantini.catalog.ecosystem.$ecosystemId.levels.v1',
@@ -164,6 +172,30 @@ Level _levelFromJson(Map<String, dynamic> value) {
     blockedReason: value['blockedReason'] as String?,
   );
 }
+
+Map<String, Object?> _plantToJson(Plant value) => {
+  'id': value.id,
+  'slug': value.slug,
+  'scientificName': value.scientificName,
+  'commonName': value.commonName,
+  'family': value.family,
+  'description': value.description,
+  'warning': value.warning,
+  'sources': value.sources,
+  'releaseVersion': value.releaseVersion,
+};
+
+Plant _plantFromJson(Map<String, dynamic> value) => Plant(
+  id: _string(value, 'id'),
+  slug: _string(value, 'slug'),
+  scientificName: _string(value, 'scientificName'),
+  commonName: _string(value, 'commonName'),
+  family: value['family'] as String? ?? '',
+  description: value['description'] as String? ?? '',
+  warning: value['warning'] as String?,
+  sources: _stringList(value['sources']),
+  releaseVersion: _string(value, 'releaseVersion'),
+);
 
 Map<String, dynamic> _map(Object? value) {
   if (value is! Map) {

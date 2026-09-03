@@ -90,6 +90,27 @@ final class WidgetFlowCredentialStore implements CredentialStore {
 }
 
 final class WidgetFlowCatalogRepository implements CatalogRepository {
+  static const plants = {
+    'plant-eiche': Plant(
+      id: 'plant-eiche',
+      slug: 'stieleiche',
+      scientificName: 'Quercus robur',
+      commonName: 'Stieleiche',
+      family: 'Buchengewächse',
+      description: 'Ein prägender heimischer Laubbaum.',
+      releaseVersion: '1.0.0',
+    ),
+    'plant-buche': Plant(
+      id: 'plant-buche',
+      slug: 'rotbuche',
+      scientificName: 'Fagus sylvatica',
+      commonName: 'Rotbuche',
+      family: 'Buchengewächse',
+      description: 'Erkennbar an glatter, silbergrauer Rinde.',
+      releaseVersion: '1.0.0',
+    ),
+  };
+
   final List<Ecosystem> ecosystems = [
     const Ecosystem(
       id: 'eco-wald',
@@ -139,6 +160,19 @@ final class WidgetFlowCatalogRepository implements CatalogRepository {
   @override
   Future<Result<List<Ecosystem>>> listPublishedEcosystems() async {
     return Result.success(ecosystems);
+  }
+
+  @override
+  Future<Result<Plant>> getPublishedPlant(String plantId) async {
+    final plant = plants[plantId];
+    return plant == null
+        ? const Result.failure(
+            ContractFailure(
+              message: 'Pflanze nicht gefunden',
+              missingFields: [],
+            ),
+          )
+        : Result.success(plant);
   }
 
   @override
@@ -361,6 +395,7 @@ AppDependencies createWidgetFlowDependencies() {
     loadEcosystems: LoadPublishedEcosystems(catalogRepo),
     loadLevels: LoadPublishedLevels(catalogRepo),
     loadLevel: LoadPublishedLevel(catalogRepo),
+    loadPlant: LoadPublishedPlant(catalogRepo),
     learningSessions: LearningSessionService(
       repository: learningRepo,
       store: WidgetFlowInMemoryLearningStore(),
@@ -443,6 +478,10 @@ void main() {
         );
         expect(find.text('2. Zielpflanzen sammeln'), findsOneWidget);
         expect(find.text('3. Abschlussprüfung'), findsOneWidget);
+        expect(find.text('Stieleiche'), findsWidgets);
+        expect(find.text('Quercus robur'), findsOneWidget);
+        expect(find.text('Rotbuche'), findsWidgets);
+        expect(find.text('Fagus sylvatica'), findsOneWidget);
         expect(
           find.byKey(const ValueKey('learning-start-quiz')),
           findsOneWidget,

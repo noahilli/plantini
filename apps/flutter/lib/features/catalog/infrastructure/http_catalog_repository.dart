@@ -87,4 +87,13 @@ final class HttpCatalogRepository implements CatalogRepository {
       ),
     );
   }
+
+  @override
+  Future<Result<Plant>> getPublishedPlant(String plantId) async {
+    final response = await _client.getJson('plants/$plantId');
+    return response.when(
+      success: (value) => CatalogDto.plantFromJson(value.body),
+      failure: Result.failure,
+    );
+  }
 }

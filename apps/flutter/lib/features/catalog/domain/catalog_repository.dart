@@ -4,5 +4,6 @@ import 'catalog_models.dart';
 abstract interface class CatalogRepository {
   Future<Result<List<Ecosystem>>> listPublishedEcosystems();
   Future<Result<LevelContent>> getPublishedLevel(String levelId);
+  Future<Result<Plant>> getPublishedPlant(String plantId);
   Future<Result<List<Level>>> listPublishedLevels(String ecosystemId);
 }

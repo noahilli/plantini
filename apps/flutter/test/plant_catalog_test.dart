@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plantini_app/core/result.dart';
 import 'package:plantini_app/features/catalog/domain/catalog_models.dart';
+import 'package:plantini_app/features/catalog/infrastructure/catalog_dto.dart';
 import 'package:plantini_app/features/catalog/presentation/plant_detail_screen.dart';
 
 void main() {
   group('Plant Domain Model', () {
+    test('maps a published API plant for named collection missions', () {
+      final result = CatalogDto.plantFromJson({
+        'id': '33333333-3333-4333-8333-333333333333',
+        'scientificName': 'Quercus robur',
+        'commonName': 'Stiel-Eiche',
+        'family': 'Fagaceae',
+        'description': 'Heimischer Laubbaum',
+        'releaseVersion': 'demo-de-v1',
+      });
+
+      expect(result, isA<Success<Plant>>());
+      final plant = (result as Success<Plant>).value;
+      expect(plant.commonName, 'Stiel-Eiche');
+      expect(plant.scientificName, 'Quercus robur');
+    });
+
     test('instantiates with all fields correctly', () {
       const media = PlantMedia(
         id: 'media-1',

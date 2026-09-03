@@ -34,9 +34,15 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
       return Result.failure(failure);
     }
     final content = (contentResult as Success<LevelContent>).value;
-    final herbariumResult = await widget.dependencies.listHerbarium?.call(
-      pageSize: 100,
-    );
+    final targetIds = content.level.collectionTargets;
+    final results = await Future.wait([
+      if (widget.dependencies.listHerbarium != null)
+        widget.dependencies.listHerbarium!(pageSize: 100),
+      ...targetIds.map(widget.dependencies.loadPlant.call),
+    ]);
+    final herbariumResult = widget.dependencies.listHerbarium == null
+        ? null
+        : results.first as Result<List<HerbariumEntry>>;
     if (herbariumResult case Failure<List<HerbariumEntry>>(:final failure)) {
       return Result.failure(failure);
     }
@@ -45,9 +51,19 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
               .map((entry) => entry.confirmedPlantId)
               .whereType<String>()
         : const <String>[];
+    final plantResults = results.skip(herbariumResult == null ? 0 : 1);
+    final plants = <String, Plant>{};
+    for (final result in plantResults) {
+      if (result case Failure<Plant>(:final failure)) {
+        return Result.failure(failure);
+      }
+      final plant = (result as Success<Plant>).value;
+      plants[plant.id] = plant;
+    }
     return Result.success(
       _LevelMission(
         content: content,
+        targetPlants: plants,
         collection: LevelCollectionProgress.forLevel(
           content.level,
           confirmedIds,
@@ -83,6 +99,7 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
         final content = mission.content;
         final level = content.level;
         final collection = mission.collection;
+        final nextPlant = mission.nextMissingPlant;
         return Column(
           children: [
             Expanded(
@@ -233,6 +250,9 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                               )
                                 _PlantToken(
                                   number: index + 1,
+                                  plant:
+                                      mission.targetPlants[collection
+                                          .requiredPlantIds[index]],
                                   collected: collection.collectedPlantIds
                                       .contains(
                                         collection.requiredPlantIds[index],
@@ -273,10 +293,14 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                                   foregroundColor: AppColors.neutral900,
                                 ),
                                 onPressed: () => context.go(
-                                  '/field?expectedPlantId=${Uri.encodeComponent(collection.missingPlantIds.first)}&expectedPlantName=${Uri.encodeComponent('Zielpflanze ${collection.collectedCount + 1}')}',
+                                  '/field?expectedPlantId=${Uri.encodeComponent(nextPlant!.id)}&expectedPlantName=${Uri.encodeComponent(nextPlant.commonName)}',
                                 ),
                                 icon: const Icon(Icons.photo_camera_outlined),
-                                label: const Text('Nächste Pflanze sammeln'),
+                                label: Text(
+                                  nextPlant == null
+                                      ? 'Nächste Pflanze sammeln'
+                                      : '${nextPlant.commonName} sammeln',
+                                ),
                               ),
                             ),
                           ],
@@ -339,10 +363,23 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
 }
 
 final class _LevelMission {
-  const _LevelMission({required this.content, required this.collection});
+  const _LevelMission({
+    required this.content,
+    required this.collection,
+    required this.targetPlants,
+  });
 
   final LevelContent content;
   final LevelCollectionProgress collection;
+  final Map<String, Plant> targetPlants;
+
+  Plant? get nextMissingPlant {
+    for (final id in collection.missingPlantIds) {
+      final plant = targetPlants[id];
+      if (plant != null) return plant;
+    }
+    return null;
+  }
 }
 
 final class _QuestStages extends StatelessWidget {
@@ -487,18 +524,24 @@ final class _QuestConnector extends StatelessWidget {
 }
 
 final class _PlantToken extends StatelessWidget {
-  const _PlantToken({required this.number, required this.collected});
+  const _PlantToken({
+    required this.number,
+    required this.plant,
+    required this.collected,
+  });
 
   final int number;
+  final Plant? plant;
   final bool collected;
 
   @override
   Widget build(BuildContext context) => Container(
-    width: 64,
-    height: 64,
+    width: 112,
+    constraints: const BoxConstraints(minHeight: 106),
+    padding: const EdgeInsets.all(9),
     decoration: BoxDecoration(
       color: collected ? AppColors.sage300 : AppColors.sage700,
-      shape: BoxShape.circle,
+      borderRadius: BorderRadius.circular(18),
       border: Border.all(
         color: collected ? AppColors.accent200 : AppColors.sage500,
         width: 3,
@@ -511,13 +554,32 @@ final class _PlantToken extends StatelessWidget {
           collected ? Icons.check : Icons.local_florist_outlined,
           color: collected ? AppColors.sage900 : AppColors.neutral100,
         ),
+        const SizedBox(height: 5),
         Text(
-          '$number',
+          plant?.commonName ?? 'Zielpflanze $number',
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: collected ? AppColors.sage900 : AppColors.neutral100,
             fontWeight: FontWeight.w800,
+            fontSize: 11,
           ),
         ),
+        if (plant != null) ...[
+          const SizedBox(height: 2),
+          Text(
+            plant!.scientificName,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: collected ? AppColors.sage800 : AppColors.sage200,
+              fontSize: 9,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
       ],
     ),
   );

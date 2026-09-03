@@ -3,6 +3,7 @@ import '../../../core/storage/local_database.dart';
 import '../domain/catalog_models.dart';
 import '../domain/catalog_repository.dart';
 import 'models/isar_level.dart';
+import 'models/isar_plant.dart';
 
 import 'package:isar_plus/isar_plus.dart';
 
@@ -72,6 +73,45 @@ class IsarCatalogRepository implements CatalogRepository {
     }
 
     return fallback.getPublishedLevel(levelId);
+  }
+
+  @override
+  Future<Result<Plant>> getPublishedPlant(String plantId) async {
+    final db = localDb;
+    if (db == null) return fallback.getPublishedPlant(plantId);
+    try {
+      final stored = db.plants.where().publicIdEqualTo(plantId).findFirst();
+      if (stored != null) {
+        return Result.success(
+          Plant(
+            id: stored.publicId,
+            slug: stored.slug,
+            scientificName: stored.scientificName,
+            commonName: stored.commonName,
+            family: stored.family,
+            description: stored.description,
+            warning: stored.warning,
+            sources: stored.sources,
+            releaseVersion: stored.releaseVersion,
+            media: stored.media
+                .map(
+                  (item) => PlantMedia(
+                    id: item.publicId,
+                    slug: item.slug,
+                    url: item.url,
+                    altText: item.altText,
+                    license: item.license,
+                    author: item.author,
+                  ),
+                )
+                .toList(growable: false),
+          ),
+        );
+      }
+    } catch (_) {
+      // A corrupt or unavailable local cache must not hide online content.
+    }
+    return fallback.getPublishedPlant(plantId);
   }
 
   @override

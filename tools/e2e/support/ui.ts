@@ -24,7 +24,6 @@ export const ui = {
     levels: 'Lernpfad',
     learningUnit: 'Lerneinheit',
     startQuiz: 'Abschlussquiz starten',
-    startExpedition: 'Nächste Pflanze sammeln',
   },
   learning: {
     quiz: 'Quiz',
@@ -56,6 +55,7 @@ export const seededJourney = {
   ecosystem: 'Mitteleuropäischer Laubwald',
   levelCard: 'Deine nächste Aufgabe 1. Arten erkennen',
   levelTitle: 'Arten erkennen',
+  collectionTargets: ['Rotbuche', 'Stiel-Eiche', 'Hainbuche'],
   quiz: [
     ['Welches Rindenmerkmal passt besonders gut zur Rotbuche?', 'Glatt und weißgrau'],
     ['Welches Blattmerkmal spricht eher für die Stiel-Eiche als für die Trauben-Eiche?', 'Sehr kurzer Blattstiel und oft geöhrter Grund'],
@@ -120,7 +120,7 @@ export const appUi = {
   levelTitle: (page: Page): Locator => exactText(page, seededJourney.levelTitle),
   startQuizButton: (page: Page): Locator => namedButton(page, ui.catalog.startQuiz),
   startExpeditionButton: (page: Page): Locator =>
-    namedButton(page, ui.catalog.startExpedition),
+    page.getByRole('button', { name: / sammeln$/, exact: true }),
 
   quizTitle: (page: Page): Locator => exactText(page, ui.learning.quiz),
   quizQuestion: (page: Page, question: string): Locator =>

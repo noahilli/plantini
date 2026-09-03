@@ -127,6 +127,33 @@ final class CatalogDto {
     );
   }
 
+  static Result<Plant> plantFromJson(Map<String, dynamic> json) {
+    final fields = _requiredStrings(json, const [
+      'id',
+      'scientificName',
+      'releaseVersion',
+    ]);
+    if (fields case Failure<Map<String, String>>(:final failure)) {
+      return Result.failure(failure);
+    }
+    final values = (fields as Success<Map<String, String>>).value;
+    final commonName =
+        _optionalString(json, 'commonName') ?? values['scientificName']!;
+    return Result.success(
+      Plant(
+        id: values['id']!,
+        slug: values['id']!,
+        scientificName: values['scientificName']!,
+        commonName: commonName,
+        family: _optionalString(json, 'family') ?? '',
+        description: _optionalString(json, 'description') ?? '',
+        warning: _optionalString(json, 'warning'),
+        sources: _stringList(json, 'sources'),
+        releaseVersion: values['releaseVersion']!,
+      ),
+    );
+  }
+
   static Result<Map<String, String>> _requiredStrings(
     Map<String, dynamic> json,
     List<String> keys,

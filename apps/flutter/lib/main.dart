@@ -93,6 +93,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       loadEcosystems: LoadPublishedEcosystems(catalog),
       loadLevels: LoadPublishedLevels(catalog),
       loadLevel: LoadPublishedLevel(catalog),
+      loadPlant: LoadPublishedPlant(catalog),
       learningSessions: LearningSessionService(
         repository: learningRepository,
         store: SharedPreferencesLearningSessionStore(preferences),

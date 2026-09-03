@@ -28,3 +28,12 @@ final class LoadPublishedLevel {
   Future<Result<LevelContent>> call(String levelId) =>
       _repository.getPublishedLevel(levelId);
 }
+
+final class LoadPublishedPlant {
+  const LoadPublishedPlant(this._repository);
+
+  final CatalogRepository _repository;
+
+  Future<Result<Plant>> call(String plantId) =>
+      _repository.getPublishedPlant(plantId);
+}

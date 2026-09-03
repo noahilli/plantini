@@ -40,6 +40,10 @@ test.describe('Plantini Web: echte Lernenden-Kernreise', () => {
 
       await appUi.levelCard(page).click();
       await expect(appUi.learningUnitTitle(page)).toBeVisible();
+      for (const plantName of seededJourney.collectionTargets) {
+        await expect(page.getByText(plantName, { exact: true })).toBeVisible();
+      }
+      await expect(page.getByText(/Zielpflanze \d/)).toHaveCount(0);
     });
 
     await test.step('Lernende:r sammelt alle drei Zielpflanzen im Herbarium', async () => {
