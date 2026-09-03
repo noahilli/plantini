@@ -8,12 +8,18 @@ import '../application/content_sync_service.dart';
 Future<ContentSyncService> createContentSyncService({
   required PlatformApiClient apiClient,
   required SharedPreferences preferences,
+  LocalDatabase? localDatabase,
 }) async {
-  final result = await LocalDatabase.open();
-  if (result case Failure<LocalDatabase>(:final failure)) throw failure;
+  final database = localDatabase ?? await _openDatabase();
   return ContentSyncService(
     apiClient: apiClient,
-    localDatabase: result.valueOrNull!,
+    localDatabase: database,
     preferences: preferences,
   );
+}
+
+Future<LocalDatabase> _openDatabase() async {
+  final result = await LocalDatabase.open();
+  if (result case Failure<LocalDatabase>(:final failure)) throw failure;
+  return result.valueOrNull!;
 }

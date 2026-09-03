@@ -73,12 +73,13 @@ final class _AppBootstrapState extends State<AppBootstrap> {
     final contentSync = await createContentSyncService(
       apiClient: api,
       preferences: preferences,
+      localDatabase: localDb,
     );
 
     final learningRepository = HttpLearningRepository(api);
     final fieldRepository = HttpFieldRepository(api);
     final queue = SyncQueueService(
-      store: await createSyncQueueStore(),
+      store: await createSyncQueueStore(localDatabase: localDb),
       ids: SecureClientIdGenerator(),
     );
     final herbariumRepository = OfflineHerbariumRepository(
