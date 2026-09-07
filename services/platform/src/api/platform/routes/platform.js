@@ -20,6 +20,7 @@ module.exports = {
     route('GET', '/v1/content/changes', 'getContentChanges'),
     route('GET', '/v1/ecosystems', 'listEcosystems'),
     route('GET', '/v1/ecosystems/:ecosystemId', 'getEcosystem'),
+    route('GET', '/v1/ecosystems/:ecosystemId/progress', 'getEcosystemProgress'),
     route('GET', '/v1/levels/:levelId', 'getLevel'),
     route('GET', '/v1/plants/:plantId', 'getPlant'),
     route('GET', '/v1/quiz-items', 'listQuizItems'),

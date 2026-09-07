@@ -85,7 +85,8 @@ function mapEcosystem(ecosystem) {
     name: ecosystem.name,
     description: ecosystem.description || '',
     releaseVersion: ecosystem.releaseVersion,
-    levelIds: (ecosystem.levels || []).filter(isPublished).map((level) => contentId(level, 'Level')),
+    levelIds: (ecosystem.levels || []).filter(isPublished)
+      .sort((a, b) => a.sequence - b.sequence).map((level) => contentId(level, 'Level')),
   };
 }
 
@@ -160,7 +161,19 @@ function normaliseCompletionRule(rule, quizzes) {
   const requiredPlantIds = Array.isArray(source.requiredPlantIds)
     ? [...new Set(source.requiredPlantIds.filter((id) => typeof id === 'string' && id.length > 0))]
     : [];
-  return { minimumScore, requiredQuizIds, requiredPlantIds };
+  const collectionScope = source.collectionScope === undefined ? 'level' : source.collectionScope;
+  if (!['level', 'ecosystem'].includes(collectionScope)) {
+    throw contentIntegrityError('Unknown collectionScope.');
+  }
+  if (collectionScope === 'ecosystem' && (!Array.isArray(source.requiredPlantIds)
+    || source.requiredPlantIds.some((id) => typeof id !== 'string')
+    || requiredPlantIds.length !== source.requiredPlantIds.length)) {
+    throw contentIntegrityError('Ecosystem collection rules need explicit public plant IDs.');
+  }
+  for (const id of requiredPlantIds) contentId({ publicId: id }, 'Required plant');
+  const requiredLevelIds = Array.isArray(source.requiredLevelIds) ? source.requiredLevelIds : [];
+  for (const id of requiredLevelIds) contentId({ publicId: id }, 'Required level');
+  return { minimumScore, requiredQuizIds, requiredPlantIds, requiredLevelIds, collectionScope };
 }
 
 function normaliseChoices(value) {

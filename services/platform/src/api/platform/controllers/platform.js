@@ -47,6 +47,13 @@ module.exports = {
     return execute(ctx, async (runtime) => runtime.content.getEcosystem(ctx.params.ecosystemId));
   },
 
+  async getEcosystemProgress(ctx) {
+    return withActor(ctx, (runtime, actor) => {
+      rejectUnknownQuery(ctx.query, []);
+      return runtime.learning.getEcosystemProgress(actor, ctx.params.ecosystemId);
+    });
+  },
+
   async getLevel(ctx) {
     return withActor(ctx, (runtime, actor) => runtime.content.getLevel(
       actor,

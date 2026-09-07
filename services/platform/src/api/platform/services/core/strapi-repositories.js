@@ -63,7 +63,8 @@ function createContentRepository(entities) {
         populate: {
           levels: {
             filters: { publishedAt: { $notNull: true } },
-            fields: ['publicId', 'publishedAt'],
+            fields: ['publicId', 'publishedAt', 'sequence'],
+            sort: { sequence: 'asc' },
           },
         },
       }));
@@ -76,7 +77,8 @@ function createContentRepository(entities) {
       populate: {
         levels: {
           filters: { publishedAt: { $notNull: true } },
-          fields: ['publicId', 'publishedAt'],
+          fields: ['publicId', 'publishedAt', 'sequence'],
+          sort: { sequence: 'asc' },
         },
       },
     }),
@@ -108,7 +110,11 @@ function createContentRepository(entities) {
     listPublishedLevels: async () => entities.findMany('api::level.level', {
       publicationState: 'live',
       sort: { sequence: 'asc' },
-      populate: { quizzes: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] } },
+      populate: {
+        ecosystem: { fields: ['publicId', 'publishedAt'] },
+        plants: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
+        quizzes: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
+      },
     }),
   };
 }

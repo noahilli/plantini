@@ -2,7 +2,7 @@
 
 const { createHash } = require('crypto');
 
-const DEMO_RELEASE_VERSION = '2026.08.28-de.1';
+const DEMO_RELEASE_VERSION = '2026.09.07-de.1';
 
 function stableContentId(kind, slug) {
   const hex = createHash('sha256')

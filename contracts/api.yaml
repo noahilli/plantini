@@ -101,6 +101,23 @@ paths:
       responses:
         '200': {description: Published ecosystem, content: {application/json: {schema: {$ref: '#/components/schemas/Ecosystem'}}}}
         '404': {$ref: '#/components/responses/NotFound'}
+  /ecosystems/{ecosystemId}/progress:
+    get:
+      summary: Compute the actor's ecosystem completion from passed levels and collected species
+      description: >-
+        Read-only authoritative snapshot. Collection can precede any quiz. All quiz
+        levels remain passable without collection when collectionScope is ecosystem.
+        A deleted herbarium record no longer counts; duplicates and foreign species
+        do not satisfy additional targets. No completion mutation is required.
+      tags: [Learning]
+      operationId: getEcosystemProgress
+      parameters: [{$ref: '#/components/parameters/EcosystemId'}]
+      responses:
+        '200': {description: Authoritative ecosystem completion, content: {application/json: {schema: {$ref: '#/components/schemas/EcosystemProgress'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {description: Collection or content validation unavailable, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
   /levels/{levelId}:
     get:
       summary: Read an accessible level and its user state
@@ -141,6 +158,7 @@ paths:
   /level-attempts:
     post:
       summary: Start or resume an idempotent level attempt
+      description: Missing requiredLevelIds returns 409 LEVEL_LOCKED. Passed levels permit revisits; failed attempts can be retried using a new clientAttemptId.
       tags: [Learning]
       operationId: startLevelAttempt
       parameters: [{$ref: '#/components/parameters/IdempotencyKey'}]
@@ -148,6 +166,7 @@ paths:
         required: true
         content: {application/json: {schema: {$ref: '#/components/schemas/StartLevelAttemptRequest'}}}
       responses:
+        '200': {description: Idempotent replay, content: {application/json: {schema: {$ref: '#/components/schemas/LevelAttempt'}}}}
         '201': {description: New or resumed attempt, content: {application/json: {schema: {$ref: '#/components/schemas/LevelAttempt'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
@@ -567,7 +586,33 @@ components:
     CompletionRule:
       type: object
       required: [minimumScore]
-      properties: {minimumScore: {type: number, minimum: 0, maximum: 1}, requiredQuizIds: {type: array, items: {$ref: '#/components/schemas/Id'}}}
+      properties:
+        minimumScore: {type: number, minimum: 0, maximum: 1}
+        requiredQuizIds: {type: array, items: {$ref: '#/components/schemas/Id'}}
+        requiredLevelIds: {type: array, items: {$ref: '#/components/schemas/Id'}}
+        requiredPlantIds:
+          type: array
+          uniqueItems: true
+          items: {$ref: '#/components/schemas/Id'}
+          description: Explicit collection targets. Ecosystem-scoped ordinary levels return []; only the final level lists the three public UUIDs. Clients must not infer targets from plantIds.
+        collectionScope:
+          type: string
+          enum: [level, ecosystem]
+          default: level
+          description: Legacy rules default to level and retain their per-level collection gate. Ecosystem rules never block quiz completion; GET ecosystem progress evaluates the final collection gate.
+    EcosystemProgress:
+      type: object
+      required: [ecosystemId, status, completed, totalLevels, completedLevelCount, completedLevelIds, requiredPlantIds, collectedPlantIds, missingPlantIds]
+      properties:
+        ecosystemId: {$ref: '#/components/schemas/Id'}
+        status: {type: string, enum: [in_progress, collection_pending, completed]}
+        completed: {type: boolean, description: True only when every published level has a server-passed attempt and every target species is collected.}
+        totalLevels: {type: integer, minimum: 1}
+        completedLevelCount: {type: integer, minimum: 0}
+        completedLevelIds: {type: array, uniqueItems: true, items: {$ref: '#/components/schemas/Id'}, description: Passed level IDs in sequence order.}
+        requiredPlantIds: {type: array, uniqueItems: true, items: {$ref: '#/components/schemas/Id'}}
+        collectedPlantIds: {type: array, uniqueItems: true, items: {$ref: '#/components/schemas/Id'}, description: Distinct collected required species only.}
+        missingPlantIds: {type: array, uniqueItems: true, items: {$ref: '#/components/schemas/Id'}}
     Plant:
       type: object
       required: [id, scientificName, releaseVersion]

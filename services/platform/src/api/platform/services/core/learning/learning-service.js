@@ -37,6 +37,7 @@ class LearningService {
     if (level.releaseVersion !== input.contentVersion) {
       throw conflict('CONTENT_VERSION_CONFLICT', 'Das Level gehört nicht zu der angefragten Inhaltsversion.');
     }
+    await this.requireLevelAccess(actor, level);
 
     const existingClientAttempt = await this.repository.findAttemptByClientId(actor.id, input.clientAttemptId);
     if (existingClientAttempt) {
@@ -90,9 +91,12 @@ class LearningService {
       });
     }
     const rule = normaliseCompletionRule(level.completionRule, level.quizzes || []);
+    // Also reject legacy/bypassed active attempts whose prerequisites were
+    // never passed. A replay of an already stored result remains idempotent.
+    await this.requireLevelAccess(actor, level);
     const score = await this.scoreAnswers(level, rule, input.answers);
     const passed = score >= rule.minimumScore;
-    if (passed) await this.requireCollectedPlants(actor, level, rule);
+    if (passed && rule.collectionScope === 'level') await this.requireCollectedPlants(actor, level, rule);
     const completedAt = this.clock().toISOString();
     const updated = await this.repository.updateAttempt(attempt.id || attempt.publicId, {
       status: 'completed',
@@ -164,10 +168,11 @@ class LearningService {
   }
 
   async getProgress(actor, since) {
-    const normalizedSince = optionalDate(since, 'since');
+    optionalDate(since, 'since');
     const [levels, attempts] = await Promise.all([
       this.repository.listPublishedLevels(),
-      this.repository.listAttemptsByOwner(actor.id, normalizedSince),
+      // Unlocking always needs the full history, even for a refresh with since.
+      this.repository.listAttemptsByOwner(actor.id),
     ]);
     const attemptsByLevel = new Map();
     for (const attempt of attempts) {
@@ -190,7 +195,7 @@ class LearningService {
       if (completedLevelIds.has(level.publicId)) {
         status = 'completed';
         percentage = 1;
-        completedAt = attempt && attempt.completedAt;
+        completedAt = attempts.find((item) => item.levelPublicId === level.publicId && item.passed)?.completedAt;
       } else if (locked) {
         status = 'locked';
       } else if (attempt) {
@@ -217,6 +222,70 @@ class LearningService {
       // The condition is derived from the server-side completion rule.  It is
       // deliberately generic: titles may change between content releases.
       blockedReason: 'Schließe zuerst die vorherige Etappe ab.',
+    };
+  }
+
+  async requireLevelAccess(actor, level) {
+    const attempts = await this.repository.listAttemptsByOwner(actor.id);
+    const passed = new Set(attempts.filter((item) => item.status === 'completed' && item.passed)
+      .map((item) => item.levelPublicId));
+    if (passed.has(level.publicId)) return; // Previously passed levels are revisitable.
+    const rule = normaliseCompletionRule(level.completionRule, level.quizzes || []);
+    const missingLevelIds = rule.requiredLevelIds.filter((id) => !passed.has(id));
+    if (missingLevelIds.length) {
+      throw new ProblemError('LEVEL_LOCKED', {
+        status: 409,
+        detail: 'Schließe zuerst die vorherige Etappe ab.',
+        meta: { missingLevelIds },
+      });
+    }
+  }
+
+  async getEcosystemProgress(actor, ecosystemId) {
+    requireUuid(ecosystemId, 'ecosystemId');
+    const ecosystem = await this.repository.findPublishedEcosystem(ecosystemId);
+    if (!ecosystem) throw notFound('ECOSYSTEM_NOT_FOUND');
+    const [publishedLevels, attempts] = await Promise.all([
+      this.repository.listPublishedLevels(),
+      this.repository.listAttemptsByOwner(actor.id),
+    ]);
+    const levels = publishedLevels.filter((level) => level.ecosystem?.publicId === ecosystemId)
+      .sort((a, b) => a.sequence - b.sequence);
+    if (!levels.length) {
+      throw new ProblemError('CONTENT_INTEGRITY_FAILED', { status: 503, detail: 'Das Ökosystem enthält keine veröffentlichten Level.' });
+    }
+    const rules = levels.map((level) => normaliseCompletionRule(level.completionRule, level.quizzes || []));
+    const ecosystemRules = rules.filter((rule) => rule.collectionScope === 'ecosystem');
+    const finalRule = rules[rules.length - 1];
+    if (ecosystemRules.length && (ecosystemRules.length !== rules.length
+      || finalRule.requiredPlantIds.length !== 3
+      || rules.slice(0, -1).some((rule) => rule.requiredPlantIds.length > 0))) {
+      throw new ProblemError('CONTENT_INTEGRITY_FAILED', { status: 503, detail: 'Die Ökosystem-Sammelregel ist unvollständig.' });
+    }
+    const requiredPlantIds = ecosystemRules.length ? finalRule.requiredPlantIds : [];
+    const plantIds = new Set(levels.flatMap((level) => (level.plants || [])
+      .filter((plant) => plant.publishedAt).map((plant) => plant.publicId)));
+    if (requiredPlantIds.some((id) => !plantIds.has(id))) {
+      throw new ProblemError('CONTENT_INTEGRITY_FAILED', { status: 503, detail: 'Eine Zielpflanze gehört nicht zum Ökosystem.' });
+    }
+    const passed = new Set(attempts.filter((attempt) => attempt.status === 'completed' && attempt.passed)
+      .map((attempt) => attempt.levelPublicId));
+    const completedLevelIds = levels.filter((level) => passed.has(level.publicId)).map((level) => level.publicId);
+    const collected = requiredPlantIds.length ? await this.collectedPlantIds(actor) : new Set();
+    const collectedPlantIds = requiredPlantIds.filter((id) => collected.has(id));
+    const missingPlantIds = requiredPlantIds.filter((id) => !collected.has(id));
+    const quizzesPassed = completedLevelIds.length === levels.length;
+    const completed = quizzesPassed && missingPlantIds.length === 0;
+    return {
+      ecosystemId,
+      status: completed ? 'completed' : quizzesPassed ? 'collection_pending' : 'in_progress',
+      completed,
+      totalLevels: levels.length,
+      completedLevelCount: completedLevelIds.length,
+      completedLevelIds,
+      requiredPlantIds,
+      collectedPlantIds,
+      missingPlantIds,
     };
   }
 
@@ -267,22 +336,7 @@ class LearningService {
         detail: 'Das Level enthält keine sammelbaren Zielpflanzen.',
       });
     }
-    if (!this.herbariumRepository) {
-      throw new ProblemError('COLLECTION_GATE_UNAVAILABLE', {
-        status: 503,
-        detail: 'Der Herbarium-Fortschritt kann derzeit nicht geprüft werden.',
-      });
-    }
-    const result = await this.herbariumRepository.listObservations(actor.id, {
-      page: 1,
-      pageSize: 1000,
-    });
-    const collected = new Set(
-      result.items
-        .filter((entry) => entry.syncStatus !== 'deleted')
-        .map((entry) => entry.confirmedPlantId)
-        .filter(Boolean),
-    );
+    const collected = await this.collectedPlantIds(actor);
     const missingPlantIds = requiredPlantIds.filter((id) => !collected.has(id));
     if (missingPlantIds.length > 0) {
       throw new ProblemError('LEVEL_COLLECTION_INCOMPLETE', {
@@ -291,6 +345,25 @@ class LearningService {
         meta: { missingPlantIds },
       });
     }
+  }
+
+  async collectedPlantIds(actor) {
+    if (!this.herbariumRepository) {
+      throw new ProblemError('COLLECTION_GATE_UNAVAILABLE', {
+        status: 503,
+        detail: 'Der Herbarium-Fortschritt kann derzeit nicht geprüft werden.',
+      });
+    }
+    const collected = new Set();
+    const pageSize = 1000;
+    for (let page = 1; ; page += 1) {
+      const result = await this.herbariumRepository.listObservations(actor.id, { page, pageSize });
+      for (const entry of result.items) {
+        if (entry.syncStatus !== 'deleted' && entry.confirmedPlantId) collected.add(entry.confirmedPlantId);
+      }
+      if (page * pageSize >= result.total || result.items.length < pageSize) break;
+    }
+    return collected;
   }
 
   async completionFromStored(actor, attempt) {
