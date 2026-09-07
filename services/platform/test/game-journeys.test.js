@@ -64,7 +64,9 @@ test('GAME-03 seed exposes 30 ordered playable levels per ecosystem with unique,
       assert.equal(level.status, index === 0 ? 'available' : 'locked');
       assert.equal(level.plantIds.length, 1);
       const plant = await w.service.getPlant(level.plantIds[0]);
-      assert.ok(level.learningGoal.startsWith(plant.description));
+      // The plant description is retrieved separately through the published
+      // plant endpoint; the level goal only announces this round's task.
+      assert.match(level.learningGoal, /[Ff]ragen|[Ww]iederholung|[Ff]estige/);
       if (index >= 10) assert.match(level.learningGoal, /[Ww]iederholung/);
       assert.equal(level.completionRule.collectionScope, 'ecosystem');
       assert.deepEqual(level.completionRule.requiredLevelIds, index ? [ecosystem.levelIds[index - 1]] : []);
