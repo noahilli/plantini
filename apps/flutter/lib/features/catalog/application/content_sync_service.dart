@@ -110,6 +110,7 @@ final class ContentSyncResult {
 }
 
 typedef PackageDownloader = Future<Result<Uint8List>> Function(String url);
+typedef LocalReleaseProbe = Future<bool> Function(String version);
 
 /// Service responsible for atomically downloading, validating (via SHA-256),
 /// and persisting content releases into the local storage.
@@ -119,12 +120,14 @@ final class ContentSyncService {
     this.localDatabase,
     this.preferences,
     this.packageDownloader,
+    this.localReleaseExists,
   });
 
   final PlatformApiClient apiClient;
   final LocalDatabase? localDatabase;
   final SharedPreferences? preferences;
   final PackageDownloader? packageDownloader;
+  final LocalReleaseProbe? localReleaseExists;
 
   static const String activeContentVersionKey =
       'plantini.content.active_version';
@@ -157,7 +160,9 @@ final class ContentSyncService {
     }
 
     // Skip if already on this version and not forcing
-    if (!force && activeLocalVersion == manifest.version) {
+    if (!force &&
+        activeLocalVersion == manifest.version &&
+        await _hasCompleteLocalRelease(manifest.version)) {
       debugPrint(
         'ContentSyncService: Local content is already up-to-date (${manifest.version}).',
       );
@@ -241,6 +246,9 @@ final class ContentSyncService {
     if (localDb != null && localDb.isar.isOpen) {
       try {
         localDb.isar.write((_) {
+          localDb.ecosystems.clear();
+          localDb.levels.clear();
+          localDb.plants.clear();
           if (downloadedEcosystems.isNotEmpty) {
             for (final item in downloadedEcosystems) {
               if (item.id <= 0) item.id = localDb.ecosystems.autoIncrement();
@@ -282,6 +290,28 @@ final class ContentSyncService {
         plantCount: downloadedPlants.length,
       ),
     );
+  }
+
+  Future<bool> _hasCompleteLocalRelease(String version) async {
+    final probe = localReleaseExists;
+    if (probe != null) return probe(version);
+    final localDb = localDatabase;
+    if (localDb == null) return true;
+    if (!localDb.isar.isOpen) return false;
+    try {
+      final ecosystemCount = localDb.ecosystems.count();
+      final levelCount = localDb.levels.count();
+      final plantCount = localDb.plants.count();
+      if (ecosystemCount == 0 || levelCount == 0 || plantCount == 0) {
+        return false;
+      }
+      return ecosystemCount > 0 && levelCount > 0 && plantCount > 0;
+    } catch (error) {
+      debugPrint(
+        'ContentSyncService: Could not verify local release $version: $error',
+      );
+      return false;
+    }
   }
 
   Future<Result<Uint8List>> _downloadPackageBytes(String url) async {

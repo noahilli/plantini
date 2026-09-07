@@ -57,6 +57,15 @@ Dieser Modus besitzt bewusst keine Demo-Erfolgsgarantie: Internetzugang,
 Providerquote und die Qualität des hochgeladenen Fotos beeinflussen das
 Ergebnis.
 
+## Lokaler Content-Cache
+
+Der Demo-Start verwendet eine eigene native Isar-Datenbank im
+Application-Support-Verzeichnis. Eine gespeicherte Content-Version wird nur
+dann als aktuell akzeptiert, wenn Ökosysteme, Level und Pflanzen auch lokal
+vorhanden sind. Eine leere Datenbank nach einem Reset lädt die veröffentlichte
+Freigabe erneut. Der vollständige Produktumfang für Release-Migrationen und
+Rollback bleibt unter `CONTENT-06` offen.
+
 ## Verifizierter Stand 2026-09-03
 
 - Flutter-Analyse und vollständige Flutter-Testsuite ohne Befund

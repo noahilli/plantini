@@ -31,7 +31,9 @@ void main() {
   }
 
   test('syncRelease downloads packages and validates SHA-256 checksums successfully', () async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({
+      'plantini.content.active_version': '2026.08.25-1',
+    });
     final prefs = await SharedPreferences.getInstance();
 
     final ecosystemsJson = jsonEncode({
@@ -175,6 +177,7 @@ void main() {
     final service = ContentSyncService(
       apiClient: apiClient,
       preferences: prefs,
+      localReleaseExists: (_) async => false,
       packageDownloader: (url) async {
         if (url.contains('ecosystems')) {
           return Result.success(
@@ -201,6 +204,53 @@ void main() {
     expect(summary.plantCount, 1);
     expect(service.activeLocalVersion, '2026.08.25-1');
   });
+
+  test(
+    'syncRelease skips only when the matching local release is populated',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'plantini.content.active_version': '2026.08.25-1',
+      });
+      final prefs = await SharedPreferences.getInstance();
+      var downloaded = false;
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.resolve(
+            Response(
+              requestOptions: options,
+              statusCode: 200,
+              data: {
+                'version': '2026.08.25-1',
+                'releasedAt': '2026-08-25T12:00:00Z',
+                'schemaVersion': '1.0',
+                'minimumAppVersion': '0.1.0',
+                'packages': const [],
+              },
+            ),
+          ),
+        ),
+      );
+      final service = ContentSyncService(
+        apiClient: PlatformApiClient(
+          config: testConfig,
+          accessTokenProvider: () async => null,
+          dio: dio,
+        ),
+        preferences: prefs,
+        localReleaseExists: (_) async => true,
+        packageDownloader: (_) async {
+          downloaded = true;
+          return Result.success(Uint8List(0));
+        },
+      );
+
+      final result = await service.syncRelease();
+
+      expect(result, isA<Success<ContentSyncResult>>());
+      expect(downloaded, isFalse);
+    },
+  );
 
   test('syncRelease aborts atomically when SHA-256 checksum fails', () async {
     SharedPreferences.setMockInitialValues({
