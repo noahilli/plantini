@@ -210,6 +210,24 @@ Abnahme: Tests verhindern Auth-Bypass, fremden Datenzugriff und schädliche Uplo
 
 Abnahme: Release erst bei grünen Muss-Kernreisen auf Staging, bestandener Accessibility-Prüfung, Restore innerhalb RPO/RTO und ohne offene Critical/High-Befunde.
 
+## Spielbare Ökosystem-Reise – Nutzerauftrag vom 7. September 2026
+
+Die neue Vorgabe ersetzt die frühere Sammelpflicht pro Level: 30 kurze Level
+je Ökosystem, Einleitung → Quiz → Levelstern; drei festgelegte Pflanzen werden
+jederzeit gesammelt und ausschließlich für das Ökosystem-Finale benötigt.
+
+| Aufgabe | Entwicklungsstand |
+| --- | --- |
+| GAME-03: 30 Level, je drei Fragen, sequenzielle Freigabe und separates serverseitiges Ökosystem-Finale | Implementiert in Release `2026.09.07-de.1`; drei Lern-/Wiederholungsrunden über zehn vorhandene Pflanzen. |
+| GAME-04: Pflanzeneinleitung, ausdrückliches Weiter, Ergebnis, Wiederholung und nächstes Level | Implementiert; Sterne nur nach bestätigtem Bestehen, Abschluss-Retry mit stabiler Idempotenz. |
+| GAME-05: leere/gefüllte Pflanzengläser, vollständige Sammlung und direkte Artensuche | Implementiert; Beobachtungen, Notizen, Filter und Löschen bleiben erreichbar. |
+| GAME-06: begehbare Weltkarte mit Naturkulisse, zehn Stationen pro Abschnitt, Vor-/Zurücknavigation | Implementiert; vorhandene Level bleiben wiederholbar, spätere werden serverseitig freigeschaltet. |
+| GAME-QA: Anpassung bestehender Tests an den neuen Ablauf | WIP / auf Nutzerwunsch pausiert. Bereits entstandene Tests separat unter `wip: tests …`; keine weitere Testentwicklung in diesem Lauf. |
+
+Dies ist der Implementierungsstand, keine Produktions- oder vollständige
+E2E-Freigabe. Details, Buildnachweise und bekannte WIP-Punkte:
+[`knowledge/handovers/game-development.md`](knowledge/handovers/game-development.md).
+
 ## Nächste Umsetzungsschnitte
 
 - [ ] **Slice A – Vertrauenswürdiges Fundament:** STATUS-01–04, APP-02/03, AUTH-01–04, API-02–04 und INFRA-02–05.
