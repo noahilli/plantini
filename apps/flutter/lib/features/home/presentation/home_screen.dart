@@ -71,12 +71,15 @@ final class _HomeContent extends StatelessWidget {
           : const <Level>[];
       Level? active;
       for (final level in levels) {
-        if (level.isUnlocked) {
+        if (level.isUnlocked && level.status != LevelStatus.completed) {
           active = level;
           break;
         }
       }
-      final progress = active?.progress;
+      final completed = levels
+          .where((level) => level.status == LevelStatus.completed)
+          .length;
+      final progress = levels.isEmpty ? null : completed / levels.length;
       return ListView(
         key: const ValueKey('ecosystem-list-ready'),
         padding: const EdgeInsets.fromLTRB(22, 18, 22, 28),
@@ -114,7 +117,7 @@ final class _HomeContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'DEIN TERRARIUM',
+                  'DEINE SPIELWELT',
                   style: Theme.of(context).textTheme.labelSmall
                       ?.copyWith(color: AppColors.sage300),
                 ),
@@ -122,13 +125,16 @@ final class _HomeContent extends StatelessWidget {
                 Text(
                   progress == null
                       ? 'Dein Weg beginnt'
-                      : '${(progress * 100).round()} %',
+                      : '$completed / ${levels.length} Sterne',
                   style: Theme.of(context).textTheme.displaySmall
                       ?.copyWith(color: AppColors.neutral100),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  active?.title ?? 'Wähle dein erstes Ökosystem.',
+                  active?.title ??
+                      (levels.isEmpty
+                          ? 'Wähle dein erstes Ökosystem.'
+                          : 'Alle Quizlevel geschafft – besuche dein Ökosystem-Finale.'),
                   style: const TextStyle(color: AppColors.sage300),
                 ),
                 if (progress != null) ...[

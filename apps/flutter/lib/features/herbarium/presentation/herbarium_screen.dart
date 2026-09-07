@@ -6,12 +6,15 @@ import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../design_system/async_state_view.dart';
+import '../../catalog/application/catalog_use_cases.dart';
+import '../../catalog/domain/catalog_models.dart';
 import '../application/herbarium_use_cases.dart';
 import '../domain/herbarium_models.dart';
 import '../domain/herbarium_repository.dart';
 import '../infrastructure/local_herbarium_repository.dart';
 import 'herbarium_detail_screen.dart';
 import 'widgets/herbarium_list_view.dart';
+import 'widgets/herbarium_bottle_collection.dart';
 import 'widgets/herbarium_search_filter_bar.dart';
 
 /// Screen displaying the user's digital herbarium with reactive list updates,
@@ -25,6 +28,9 @@ class HerbariumScreen extends StatefulWidget {
     this.deleteEntry,
     this.syncEntries,
     this.onStartField,
+    this.loadEcosystems,
+    this.loadLevels,
+    this.loadPlant,
   });
 
   final AppDependencies? dependencies;
@@ -33,6 +39,9 @@ class HerbariumScreen extends StatefulWidget {
   final DeleteEntry? deleteEntry;
   final SyncEntries? syncEntries;
   final VoidCallback? onStartField;
+  final LoadPublishedEcosystems? loadEcosystems;
+  final LoadPublishedLevels? loadLevels;
+  final LoadPublishedPlant? loadPlant;
 
   @override
   State<HerbariumScreen> createState() => _HerbariumScreenState();
@@ -50,6 +59,13 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   bool _isSyncing = false;
   String _searchQuery = '';
   SyncStatus? _selectedStatus;
+  String? _entriesError;
+  bool _showCollection = true;
+
+  bool get _hasCatalog =>
+      (widget.loadEcosystems ?? widget.dependencies?.loadEcosystems) != null &&
+      (widget.loadLevels ?? widget.dependencies?.loadLevels) != null &&
+      (widget.loadPlant ?? widget.dependencies?.loadPlant) != null;
 
   @override
   void initState() {
@@ -87,8 +103,11 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   }
 
   Future<void> _loadEntries() async {
-    setState(() => _isLoading = true);
-    final result = await _listUseCase();
+    setState(() {
+      _isLoading = true;
+      _entriesError = null;
+    });
+    final result = await _listUseCase.all();
     if (!mounted) return;
 
     if (result case Success<List<HerbariumEntry>>(:final value)) {
@@ -99,6 +118,9 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
     } else {
       setState(() {
         _isLoading = false;
+        _entriesError =
+            result.failureOrNull?.message ??
+            'Funde konnten nicht geladen werden.';
       });
     }
   }
@@ -115,6 +137,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         _allEntries = List.of(value);
         _isSyncing = false;
       });
+      await _loadEntries();
     } else {
       final failure = result.failureOrNull;
       setState(() => _isSyncing = false);
@@ -171,18 +194,38 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
     context.go('/field');
   }
 
-  void _onEntryTap(HerbariumEntry entry) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => HerbariumDetailScreen(
-          entry: entry,
-          onDelete: (item) async {
-            await _handleDeleteEntry(item);
-          },
-          onUpdateNote: _handleUpdateNote,
-        ),
-      ),
+  void _discoverPlant(Plant plant) {
+    if (widget.onStartField != null) {
+      widget.onStartField!();
+      return;
+    }
+    context.go(
+      Uri(
+        path: '/field',
+        queryParameters: {
+          'expectedPlantId': plant.id,
+          'expectedPlantName': plant.commonName,
+        },
+      ).toString(),
     );
+  }
+
+  void _onEntryTap(HerbariumEntry entry) {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (ctx) => HerbariumDetailScreen(
+              entry: entry,
+              onDelete: (item) async {
+                await _handleDeleteEntry(item);
+              },
+              onUpdateNote: _handleUpdateNote,
+            ),
+          ),
+        )
+        .then((_) {
+          if (mounted) _loadEntries();
+        });
   }
 
   List<HerbariumEntry> get _filteredEntries {
@@ -275,6 +318,30 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
               ),
             ),
 
+            if (_hasCatalog)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    ChoiceChip(
+                      key: const ValueKey('herbarium-tab-collection'),
+                      label: const Text('Sammlung'),
+                      selected: _showCollection,
+                      onSelected: (_) => setState(() => _showCollection = true),
+                    ),
+                    ChoiceChip(
+                      key: const ValueKey('herbarium-tab-observations'),
+                      label: const Text('Beobachtungen'),
+                      selected: !_showCollection,
+                      onSelected: (_) =>
+                          setState(() => _showCollection = false),
+                    ),
+                  ],
+                ),
+              ),
+
             // Search & Filter UI
             HerbariumSearchFilterBar(
               searchQuery: _searchQuery,
@@ -288,20 +355,55 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
               },
             ),
 
-            // Reactive List View
+            if (_entriesError != null)
+              Flexible(
+                flex: 0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text(_entriesError!)),
+                      IconButton(
+                        key: const ValueKey('herbarium-entries-retry'),
+                        tooltip: 'Funde erneut laden',
+                        onPressed: _loadEntries,
+                        icon: const Icon(Icons.refresh),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Keep the catalog mounted while browsing personal observations.
             Expanded(
-              child: _isLoading
-                  ? const AsyncStateView(kind: AsyncViewKind.loading)
-                  : HerbariumListView(
-                      entries: _filteredEntries,
-                      onEntryTap: _onEntryTap,
-                      onDeleteEntry: _handleDeleteEntry,
-                      onRefresh: _loadEntries,
-                      emptyMessage:
-                          _searchQuery.isNotEmpty || _selectedStatus != null
-                          ? 'Keine Funde für die aktuelle Suche oder Filterung gefunden.'
-                          : 'Noch keine Pflanzenfunde im Herbarium erfasst.',
-                    ),
+              child: _hasCatalog
+                  ? IndexedStack(
+                      index: _showCollection ? 0 : 1,
+                      children: [
+                        HerbariumBottleCollection(
+                          loadEcosystems:
+                              (widget.loadEcosystems ??
+                              widget.dependencies?.loadEcosystems)!,
+                          loadLevels:
+                              (widget.loadLevels ??
+                              widget.dependencies?.loadLevels)!,
+                          loadPlant:
+                              (widget.loadPlant ??
+                              widget.dependencies?.loadPlant)!,
+                          entries: _allEntries,
+                          entriesAvailable:
+                              !_isLoading && _entriesError == null,
+                          searchQuery: _searchQuery,
+                          selectedStatus: _selectedStatus,
+                          onEntryTap: _onEntryTap,
+                          onStartField: _startField,
+                          onDiscoverPlant: _discoverPlant,
+                          onRefreshEntries: _loadEntries,
+                        ),
+                        _buildObservations(),
+                      ],
+                    )
+                  : _buildObservations(),
             ),
           ],
         ),
@@ -316,4 +418,17 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
       ),
     );
   }
+
+  Widget _buildObservations() => _isLoading
+      ? const AsyncStateView(kind: AsyncViewKind.loading)
+      : HerbariumListView(
+          entries: _filteredEntries,
+          onEntryTap: _onEntryTap,
+          onDeleteEntry: _handleDeleteEntry,
+          onRefresh: _loadEntries,
+          emptyMessage: _searchQuery.isNotEmpty || _selectedStatus != null
+              ? 'Keine Funde für die aktuelle Suche oder Filterung gefunden.'
+              : _entriesError ??
+                    'Noch keine Pflanzenfunde im Herbarium erfasst.',
+        );
 }

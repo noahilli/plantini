@@ -15,8 +15,10 @@ class IsarCatalogRepository implements CatalogRepository {
 
   @override
   Future<Result<List<Ecosystem>>> listPublishedEcosystems() async {
+    final online = await fallback.listPublishedEcosystems();
+    if (online is Success<List<Ecosystem>>) return online;
     final db = localDb;
-    if (db == null) return fallback.listPublishedEcosystems();
+    if (db == null) return online;
 
     try {
       final isarEcosystems = db.ecosystems.where().findAll();
@@ -39,13 +41,17 @@ class IsarCatalogRepository implements CatalogRepository {
       // fallback
     }
 
-    return fallback.listPublishedEcosystems();
+    return online;
   }
 
   @override
   Future<Result<LevelContent>> getPublishedLevel(String levelId) async {
+    // Progress changes after each quiz. Published Isar content is a fallback,
+    // never the authority for fresh unlocks.
+    final online = await fallback.getPublishedLevel(levelId);
+    if (online is Success<LevelContent>) return online;
     final db = localDb;
-    if (db == null) return fallback.getPublishedLevel(levelId);
+    if (db == null) return online;
 
     try {
       final isarLevel = db.levels.where().publicIdEqualTo(levelId).findFirst();
@@ -72,7 +78,7 @@ class IsarCatalogRepository implements CatalogRepository {
       // fallback
     }
 
-    return fallback.getPublishedLevel(levelId);
+    return online;
   }
 
   @override
@@ -116,8 +122,10 @@ class IsarCatalogRepository implements CatalogRepository {
 
   @override
   Future<Result<List<Level>>> listPublishedLevels(String ecosystemId) async {
+    final online = await fallback.listPublishedLevels(ecosystemId);
+    if (online is Success<List<Level>>) return online;
     final db = localDb;
-    if (db == null) return fallback.listPublishedLevels(ecosystemId);
+    if (db == null) return online;
 
     try {
       final isarLevels = db.levels
@@ -152,7 +160,7 @@ class IsarCatalogRepository implements CatalogRepository {
       // fallback
     }
 
-    return fallback.listPublishedLevels(ecosystemId);
+    return online;
   }
 
   LevelStatus _mapStatus(IsarLevelStatus status) {

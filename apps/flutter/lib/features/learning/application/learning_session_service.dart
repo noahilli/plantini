@@ -83,6 +83,7 @@ final class LearningSessionService {
     required LearningSession session,
     required String quizItemId,
     required String choiceId,
+    bool holdForFeedback = false,
   }) async {
     QuizItem? item;
     for (final candidate in session.quizItems) {
@@ -111,8 +112,13 @@ final class LearningSessionService {
         'choiceId': choiceId,
       },
     );
+    // Repeated taps must never create another event or change an answer.
+    if (session.answers.containsKey(quizItemId)) {
+      return Result.success(session);
+    }
     final nextIndex =
-        session.currentQuestionIndex < session.quizItems.length - 1
+        !holdForFeedback &&
+            session.currentQuestionIndex < session.quizItems.length - 1
         ? session.currentQuestionIndex + 1
         : session.currentQuestionIndex;
     final updated = session.copyWith(
@@ -126,6 +132,52 @@ final class LearningSessionService {
       return Result.failure(failure);
     }
     return Result.success(updated);
+  }
+
+  /// Persist the explicit Weiter action, including across an offline restart.
+  Future<Result<LearningSession>> advanceQuestion(
+    LearningSession session,
+  ) async {
+    final question = session.currentQuestion;
+    if (question == null || !session.answers.containsKey(question.id)) {
+      return const Result.failure(
+        ValidationFailure(message: 'Wähle zuerst eine Antwort aus.'),
+      );
+    }
+    if (session.currentQuestionIndex >= session.quizItems.length - 1) {
+      return Result.success(session);
+    }
+    final updated = session.copyWith(
+      currentQuestionIndex: session.currentQuestionIndex + 1,
+      updatedAt: _clock.now(),
+    );
+    final stored = await _store.save(updated);
+    if (stored case Failure<void>(:final failure)) {
+      return Result.failure(failure);
+    }
+    return Result.success(updated);
+  }
+
+  /// Only a server-confirmed finished attempt may be discarded for replay.
+  Future<Result<LearningSession>> restartCompleted({
+    required LearningSession session,
+    required LevelCompletion completion,
+  }) async {
+    if (completion.attemptId != session.serverAttemptId) {
+      return const Result.failure(
+        ConflictFailure(
+          message: 'Das Ergebnis gehört zu einem anderen Versuch.',
+        ),
+      );
+    }
+    final removed = await _store.delete(session.levelId);
+    if (removed case Failure<void>(:final failure)) {
+      return Result.failure(failure);
+    }
+    return beginOrResume(
+      levelId: session.levelId,
+      contentVersion: session.contentVersion,
+    );
   }
 
   Future<Result<LearningSession>> submitPendingEvents(
@@ -190,9 +242,11 @@ final class LearningSessionService {
     }
     final completion = await _repository.completeLevelAttempt(
       attemptId: ready.serverAttemptId!,
-      clientEventId: _ids.next(),
+      // A lost response must replay the same completion, not create a conflict
+      // against an attempt the server has already finished.
+      clientEventId: ready.clientAttemptId,
       answers: ready.answers.values.toList(growable: false),
-      idempotencyKey: _ids.next(),
+      idempotencyKey: 'complete-${ready.clientAttemptId}',
     );
     if (completion case Failure<LevelCompletion>(:final failure)) {
       final pending = ready.copyWith(completionPending: failure.isRetryable);

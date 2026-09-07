@@ -45,8 +45,7 @@ final class Level {
   final List<String> requiredQuizIds;
   final List<String> plantIds;
 
-  /// Curated plants that must be confirmed in the herbarium to finish.
-  /// Older content falls back to the first three level plants.
+  /// Explicit targets; game releases attach these to the ecosystem finale.
   final List<String> requiredPlantIds;
   final String? learningGoal;
   final double? progress;
@@ -54,9 +53,7 @@ final class Level {
 
   bool get isUnlocked => status != LevelStatus.locked;
 
-  List<String> get collectionTargets => requiredPlantIds.isNotEmpty
-      ? requiredPlantIds
-      : plantIds.take(3).toList(growable: false);
+  List<String> get collectionTargets => requiredPlantIds;
 }
 
 enum LevelStatus { locked, available, inProgress, completed }

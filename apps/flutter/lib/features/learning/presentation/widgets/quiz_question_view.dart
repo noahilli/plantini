@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/errors/app_failure.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/learning_models.dart';
-import 'sync_notice_view.dart';
 
 typedef OnAnswerCallback = void Function(QuizItem item, QuizChoice choice);
 
-/// Renders the active quiz question, progress bar, choice buttons and submit trigger.
+/// Selection feedback deliberately makes no claim about correctness.
 final class QuizQuestionView extends StatelessWidget {
   const QuizQuestionView({
     super.key,
@@ -16,6 +15,8 @@ final class QuizQuestionView extends StatelessWidget {
     required this.busy,
     required this.onAnswer,
     required this.onComplete,
+    this.onNext,
+    this.onRetrySync,
     this.failure,
   });
 
@@ -24,183 +25,136 @@ final class QuizQuestionView extends StatelessWidget {
   final bool busy;
   final OnAnswerCallback onAnswer;
   final VoidCallback onComplete;
+  final VoidCallback? onNext;
+  final VoidCallback? onRetrySync;
   final AppFailure? failure;
 
   @override
   Widget build(BuildContext context) {
-    final answered = session.answers.containsKey(question.id);
-    final completedAnswers = session.answers.length == session.quizItems.length;
-
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(22, 6, 22, 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (session.answers.isNotEmpty)
-                  Semantics(
-                    label: 'Lernstand fortgesetzt',
-                    child: const Text(
-                      'Dein lokaler Lernstand wurde wiederhergestellt.',
-                    ),
+    final answer = session.answers[question.id];
+    final isLast = session.currentQuestionIndex == session.quizItems.length - 1;
+    return ColoredBox(
+      color: AppColors.bg,
+      child: ListView(
+        key: ValueKey('question-page-${question.id}'),
+        padding: const EdgeInsets.all(22),
+        children: [
+          Text(
+            'Frage ${session.currentQuestionIndex + 1} von ${session.quizItems.length}',
+            style: Theme.of(context).textTheme.labelLarge,
+          ),
+          const SizedBox(height: 10),
+          LinearProgressIndicator(
+            value: session.answers.length / session.quizItems.length,
+            semanticsLabel: 'Beantwortete Fragen',
+            semanticsValue:
+                '${session.answers.length} von ${session.quizItems.length}',
+            minHeight: 8,
+            borderRadius: BorderRadius.circular(8),
+            color: AppColors.sage700,
+            backgroundColor: AppColors.sage200,
+          ),
+          const SizedBox(height: 24),
+          Semantics(
+            header: true,
+            child: Text(
+              question.prompt,
+              key: const ValueKey('quiz-question'),
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          const SizedBox(height: 20),
+          for (final choice in question.choices) ...[
+            Semantics(
+              selected: answer?.choiceId == choice.id,
+              child: OutlinedButton(
+                key: ValueKey('quiz-answer-${choice.id}'),
+                onPressed: answer != null || busy
+                    ? null
+                    : () => onAnswer(question, choice),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.ink,
+                  disabledForegroundColor: AppColors.ink,
+                  backgroundColor: answer?.choiceId == choice.id
+                      ? AppColors.sage200
+                      : AppColors.neutral100,
+                  side: BorderSide(
+                    color: answer?.choiceId == choice.id
+                        ? AppColors.sage800
+                        : AppColors.neutral500,
                   ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.all(18),
+                ),
+                child: Row(
                   children: [
-                    Text(
-                      'Frage ${session.currentQuestionIndex + 1} von ${session.quizItems.length}',
-                      style: const TextStyle(
-                        color: AppColors.neutral700,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Icon(
+                      answer?.choiceId == choice.id
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_off,
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.sage200,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        _quizType(question.type),
-                        style: const TextStyle(
-                          color: AppColors.sage800,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(choice.label)),
                   ],
                 ),
-                const SizedBox(height: 7),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    value:
-                        (session.currentQuestionIndex + 1) /
-                        session.quizItems.length,
-                    minHeight: 7,
-                  ),
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  'ARTEN SICHER UNTERSCHEIDEN',
-                  style: Theme.of(context).textTheme.labelSmall
-                      ?.copyWith(color: AppColors.sage700),
-                ),
-                const SizedBox(height: 4),
-                Semantics(
-                  label: 'Quizfrage ${question.prompt}',
-                  container: true,
-                  excludeSemantics: true,
-                  child: Text(
-                    question.prompt,
-                    key: const ValueKey('quiz-question'),
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: AppColors.sage200,
-                    borderRadius: BorderRadius.circular(26),
-                    gradient: const LinearGradient(
-                      colors: [AppColors.sage200, AppColors.sage300],
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.eco,
-                    size: 74,
-                    color: AppColors.sage500,
-                  ),
-                ),
-                const SizedBox(height: 13),
-                for (final choice in question.choices) ...[
-                  Semantics(
-                    label: 'Antwort ${choice.label}',
-                    button: true,
-                    child: OutlinedButton(
-                      key: ValueKey('quiz-answer-${choice.id}'),
-                      onPressed: answered || busy
-                          ? null
-                          : () => onAnswer(question, choice),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: AppColors.bg,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 15,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 22,
-                            height: 22,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.neutral500),
-                            ),
-                            child: const Icon(Icons.arrow_forward, size: 12),
-                          ),
-                          const SizedBox(width: 11),
-                          Expanded(
-                            child: Text(
-                              choice.label,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                if (busy)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 12),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                if (failure != null) ...[
-                  const SizedBox(height: 12),
-                  SyncNoticeView(failure: failure!),
-                ],
-              ],
-            ),
-          ),
-        ),
-        if (completedAnswers)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(22, 10, 22, 18),
-            child: FilledButton(
-              key: const ValueKey('learning-level-complete'),
-              onPressed: busy ? null : onComplete,
-              child: Text(
-                session.completionPending
-                    ? 'Abschluss erneut synchronisieren'
-                    : 'Level abschließen',
               ),
             ),
-          ),
-      ],
+            const SizedBox(height: 12),
+          ],
+          if (answer != null) ...[
+            Semantics(
+              liveRegion: true,
+              child: Container(
+                key: const ValueKey('quiz-answer-feedback'),
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: AppColors.sage200,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'Antwort gespeichert. Dein Ergebnis erhältst du nach der letzten Frage.',
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (failure != null) ...[
+            Semantics(liveRegion: true, child: Text(failure!.message)),
+            const SizedBox(height: 8),
+          ],
+          if (session.pendingEvents.isNotEmpty) ...[
+            const Text(
+              'Antworten sind auf diesem Gerät gespeichert. Synchronisierung ausstehend.',
+            ),
+            if (onRetrySync != null)
+              TextButton(
+                onPressed: busy ? null : onRetrySync,
+                child: const Text('Jetzt synchronisieren'),
+              ),
+            const SizedBox(height: 8),
+          ],
+          if (busy)
+            const LinearProgressIndicator(semanticsLabel: 'Wird gespeichert'),
+          if (answer != null)
+            FilledButton(
+              key: ValueKey(isLast ? 'learning-level-complete' : 'quiz-next'),
+              onPressed: busy
+                  ? null
+                  : isLast
+                  ? onComplete
+                  : onNext,
+              child: Text(
+                isLast
+                    ? session.completionPending
+                          ? 'Abschluss erneut synchronisieren'
+                          : 'Level abschließen'
+                    : 'Weiter',
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
-
-String _quizType(QuizItemType type) => switch (type) {
-  QuizItemType.multipleChoice => 'Merkmale',
-  QuizItemType.flashcard => 'Lernkarte',
-  QuizItemType.imageIdentification => 'Bilderkennung',
-  QuizItemType.featureMatch => 'Zuordnung',
-};

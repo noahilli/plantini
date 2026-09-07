@@ -11,159 +11,95 @@ final class LevelCompletionCelebration extends StatelessWidget {
     required this.level,
     this.nextLevel,
     this.onContinue,
+    this.onNextLevel,
+    this.onRetry,
+    this.busy = false,
   });
+
   final LevelCompletion completion;
   final Level level;
   final Level? nextLevel;
   final VoidCallback? onContinue;
+  final VoidCallback? onNextLevel;
+  final VoidCallback? onRetry;
+  final bool busy;
 
   @override
-  Widget build(BuildContext context) {
-    final percent = (completion.score * 100).round();
-    return Semantics(
-      label: completion.passed
-          ? 'Level abgeschlossen: ${level.title}'
-          : 'Level nicht abgeschlossen: ${level.title}',
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(22, 14, 22, 28),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(21),
+  Widget build(BuildContext context) => ListView(
+    padding: const EdgeInsets.all(24),
+    children: [
+      if (completion.passed)
+        Semantics(
+          label: 'Ein Levelstern verdient',
+          child: Container(
+            key: ValueKey('learning-earned-star-${level.id}'),
+            padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: AppColors.sage800,
-              borderRadius: BorderRadius.circular(30),
+              color: AppColors.sage200,
+              borderRadius: BorderRadius.circular(28),
             ),
-            child: Row(
+            child: const Column(
               children: [
-                Container(
-                  width: 86,
-                  height: 86,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.neutral100.withValues(alpha: .14),
-                    border: Border.all(color: AppColors.sage400, width: 5),
-                  ),
-                  child: Text(
-                    '$percent%',
-                    style: Theme.of(context).textTheme.headlineSmall
-                        ?.copyWith(color: AppColors.neutral100),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'QUIZ BEENDET',
-                        style: Theme.of(context).textTheme.labelSmall
-                            ?.copyWith(color: AppColors.sage300),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        completion.passed
-                            ? 'Level abgeschlossen'
-                            : 'Fast geschafft!',
-                        key: const ValueKey('learning-level-completed'),
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(color: AppColors.neutral100),
-                      ),
-                      if (completion.passed)
-                        const Text(
-                          'Herzlichen Glückwunsch!',
-                          style: TextStyle(
-                            color: AppColors.sage300,
-                            fontSize: 11,
-                          ),
-                        ),
-                    ],
-                  ),
+                Icon(Icons.star_rounded, size: 80, color: AppColors.accent700),
+                Text(
+                  'Dein Levelstern',
+                  style: TextStyle(color: AppColors.sage800),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 14),
-          if (completion.passed && nextLevel != null)
-            Container(
-              padding: const EdgeInsets.all(17),
-              decoration: BoxDecoration(
-                color: AppColors.accent200,
-                borderRadius: BorderRadius.circular(26),
-              ),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 26,
-                    backgroundColor: AppColors.terracotta,
-                    child: Icon(Icons.auto_awesome, color: AppColors.bg),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'GATE OFFEN',
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: AppColors.accent800),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          nextLevel!.title,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(color: AppColors.accent900),
-                        ),
-                        const Text(
-                          'Die nächste Etappe wurde serverseitig freigeschaltet.',
-                          style: TextStyle(
-                            color: AppColors.accent800,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          else
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.bg,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Text(
-                completion.passed
-                    ? 'Du hast alle derzeit veröffentlichten Etappen erreicht.'
-                    : 'Wiederhole das Quiz. Dein bisheriger Lernfortschritt bleibt erhalten.',
-                style: const TextStyle(color: AppColors.neutral700),
-              ),
-            ),
-          const SizedBox(height: 18),
-          Text(
-            level.title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            'Serverseitig bestätigtes Ergebnis: $percent %',
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.neutral700),
-          ),
-          const SizedBox(height: 24),
-          FilledButton(
-            onPressed: onContinue,
-            child: Text(
-              nextLevel != null && completion.passed
-                  ? 'Zum nächsten Level'
-                  : 'Zurück zur Übersicht',
-            ),
-          ),
-        ],
+        )
+      else
+        const Icon(Icons.refresh_rounded, size: 64, color: AppColors.sage800),
+      const SizedBox(height: 22),
+      Text(
+        completion.passed ? 'Herzlichen Glückwunsch!' : 'Fast geschafft!',
+        key: const ValueKey('learning-level-completed'),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
-    );
-  }
+      const SizedBox(height: 12),
+      Text(
+        level.title,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      const SizedBox(height: 12),
+      Text(
+        '${(completion.score * 100).round()}%',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headlineLarge,
+      ),
+      const Text('Dein bestätigtes Quizergebnis', textAlign: TextAlign.center),
+      const SizedBox(height: 18),
+      Text(
+        completion.passed
+            ? 'Dieser Stern gehört zu diesem Level. Wiederholen hilft dir, dein Pflanzenwissen zu festigen.'
+            : 'Für dieses Level brauchst du ${(level.minimumScore * 100).round()} %. Lies die Pflanzenlektion noch einmal und starte einen neuen Versuch.',
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 24),
+      if (completion.passed && nextLevel != null && nextLevel!.isUnlocked) ...[
+        Text(nextLevel!.title, textAlign: TextAlign.center),
+        const SizedBox(height: 8),
+        FilledButton(
+          onPressed: busy ? null : onNextLevel,
+          child: const Text('Zum nächsten Level'),
+        ),
+      ],
+      if (onRetry != null)
+        OutlinedButton(
+          key: const ValueKey('learning-retry-quiz'),
+          onPressed: busy ? null : onRetry,
+          child: Text(
+            completion.passed ? 'Level wiederholen' : 'Quiz erneut versuchen',
+          ),
+        ),
+      TextButton(
+        onPressed: busy ? null : onContinue,
+        child: const Text('Zurück zur Übersicht'),
+      ),
+      if (busy) const LinearProgressIndicator(),
+    ],
+  );
 }

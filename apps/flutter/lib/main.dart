@@ -15,6 +15,7 @@ import 'features/catalog/application/catalog_use_cases.dart';
 import 'features/catalog/infrastructure/cached_catalog_repository.dart';
 import 'features/catalog/infrastructure/content_sync_factory.dart';
 import 'features/catalog/infrastructure/http_catalog_repository.dart';
+import 'features/catalog/infrastructure/http_ecosystem_journey_repository.dart';
 import 'features/catalog/infrastructure/isar_catalog_repository.dart';
 import 'core/storage/local_database_factory.dart';
 import 'features/field/infrastructure/http_field_repository.dart';
@@ -95,6 +96,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       loadLevels: LoadPublishedLevels(catalog),
       loadLevel: LoadPublishedLevel(catalog),
       loadPlant: LoadPublishedPlant(catalog),
+      ecosystemJourneys: HttpEcosystemJourneyRepository(api),
       learningSessions: LearningSessionService(
         repository: learningRepository,
         store: SharedPreferencesLearningSessionStore(preferences),
