@@ -13,6 +13,8 @@
     "publicId": { "type": "string", "required": true, "unique": true },
     "slug": { "type": "string", "required": true, "unique": true },
     "releaseVersion": { "type": "string", "required": true },
+    "generatedFromBlueprint": { "type": "string", "private": true },
+    "generationFingerprint": { "type": "string", "private": true },
     "contentVersion": { "type": "string", "required": true },
     "title": {
       "type": "string",

@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_learning_journey_stops",
+  "info": { "displayName": "Pflanzenstation", "description": "Reihenfolge im Lernpfad; genau drei Stationen als fotografisches Sammelziel markieren." },
+  "attributes": {
+    "plant": { "type": "relation", "relation": "manyToOne", "target": "api::plant.plant" },
+    "collectionTarget": { "type": "boolean", "default": false }
+  }
+}

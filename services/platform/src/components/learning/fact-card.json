@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_learning_fact_cards",
+  "info": {
+    "displayName": "Lernkarte mit Quiz",
+    "description": "Ein lesbarer Steckbrief-Abschnitt und eine daraus beantwortbare Frage. Keine Dateivorlage erforderlich."
+  },
+  "attributes": {
+    "heading": { "type": "string", "required": true, "maxLength": 120 },
+    "text": { "type": "text", "required": true },
+    "question": { "type": "text", "required": true },
+    "correctAnswer": { "type": "string", "required": true },
+    "wrongAnswer1": { "type": "string", "required": true },
+    "wrongAnswer2": { "type": "string", "required": true },
+    "wrongAnswer3": { "type": "string", "required": true }
+  }
+}

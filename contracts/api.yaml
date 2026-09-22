@@ -618,12 +618,22 @@ components:
       required: [id, scientificName, releaseVersion]
       properties:
         id: {$ref: '#/components/schemas/Id'}
+        slug: {type: string}
         scientificName: {type: string}
         commonName: {type: string}
         family: {type: string}
         description: {type: string}
         warning: {type: string}
         sources: {type: array, items: {type: string, format: uri}}
+        profileCards:
+          type: array
+          description: Readable CMS-authored lesson sections. Does not include quiz solution keys. Absent in older releases.
+          items:
+            type: object
+            required: [heading, text]
+            properties:
+              heading: {type: string}
+              text: {type: string}
         media: {type: array, items: {$ref: '#/components/schemas/PublicMedia'}}
         releaseVersion: {type: string}
     PublicMedia:

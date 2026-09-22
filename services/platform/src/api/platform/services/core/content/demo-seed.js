@@ -118,7 +118,7 @@ function createUpsertingEntityService(entities) {
       });
       if (Array.isArray(matches) && matches.length > 0) {
         if (matches[0].publicId !== data.publicId
-          || ![DEMO_RELEASE_VERSION, '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
+          || ![DEMO_RELEASE_VERSION, '2026.09.07-de.1', '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
           throw new Error(`Refusing to overwrite non-demo content: ${uid}/${data.slug}`);
         }
         return entities.update(uid, matches[0].id, { data });

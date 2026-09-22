@@ -95,6 +95,7 @@ function createContentRepository(entities) {
       filters: { publicId },
       publicationState: 'live',
       populate: {
+        learningCards: true,
         media: {
           filters: { publishedAt: { $notNull: true } },
           populate: { file: { fields: ['url'] } },

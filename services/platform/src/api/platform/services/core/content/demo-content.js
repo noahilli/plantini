@@ -1,8 +1,9 @@
 'use strict';
 
 const { createHash } = require('crypto');
+const { validateLearningCards } = require('./lesson-cards');
 
-const DEMO_RELEASE_VERSION = '2026.09.07-de.1';
+const DEMO_RELEASE_VERSION = '2026.09.22-de.1';
 
 function stableContentId(kind, slug) {
   const hex = createHash('sha256')
@@ -36,6 +37,7 @@ function validateDemoContent(content) {
     for (const plant of item.plants) {
       requireUniqueSlug(plant.slug, slugs, 'plant');
       plantSlugs.add(plant.slug);
+      validateLearningCards(plant.learningCards, plant.commonName || plant.slug);
       for (const field of ['scientificName', 'commonName', 'family', 'description', 'warning']) {
         if (typeof plant[field] !== 'string' || plant[field].trim().length === 0) {
           throw new Error(`Plant ${plant.slug} is missing ${field}.`);

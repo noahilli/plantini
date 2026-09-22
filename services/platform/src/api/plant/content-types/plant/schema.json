@@ -26,6 +26,12 @@
     "description": {
       "type": "text"
     },
+    "learningCards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "learning.fact-card",
+      "private": true
+    },
     "warning": {
       "type": "text"
     },

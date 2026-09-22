@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "journey_blueprints",
+  "info": {
+    "singularName": "journey-blueprint",
+    "pluralName": "journey-blueprints",
+    "displayName": "Lernpfad-Generator",
+    "description": "Zehn Pflanzenstationen auswählen, drei Sammelziele markieren und Entwürfe erzeugen. Keine Veröffentlichung."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "releaseVersion": { "type": "string", "required": true },
+    "ecosystem": { "type": "relation", "relation": "manyToOne", "target": "api::ecosystem.ecosystem" },
+    "stations": { "type": "component", "repeatable": true, "component": "learning.journey-stop" },
+    "generateDrafts": { "type": "boolean", "default": false },
+    "generationState": { "type": "enumeration", "enum": ["idle", "generating", "ready", "failed"], "default": "idle" },
+    "generationFingerprint": { "type": "string" },
+    "generationReport": { "type": "text" }
+  }
+}

@@ -4,7 +4,7 @@
       "ecosystem": {
         "slug": "mitteleuropaeischer-laubwald",
         "name": "Mitteleuropäischer Laubwald",
-        "description": "Ein Lernset zu zehn heimischen Pflanzen der Baum-, Strauch- und Krautschicht mitteleuropäischer Laubwälder. Beobachtet werden gut sichtbare Merkmale, Jahreszeiten und Standortbezüge.",
+        "description": "Starte eine geführte Wald-Expedition durch Baum-, Strauch- und Krautschicht: Beobachte Rinde, Knospen, Blätter und Früchte nur mit den Augen. Löse die Quizfragen und sammle drei fotografische Funde, ohne Pflanzen zu pflücken oder zu verzehren.",
         "climateZone": "gemäßigte Zone",
         "region": "Mitteleuropa",
         "season": "ganzjährig; Schwerpunkt März bis Oktober"
@@ -20,6 +20,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=2357",
             "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ],
+          "learningCards": [
+            {
+              "heading": "Rinde",
+              "text": "Die Rinde der Rotbuche ist glatt und weißgrau. Vergleiche ihre Oberfläche mit den deutlich gefurchten oder schuppigen Rinden anderer Waldbäume.",
+              "question": "Welches Rindenmerkmal passt besonders gut zur Rotbuche?",
+              "correctAnswer": "Glatt und weißgrau",
+              "wrongAnswer1": "Tief gefurcht und schwarz",
+              "wrongAnswer2": "Papierartig weiß abrollend",
+              "wrongAnswer3": "Schuppig orange abblätternd"
+            },
+            {
+              "heading": "Winterknospen",
+              "text": "Auch ohne Blätter liefert der Zweig einen Hinweis: Die Winterknospen sind lang, schmal und spitz. Schau dir mehrere Knospen an, ohne sie abzubrechen.",
+              "question": "Wie sehen die Winterknospen der Rotbuche typischerweise aus?",
+              "correctAnswer": "Lang, schmal und spitz",
+              "wrongAnswer1": "Kurz, rund und schwarz",
+              "wrongAnswer2": "Grün und klebrig",
+              "wrongAnswer3": "Unter Blattstielresten verborgen"
+            },
+            {
+              "heading": "Bucheckern",
+              "text": "Die Frucht lässt sich so beschreiben: dreikantige Nuss im Fruchtbecher. Zusammen mit Rinde und Knospen hilft dieses Merkmal beim Erkennen; gegessen wird bei unserer Expedition nichts.",
+              "question": "Welche Fruchtform gehört zur Rotbuche?",
+              "correctAnswer": "Dreikantige Nuss im Fruchtbecher",
+              "wrongAnswer1": "Doppelflügelige Spaltfrucht",
+              "wrongAnswer2": "Rote Sammelsteinfrucht",
+              "wrongAnswer3": "Lange Hülsenfrucht"
+            }
           ]
         },
         {
@@ -32,6 +61,35 @@
           "sources": [
             "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/trauben-oder-stieleiche",
             "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blattgrund",
+              "text": "Sehr kurzer Blattstiel und oft geöhrter Grund: Diese beiden Merkmale sprechen für die Stiel-Eiche. Die kleinen Ausbuchtungen am Blattgrund erinnern an Ohren; prüfe mehrere Blätter statt nur eines.",
+              "question": "Welches Blattmerkmal spricht eher für die Stiel-Eiche als für die Trauben-Eiche?",
+              "correctAnswer": "Sehr kurzer Blattstiel und oft geöhrter Grund",
+              "wrongAnswer1": "Sehr langer Blattstiel",
+              "wrongAnswer2": "Ungeteilte Blattspreite",
+              "wrongAnswer3": "Nadelförmige Blätter"
+            },
+            {
+              "heading": "Eicheln",
+              "text": "Die Eicheln sitzen an deutlich langen Fruchtstielen. Der Name Stiel-Eiche bezieht sich auf diese Fruchtstiele, nicht auf einen langen Blattstiel.",
+              "question": "Wo sitzen die Eicheln der Stiel-Eiche?",
+              "correctAnswer": "An deutlich langen Fruchtstielen",
+              "wrongAnswer1": "Direkt in aufrechten Zapfen",
+              "wrongAnswer2": "In fleischigen roten Beeren",
+              "wrongAnswer3": "Unter einem grünen Hochblatt"
+            },
+            {
+              "heading": "Standort",
+              "text": "Gut wasserversorgter, nährstoffreicher Tieflandboden passt zur Stiel-Eiche. Beachte den Standort zusätzlich zu den gelappten Blättern und den lang gestielten Eicheln.",
+              "question": "Welcher Standort passt im Vergleich zur Trauben-Eiche eher zur Stiel-Eiche?",
+              "correctAnswer": "Gut wasserversorgter, nährstoffreicher Tieflandboden",
+              "wrongAnswer1": "Extrem trockener Fels",
+              "wrongAnswer2": "Hochalpiner Schutt",
+              "wrongAnswer3": "Salzige Küstendüne"
+            }
           ]
         },
         {
@@ -44,6 +102,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=1318",
             "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ],
+          "learningCards": [
+            {
+              "heading": "Name und Familie",
+              "text": "Der Name kann täuschen: Die Hainbuche gehört in die Familie der Birkengewächse. Die Rotbuche gehört dagegen zu den Buchengewächsen.",
+              "question": "Zu welcher Familie gehört die Hainbuche trotz ihres Namens?",
+              "correctAnswer": "Birkengewächse",
+              "wrongAnswer1": "Buchengewächse",
+              "wrongAnswer2": "Rosengewächse",
+              "wrongAnswer3": "Ahorngewächse"
+            },
+            {
+              "heading": "Blattspuren",
+              "text": "Eiförmig, gefaltet und doppelt gesägt – so lässt sich ein typisches Hainbuchenblatt beschreiben. Betrachte Form, Blattfläche und Rand gemeinsam.",
+              "question": "Welche Kombination kennzeichnet ein Hainbuchenblatt?",
+              "correctAnswer": "Eiförmig, gefaltet und doppelt gesägt",
+              "wrongAnswer1": "Handförmig fünflappig",
+              "wrongAnswer2": "Unpaarig gefiedert",
+              "wrongAnswer3": "Immergrün und stachelig"
+            },
+            {
+              "heading": "Stamm",
+              "text": "Betrachte einen älteren Stamm: Er ist unruhig geflammt und spannrückig. Damit unterscheidet er sich von der meist glatten, gleichmäßigeren Rinde der Rotbuche.",
+              "question": "Was unterscheidet den Stamm einer älteren Hainbuche oft von einer Rotbuche?",
+              "correctAnswer": "Er ist unruhig geflammt und spannrückig",
+              "wrongAnswer1": "Er ist stets hohl",
+              "wrongAnswer2": "Er trägt waagerechte Korkleisten",
+              "wrongAnswer3": "Er ist leuchtend weiß"
+            }
           ]
         },
         {
@@ -56,6 +143,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=15",
             "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen"
+          ],
+          "learningCards": [
+            {
+              "heading": "Am Zweig",
+              "text": "Die Blätter sind gegenständig angeordnet: Zwei Blätter stehen sich an einem Zweig gegenüber. Ihre Spreiten sind meist in fünf Lappen geteilt.",
+              "question": "Wie sind die Blätter des Berg-Ahorns am Zweig angeordnet?",
+              "correctAnswer": "Gegenständig",
+              "wrongAnswer1": "Wechselständig",
+              "wrongAnswer2": "In Dreierquirlen",
+              "wrongAnswer3": "Nur grundständig"
+            },
+            {
+              "heading": "Fruchtflügel",
+              "text": "Ungefähr ein rechter Winkel liegt zwischen den beiden Fruchtflügeln. Vergleiche diese paarigen Flügel zusätzlich mit den Blättern.",
+              "question": "Welcher Winkel ist für die beiden Fruchtflügel des Berg-Ahorns typisch?",
+              "correctAnswer": "Ungefähr ein rechter Winkel",
+              "wrongAnswer1": "Sie liegen parallel aneinander",
+              "wrongAnswer2": "Ein geschlossener Kreis",
+              "wrongAnswer3": "Es gibt nur einen Flügel"
+            },
+            {
+              "heading": "Borke",
+              "text": "Bei älteren Berg-Ahornen verändert sich die Borke: Sie blättert schuppig ab. Die Rinde ist deshalb ein weiterer Hinweis neben den gelappten Blättern.",
+              "question": "Welches Borkenmerkmal kann bei älteren Berg-Ahornen auffallen?",
+              "correctAnswer": "Sie blättert schuppig ab",
+              "wrongAnswer1": "Sie bleibt immer spiegelglatt",
+              "wrongAnswer2": "Sie ist mit langen Dornen besetzt",
+              "wrongAnswer3": "Sie wird papierweiß"
+            }
           ]
         },
         {
@@ -68,6 +184,35 @@
           "sources": [
             "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/laubbaeume-im-winter-erkennen",
             "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel"
+          ],
+          "learningCards": [
+            {
+              "heading": "Schwarze Knospen",
+              "text": "Die Knospen der Gewöhnlichen Esche sind auffällig mattschwarz. Dieses Kennzeichen hilft besonders, wenn noch keine Blätter zu sehen sind.",
+              "question": "Welche Knospenfarbe ist für die Gewöhnliche Esche besonders charakteristisch?",
+              "correctAnswer": "Mattschwarz",
+              "wrongAnswer1": "Leuchtend gelb",
+              "wrongAnswer2": "Silbrig weiß",
+              "wrongAnswer3": "Rosa gestreift"
+            },
+            {
+              "heading": "Gefiederte Blätter",
+              "text": "Ein Eschenblatt ist unpaarig gefiedert. Mehrere Teilblättchen bilden gemeinsam ein Blatt; an seiner Spitze sitzt ein einzelnes Endblättchen.",
+              "question": "Welcher Blatttyp passt zur Gewöhnlichen Esche?",
+              "correctAnswer": "Unpaarig gefiedert",
+              "wrongAnswer1": "Einfach und herzförmig",
+              "wrongAnswer2": "Dreieckig und ungelappt",
+              "wrongAnswer3": "Nadelförmig"
+            },
+            {
+              "heading": "Abstand halten",
+              "text": "Bei einer geschädigten Esche ist es wichtig, wegen möglicher Totäste Abstand zu halten. Beobachte den Baum von einem sicheren Platz aus statt unter die Krone zu gehen.",
+              "question": "Was ist beim Beobachten geschädigter Eschen besonders wichtig?",
+              "correctAnswer": "Wegen möglicher Totäste Abstand zu halten",
+              "wrongAnswer1": "Die Rinde abzulösen",
+              "wrongAnswer2": "Blätter zu kosten",
+              "wrongAnswer3": "Auf den Baum zu klettern"
+            }
           ]
         },
         {
@@ -78,8 +223,36 @@
           "description": "Laubbaum mit wechselständigen, herzförmigen Blättern. Auf der Blattunterseite sitzen in den Nervenwinkeln rostbraune Haarbüschel. Der blassgrüne Hochblatt-Flügel bleibt mit dem Fruchtstand verbunden.",
           "warning": "Für die Abgrenzung zur Sommer-Linde mehrere voll entwickelte Blätter prüfen.",
           "sources": [
-            "https://www.waldwissen.net/de/lebensraum-wald/baeume-und-waldpflanzen/laubbaeume/eichenarten-in-oesterreich",
-            "https://www.floraweb.de/artensteckbriefe/namenssuche.html"
+            "https://www.infoflora.ch/de/flora/tilia-cordata.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blattform",
+              "text": "Herzförmige Spreite: So sieht die Blattfläche einer Winter-Linde typischerweise aus. Prüfe zusätzlich die Unterseite, denn die Form allein reicht für die Abgrenzung nicht aus.",
+              "question": "Welches Blattmerkmal ist typisch für die Winter-Linde?",
+              "correctAnswer": "Herzförmige Spreite",
+              "wrongAnswer1": "Sieben schmale Fiederblättchen",
+              "wrongAnswer2": "Tiefe Eichenlappen",
+              "wrongAnswer3": "Parallele Blattadern wie bei Gras"
+            },
+            {
+              "heading": "Unterseite",
+              "text": "In den Nervenwinkeln auf der Blattunterseite sitzen rostbraune Haarbüschel. Suche diese kleinen Stellen an mehreren voll entwickelten Blättern.",
+              "question": "Was findet man bei der Winter-Linde auf der Blattunterseite in den Nervenwinkeln?",
+              "correctAnswer": "Rostbraune Haarbüschel",
+              "wrongAnswer1": "Weiße Dornen",
+              "wrongAnswer2": "Blaue Drüsen",
+              "wrongAnswer3": "Schwarze Sporenlager"
+            },
+            {
+              "heading": "Flughilfe",
+              "text": "Ein blassgrünes, flügelartiges Hochblatt bleibt mit dem Fruchtstand verbunden. Es unterstützt dessen Ausbreitung und ist ein auffälliges Merkmal der Linden.",
+              "question": "Welche Struktur unterstützt bei Linden die Ausbreitung des Fruchtstands?",
+              "correctAnswer": "Ein blassgrünes, flügelartiges Hochblatt",
+              "wrongAnswer1": "Ein fleischiger Fruchtmantel",
+              "wrongAnswer2": "Ein hakiger Kelch",
+              "wrongAnswer3": "Ein schwimmfähiger Zapfen"
+            }
           ]
         },
         {
@@ -90,8 +263,36 @@
           "description": "Meist mehrstämmiger Strauch mit rundlich-herzförmigen, doppelt gesägten und weich behaarten Blättern. Die langen männlichen Kätzchen blühen sehr früh; die weiblichen Blüten zeigen kleine rote Narben.",
           "warning": "Nüsse nicht sammeln oder essen; Allergien und Verwechslungen sind im Lernsetting nicht sicher beurteilbar.",
           "sources": [
-            "https://www.floraweb.de/artensteckbriefe/namenssuche.html",
-            "https://www.floraweb.de/phaenologie/bluehphasen.html"
+            "https://www.infoflora.ch/de/flora/corylus-avellana.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Wuchsform",
+              "text": "Mehrstämmiger Strauch beschreibt die typische Wuchsform der Hasel. Mehrere Stämme bilden zusammen das Gehölz; die Blätter sind rundlich bis herzförmig.",
+              "question": "Welche Wuchsform zeigt die Gewöhnliche Hasel meistens?",
+              "correctAnswer": "Mehrstämmiger Strauch",
+              "wrongAnswer1": "Einjähriges Gras",
+              "wrongAnswer2": "Kletternde Liane",
+              "wrongAnswer3": "Einzelstämmiger Riese über 40 Meter"
+            },
+            {
+              "heading": "Frühe Kätzchen",
+              "text": "Lange männliche Kätzchen fallen schon sehr früh im Jahr auf. An ihnen kannst du die Hasel bereits vor der vollständigen Belaubung beobachten.",
+              "question": "Welche Blütenstruktur ist schon sehr früh im Jahr auffällig?",
+              "correctAnswer": "Lange männliche Kätzchen",
+              "wrongAnswer1": "Große blaue Körbchen",
+              "wrongAnswer2": "Weiße Scheindolden",
+              "wrongAnswer3": "Rote Zapfen"
+            },
+            {
+              "heading": "Versteckte Blüten",
+              "text": "Die weiblichen Blüten erkennst du an kleinen roten Narben aus der Knospe. Sie sind viel unscheinbarer als die langen männlichen Kätzchen.",
+              "question": "Woran erkennt man die unscheinbaren weiblichen Haselblüten?",
+              "correctAnswer": "An kleinen roten Narben aus der Knospe",
+              "wrongAnswer1": "An vier großen gelben Kronblättern",
+              "wrongAnswer2": "An einem weißen Sporn",
+              "wrongAnswer3": "An schwarzen Beeren"
+            }
           ]
         },
         {
@@ -104,6 +305,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=435",
             "https://www.floraweb.de/phaenologie/bluehphasen.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Frühlingszeit",
+              "text": "Das Busch-Windröschen blüht typischerweise von März bis Mai. Es gehört damit zu den Pflanzen, nach denen du bei einer Frühlingsrunde im Wald Ausschau halten kannst.",
+              "question": "Wann blüht das Busch-Windröschen typischerweise?",
+              "correctAnswer": "Von März bis Mai",
+              "wrongAnswer1": "Im Hochwinter",
+              "wrongAnswer2": "Nur im Spätherbst",
+              "wrongAnswer3": "Ausschließlich im August"
+            },
+            {
+              "heading": "Eine Blüte",
+              "text": "Ein Spross trägt gewöhnlich eine Blüte. Schau genau hin, wo der einzelne Blütenstiel zwischen den geteilten Blättern aufragt.",
+              "question": "Wie viele Blüten trägt ein Spross des Busch-Windröschens gewöhnlich?",
+              "correctAnswer": "Eine",
+              "wrongAnswer1": "Genau zwölf",
+              "wrongAnswer2": "Mehr als fünfzig",
+              "wrongAnswer3": "Keine, die Art bildet nur Sporen"
+            },
+            {
+              "heading": "Waldboden",
+              "text": "Frischer, krautreicher Laubwald ist ein passender Lebensraum. Beobachte die Pflanze am Wuchsort und lasse sie stehen.",
+              "question": "Welcher Standort ist für das Busch-Windröschen plausibel?",
+              "correctAnswer": "Frischer, krautreicher Laubwald",
+              "wrongAnswer1": "Salzige Schlickfläche",
+              "wrongAnswer2": "Trockene Hauswand",
+              "wrongAnswer3": "Dauerhaft überfluteter Teich"
+            }
           ]
         },
         {
@@ -115,6 +345,35 @@
           "warning": "Nicht sammeln oder probieren. Lebensgefährliche Verwechslungen mit Maiglöckchen, Herbstzeitlose und Aronstab sind möglich; Geruch allein ist kein sicherer Bestimmungsbeleg.",
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=320"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blüten entdecken",
+              "text": "Weiße sternförmige Blüten in einer Scheindolde sind ein Merkmal des Bär-Lauchs. Mehrere Einzelblüten bilden zusammen den Blütenstand; auch diese Beobachtung ersetzt keine sichere Gesamtbestimmung.",
+              "question": "Welche Blütenform passt zum Bär-Lauch?",
+              "correctAnswer": "Weiße sternförmige Blüten in einer Scheindolde",
+              "wrongAnswer1": "Braune Kätzchen",
+              "wrongAnswer2": "Gelbe Lippenblüten",
+              "wrongAnswer3": "Rote Röhrenblüten"
+            },
+            {
+              "heading": "Geruch reicht nicht",
+              "text": "Geruch kann an Händen haften und weitere Proben verfälschen. Deshalb ist ein Knoblauchgeruch allein kein verlässlicher Nachweis für Bär-Lauch.",
+              "question": "Warum darf Geruch allein eine Bärlauch-Bestimmung nicht absichern?",
+              "correctAnswer": "Geruch kann an Händen haften und weitere Proben verfälschen",
+              "wrongAnswer1": "Geruch ist grundsätzlich unsichtbar",
+              "wrongAnswer2": "Bärlauch riecht immer nach Minze",
+              "wrongAnswer3": "Nur die Wurzel riecht"
+            },
+            {
+              "heading": "Keine Kostprobe",
+              "text": "Nichts probieren oder sammeln ist die richtige Entscheidung, wenn eine Verwechslung möglich ist. Auf unserer Expedition dient ein Foto der Beobachtung, nicht der Freigabe zum Essen.",
+              "question": "Wie verhältst du dich bei einer möglichen Bärlauch-Verwechslung richtig?",
+              "correctAnswer": "Nichts probieren oder sammeln",
+              "wrongAnswer1": "Ein kleines Stück kosten",
+              "wrongAnswer2": "Nur unbekannte Blätter mitnehmen",
+              "wrongAnswer3": "Alle Pflanzen ausgraben"
+            }
           ]
         },
         {
@@ -125,8 +384,36 @@
           "description": "Kräftiger Waldfarn mit trichterförmig angeordneten, doppelt gefiederten Wedeln. Der Blattstiel trägt hellbraune Spreuschuppen; auf der Unterseite fertiler Fiederblättchen liegen runde Sporenhäufchen in Reihen.",
           "warning": "Nicht verzehren; Farne nur visuell bestimmen und Wedel nicht abbrechen.",
           "sources": [
-            "https://www.waldwissen.net/de/lebensraum-wald/naturschutz/gewaesser/feuchtwaelder-im-klimawandel",
-            "https://www.floraweb.de/artensteckbriefe/namenssuche.html"
+            "https://www.infoflora.ch/de/flora/dryopteris-filix-mas.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Wedeltrichter",
+              "text": "Die Wedel wachsen trichterförmig aus einem Stock. Betrachte zuerst die ganze Wuchsform und danach die feineren Merkmale eines Wedels.",
+              "question": "Wie stehen die Wedel des Gewöhnlichen Wurmfarns typischerweise?",
+              "correctAnswer": "Trichterförmig aus einem Stock",
+              "wrongAnswer1": "Als schwimmende Rosette",
+              "wrongAnswer2": "Einzeln an einer Liane",
+              "wrongAnswer3": "In hängenden Kätzchen"
+            },
+            {
+              "heading": "Sporen statt Blüten",
+              "text": "Die Sporenhäufchen sitzen auf der Wedelunterseite. Sie sind ein wichtiges Merkmal eines fertilen, also sporentragenden Wedels.",
+              "question": "Wo befinden sich die Sporenhäufchen eines fertilen Wurmfarnwedels?",
+              "correctAnswer": "Auf der Wedelunterseite",
+              "wrongAnswer1": "In einer fleischigen Beere",
+              "wrongAnswer2": "An den Wurzeln über dem Boden",
+              "wrongAnswer3": "In weißen Blüten"
+            },
+            {
+              "heading": "Schonend bestimmen",
+              "text": "Merkmale ansehen und die Pflanze stehen lassen: So bestimmst du den Wurmfarn schonend. Für das Herbarium genügt eine fotografische Beobachtung.",
+              "question": "Welche Handlung ist beim Bestimmen eines Wurmfarns angemessen?",
+              "correctAnswer": "Merkmale ansehen und die Pflanze stehen lassen",
+              "wrongAnswer1": "Den Wedel abbrechen und probieren",
+              "wrongAnswer2": "Die Pflanze vollständig ausgraben",
+              "wrongAnswer3": "Sporen in die Augen reiben"
+            }
           ]
         }
       ],
@@ -887,7 +1174,7 @@
       "ecosystem": {
         "slug": "alpenraum",
         "name": "Alpenraum",
-        "description": "Fels, Schutt, alpine Rasen und Zwergstrauchheiden oberhalb und nahe der Waldgrenze. Die Arten sind an kurze Vegetationszeiten, Wind, Kälte und nährstoffarme Standorte angepasst.",
+        "description": "Begib dich auf eine geführte Expedition durch Fels, Schutt, alpine Rasen und Zwergstrauchheiden. Bleib auf sicheren Wegen, beobachte Formen und Standorte aus Abstand, löse die Quizfragen und halte drei Pflanzenfunde fotografisch fest – nichts wird gepflückt oder betreten.",
         "language": "de-DE",
         "warning": "Wildpflanzen nur beobachten und fotografieren. In Schutzgebieten nichts pflücken, ausgraben oder beschädigen. Bestimmungen dienen nicht als Verzehr- oder Heilmittelempfehlung.",
         "climateZone": "alpin bis subalpin",
@@ -905,6 +1192,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=3358",
             "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ],
+          "learningCards": [
+            {
+              "heading": "Weißer Stern",
+              "text": "Dicht behaarte, sternförmig angeordnete Hochblätter erzeugen den bekannten weißen Stern. Schau deshalb nicht nur auf die Farbe, sondern auch auf die Anordnung und Behaarung.",
+              "question": "Welches Merkmal lässt das Alpen-Edelweiß wie einen weißen Stern erscheinen?",
+              "correctAnswer": "Dicht behaarte, sternförmig angeordnete Hochblätter",
+              "wrongAnswer1": "Fünf große weiße Kronblätter",
+              "wrongAnswer2": "Ein einzelner silberner Blütenkelch",
+              "wrongAnswer3": "Weiße Beeren in einem Quirl"
+            },
+            {
+              "heading": "Lebensraum",
+              "text": "Kalkreiche Steinrasen und Felsspalten sind typische Standorte des Alpen-Edelweißes. Ein Standortmerkmal ergänzt die Beobachtung der Pflanze, ersetzt sie aber nicht.",
+              "question": "Welcher Standort passt besonders gut zum Alpen-Edelweiß?",
+              "correctAnswer": "Kalkreiche Steinrasen und Felsspalten",
+              "wrongAnswer1": "Nährstoffreicher Auwald",
+              "wrongAnswer2": "Dauerhaft überflutetes Moor",
+              "wrongAnswer3": "Schattiger Erlenbruch"
+            },
+            {
+              "heading": "Foto statt Pflücken",
+              "text": "Nur beobachten und fotografieren ist bei einem Edelweißfund im Nationalpark richtig. Für unsere Sammlung bleiben die Pflanzen an ihrem Wuchsort.",
+              "question": "Was ist bei einem Edelweißfund im Nationalpark richtig?",
+              "correctAnswer": "Nur beobachten und fotografieren",
+              "wrongAnswer1": "Eine Blüte als Beleg mitnehmen",
+              "wrongAnswer2": "Die Pflanze versetzen",
+              "wrongAnswer3": "Die Hochblätter zum Trocknen sammeln"
+            }
           ]
         },
         {
@@ -917,6 +1233,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?name-use-id=2624",
             "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_01.pdf"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blaue Glocke",
+              "text": "Große tiefblaue Glocke auf einer niedrigen Rosette: Diese Kombination beschreibt den Kalk-Glocken-Enzian. Betrachte Blütenform und Wuchs zusammen.",
+              "question": "Welche Blütenform ist typisch für den Kalk-Glocken-Enzian?",
+              "correctAnswer": "Große tiefblaue Glocke auf einer niedrigen Rosette",
+              "wrongAnswer1": "Weiße Dolde mit vielen Einzelblüten",
+              "wrongAnswer2": "Gelber kugeliger Blütenkopf",
+              "wrongAnswer3": "Rosa Lippenblüte an einem Strauch"
+            },
+            {
+              "heading": "Kalk im Namen",
+              "text": "Er ist an kalkreiche Standorte gebunden. Der Name Kalk-Glocken-Enzian gibt dir damit bereits einen Hinweis auf seinen Lebensraum.",
+              "question": "Welcher Bodenhinweis steckt bereits im Namen Kalk-Glocken-Enzian?",
+              "correctAnswer": "Er ist an kalkreiche Standorte gebunden",
+              "wrongAnswer1": "Er bevorzugt salzhaltige Küstenböden",
+              "wrongAnswer2": "Er wächst nur in sauren Hochmooren",
+              "wrongAnswer3": "Er benötigt tiefen Flussschlamm"
+            },
+            {
+              "heading": "Farbe allein genügt nicht",
+              "text": "Mehrere Enzianarten blühen ähnlich blau. Prüfe deshalb weitere Pflanzenmerkmale und den Standort, bevor du dich auf eine Art festlegst.",
+              "question": "Warum genügt die blaue Blütenfarbe nicht für eine sichere Enzianbestimmung?",
+              "correctAnswer": "Mehrere Enzianarten blühen ähnlich blau",
+              "wrongAnswer1": "Blütenfarbe ist nur nachts sichtbar",
+              "wrongAnswer2": "Enziane ändern täglich ihre Familie",
+              "wrongAnswer3": "Alle Alpenpflanzen blühen blau"
+            }
           ]
         },
         {
@@ -929,6 +1274,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=4836",
             "https://nationalpark-berchtesgaden.bayern.de/natur/wissenswertes/flora/index.htm"
+          ],
+          "learningCards": [
+            {
+              "heading": "Wimpern am Blatt",
+              "text": "Ein flacher Rand mit deutlich sichtbaren Wimperhaaren ist das namensgebende Blattmerkmal. Die feinen Härchen am Rand helfen beim genauen Vergleichen.",
+              "question": "Welches Blattmerkmal gab der Bewimperten Alpenrose ihren Namen?",
+              "correctAnswer": "Ein flacher Rand mit deutlich sichtbaren Wimperhaaren",
+              "wrongAnswer1": "Silbrig gefiederte Blattspitzen",
+              "wrongAnswer2": "Dornen entlang der Mittelrippe",
+              "wrongAnswer3": "Herzförmige Schwimmblätter"
+            },
+            {
+              "heading": "Kalkstandorte",
+              "text": "Die Bewimperte Alpenrose wächst typischerweise auf kalkreichen Felsbändern und Schotterhalden. Verbinde den Standort mit den beobachteten Blattmerkmalen.",
+              "question": "Auf welchem Untergrund findet man Rhododendron hirsutum typischerweise?",
+              "correctAnswer": "Auf kalkreichen Felsbändern und Schotterhalden",
+              "wrongAnswer1": "Im salzigen Watt",
+              "wrongAnswer2": "Auf tiefem Torf im Hochmoor",
+              "wrongAnswer3": "In regelmäßig überfluteten Auen"
+            },
+            {
+              "heading": "Sicher beobachten",
+              "text": "Pflanzenteile nicht verzehren: Das gilt auch für die Bewimperte Alpenrose. Halte deinen Fund fotografisch fest und lasse die Pflanze unbeschädigt.",
+              "question": "Welche Aussage zur Bewimperten Alpenrose ist sicherheitsgerecht?",
+              "correctAnswer": "Pflanzenteile nicht verzehren",
+              "wrongAnswer1": "Ihre Blätter eignen sich als Bergtee",
+              "wrongAnswer2": "Rote Blüten sind immer essbar",
+              "wrongAnswer3": "Vor der Bestimmung eine Kostprobe nehmen"
+            }
           ]
         },
         {
@@ -941,6 +1315,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=2029",
             "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ],
+          "learningCards": [
+            {
+              "heading": "Zwei Blattseiten",
+              "text": "Oben dunkelgrün, unten weißfilzig: So unterscheiden sich die Blattseiten der Silberwurz. Gerade dieser Gegensatz ist beim genauen Beobachten hilfreich.",
+              "question": "Wie unterscheiden sich Ober- und Unterseite eines Silberwurzblatts?",
+              "correctAnswer": "Oben dunkelgrün, unten weißfilzig",
+              "wrongAnswer1": "Oben blau, unten rot",
+              "wrongAnswer2": "Oben dornig, unten schuppig",
+              "wrongAnswer3": "Beide Seiten sind durchsichtig"
+            },
+            {
+              "heading": "Bodennaher Wuchs",
+              "text": "Niederliegender Spalierstrauch beschreibt ihre Wuchsform. Die Pflanze bleibt dicht am Boden und passt damit zu ihrem alpinen Standort.",
+              "question": "Welche Wuchsform hilft der Silberwurz am alpinen Standort?",
+              "correctAnswer": "Niederliegender Spalierstrauch",
+              "wrongAnswer1": "Hoher unverzweigter Baum",
+              "wrongAnswer2": "Frei schwimmende Wasserpflanze",
+              "wrongAnswer3": "Einjährige Kletterpflanze"
+            },
+            {
+              "heading": "Fedrige Früchte",
+              "text": "Den Fruchtstand erkennst du an fedrig verlängerten, weiß behaarten Griffeln. Achte nach der Blüte auf diese auffälligen Strukturen.",
+              "question": "Woran erkennt man den Fruchtstand der Silberwurz?",
+              "correctAnswer": "An fedrig verlängerten, weiß behaarten Griffeln",
+              "wrongAnswer1": "An einer fleischigen roten Beere",
+              "wrongAnswer2": "An einer großen stacheligen Nuss",
+              "wrongAnswer3": "An schwarzen Hülsen"
+            }
           ]
         },
         {
@@ -953,6 +1356,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?name-use-id=1306",
             "https://www.nationalpark-berchtesgaden.bayern.de/service/publikationen/nationalparkzeitung/doc/npz_38.pdf"
+          ],
+          "learningCards": [
+            {
+              "heading": "Silberner Kranz",
+              "text": "Innere Hüllblätter des Blütenkorbs bilden den silbernen Strahlenkranz. Der auffällige Rand ist also nicht einfach eine Reihe großer Blütenblätter.",
+              "question": "Welche Teile erzeugen den silbernen Strahlenkranz der Silberdistel?",
+              "correctAnswer": "Innere Hüllblätter des Blütenkorbs",
+              "wrongAnswer1": "Luftwurzeln",
+              "wrongAnswer2": "Kelchblätter einer Einzelblüte",
+              "wrongAnswer3": "Fruchtflügel"
+            },
+            {
+              "heading": "Wetterdistel",
+              "text": "Ihr Blütenkorb öffnet sich bei Trockenheit stärker. Diese Beobachtung erklärt den gebräuchlichen Namen Wetterdistel.",
+              "question": "Warum wird die Silberdistel auch Wetterdistel genannt?",
+              "correctAnswer": "Ihr Blütenkorb öffnet sich bei Trockenheit stärker",
+              "wrongAnswer1": "Sie blüht ausschließlich im Schnee",
+              "wrongAnswer2": "Ihre Wurzel misst den Luftdruck",
+              "wrongAnswer3": "Sie dreht den Stängel nach Norden"
+            },
+            {
+              "heading": "Pflanze schützen",
+              "text": "Für Deutschland wird die Silberdistel als besonders geschützt geführt. Unsere Beobachtungsregel bleibt deshalb eindeutig: fotografieren und am Standort stehen lassen.",
+              "question": "Welche Schutzangabe gilt für Carlina acaulis in Deutschland?",
+              "correctAnswer": "Besonders geschützt",
+              "wrongAnswer1": "Freigegeben zum gewerblichen Sammeln",
+              "wrongAnswer2": "Nur in Gärten geschützt",
+              "wrongAnswer3": "Als invasive Art zu entfernen"
+            }
           ]
         },
         {
@@ -965,6 +1397,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=6047",
             "https://www.infoflora.ch/de/flora/trollius-europaeus.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Gelbe Kugel",
+              "text": "Fast kugelig und leuchtend gelb wirkt die Blüte der Trollblume. Diese Form ist ein guter erster Hinweis, der mit weiteren Merkmalen verglichen werden sollte.",
+              "question": "Welche Gestalt hat die Blüte der Trollblume meist?",
+              "correctAnswer": "Fast kugelig und leuchtend gelb",
+              "wrongAnswer1": "Flach, blau und vierzählig",
+              "wrongAnswer2": "Röhrenförmig und schwarz",
+              "wrongAnswer3": "Sternförmig mit weißen Hochblättern"
+            },
+            {
+              "heading": "Feuchter Standort",
+              "text": "Feuchte Bergwiesen und Quellfluren sind passende Lebensräume. Die Feuchtigkeit des Standorts hilft dir, den Fund einzuordnen.",
+              "question": "Welcher Lebensraum passt zur Trollblume?",
+              "correctAnswer": "Feuchte Bergwiesen und Quellfluren",
+              "wrongAnswer1": "Trockene Sanddünen",
+              "wrongAnswer2": "Salzige Felsspalten an der Küste",
+              "wrongAnswer3": "Dunkle Nadelstreu ohne Bodenfeuchte"
+            },
+            {
+              "heading": "Pflanzenfamilie",
+              "text": "Die Trollblume gehört zur Familie der Hahnenfußgewächse. Lerne neben der Blütenform auch die Familie kennen, um Pflanzen miteinander vergleichen zu können.",
+              "question": "Zu welcher Pflanzenfamilie gehört die Trollblume?",
+              "correctAnswer": "Hahnenfußgewächse",
+              "wrongAnswer1": "Rosengewächse",
+              "wrongAnswer2": "Heidekrautgewächse",
+              "wrongAnswer3": "Süßgräser"
+            }
           ]
         },
         {
@@ -977,6 +1438,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=587",
             "https://www.infoflora.ch/de/flora/aster-alpinus.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Farben des Blütenkorbs",
+              "text": "Violette Zungenblüten um eine gelbe Scheibe prägen das Bild der Alpen-Aster. Achte auf den farblichen Gegensatz von Rand und Mitte.",
+              "question": "Wie ist der Blütenkorb der Alpen-Aster typischerweise gefärbt?",
+              "correctAnswer": "Violette Zungenblüten um eine gelbe Scheibe",
+              "wrongAnswer1": "Weiße Zungenblüten um eine schwarze Scheibe",
+              "wrongAnswer2": "Nur grüne, kronblattlose Blüten",
+              "wrongAnswer3": "Gelbe Glocken mit roten Punkten"
+            },
+            {
+              "heading": "Viele kleine Blüten",
+              "text": "Viele kleine Einzelblüten wirken wie eine Blüte. Ein solcher gemeinsamer Blütenstand heißt Blütenkorb; die auffällige Gesamtform ist also aus vielen Teilen zusammengesetzt.",
+              "question": "Was bedeutet der Begriff Blütenkorb bei der Alpen-Aster?",
+              "correctAnswer": "Viele kleine Einzelblüten wirken wie eine Blüte",
+              "wrongAnswer1": "Eine Blüte wächst in einem Vogelnest",
+              "wrongAnswer2": "Vier Beeren bilden gemeinsam eine Frucht",
+              "wrongAnswer3": "Die Wurzeln flechten einen Korb"
+            },
+            {
+              "heading": "Sonniger Rasen",
+              "text": "Sonniger kalkreicher Magerrasen passt als Standort zur Alpen-Aster. Prüfe den Lebensraum zusammen mit den violetten und gelben Blütenanteilen.",
+              "question": "Welcher Standort ist für die Alpen-Aster plausibel?",
+              "correctAnswer": "Sonniger kalkreicher Magerrasen",
+              "wrongAnswer1": "Ganzjährig überfluteter Schilfgürtel",
+              "wrongAnswer2": "Tiefer Schatten im Erlenbruch",
+              "wrongAnswer3": "Nährstoffreicher Komposthaufen"
+            }
           ]
         },
         {
@@ -989,6 +1479,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=5256",
             "https://www.infoflora.ch/de/flora/saxifraga-oppositifolia.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Gegenüber am Stängel",
+              "text": "Je zwei Blätter stehen einander gegenüber. Diese Anordnung heißt gegenständig und steckt bereits im deutschen Artnamen.",
+              "question": "Welche Blattstellung verrät der deutsche Name des Gegenblättrigen Steinbrechs?",
+              "correctAnswer": "Je zwei Blätter stehen einander gegenüber",
+              "wrongAnswer1": "Alle Blätter schwimmen getrennt",
+              "wrongAnswer2": "Die Blätter stehen nur an der Wurzel",
+              "wrongAnswer3": "Jedes Blatt wächst gegen den Boden"
+            },
+            {
+              "heading": "Polster und Blüten",
+              "text": "Niedriges Polster und purpurrosa Blüten kennzeichnen den Gegenblättrigen Steinbrech. Betrachte Wuchsform, Blüten und Blattstellung zusammen.",
+              "question": "Welche Kombination kennzeichnet Saxifraga oppositifolia?",
+              "correctAnswer": "Niedriges Polster und purpurrosa Blüten",
+              "wrongAnswer1": "Meterhoher Strauch und gelbe Dolden",
+              "wrongAnswer2": "Schwimmblätter und blaue Ähren",
+              "wrongAnswer3": "Dornige Rosette und silberner Blütenkorb"
+            },
+            {
+              "heading": "Polster schonen",
+              "text": "Sie wachsen langsam und sind trittempfindlich: Deshalb werden Polsterpflanzen im Hochgebirge nicht betreten. Wähle deinen Fotoplatz so, dass die Pflanze unbeschädigt bleibt.",
+              "question": "Warum sollte man Polsterpflanzen im Hochgebirge nicht betreten?",
+              "correctAnswer": "Sie wachsen langsam und sind trittempfindlich",
+              "wrongAnswer1": "Sie springen bei Berührung auf",
+              "wrongAnswer2": "Sie machen Felsen rutschfest",
+              "wrongAnswer3": "Ihre Samen haften dauerhaft an Schuhen"
+            }
           ]
         },
         {
@@ -1001,6 +1520,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=4456",
             "https://www.infoflora.ch/de/flora/primula-auricula.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blattrosette",
+              "text": "Fleischige Blätter in einer Rosette sind für die Aurikel typisch. Die Blätter stehen also gebündelt am Grund der Pflanze.",
+              "question": "Welche Blattbeschaffenheit ist für die Aurikel typisch?",
+              "correctAnswer": "Fleischige Blätter in einer Rosette",
+              "wrongAnswer1": "Dünne gefiederte Unterwasserblätter",
+              "wrongAnswer2": "Große dornige Wedel",
+              "wrongAnswer3": "Nadeln in Fünferbüscheln"
+            },
+            {
+              "heading": "Felsbewohnerin",
+              "text": "Die Aurikel wächst natürlicherweise häufig in kalkreichen Felsen und Felsspalten. Ein Blick auf den Standort ergänzt die Beobachtung ihrer Blattrosette.",
+              "question": "Wo wächst die Aurikel natürlicherweise besonders häufig?",
+              "correctAnswer": "In kalkreichen Felsen und Felsspalten",
+              "wrongAnswer1": "Im Brackwasser von Flussmündungen",
+              "wrongAnswer2": "In tiefem Moorwasser",
+              "wrongAnswer3": "Auf intensiv gedüngten Äckern"
+            },
+            {
+              "heading": "Gelbe Dolde",
+              "text": "Die gelben Einzelblüten stehen gemeinsam in einer Dolde über der Blattrosette. Vergleiche die Anordnung der Blüten mit derjenigen der grundständigen Blätter.",
+              "question": "Wie sind die gelben Einzelblüten der Aurikel meist angeordnet?",
+              "correctAnswer": "Gemeinsam in einer Dolde über der Blattrosette",
+              "wrongAnswer1": "Einzeln direkt unter der Erde",
+              "wrongAnswer2": "In einem braunen Kolben",
+              "wrongAnswer3": "Als hängende Kätzchen"
+            }
           ]
         },
         {
@@ -1013,6 +1561,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=4587",
             "https://www.infoflora.ch/de/flora/pulsatilla-alpina.html"
+          ],
+          "learningCards": [
+            {
+              "heading": "Nach der Blüte",
+              "text": "Ein kugeliger Stand aus fedrigen Griffeln entsteht nach der Blüte. Die Alpen-Küchenschelle lässt sich deshalb auch in einem späteren Entwicklungsstadium beobachten.",
+              "question": "Was entsteht bei der Alpen-Küchenschelle nach der Blüte?",
+              "correctAnswer": "Ein kugeliger Stand aus fedrigen Griffeln",
+              "wrongAnswer1": "Eine einzelne blaue Beere",
+              "wrongAnswer2": "Eine harte Kokosnuss",
+              "wrongAnswer3": "Ein Maiskolben"
+            },
+            {
+              "heading": "Behaarte Pflanzenteile",
+              "text": "Dichte Behaarung an Pflanzenteilen ist eine Anpassung an den rauen Standort. Die Haare sind ein sichtbares Merkmal, das du ohne Berührung betrachten kannst.",
+              "question": "Welche Eigenschaft schützt die Alpen-Küchenschelle am rauen Standort?",
+              "correctAnswer": "Dichte Behaarung an Pflanzenteilen",
+              "wrongAnswer1": "Schwimmende Luftkammern",
+              "wrongAnswer2": "Salzausscheidende Drüsen",
+              "wrongAnswer3": "Ein zehn Meter hoher Stamm"
+            },
+            {
+              "heading": "Beobachtungsregel",
+              "text": "Nicht berühren oder verzehren; nur beobachten: So gehst du mit der Alpen-Küchenschelle um. Für einen Fund im Herbarium reicht ein Foto.",
+              "question": "Was ist beim Umgang mit einer Alpen-Küchenschelle richtig?",
+              "correctAnswer": "Nicht berühren oder verzehren; nur beobachten",
+              "wrongAnswer1": "Durch Kauen die Art bestimmen",
+              "wrongAnswer2": "Die Wurzel als Probe ausgraben",
+              "wrongAnswer3": "Blüten für einen Rohkostsalat sammeln"
+            }
           ]
         }
       ],
@@ -1773,7 +2350,7 @@
       "ecosystem": {
         "slug": "artenreiche-wiese",
         "name": "Artenreiche Wiese",
-        "description": "Extensiv genutzte, blütenreiche Wiesen Mitteleuropas bieten zahlreichen Kräutern, Gräsern und Insekten Lebensraum. Geringe Düngung, passende Mahdtermine und das Abräumen des Mähguts helfen, lichtbedürftige Arten zu erhalten.",
+        "description": "Erkunde eine artenreiche Wiese als geführte Beobachtungstour: Vergleiche Blüten, Blätter und Wuchsform, ohne etwas zu sammeln. Löse die Quizfragen und dokumentiere drei fotografische Funde; so bleibt der Lebensraum für Pflanzen und Insekten erhalten.",
         "climateZone": "Gemäßigte Zone",
         "region": "Mitteleuropa",
         "season": "Frühling bis Herbst"
@@ -1789,6 +2366,35 @@
           "sources": [
             "https://www.floraweb.de/php/artenhome.php?suchnr=5220",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Lippenblüten",
+              "text": "Blauviolette Lippenblüten an einem vierkantigen Stängel passen zum Wiesen-Salbei. Die Kombination aus Blüte und Stängel ist aussagekräftiger als die Farbe allein.",
+              "question": "Welches Merkmal passt besonders gut zum Wiesen-Salbei?",
+              "correctAnswer": "Blauviolette Lippenblüten an einem vierkantigen Stängel",
+              "wrongAnswer1": "Weiße Zungenblüten um eine gelbe Mitte",
+              "wrongAnswer2": "Gelbe Schmetterlingsblüten mit Hülsen",
+              "wrongAnswer3": "Eine dunkle, walzenförmige Blütenähre"
+            },
+            {
+              "heading": "Sonnige Wiese",
+              "text": "Trockene, sonnige und eher nährstoffarme Wiese beschreibt seinen typischen Lebensraum. Achte beim Fund auf die Umgebung der Pflanze.",
+              "question": "Auf welchem Standort ist Wiesen-Salbei besonders typisch?",
+              "correctAnswer": "Trockene, sonnige und eher nährstoffarme Wiese",
+              "wrongAnswer1": "Dauerhaft überstautes Röhricht",
+              "wrongAnswer2": "Dunkler Fichtenforst",
+              "wrongAnswer3": "Salzhaltige Küstendüne"
+            },
+            {
+              "heading": "Mehrere Merkmale",
+              "text": "Blütenform, Stängelquerschnitt und Blätter solltest du gemeinsam prüfen. So stützt sich deine Beobachtung nicht nur auf die blauviolette Blütenfarbe.",
+              "question": "Was sollte man für eine verlässliche Feldbestimmung zusätzlich zur Blütenfarbe prüfen?",
+              "correctAnswer": "Blütenform, Stängelquerschnitt und Blätter",
+              "wrongAnswer1": "Nur die Pflanzenhöhe",
+              "wrongAnswer2": "Nur den Monat",
+              "wrongAnswer3": "Ausschließlich den Geruch"
+            }
           ]
         },
         {
@@ -1801,6 +2407,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Ein Kopf, viele Blüten",
+              "text": "Der Blütenkopf besteht aus weißen Zungen- und gelben Röhrenblüten. Was aus der Entfernung wie eine einzelne Blüte aussieht, setzt sich aus vielen Einzelblüten zusammen.",
+              "question": "Woraus besteht der scheinbar einzelne Blütenkopf der Wiesen-Margerite?",
+              "correctAnswer": "Aus weißen Zungen- und gelben Röhrenblüten",
+              "wrongAnswer1": "Aus einer einzigen fünfzähligen Blüte",
+              "wrongAnswer2": "Aus gelben Schmetterlingsblüten",
+              "wrongAnswer3": "Aus einer Blüte mit sechs Tepalen"
+            },
+            {
+              "heading": "Was bedeutet agg.?",
+              "text": "Der Name bezeichnet eine schwer trennbare Artengruppe. Dafür steht hier der Zusatz „agg.“; die Lektion behandelt diese Gruppe und verspricht keine sichere Trennung aller zugehörigen Arten.",
+              "question": "Warum steht beim wissenschaftlichen Namen der Wiesen-Margerite der Zusatz „agg.“?",
+              "correctAnswer": "Der Name bezeichnet eine schwer trennbare Artengruppe",
+              "wrongAnswer1": "Sie ist nur im Garten bekannt",
+              "wrongAnswer2": "Sie ist eine Kreuzung aus Grasarten",
+              "wrongAnswer3": "Die Art besitzt keine Blüten"
+            },
+            {
+              "heading": "Unpassende Merkmale",
+              "text": "Gegenständige Blätter und gelbe Lippenblüten passen nicht zur Wiesen-Margerite. Ihr Blütenkopf zeigt stattdessen die Kombination aus weißen Zungen- und gelben Röhrenblüten.",
+              "question": "Welche Beobachtung widerspricht einer Wiesen-Margerite am deutlichsten?",
+              "correctAnswer": "Gegenständige Blätter und gelbe Lippenblüten",
+              "wrongAnswer1": "Großer weiß-gelber Blütenkorb",
+              "wrongAnswer2": "Wechselständige Stängelblätter",
+              "wrongAnswer3": "Grobe Zähnung an Blättern"
+            }
           ]
         },
         {
@@ -1813,6 +2448,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Hüllblätter prüfen",
+              "text": "Trockenhäutige, eingerissene Anhängsel der Hüllblätter helfen beim Bestimmen. Schau deshalb auch unter den auffälligen Blütenbereich und nicht nur auf dessen Farbe.",
+              "question": "Welches Detail ist für die Bestimmung der Wiesen-Flockenblume besonders hilfreich?",
+              "correctAnswer": "Trockenhäutige, eingerissene Anhängsel der Hüllblätter",
+              "wrongAnswer1": "Ein hohler Schachtelhalm-Stängel",
+              "wrongAnswer2": "Dreiteilige Kleeblätter",
+              "wrongAnswer3": "Eine einzelne glockenförmige Krone"
+            },
+            {
+              "heading": "Blütenfarbe",
+              "text": "Die Blüten der Wiesen-Flockenblume sind typischerweise purpurfarben. Diese Farbe ist ein erster Hinweis, aber noch kein ausreichender Artnachweis.",
+              "question": "Welche Blütenfarbe ist für die Wiesen-Flockenblume typisch?",
+              "correctAnswer": "Purpurfarben",
+              "wrongAnswer1": "Rein grün",
+              "wrongAnswer2": "Leuchtend orange mit schwarzen Flecken",
+              "wrongAnswer3": "Braun ohne sichtbare Blüten"
+            },
+            {
+              "heading": "Warum genau vergleichen?",
+              "text": "Weil Flockenblumen variabel sind und hybridisieren können, genügt die Blütenfarbe allein nicht. Für die Unterscheidung brauchst du zusätzliche Merkmale, insbesondere die Hüllblätter.",
+              "question": "Warum genügt die purpurfarbene Blüte allein nicht zur sicheren Artbestimmung?",
+              "correctAnswer": "Weil Flockenblumen variabel sind und hybridisieren können",
+              "wrongAnswer1": "Weil die Art ausschließlich nachts blüht",
+              "wrongAnswer2": "Weil jede Pflanze ihre Farbe täglich wechselt",
+              "wrongAnswer3": "Weil sie keine Hüllblätter besitzt"
+            }
           ]
         },
         {
@@ -1825,6 +2489,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Blütenkopf",
+              "text": "Der Blütenstand wirkt als flacher blauvioletter Kopf mit größeren Randblüten. Vergleiche die Mitte mit dem äußeren Rand.",
+              "question": "Wie wirkt der Blütenstand der Acker-Witwenblume?",
+              "correctAnswer": "Als flacher blauvioletter Kopf mit größeren Randblüten",
+              "wrongAnswer1": "Als gelbe, herabhängende Kätzchen",
+              "wrongAnswer2": "Als weiße Dolde aus gleich großen Einzelblüten",
+              "wrongAnswer3": "Als einzelner roter Trichter"
+            },
+            {
+              "heading": "Geteilte Blätter",
+              "text": "Fiederteilige Stängelblätter sind bei der Acker-Witwenblume häufig zu sehen. Beachte diese Blätter zusätzlich zum Blütenkopf.",
+              "question": "Welches Blattmerkmal findet man häufig bei der Acker-Witwenblume?",
+              "correctAnswer": "Fiederteilige Stängelblätter",
+              "wrongAnswer1": "Nadelförmige immergrüne Blätter",
+              "wrongAnswer2": "Rundliche Schwimmblätter",
+              "wrongAnswer3": "Fleischige Blätter mit Dornen"
+            },
+            {
+              "heading": "Ähnliche Pflanzen",
+              "text": "Skabiosen und Teufelsabbiss gehören zu den Pflanzen, die du bei einem violetten Blütenkopf mitprüfen solltest. Ein ähnlicher Farbeindruck allein trennt diese Gruppen nicht sicher.",
+              "question": "Welche Verwechslungsgruppe sollte bei einem violetten Blütenkopf mitgeprüft werden?",
+              "correctAnswer": "Skabiosen und Teufelsabbiss",
+              "wrongAnswer1": "Farne",
+              "wrongAnswer2": "Nadelbäume",
+              "wrongAnswer3": "Seggen ohne Blütenköpfe"
+            }
           ]
         },
         {
@@ -1832,11 +2525,42 @@
           "commonName": "Gewöhnlicher Hornklee",
           "scientificName": "Lotus corniculatus",
           "family": "Hülsenfrüchtler (Fabaceae)",
-          "description": "Niedrige bis aufsteigende Pflanze mit gelben Schmetterlingsblüten, die außen oft rötlich überlaufen sind. Das scheinbar fünfteilige Blatt besteht aus drei Fiederblättchen und zwei großen Nebenblättern. Reife Hülsen stehen wie kleine Hörner ab.",
+          "description": "Niedrige bis aufsteigende Pflanze mit gelben Schmetterlingsblüten, die außen oft rötlich überlaufen sind. Das Blatt hat fünf Teilblättchen: drei obere und zwei nahe am Stängel stehende untere. Das untere Paar wirkt wie Nebenblätter, gehört aber zum Blatt. Reife Hülsen stehen wie kleine Hörner ab.",
           "warning": "Gelb blühende Hülsenfrüchtler ähneln einander. Blattform, Blütenstand und Früchte gemeinsam prüfen; nicht probieren.",
           "sources": [
+            "https://www.infoflora.ch/de/flora/lotus-corniculatus-aggr.html",
+            "https://www.infoflora.ch/de/flora/lotus-corniculatus.html",
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Fünf Teilblättchen",
+              "text": "Drei obere und zwei untere Fiederblättchen bilden das Blatt des Hornklees. Das untere Paar steht nahe am Stängel und kann wie Nebenblätter wirken; es gehört aber zum Blatt.",
+              "question": "Wie sind die fünf Teilblättchen des Gewöhnlichen Hornklees angeordnet?",
+              "correctAnswer": "Drei obere und zwei untere Fiederblättchen",
+              "wrongAnswer1": "Alle fünf stehen in einer einzigen Reihe",
+              "wrongAnswer2": "Zwei Blätter und drei Blütenblätter",
+              "wrongAnswer3": "Ein Blatt mit fünf Löchern"
+            },
+            {
+              "heading": "Schmale Hülsen",
+              "text": "Eine schmale Hülse ist die typische Frucht des Gewöhnlichen Hornklees. Beobachte bei einer Pflanze mit Früchten deren Form zusätzlich zu den Blättern.",
+              "question": "Welche Frucht passt zum Gewöhnlichen Hornklee?",
+              "correctAnswer": "Eine schmale Hülse",
+              "wrongAnswer1": "Eine fleischige Beere",
+              "wrongAnswer2": "Eine geflügelte Nuss",
+              "wrongAnswer3": "Eine Mohnkapsel"
+            },
+            {
+              "heading": "Schmetterlingsblüte",
+              "text": "Gelbe Schmetterlingsblüte beschreibt die Blütenform des Hornklees. Verbinde dieses Merkmal mit dem fünfteiligen Blatt und den schmalen Hülsen.",
+              "question": "Welche Blütenform kennzeichnet den Gewöhnlichen Hornklee?",
+              "correctAnswer": "Gelbe Schmetterlingsblüte",
+              "wrongAnswer1": "Blaue Glockenblüte",
+              "wrongAnswer2": "Braune Grasblüte",
+              "wrongAnswer3": "Weiße Röhrenblüte in einem Kolben"
+            }
           ]
         },
         {
@@ -1849,6 +2573,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Namensrätsel",
+              "text": "Reife Samen klappern in der trockenen Frucht. Dieses Geräusch erklärt den Namen Klappertopf.",
+              "question": "Woher stammt der Name Klappertopf?",
+              "correctAnswer": "Reife Samen klappern in der trockenen Frucht",
+              "wrongAnswer1": "Die Wurzel schlägt gegen Steine",
+              "wrongAnswer2": "Die Blätter klappen nachts zusammen",
+              "wrongAnswer3": "Bestäuber erzeugen ein Klopfgeräusch"
+            },
+            {
+              "heading": "Nachbarn unter der Erde",
+              "text": "Er ist ein Halbschmarotzer an Wurzeln anderer Pflanzen. Der Kleine Klappertopf steht damit in einer besonderen Beziehung zu seinen Pflanzennachbarn.",
+              "question": "Welche ökologische Lebensweise besitzt der Kleine Klappertopf?",
+              "correctAnswer": "Er ist ein Halbschmarotzer an Wurzeln anderer Pflanzen",
+              "wrongAnswer1": "Er lebt vollständig unter Wasser",
+              "wrongAnswer2": "Er ist ein fleischfressender Baum",
+              "wrongAnswer3": "Er wächst ohne Verbindung zum Boden"
+            },
+            {
+              "heading": "Merkmale kombinieren",
+              "text": "Gelbe Blüten, gegenständige gezähnte Blätter, abgeflachter Kelch: Suche diese Kombination. Kein einzelnes Farbmerkmal ersetzt den Vergleich der ganzen Pflanze.",
+              "question": "Welche Kombination passt zum Kleinen Klappertopf?",
+              "correctAnswer": "Gelbe Blüten, gegenständige gezähnte Blätter, abgeflachter Kelch",
+              "wrongAnswer1": "Weiße Blütenkörbe, nadelige Blätter, Beeren",
+              "wrongAnswer2": "Blaue Blüten, Schwimmblätter, Rhizom im Wasser",
+              "wrongAnswer3": "Rote Kätzchen, verholzter Stamm, Zapfen"
+            }
           ]
         },
         {
@@ -1862,6 +2615,35 @@
             "https://www.floraweb.de/php/artenhome.php",
             "https://botanik-bochum.de/web/pflanzenbilder/Tragopogon_pratensis.htm",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Die Tageszeit zählt",
+              "text": "Die Blütenkörbe sind häufig schon um die Mittagszeit geschlossen. Ein geschlossener Korb bedeutet deshalb nicht unbedingt, dass die Blütezeit vorbei ist.",
+              "question": "Zu welcher Tageszeit sind die Blütenkörbe des Wiesen-Bocksbarts häufig bereits geschlossen?",
+              "correctAnswer": "Schon um die Mittagszeit",
+              "wrongAnswer1": "Nur kurz vor Mitternacht",
+              "wrongAnswer2": "Ausschließlich im Winter",
+              "wrongAnswer3": "Sie schließen sich nie"
+            },
+            {
+              "heading": "Großer Fruchtstand",
+              "text": "Große Kugel aus Früchten mit federigem Flugapparat beschreibt den Fruchtstand. Die auffällige Kugel bietet ein anderes Erkennungsmerkmal als der geöffnete Blütenkorb.",
+              "question": "Wie sieht der Fruchtstand des Wiesen-Bocksbarts aus?",
+              "correctAnswer": "Große Kugel aus Früchten mit federigem Flugapparat",
+              "wrongAnswer1": "Dichte Traube blauer Beeren",
+              "wrongAnswer2": "Ein einzelner schwerer Stein",
+              "wrongAnswer3": "Eine Reihe roter Hülsen"
+            },
+            {
+              "heading": "Grasähnliche Blätter",
+              "text": "Schmale, grasähnliche Blätter passen zum Wiesen-Bocksbart. Vergleiche sie mit dem Blüten- oder Fruchtstand, statt die Pflanze allein nach den Blättern einzuordnen.",
+              "question": "Welche Blätter passen zum Wiesen-Bocksbart?",
+              "correctAnswer": "Schmale, grasähnliche Blätter",
+              "wrongAnswer1": "Breite herzförmige Schwimmblätter",
+              "wrongAnswer2": "Handförmige Blätter mit sieben Lappen",
+              "wrongAnswer3": "Schuppenblätter ohne Grün"
+            }
           ]
         },
         {
@@ -1874,6 +2656,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Offene Blütenkrone",
+              "text": "Weit geöffnet, blauviolett und tief in fünf Zipfel geteilt ist die typische Blütenkrone. Betrachte ihre Form und nicht nur den Farbeindruck.",
+              "question": "Welche Kronenform ist typisch für die Wiesen-Glockenblume?",
+              "correctAnswer": "Weit geöffnet, blauviolett und tief in fünf Zipfel geteilt",
+              "wrongAnswer1": "Gelb und schmetterlingsförmig",
+              "wrongAnswer2": "Weißer Korb mit gelber Mitte",
+              "wrongAnswer3": "Unscheinbar und ohne Blütenhülle"
+            },
+            {
+              "heading": "Blüten am Stängel",
+              "text": "Der Blütenstand ist meist locker und verzweigt aufgebaut. Die Blüten sitzen nicht zu einem einzigen dichten Kopf zusammengedrängt.",
+              "question": "Wie ist der Blütenstand der Wiesen-Glockenblume meist aufgebaut?",
+              "correctAnswer": "Locker und verzweigt",
+              "wrongAnswer1": "Als dichter brauner Kolben",
+              "wrongAnswer2": "Als einzelnes unterirdisches Körbchen",
+              "wrongAnswer3": "Als verholztes Kätzchen"
+            },
+            {
+              "heading": "Blätter vergleichen",
+              "text": "Obere Blätter sind meist schmaler als die Grundblätter. Vergleiche deshalb verschiedene Stellen derselben Pflanze, bevor du ihre Blattform beschreibst.",
+              "question": "Welche Aussage zu den Blättern der Wiesen-Glockenblume trifft zu?",
+              "correctAnswer": "Obere Blätter sind meist schmaler als die Grundblätter",
+              "wrongAnswer1": "Alle Blätter sind schwimmende Kreise",
+              "wrongAnswer2": "Es gibt ausschließlich Nadeln",
+              "wrongAnswer3": "Die Pflanze besitzt überhaupt keine Blätter"
+            }
           ]
         },
         {
@@ -1886,6 +2697,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Längsnerven",
+              "text": "Schmale Blätter mit mehreren deutlichen Längsnerven kennzeichnen den Spitzwegerich. Die Blätter stehen in einer Rosette am Boden.",
+              "question": "Welches Blattmerkmal kennzeichnet den Spitzwegerich?",
+              "correctAnswer": "Schmale Blätter mit mehreren deutlichen Längsnerven",
+              "wrongAnswer1": "Gefiederte Blätter mit Ranken",
+              "wrongAnswer2": "Runde Blätter mit netzförmiger Zeichnung",
+              "wrongAnswer3": "Dreieckige Schuppen am verholzten Zweig"
+            },
+            {
+              "heading": "Blütenähre",
+              "text": "Eine kurze, dunkle Blütenähre sitzt auf dem langen Schaft. Unterscheide diesen blattlosen Blütenschaft von den Blättern der Rosette.",
+              "question": "Was trägt der lange Schaft des Spitzwegerichs?",
+              "correctAnswer": "Eine kurze, dunkle Blütenähre",
+              "wrongAnswer1": "Eine einzelne große Beere",
+              "wrongAnswer2": "Eine gelbe Schmetterlingsblüte",
+              "wrongAnswer3": "Mehrere gefiederte Laubblätter"
+            },
+            {
+              "heading": "Spitz oder breit?",
+              "text": "Die deutlich schmalere, lanzettliche Blattform hilft bei der Abgrenzung zum Breitwegerich. Prüfe die ganze Blattform zusammen mit den Längsnerven.",
+              "question": "Welches Merkmal hilft, Spitzwegerich von Breitwegerich zu unterscheiden?",
+              "correctAnswer": "Die deutlich schmalere, lanzettliche Blattform",
+              "wrongAnswer1": "Das Vorhandensein von Wurzeln",
+              "wrongAnswer2": "Eine grundsätzlich blaue Blütenfarbe",
+              "wrongAnswer3": "Ein verholzter Stamm"
+            }
           ]
         },
         {
@@ -1898,6 +2738,35 @@
           "sources": [
             "https://www.lfl.bayern.de/iab/kulturlandschaft/025011/index.php",
             "https://lazbw.landwirtschaft-bw.de/,Lde/Startseite/Themen/Artenreiches+Gruenland"
+          ],
+          "learningCards": [
+            {
+              "heading": "Fein gefiederte Blätter",
+              "text": "Sehr fein und mehrfach gefiedert wirken die Blätter der Schafgarbe. Dieses Blattbild ist ein wichtiger Hinweis neben dem hellen Blütenstand.",
+              "question": "Welches Blattbild passt zur Gewöhnlichen Schafgarbe?",
+              "correctAnswer": "Sehr fein und mehrfach gefiedert",
+              "wrongAnswer1": "Ungeteilt, rund und schwimmend",
+              "wrongAnswer2": "Dickfleischig mit Randdornen",
+              "wrongAnswer3": "Nadelförmig an einem verholzten Zweig"
+            },
+            {
+              "heading": "Blütenstand",
+              "text": "Viele kleine Blütenkörbe in einer Schirmrispe bilden die flache weiße bis rosafarbene Fläche. Betrachte einzelne Körbchen, um den Aufbau zu verstehen.",
+              "question": "Was bildet die flache weiße bis rosafarbene Fläche des Schafgarben-Blütenstands?",
+              "correctAnswer": "Viele kleine Blütenkörbe in einer Schirmrispe",
+              "wrongAnswer1": "Eine einzige riesige Blüte",
+              "wrongAnswer2": "Ein Pilzhut",
+              "wrongAnswer3": "Eine Reihe geflügelter Samen ohne Blüten"
+            },
+            {
+              "heading": "Eine Artengruppe",
+              "text": "Weil der Komplex formenreich und taxonomisch schwierig ist, wird die Schafgarbe hier als Artengruppe behandelt. Die Lektion vermittelt Gruppenmerkmale, keine sichere Bestimmung jeder enthaltenen Kleinart.",
+              "question": "Warum wird auch die Gewöhnliche Schafgarbe hier als Artengruppe geführt?",
+              "correctAnswer": "Weil der Komplex formenreich und taxonomisch schwierig ist",
+              "wrongAnswer1": "Weil sie zu den Gräsern gehört",
+              "wrongAnswer2": "Weil sie nur als Fossil bekannt ist",
+              "wrongAnswer3": "Weil sie jährlich die Familie wechselt"
+            }
           ]
         }
       ],
@@ -2216,17 +3085,17 @@
         },
         {
           "slug": "gewoehnlicher-hornklee-01",
-          "title": "Wie erklärt sich das scheinbar fünfteilige Blatt des Gewöhnlichen Hornklees?",
+          "title": "Wie sind die fünf Teilblättchen des Gewöhnlichen Hornklees angeordnet?",
           "plantSlug": "gewoehnlicher-hornklee",
-          "prompt": "Wie erklärt sich das scheinbar fünfteilige Blatt des Gewöhnlichen Hornklees?",
+          "prompt": "Wie sind die fünf Teilblättchen des Gewöhnlichen Hornklees angeordnet?",
           "choices": [
             {
               "id": "a",
-              "label": "Fünf gleichartige Fiederblättchen"
+              "label": "Alle fünf stehen in einer einzigen Reihe"
             },
             {
               "id": "b",
-              "label": "Drei Fiederblättchen und zwei große Nebenblätter"
+              "label": "Drei obere und zwei untere Fiederblättchen"
             },
             {
               "id": "c",
@@ -2238,7 +3107,7 @@
             }
           ],
           "correctChoiceId": "b",
-          "explanation": "Die zwei großen Nebenblätter sitzen nahe am Stängel und wirken wie zusätzliche Fiederblättchen."
+          "explanation": "Das Blatt besitzt fünf Fiederblättchen. Das untere Paar sitzt nahe am Stängel und ähnelt Nebenblättern, ist aber Teil des Blattes."
         },
         {
           "slug": "gewoehnlicher-hornklee-02",

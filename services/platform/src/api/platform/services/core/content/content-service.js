@@ -94,6 +94,12 @@ function mapLevel(level, state = {}) {
   assertPublicContent(level, 'Level');
   const ecosystemId = contentId(level.ecosystem, 'Ecosystem');
   const rule = normaliseCompletionRule(level.completionRule, level.quizzes || []);
+  if (level.generatedFromBlueprint) {
+    const visibleQuestions = new Set((level.quizzes || []).filter(isPublished).map((quiz) => quiz.publicId));
+    if (rule.requiredQuizIds.some((id) => !visibleQuestions.has(id))) {
+      throw contentIntegrityError('Generated level requires unpublished or missing quiz items.');
+    }
+  }
   return {
     id: level.publicId,
     ecosystemId,
@@ -114,12 +120,18 @@ function mapPlant(plant) {
   assertPublicContent(plant, 'Plant');
   return {
     id: plant.publicId,
+    slug: plant.slug,
     scientificName: plant.scientificName,
     commonName: plant.commonName || '',
     family: plant.family || '',
     description: plant.description || '',
     warning: plant.warning || '',
     sources: Array.isArray(plant.sources) ? plant.sources : [],
+    // Never serialize the CMS answer-key fields in the learner profile.
+    profileCards: (plant.learningCards || []).map((card) => ({
+      heading: card.heading,
+      text: card.text,
+    })),
     media: (plant.media || []).filter(isPublished).map((media) => {
       assertPublicContent(media, 'Media');
       return {

@@ -1,6 +1,7 @@
 'use strict';
 
 const { stableContentId } = require('./demo-content');
+const { quizzesFromCards, rotateChoices } = require('./lesson-cards');
 
 // Deliberate species choices, never inferred from relation order. Collecting
 // means a photographic herbarium record, not picking these plants.
@@ -11,9 +12,9 @@ const COLLECTION_TARGETS = {
 };
 
 const PHASES = [
-  { slug: 'kennenlernen', title: 'Kennenlernen', notice: 'Lies den Steckbrief und beantworte drei Fragen zu dieser Pflanze.' },
-  { slug: 'wiederholen', title: 'Wiederholen', notice: 'Wiederholung: Du übst dieselben drei bereits eingeführten Fragen zu dieser Pflanze erneut.' },
-  { slug: 'festigen', title: 'Festigen', notice: 'Abschlusswiederholung: Festige dein Wissen mit denselben drei Fragen. Es werden keine neuen Pflanzenmerkmale eingeführt.' },
+  { slug: 'kennenlernen', title: 'Entdeckerpfad', notice: 'Mission Entdecken: Lies den Steckbrief, finde die Merkmale und löse drei Fragen. Zwei richtige Antworten bringen dir einen Stern.' },
+  { slug: 'wiederholen', title: 'Spurensuche', notice: 'Mission Spurensuche: Erkennst du die Pflanze wieder? Übe die drei bekannten Fragen mit neu angeordneten Antworten. Dein Steckbrief hilft dir.' },
+  { slug: 'festigen', title: 'Forscherfinale', notice: 'Mission Forscherfinale: Festige dein Wissen in drei bekannten Fragen. Für die Ökosystem-Trophäe brauchst du alle Levelsterne und die drei fotografischen Sammelziele.' },
 ];
 
 function buildJourney(item) {
@@ -26,10 +27,14 @@ function buildJourney(item) {
   for (const phase of PHASES) {
     for (const plant of item.plants) {
       const slug = `${item.ecosystem.slug}-${phase.slug}-${plant.slug}`;
-      const questions = item.quizzes.filter((quiz) => quiz.plantSlug === plant.slug);
+      const sourceQuestions = item.quizzes.filter((quiz) => quiz.plantSlug === plant.slug);
+      // Keep existing public quiz identities across the content upgrade.
+      const questions = plant.learningCards?.length
+        ? quizzesFromCards(plant).map((quiz, index) => ({ ...quiz, slug: sourceQuestions[index]?.slug || quiz.slug }))
+        : sourceQuestions;
       if (questions.length !== 3) throw new Error(`Journey needs three source questions for ${plant.slug}`);
-      const quizzes = questions.map((quiz) => ({
-        ...quiz,
+      const quizzes = questions.map((quiz, index) => ({
+        ...rotateChoices(quiz, PHASES.indexOf(phase) + levels.length + index),
         slug: `${slug}-${quiz.slug}`,
         sourceQuizSlug: quiz.slug,
         reviewPhase: phase.slug,
