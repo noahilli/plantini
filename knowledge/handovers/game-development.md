@@ -1,5 +1,11 @@
 # Spielbare Plantini-Reise – Entwicklungsstand 2026-09-07
 
+> Fortsetzung vom 22. September: siehe `lesson-authoring.md`. Neue strukturierte
+> Steckbriefe, Missionsdarstellung und CMS-Entwurfs-Generator sind ergänzt;
+> Demo-Release `2026.09.22-de.1`. Dieser ältere Handoff beschreibt die Basis.
+> Die hier unten erwähnte Backend-Assertion wurde bereits mit `cfe97a5` korrigiert;
+> die übrigen Test-/Abnahmegrenzen bleiben bestehen.
+
 ## Auftrag und Umsetzung
 
 Die ausdrückliche neue Nutzervorgabe ersetzt die frühere Sammelpflicht je Level.

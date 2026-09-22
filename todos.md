@@ -230,6 +230,25 @@ E2E-Freigabe. Details, Buildnachweise und bekannte WIP-Punkte:
 
 ## Nächste Umsetzungsschnitte
 
+### Neubewertung: Spielmissionen, Steckbriefe und Redaktion (22. September 2026)
+
+Priorität bleibt eine präsentierbare Demo, kein Produktionsausbau. BANini25
+dient als Strukturvorbild für Artenwissen, nicht als pauschal übernommene
+Text-/Bilddatenbank. Die vorhandenen drei Ökosysteme und 30 Arten bleiben erhalten.
+
+- [x] **P1 | GAME-07:** Missionen und Kapitel deutlicher inszenieren; Steckbrief → Fragen → Stern sichtbar machen. Keine erfundenen Punkte oder lokal behaupteten Abschlüsse.
+- [x] **P1 | CONTENT-09:** Je Pflanze drei lesbare Lernkarten ergänzen, aus denen die Quizfragen beantwortbar sind; API und Web-/Isar-Cache um `profileCards` erweitern.
+- [x] **P1 | CMS-09:** Strukturierte Lernkarten mit Frage, Lösung und drei Ablenkantworten im Strapi-Formular pflegen; Generator für 30 Level-/90 Frage-Entwürfe aus zehn geordneten Pflanzenstationen und drei Sammelzielen. Kein Datei-Upload und keine automatische Veröffentlichung.
+- [ ] **P1 | CONTENT-10:** Alle 30 Arten fachlich gegen direkte Artenquellen prüfen; allgemeine/falsch zugeordnete Links ersetzen, Sicherheitshinweise und Artgruppen redaktionell freigeben. Ausgefüllte Lernkarten sind noch keine botanische Freigabe.
+- [ ] **P1 | GAME-08:** In der laufenden App den neuen Steckbrief-/Quiz-/Sammelablauf abnehmen, insbesondere Nachschlagen ohne Verlust der Antwort und Wiederanlauf mit vorhandenem Cache. Keine neuen Tests auf Nutzerwunsch.
+- [ ] **P1 | CMS-10:** Redaktionsvorschau und atomare Release-Freigabe für generierte Entwürfe integrieren; bisheriger Generator liefert nur Entwürfe. Rollen, Vier-Augen-Freigabe und Rücknahme bleiben CMS-02/03 und CONTENT-06 zugeordnet.
+- [ ] **P2 | CONTENT-11:** Runden 2/3 durch eigenständige Vergleichs- und Lebensraumfragen aus zusätzlich geprüften Fakten differenzieren. Aktuell 90 verschiedene Fragen, in drei Runden wiederholt; keine 270 unterschiedlichen Lernfragen behaupten.
+- [ ] **P2 | CONTENT-12:** Artgerechte Bilder mit Lizenz, Urheber und Alt-Text ergänzen; BANini-Bilder nicht ohne Nutzungsrecht übernehmen.
+
+Details und Bedienkonzept: [`knowledge/handovers/lesson-authoring.md`](knowledge/handovers/lesson-authoring.md).
+
+### Bestehende übergreifende Arbeitspakete
+
 - [ ] **Slice A – Vertrauenswürdiges Fundament:** STATUS-01–04, APP-02/03, AUTH-01–04, API-02–04 und INFRA-02–05.
 - [ ] **Slice B – Erstes echtes Lernlevel:** CONTENT-01–06, LEARN-01–06, OFFLINE-01/02 und zugehörige Tests.
 - [ ] **Slice C – Erster echter Feldfund:** FIELD-01–08, OFFLINE-03–08, CMS-04/07 und Queue-/Security-/E2E-Tests.
