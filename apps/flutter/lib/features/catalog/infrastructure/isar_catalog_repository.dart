@@ -83,8 +83,12 @@ class IsarCatalogRepository implements CatalogRepository {
 
   @override
   Future<Result<Plant>> getPublishedPlant(String plantId) async {
+    // Published profiles can gain new field-note cards. Prefer the remote
+    // source so an older Isar snapshot cannot hide that additive content.
+    final online = await fallback.getPublishedPlant(plantId);
+    if (online is Success<Plant>) return online;
     final db = localDb;
-    if (db == null) return fallback.getPublishedPlant(plantId);
+    if (db == null) return online;
     try {
       final stored = db.plants.where().publicIdEqualTo(plantId).findFirst();
       if (stored != null) {
@@ -98,6 +102,12 @@ class IsarCatalogRepository implements CatalogRepository {
             description: stored.description,
             warning: stored.warning,
             sources: stored.sources,
+            profileCards: stored.profileCards
+                .map(
+                  (item) =>
+                      PlantProfileCard(heading: item.heading, text: item.text),
+                )
+                .toList(growable: false),
             releaseVersion: stored.releaseVersion,
             media: stored.media
                 .map(
@@ -117,7 +127,7 @@ class IsarCatalogRepository implements CatalogRepository {
     } catch (_) {
       // A corrupt or unavailable local cache must not hide online content.
     }
-    return fallback.getPublishedPlant(plantId);
+    return online;
   }
 
   @override

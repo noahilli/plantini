@@ -21,6 +21,15 @@ class IsarPlant {
   late List<String> sources;
   late String releaseVersion;
   late List<IsarPlantMedia> media;
+  late List<IsarPlantProfileCard> profileCards;
+}
+
+/// Embedded, additive profile content. Existing databases retain their plant
+/// records; older records simply read this list as empty.
+@embedded
+class IsarPlantProfileCard {
+  late String heading;
+  late String text;
 }
 
 /// Embedded media metadata for an [IsarPlant].

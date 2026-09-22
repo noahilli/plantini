@@ -377,6 +377,17 @@ final class ContentSyncService {
   }
 
   IsarPlant _parseIsarPlant(Map<String, dynamic> map, String version) {
+    final rawProfileCards = (map['profileCards'] as List<dynamic>?) ?? [];
+    final profileCards = rawProfileCards
+        .whereType<Map>()
+        .map((card) {
+          final values = Map<String, dynamic>.from(card);
+          return IsarPlantProfileCard()
+            ..heading = values['heading'] as String? ?? ''
+            ..text = values['text'] as String? ?? '';
+        })
+        .where((card) => card.heading.isNotEmpty && card.text.isNotEmpty)
+        .toList(growable: false);
     final rawMedia = (map['media'] as List<dynamic>?) ?? [];
     final mediaList = rawMedia
         .map((m) {
@@ -400,6 +411,7 @@ final class ContentSyncService {
       ..description = map['description'] as String? ?? ''
       ..warning = map['warning'] as String?
       ..sources = (map['sources'] as List<dynamic>?)?.cast<String>() ?? []
+      ..profileCards = profileCards
       ..releaseVersion = version
       ..media = mediaList;
   }

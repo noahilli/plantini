@@ -60,45 +60,26 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
     final current = sorted
         .where((l) => l.isUnlocked && l.status != LevelStatus.completed)
         .firstOrNull;
+    final completedInChapter = stations
+        .where((level) => level.status == LevelStatus.completed)
+        .length;
     final rowHeight =
         164.0 *
         (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(1.0, 2.0);
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: Row(
-            children: [
-              IconButton.filledTonal(
-                key: const ValueKey('map-previous-chapter'),
-                tooltip: 'Vorheriger Wegabschnitt',
-                onPressed: chapter > 0 ? () => _showChapter(chapter - 1) : null,
-                icon: const Icon(Icons.chevron_left),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      'ABSCHNITT ${chapter + 1} / $chapters',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                    Text(
-                      'Level ${stations.first.sequence}–${stations.last.sequence}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton.filledTonal(
-                key: const ValueKey('map-next-chapter'),
-                tooltip: 'Nächster Wegabschnitt',
-                onPressed: chapter < chapters - 1
-                    ? () => _showChapter(chapter + 1)
-                    : null,
-                icon: const Icon(Icons.chevron_right),
-              ),
-            ],
-          ),
+        _ChapterHeader(
+          chapter: chapter,
+          chapters: chapters,
+          firstLevel: stations.first.sequence,
+          lastLevel: stations.last.sequence,
+          phaseTitle: _phaseTitle(chapter),
+          completed: completedInChapter,
+          nextLevel: current?.sequence,
+          onPrevious: chapter > 0 ? () => _showChapter(chapter - 1) : null,
+          onNext: chapter < chapters - 1
+              ? () => _showChapter(chapter + 1)
+              : null,
         ),
         Expanded(
           child: Align(
@@ -213,6 +194,90 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
       ],
     );
   }
+
+  String _phaseTitle(int chapter) => switch (chapter) {
+    0 => 'Entdeckerpfad',
+    1 => 'Spurensuche',
+    _ => 'Forscherfinale',
+  };
+}
+
+final class _ChapterHeader extends StatelessWidget {
+  const _ChapterHeader({
+    required this.chapter,
+    required this.chapters,
+    required this.firstLevel,
+    required this.lastLevel,
+    required this.phaseTitle,
+    required this.completed,
+    required this.nextLevel,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final int chapter;
+  final int chapters;
+  final int firstLevel;
+  final int lastLevel;
+  final String phaseTitle;
+  final int completed;
+  final int? nextLevel;
+  final VoidCallback? onPrevious;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.sage100,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          IconButton.filledTonal(
+            key: const ValueKey('map-previous-chapter'),
+            tooltip: 'Vorheriger Wegabschnitt',
+            onPressed: onPrevious,
+            icon: const Icon(Icons.chevron_left),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  'ABSCHNITT ${chapter + 1} / $chapters',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: AppColors.sage800,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  phaseTitle,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'Level $firstLevel–$lastLevel · bekannte Pflanzen, neue Fragen'
+                  '\n$completed Sterne auf diesem Weg'
+                  '${nextLevel == null ? '' : ' · Nächste Station: $nextLevel'}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall
+                      ?.copyWith(color: AppColors.neutral700),
+                ),
+              ],
+            ),
+          ),
+          IconButton.filledTonal(
+            key: const ValueKey('map-next-chapter'),
+            tooltip: 'Nächster Wegabschnitt',
+            onPressed: onNext,
+            icon: const Icon(Icons.chevron_right),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 final class _LevelStation extends StatelessWidget {

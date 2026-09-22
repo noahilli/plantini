@@ -139,19 +139,25 @@ final class CatalogDto {
     final values = (fields as Success<Map<String, String>>).value;
     final commonName =
         _optionalString(json, 'commonName') ?? values['scientificName']!;
-    return Result.success(
-      Plant(
-        id: values['id']!,
-        slug: values['id']!,
-        scientificName: values['scientificName']!,
-        commonName: commonName,
-        family: _optionalString(json, 'family') ?? '',
-        description: _optionalString(json, 'description') ?? '',
-        warning: _optionalString(json, 'warning'),
-        sources: _stringList(json, 'sources'),
-        releaseVersion: values['releaseVersion']!,
-      ),
-    );
+    try {
+      return Result.success(
+        Plant(
+          id: values['id']!,
+          slug: _optionalString(json, 'slug') ?? values['id']!,
+          scientificName: values['scientificName']!,
+          commonName: commonName,
+          family: _optionalString(json, 'family') ?? '',
+          description: _optionalString(json, 'description') ?? '',
+          warning: _optionalString(json, 'warning'),
+          sources: _stringList(json, 'sources'),
+          profileCards: _profileCards(json),
+          releaseVersion: values['releaseVersion']!,
+          media: _media(json),
+        ),
+      );
+    } on ContractFailure catch (failure) {
+      return Result.failure(failure);
+    }
   }
 
   static Result<Map<String, String>> _requiredStrings(
@@ -196,6 +202,56 @@ final class CatalogDto {
     }
     return values.cast<String>();
   }
+
+  static List<PlantProfileCard> _profileCards(Map<String, dynamic> json) {
+    final values = json['profileCards'];
+    if (values == null) return const [];
+    if (values is! List) throw _plantListFailure('profileCards');
+    return values
+        .map((value) {
+          if (value is! Map) throw _plantListFailure('profileCards');
+          final card = Map<String, dynamic>.from(value);
+          final heading = _optionalString(card, 'heading');
+          final text = _optionalString(card, 'text');
+          if (heading == null || text == null) {
+            throw _plantListFailure('profileCards');
+          }
+          return PlantProfileCard(heading: heading, text: text);
+        })
+        .toList(growable: false);
+  }
+
+  static List<PlantMedia> _media(Map<String, dynamic> json) {
+    final values = json['media'];
+    if (values == null) return const [];
+    if (values is! List) throw _plantListFailure('media');
+    return values
+        .map((value) {
+          if (value is! Map) throw _plantListFailure('media');
+          final media = Map<String, dynamic>.from(value);
+          final id = _optionalString(media, 'id');
+          final url = _optionalString(media, 'url');
+          final altText = _optionalString(media, 'altText');
+          final license = _optionalString(media, 'license');
+          if (id == null || url == null || altText == null || license == null) {
+            throw _plantListFailure('media');
+          }
+          return PlantMedia(
+            id: id,
+            slug: _optionalString(media, 'slug') ?? '',
+            url: url,
+            altText: altText,
+            license: license,
+            author: _optionalString(media, 'author'),
+          );
+        })
+        .toList(growable: false);
+  }
+
+  static ContractFailure _plantListFailure(String key) => ContractFailure(
+    message: 'Das Pflanzenprofil enthält einen ungültigen $key-Eintrag.',
+    missingFields: [key],
+  );
 
   static LevelStatus? _levelStatus(Object? value) => switch (value) {
     'locked' => LevelStatus.locked,

@@ -253,6 +253,27 @@ final class _LearningScreenState extends State<LearningScreen> {
     }
   }
 
+  Future<void> _openNotebook() async {
+    final level = _level;
+    if (level == null) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: FractionallySizedBox(
+          heightFactor: .9,
+          child: PlantLessonView(
+            level: level,
+            plants: _plants,
+            onStart: () => Navigator.of(sheetContext).pop(),
+            startLabel: 'Zurück zur Frage',
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => AuthenticatedPage(
     dependencies: widget.dependencies,
@@ -324,6 +345,7 @@ final class _LearningScreenState extends State<LearningScreen> {
       busy: _busy,
       onAnswer: _answer,
       onComplete: _complete,
+      onOpenNotebook: _level == null ? null : _openNotebook,
       onNext: _next,
       onRetrySync: () => _sync(session),
       failure: _failure,

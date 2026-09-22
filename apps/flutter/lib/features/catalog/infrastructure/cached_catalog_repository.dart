@@ -182,7 +182,22 @@ Map<String, Object?> _plantToJson(Plant value) => {
   'description': value.description,
   'warning': value.warning,
   'sources': value.sources,
+  'profileCards': value.profileCards
+      .map((card) => {'heading': card.heading, 'text': card.text})
+      .toList(growable: false),
   'releaseVersion': value.releaseVersion,
+  'media': value.media
+      .map(
+        (media) => {
+          'id': media.id,
+          'slug': media.slug,
+          'url': media.url,
+          'altText': media.altText,
+          'license': media.license,
+          'author': media.author,
+        },
+      )
+      .toList(growable: false),
 };
 
 Plant _plantFromJson(Map<String, dynamic> value) => Plant(
@@ -194,7 +209,9 @@ Plant _plantFromJson(Map<String, dynamic> value) => Plant(
   description: value['description'] as String? ?? '',
   warning: value['warning'] as String?,
   sources: _stringList(value['sources']),
+  profileCards: _profileCards(value['profileCards']),
   releaseVersion: _string(value, 'releaseVersion'),
+  media: _media(value['media']),
 );
 
 Map<String, dynamic> _map(Object? value) {
@@ -217,4 +234,40 @@ List<String> _stringList(Object? value) {
     throw const FormatException('Cached list is malformed.');
   }
   return value.cast<String>();
+}
+
+List<PlantProfileCard> _profileCards(Object? value) {
+  if (value == null) return const [];
+  if (value is! List) {
+    throw const FormatException('Cached profile cards are malformed.');
+  }
+  return value
+      .map((item) {
+        final card = _map(item);
+        return PlantProfileCard(
+          heading: _string(card, 'heading'),
+          text: _string(card, 'text'),
+        );
+      })
+      .toList(growable: false);
+}
+
+List<PlantMedia> _media(Object? value) {
+  if (value == null) return const [];
+  if (value is! List) {
+    throw const FormatException('Cached media are malformed.');
+  }
+  return value
+      .map((item) {
+        final media = _map(item);
+        return PlantMedia(
+          id: _string(media, 'id'),
+          slug: media['slug'] as String? ?? '',
+          url: _string(media, 'url'),
+          altText: _string(media, 'altText'),
+          license: _string(media, 'license'),
+          author: media['author'] as String?,
+        );
+      })
+      .toList(growable: false);
 }

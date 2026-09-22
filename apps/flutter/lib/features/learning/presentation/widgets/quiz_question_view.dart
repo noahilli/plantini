@@ -15,6 +15,7 @@ final class QuizQuestionView extends StatelessWidget {
     required this.busy,
     required this.onAnswer,
     required this.onComplete,
+    this.onOpenNotebook,
     this.onNext,
     this.onRetrySync,
     this.failure,
@@ -25,6 +26,7 @@ final class QuizQuestionView extends StatelessWidget {
   final bool busy;
   final OnAnswerCallback onAnswer;
   final VoidCallback onComplete;
+  final VoidCallback? onOpenNotebook;
   final VoidCallback? onNext;
   final VoidCallback? onRetrySync;
   final AppFailure? failure;
@@ -54,6 +56,18 @@ final class QuizQuestionView extends StatelessWidget {
             color: AppColors.sage700,
             backgroundColor: AppColors.sage200,
           ),
+          if (onOpenNotebook != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const ValueKey('quiz-open-notebook'),
+                onPressed: onOpenNotebook,
+                icon: const Icon(Icons.menu_book_outlined),
+                label: const Text('Steckbrief nachschlagen'),
+              ),
+            ),
+          ],
           const SizedBox(height: 24),
           Semantics(
             header: true,
