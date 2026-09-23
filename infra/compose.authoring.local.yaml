@@ -1,0 +1,9 @@
+# Local CMS development: reuse the existing dependency/admin image, but load
+# current CommonJS content types and application code. No volume reset or tests.
+# docker compose --env-file tools/e2e/.runtime/e2e.env \
+#   -f infra/compose.e2e.yaml -f infra/compose.authoring.local.yaml \
+#   up -d --no-build --wait platform
+services:
+  platform:
+    volumes:
+      - ../services/platform/src:/opt/plantini/src:ro

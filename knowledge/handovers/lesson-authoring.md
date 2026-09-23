@@ -118,3 +118,26 @@ eine botanische Prüfung noch einen vollständigen Benutzerdurchlauf.
 - Laufender Demo-Stack und seine Datenbank wurden nicht neu gestartet oder
   gelöscht. Die Backend-Erweiterung ist damit noch nicht im laufenden Demo-
   Container verfügbar; Schema/Seed benötigen einen regulären Neuaufbau.
+
+## Lokaler CMS-Start am 23. September 2026
+
+Der aktuelle Backend-Code ist jetzt lokal über das Source-Overlay gestartet:
+
+```sh
+COMPOSE_PARALLEL_LIMIT=1 docker compose \
+  --env-file tools/e2e/.runtime/e2e.env \
+  -f infra/compose.e2e.yaml -f infra/compose.authoring.local.yaml \
+  up -d --no-build --wait platform
+```
+
+Das vorhandene Node-20-Image liefert Abhängigkeiten und das generische Strapi-
+Admin-Frontend; `services/platform/src` wird schreibgeschützt eingebunden. Dies
+ist ein lokaler Entwicklungsstart, kein neu gebautes Produktionsimage. Vorhandene
+andere Datenbanken wurden nicht verändert; die E2E-Volumes fehlten vor dem Start
+und wurden neu angelegt. Kein `down --volumes`, kein Zurücksetzen einer Session.
+
+Admin: `http://127.0.0.1:1338/admin`. Lokalen Admin `admin@plantini.local` erstellt;
+Passwort nur dem Nutzer mitgeteilt, nicht im Repository gespeichert. Login HTTP
+200; Admin-API bestätigt 30 Pflanzen, drei Lernkarten beim Beispiel Rotbuche,
+`learningCards` in der Editor-Konfiguration und den sichtbaren Lernpfad-Generator.
+PlantNet bleibt im Demo-Stack simuliert. Flutter/Web wurden hier nicht gestartet.
