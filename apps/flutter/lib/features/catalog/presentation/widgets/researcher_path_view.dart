@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../design_system/world_art.dart';
 import '../../domain/catalog_models.dart';
 import '../../domain/level_collection_progress.dart';
 import 'world_landscape_painter.dart';
@@ -64,7 +65,7 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
         .where((level) => level.status == LevelStatus.completed)
         .length;
     final rowHeight =
-        164.0 *
+        172.0 *
         (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(1.0, 2.0);
     return Column(
       children: [
@@ -100,48 +101,21 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
                               90 +
                                   (constraints.maxWidth - 180) *
                                       (.5 + .5 * math.sin(i * 1.22)),
-                              74 + i * rowHeight,
+                              118 + i * rowHeight,
                             ),
                         ];
                         return Semantics(
                           label: 'Forscherpfad für ${widget.ecosystem.title}',
-                          child: SizedBox(
-                            height: stations.length * rowHeight + 32,
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: RepaintBoundary(
-                                    child: CustomPaint(
-                                      painter: WorldLandscapePainter(
-                                        centers: centers,
-                                        slug: widget.ecosystem.slug,
-                                        completed: stations
-                                            .map(
-                                              (l) =>
-                                                  l.status ==
-                                                  LevelStatus.completed,
-                                            )
-                                            .toList(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                for (var i = 0; i < stations.length; i++)
-                                  Positioned(
-                                    left: centers[i].dx - 86,
-                                    top: centers[i].dy - 48,
-                                    width: 172,
-                                    child: _LevelStation(
-                                      level: stations[i],
-                                      current: stations[i].id == current?.id,
-                                      onTap: widget.onLevelTap == null
-                                          ? null
-                                          : () =>
-                                                widget.onLevelTap!(stations[i]),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                          child: _WorldMap(
+                            slug: widget.ecosystem.slug,
+                            centers: centers,
+                            height: stations.length * rowHeight + 76,
+                            completed: stations
+                                .map((l) => l.status == LevelStatus.completed)
+                                .toList(),
+                            stations: stations,
+                            current: current,
+                            onLevelTap: widget.onLevelTap,
                           ),
                         );
                       },
@@ -200,6 +174,167 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
     1 => 'Spurensuche',
     _ => 'Forscherfinale',
   };
+}
+
+final class _WorldMap extends StatelessWidget {
+  const _WorldMap({
+    required this.slug,
+    required this.centers,
+    required this.height,
+    required this.completed,
+    required this.stations,
+    required this.current,
+    required this.onLevelTap,
+  });
+
+  final String slug;
+  final List<Offset> centers;
+  final double height;
+  final List<bool> completed;
+  final List<Level> stations;
+  final Level? current;
+  final ValueChanged<Level>? onLevelTap;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: height,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Stack(
+        children: [
+          Positioned.fill(child: _WorldArtwork(slug: slug)),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.neutral100.withValues(alpha: .08),
+                    AppColors.sage900.withValues(alpha: .13),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: RepaintBoundary(
+              child: CustomPaint(
+                painter: WorldLandscapePainter(
+                  centers: centers,
+                  slug: slug,
+                  completed: completed,
+                ),
+              ),
+            ),
+          ),
+          for (var i = 0; i < stations.length; i++) ...[
+            if (stations[i].id == current?.id)
+              Positioned(
+                left: centers[i].dx - 30,
+                top: centers[i].dy - 104,
+                width: 60,
+                height: 68,
+                child: const _ExplorerMarker(),
+              ),
+            Positioned(
+              left: centers[i].dx - 86,
+              top: centers[i].dy - 48,
+              width: 172,
+              child: _LevelStation(
+                level: stations[i],
+                current: stations[i].id == current?.id,
+                onTap: onLevelTap == null
+                    ? null
+                    : () => onLevelTap!(stations[i]),
+              ),
+            ),
+          ],
+        ],
+      ),
+    ),
+  );
+}
+
+/// The artwork is decorative. Its fallback deliberately carries no state.
+final class _WorldArtwork extends StatelessWidget {
+  const _WorldArtwork({required this.slug});
+  final String slug;
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+    WorldArt.forSlug(slug),
+    fit: BoxFit.cover,
+    alignment: Alignment.topCenter,
+    filterQuality: FilterQuality.high,
+    errorBuilder: (context, error, stackTrace) => const _WorldArtworkFallback(),
+  );
+}
+
+final class _WorldArtworkFallback extends StatelessWidget {
+  const _WorldArtworkFallback();
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFFE5E5C8), Color(0xFFACB88A), Color(0xFF758663)],
+      ),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          top: 48,
+          right: -44,
+          child: _AtmosphereOrb(
+            color: AppColors.neutral100.withValues(alpha: .24),
+            size: 210,
+          ),
+        ),
+        Positioned(
+          top: 330,
+          left: -90,
+          child: _AtmosphereOrb(
+            color: AppColors.sage900.withValues(alpha: .16),
+            size: 260,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+final class _AtmosphereOrb extends StatelessWidget {
+  const _AtmosphereOrb({required this.color, required this.size});
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+  );
+}
+
+final class _ExplorerMarker extends StatelessWidget {
+  const _ExplorerMarker();
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Deine aktuelle Position',
+    child: Image.asset(
+      WorldArt.explorer,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+      errorBuilder: (context, error, stackTrace) => const Align(
+        alignment: Alignment.bottomCenter,
+        child: Icon(Icons.hiking_rounded, color: AppColors.sage900, size: 42),
+      ),
+    ),
+  );
 }
 
 final class _ChapterHeader extends StatelessWidget {
@@ -289,7 +424,7 @@ final class _LevelStation extends StatelessWidget {
   Widget build(BuildContext context) {
     final complete = level.status == LevelStatus.completed;
     final locked = !level.isUnlocked;
-    final color = complete
+    final stone = complete
         ? AppColors.sage600
         : current
         ? AppColors.terracotta
@@ -310,47 +445,71 @@ final class _LevelStation extends StatelessWidget {
             : 'Einleitung, Quiz und Belohnung',
         child: InkWell(
           key: ValueKey('level-card-${level.id}'),
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(32),
           onTap: locked ? null : onTap,
           child: Column(
             children: [
-              Icon(
-                current
-                    ? Icons.hiking_rounded
-                    : complete
-                    ? Icons.star_rounded
-                    : Icons.more_horiz,
-                size: 26,
-                color: complete ? AppColors.accent700 : AppColors.sage800,
-              ),
               Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.neutral100.withValues(alpha: .82),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  complete
+                      ? Icons.star_rounded
+                      : locked
+                      ? Icons.lock_outline_rounded
+                      : current
+                      ? Icons.navigation_rounded
+                      : Icons.place_outlined,
+                  size: 19,
+                  color: complete ? AppColors.accent700 : AppColors.sage800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
                 width: 70,
                 height: 64,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(color: AppColors.neutral100, width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withValues(alpha: .55),
-                      offset: const Offset(0, 6),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        stone.withValues(alpha: .96),
+                        stone.withValues(alpha: .72),
+                      ],
                     ),
-                  ],
-                ),
-                child: locked
-                    ? const Icon(
-                        Icons.lock_outline_rounded,
-                        color: AppColors.neutral100,
-                      )
-                    : Text(
-                        '${level.sequence}',
-                        style: const TextStyle(
-                          fontSize: 26,
-                          color: AppColors.neutral100,
-                          fontWeight: FontWeight.w900,
-                        ),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: AppColors.neutral100.withValues(alpha: .8),
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.sage900.withValues(alpha: .26),
+                        blurRadius: 0,
+                        offset: const Offset(0, 7),
                       ),
+                    ],
+                  ),
+                  child: Center(
+                    child: locked
+                        ? const Icon(
+                            Icons.lock_outline_rounded,
+                            color: AppColors.neutral100,
+                          )
+                        : Text(
+                            '${level.sequence}',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              color: AppColors.neutral100,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                  ),
+                ),
               ),
               const SizedBox(height: 10),
               Container(
@@ -359,8 +518,9 @@ final class _LevelStation extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.neutral100.withValues(alpha: .94),
+                  color: AppColors.neutral100.withValues(alpha: .88),
                   borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.neutral100),
                 ),
                 child: Text(
                   level.title,

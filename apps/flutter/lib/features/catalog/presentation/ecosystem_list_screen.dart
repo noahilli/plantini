@@ -5,6 +5,7 @@ import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
+import '../../../design_system/world_art.dart';
 import '../domain/catalog_models.dart';
 
 final class EcosystemListScreen extends StatefulWidget {
@@ -147,109 +148,162 @@ final class _EcosystemCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final foreground = featured ? AppColors.neutral100 : AppColors.ink;
-    final secondary = featured ? AppColors.sage300 : AppColors.neutral700;
-    return Semantics(
-      button: true,
-      label: 'Ökosystem ${ecosystem.title}',
-      child: Material(
-        key: ValueKey('ecosystem-card-${ecosystem.id}'),
-        color: featured ? AppColors.sage800 : AppColors.bg,
-        borderRadius: BorderRadius.circular(28),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Stack(
-            children: [
-              if (featured)
-                Positioned(
-                  right: -34,
-                  bottom: -52,
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: AppColors.sage700.withValues(alpha: .6),
-                      shape: BoxShape.circle,
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Ökosystem ${ecosystem.title}',
+    child: Material(
+      key: ValueKey('ecosystem-card-${ecosystem.id}'),
+      color: AppColors.sage900,
+      borderRadius: BorderRadius.circular(28),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                WorldArt.forSlug(ecosystem.slug),
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (context, error, stackTrace) =>
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFB1C28B),
+                            Color(0xFF61744D),
+                            Color(0xFF34422C),
+                          ],
+                        ),
+                      ),
                     ),
+              ),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.sage900.withValues(alpha: .68),
+                      AppColors.sage900.withValues(alpha: .18),
+                      AppColors.sage900.withValues(alpha: .76),
+                    ],
+                    stops: const [.0, .54, 1],
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(17),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            ecosystem.title,
-                            style: Theme.of(context).textTheme.headlineMedium
-                                ?.copyWith(color: foreground),
-                          ),
+              ),
+            ),
+            Positioned(
+              top: -62,
+              right: -38,
+              child: Container(
+                width: 168,
+                height: 168,
+                decoration: BoxDecoration(
+                  color: AppColors.neutral100.withValues(alpha: .14),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          ecosystem.title,
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
+                                color: AppColors.neutral100,
+                                fontWeight: FontWeight.w900,
+                                shadows: const [
+                                  Shadow(
+                                    color: Color(0x77000000),
+                                    blurRadius: 9,
+                                  ),
+                                ],
+                              ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 11,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: featured
-                                ? AppColors.terracotta
-                                : AppColors.sage200,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            featured ? 'aktiv' : 'entdecken',
-                            style: TextStyle(
-                              color: featured
-                                  ? AppColors.bg
-                                  : AppColors.sage800,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 11,
+                          vertical: 5,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      '${ecosystem.levelIds.length} Level · ${ecosystem.description ?? 'Veröffentlichter Lernpfad'}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: secondary, fontSize: 11.5),
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          ecosystem.releaseVersion,
+                        decoration: BoxDecoration(
+                          color: featured
+                              ? AppColors.terracotta
+                              : AppColors.neutral100.withValues(alpha: .9),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          featured ? 'Startpunkt' : 'entdecken',
                           style: TextStyle(
-                            color: secondary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          'Forschen →',
-                          style: TextStyle(
-                            color: foreground,
-                            fontSize: 11.5,
+                            color: featured ? AppColors.bg : AppColors.sage900,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 7),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 7,
                     ),
-                  ],
-                ),
+                    decoration: BoxDecoration(
+                      color: AppColors.neutral100.withValues(alpha: .88),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      '${ecosystem.levelIds.length} Level · ${ecosystem.description ?? 'Veröffentlichter Lernpfad'}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.sage900,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 26),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Expedition öffnen',
+                        style: TextStyle(
+                          color: AppColors.neutral100,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Text(
+                        'Forschen →',
+                        style: TextStyle(
+                          color: AppColors.neutral100,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

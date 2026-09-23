@@ -153,79 +153,51 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
         );
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 4, 22, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          path.ecosystem.title,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '$stars / ${path.levels.length} Sterne',
-                          style: const TextStyle(
-                            color: AppColors.sage700,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
+            _ExpeditionHeader(
+              ecosystem: path.ecosystem,
+              stars: stars,
+              totalLevels: path.levels.length,
+              collectionLabel: collected == null
+                  ? 'Sammelziel'
+                  : '$collected / ${path.targets.length}',
+              onOpenCollection: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                builder: (sheetContext) => DraggableScrollableSheet(
+                  expand: false,
+                  initialChildSize: .8,
+                  maxChildSize: .95,
+                  minChildSize: .4,
+                  builder: (_, scroll) => SingleChildScrollView(
+                    controller: scroll,
+                    padding: const EdgeInsets.all(20),
+                    child: EcosystemFinaleCard(
+                      ecosystem: path.ecosystem,
+                      levels: path.levels,
+                      targets: path.targets,
+                      plants: path.plants,
+                      journey: path.journey,
+                      progressError: path.progressError,
+                      onRefresh: () {
+                        Navigator.pop(sheetContext);
+                        _reload();
+                      },
+                      onCollect: (plant) {
+                        Navigator.pop(sheetContext);
+                        context.go(
+                          Uri(
+                            path: '/field',
+                            queryParameters: {
+                              'expectedPlantId': plant.id,
+                              'expectedPlantName': plant.commonName,
+                            },
+                          ).toString(),
+                        );
+                      },
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  OutlinedButton.icon(
-                    key: const ValueKey('ecosystem-collection-goal'),
-                    icon: const Icon(Icons.science_outlined),
-                    label: Text(
-                      collected == null
-                          ? 'Sammelziel'
-                          : '$collected / ${path.targets.length}',
-                    ),
-                    onPressed: () => showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      builder: (sheetContext) => DraggableScrollableSheet(
-                        expand: false,
-                        initialChildSize: .8,
-                        maxChildSize: .95,
-                        minChildSize: .4,
-                        builder: (_, scroll) => SingleChildScrollView(
-                          controller: scroll,
-                          padding: const EdgeInsets.all(20),
-                          child: EcosystemFinaleCard(
-                            ecosystem: path.ecosystem,
-                            levels: path.levels,
-                            targets: path.targets,
-                            plants: path.plants,
-                            journey: path.journey,
-                            progressError: path.progressError,
-                            onRefresh: () {
-                              Navigator.pop(sheetContext);
-                              _reload();
-                            },
-                            onCollect: (plant) {
-                              Navigator.pop(sheetContext);
-                              context.go(
-                                Uri(
-                                  path: '/field',
-                                  queryParameters: {
-                                    'expectedPlantId': plant.id,
-                                    'expectedPlantName': plant.commonName,
-                                  },
-                                ).toString(),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             Expanded(
@@ -259,4 +231,89 @@ final class _EcosystemPath {
   final List<String> targets;
   final Map<String, Plant> plants;
   final String? progressError;
+}
+
+/// Keeps the map's progress summary separate from its scrollable world.
+final class _ExpeditionHeader extends StatelessWidget {
+  const _ExpeditionHeader({
+    required this.ecosystem,
+    required this.stars,
+    required this.totalLevels,
+    required this.collectionLabel,
+    required this.onOpenCollection,
+  });
+
+  final Ecosystem ecosystem;
+  final int stars;
+  final int totalLevels;
+  final String collectionLabel;
+  final VoidCallback onOpenCollection;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+    child: Container(
+      padding: const EdgeInsets.fromLTRB(18, 15, 12, 15),
+      decoration: BoxDecoration(
+        color: AppColors.neutral100.withValues(alpha: .92),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppColors.neutral100),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.sage900.withValues(alpha: .12),
+            blurRadius: 22,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.sage200,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(Icons.explore_rounded, color: AppColors.sage800),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ecosystem.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: AppColors.sage900,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '$stars / $totalLevels Sterne erspielt',
+                  style: const TextStyle(
+                    color: AppColors.sage700,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Tooltip(
+            message: 'Zielpflanzen für das Finale',
+            child: OutlinedButton.icon(
+              key: const ValueKey('ecosystem-collection-goal'),
+              onPressed: onOpenCollection,
+              icon: const Icon(Icons.science_outlined, size: 18),
+              label: Text(collectionLabel),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
