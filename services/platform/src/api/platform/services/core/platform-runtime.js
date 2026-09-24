@@ -37,7 +37,9 @@ function getPlatformRuntime(strapi) {
     content: new ContentService({
       repository: repositories.content,
       photoSource: process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS === 'disabled'
-        ? undefined : new WikimediaPhotoSource(),
+        ? undefined : new WikimediaPhotoSource({
+          metadataStore: strapi.store({ type: 'core', name: 'plantini-photo-metadata-v1' }),
+        }),
     }),
     learning: new LearningService({
       repository: repositories.learning,

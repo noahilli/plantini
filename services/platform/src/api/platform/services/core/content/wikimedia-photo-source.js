@@ -60,15 +60,28 @@ function allowedUrl(value, host) {
 }
 
 class WikimediaPhotoSource {
-  constructor() {
+  constructor({ metadataStore } = {}) {
     this.cache = new Map();
     this.pending = new Map();
+    this.metadataStore = metadataStore;
   }
 
   async find(scientificName) {
     const name = String(scientificName || '').trim();
     if (!name || name.length > 160) return null;
-    const cached = this.cache.get(name);
+    const key = createHash('sha256').update(name).digest('hex');
+    let cached = this.cache.get(name);
+    if (!cached && this.metadataStore) {
+      try {
+        const stored = await this.metadataStore.get({ key });
+        if (stored?.schemaVersion === 1 && Number.isFinite(stored.expires) &&
+            Number.isFinite(stored.verifiedAt) && stored.verifiedAt > Date.now() - 7 * 86400000) {
+          cached = stored;
+          if (this.cache.size >= 500) this.cache.delete(this.cache.keys().next().value);
+          this.cache.set(name, stored);
+        }
+      } catch { /* Cache failure must not make plant content unavailable. */ }
+    }
     if (cached && cached.expires > Date.now()) return cached.photo;
     if (this.pending.has(name)) return this.pending.get(name);
     // Bound concurrent external work; failures must never break a lesson.
@@ -81,13 +94,19 @@ class WikimediaPhotoSource {
       // Preserve previously attributed imagery during temporary outages, but
       // only for seven days after the last successful provider verification.
       return cached?.verifiedAt > Date.now() - 7 * 86400000 ? cached.photo : null;
-    }).then((photo) => {
+    }).then(async (photo) => {
       if (this.cache.size >= 500) this.cache.delete(this.cache.keys().next().value);
-      this.cache.set(name, {
+      const entry = {
+        schemaVersion: 1,
         photo,
         verifiedAt: failed ? cached?.verifiedAt : Date.now(),
         expires: Date.now() + (failed ? 60000 : photo ? 86400000 : 300000),
-      });
+      };
+      this.cache.set(name, entry);
+      if (this.metadataStore && !failed) {
+        try { await this.metadataStore.set({ key, value: entry }); }
+        catch { /* In-memory result remains usable without persistence. */ }
+      }
       return photo;
     }).finally(() => this.pending.delete(name));
     this.pending.set(name, work);

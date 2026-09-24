@@ -24,6 +24,12 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### Persistent photo metadata
+
+The resolver now uses the existing Strapi core store namespace `core_plantini-photo-metadata-v1_` to retain attributed provider metadata by SHA-256 scientific-name key. Entry schema version 1, freshness deadline and last verification time are retained; incompatible or older-than-seven-day entries are ignored. Reads/writes fail open to the existing bounded memory/provider path, never blocking lessons merely because cache storage fails. This stores public image metadata only, not image bytes or private observations. The existing core-store implementation was inspected locally; no schema migration is needed.
+
+Live evidence: a Rotbuche API request returned an attributed photo; a read-only PostgreSQL count found one namespaced cache row. Platform was restarted without volume changes and the same photo remained available. Focused backend ESLint and diff whitespace checks passed. No new tests written or run. Persistent files, same-origin image delivery and complete catalogue coverage remain open.
+
 ### Provider recovery follow-up
 
 Temporary lookup failures no longer discard a previously verified photo immediately. Cached imagery may bridge an outage for at most seven days since successful metadata verification; retries after transient failures use a one-minute cache rather than pretending the result is a definitive missing-photo lookup. A successful lookup with no acceptable candidate still clears the old candidate. Existing provider Retry-After pauses remain authoritative. The UI now says a suitable photo is currently unavailable rather than incorrectly implying no editor ever supplied one. Persistent cross-restart image storage is still not implemented.
