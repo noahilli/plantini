@@ -72,10 +72,22 @@ class WikimediaPhotoSource {
     if (cached && cached.expires > Date.now()) return cached.photo;
     if (this.pending.has(name)) return this.pending.get(name);
     // Bound concurrent external work; failures must never break a lesson.
-    if (this.pending.size >= 4) return null;
-    const work = this.lookup(name).catch(() => null).then((photo) => {
+    if (this.pending.size >= 4 || providerRetryAt > Date.now()) {
+      return cached?.verifiedAt > Date.now() - 7 * 86400000 ? cached.photo : null;
+    }
+    let failed = false;
+    const work = this.lookup(name).catch(() => {
+      failed = true;
+      // Preserve previously attributed imagery during temporary outages, but
+      // only for seven days after the last successful provider verification.
+      return cached?.verifiedAt > Date.now() - 7 * 86400000 ? cached.photo : null;
+    }).then((photo) => {
       if (this.cache.size >= 500) this.cache.delete(this.cache.keys().next().value);
-      this.cache.set(name, { photo, expires: Date.now() + (photo ? 86400000 : 300000) });
+      this.cache.set(name, {
+        photo,
+        verifiedAt: failed ? cached?.verifiedAt : Date.now(),
+        expires: Date.now() + (failed ? 60000 : photo ? 86400000 : 300000),
+      });
       return photo;
     }).finally(() => this.pending.delete(name));
     this.pending.set(name, work);

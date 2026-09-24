@@ -13,7 +13,7 @@ final class PlantPhotoGallery extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       if (plant.media.isEmpty)
-        _unavailable('Noch kein Pflanzenfoto hinterlegt'),
+        _unavailable('Momentan kein passendes Pflanzenfoto verfügbar'),
       for (final media in plant.media) ...[
         ClipRRect(
           borderRadius: BorderRadius.circular(22),

@@ -24,6 +24,10 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### Provider recovery follow-up
+
+Temporary lookup failures no longer discard a previously verified photo immediately. Cached imagery may bridge an outage for at most seven days since successful metadata verification; retries after transient failures use a one-minute cache rather than pretending the result is a definitive missing-photo lookup. A successful lookup with no acceptable candidate still clears the old candidate. Existing provider Retry-After pauses remain authoritative. The UI now says a suitable photo is currently unavailable rather than incorrectly implying no editor ever supplied one. Persistent cross-restart image storage is still not implemented.
+
 ### MEDIA-10 runtime integration 2026-09-24
 
 - ContentService now requests a supplemental image only when authored published media is empty. Runtime enables the provider by default; `PLATFORM_EXTERNAL_PLANT_PHOTOS=disabled` opts out. No CMS records or immutable release manifests are rewritten.
