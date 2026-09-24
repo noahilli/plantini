@@ -24,6 +24,10 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### MEDIA-10 first slice — authored photos
+
+`PlantPhotoGallery` now renders available plant photos in the pre-quiz notebook alongside the existing facts, with alt text, author and license. Images use contain rather than cropping diagnostic features. Empty/broken media has an explicitly labeled symbolic fallback. `HttpCatalogRepository` resolves root-relative CMS upload URLs against the configured API deployment before caching them. Analyzer passes; live authored-upload acceptance, source links, unified detail gallery and automatic provider resolution remain open. This is not completion of milestone 3.
+
 ### Update 2026-09-24 — milestone 2 implementation
 
 - Home, login and profile now use the bundled scenery/explorer. Quiz questions use high-contrast question cards and lettered answer controls; correctness remains server-authoritative. Completion screen displays the explorer and the existing earned level star.

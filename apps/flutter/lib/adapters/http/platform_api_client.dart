@@ -32,6 +32,10 @@ final class PlatformApiClient {
   final Dio _dio;
   final AccessTokenProvider _accessTokenProvider;
 
+  /// CMS uploads may be root-relative; resolve against this deployment.
+  String resolveContentUrl(String value) =>
+      Uri.parse(_dio.options.baseUrl).resolve(value).toString();
+
   Future<Result<ApiJsonResponse>> getJson(
     String path, {
     Map<String, Object?> queryParameters = const {},

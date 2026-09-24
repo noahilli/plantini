@@ -92,7 +92,21 @@ final class HttpCatalogRepository implements CatalogRepository {
   Future<Result<Plant>> getPublishedPlant(String plantId) async {
     final response = await _client.getJson('plants/$plantId');
     return response.when(
-      success: (value) => CatalogDto.plantFromJson(value.body),
+      success: (value) {
+        final body = Map<String, dynamic>.from(value.body);
+        final media = body['media'];
+        if (media is List) {
+          body['media'] = media.map((item) {
+            if (item is! Map) return item;
+            final entry = Map<String, dynamic>.from(item);
+            if (entry['url'] case final String url) {
+              entry['url'] = _client.resolveContentUrl(url);
+            }
+            return entry;
+          }).toList();
+        }
+        return CatalogDto.plantFromJson(body);
+      },
       failure: Result.failure,
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../catalog/domain/catalog_models.dart';
+import '../../../catalog/presentation/widgets/plant_photo_gallery.dart';
 
 /// A short, readable field notebook shown before a level's three questions.
 final class PlantLessonView extends StatelessWidget {
@@ -186,6 +187,8 @@ final class _PlantNotebookPage extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 18),
+        PlantPhotoGallery(plant: plant),
         if (plant.family.isNotEmpty) ...[
           const SizedBox(height: 16),
           _NotebookFact(label: 'Familie', value: plant.family),
