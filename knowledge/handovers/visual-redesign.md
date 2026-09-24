@@ -24,6 +24,14 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### MEDIA-10 provider adapter — not yet connected
+
+`services/platform/src/api/platform/services/core/content/wikimedia-photo-source.js` implements IPv4-only Wikipedia page-image → exact Wikidata P225 taxon verification → Commons image metadata lookup. Fixed hosts, 2.2s per-request deadlines, 1MiB response ceiling, max four concurrent lookups, bounded positive/negative in-memory cache and request deduplication. Only attributed CC BY / CC BY-SA 2.0/2.5/3.0/4.0 images without listed restrictions are accepted. This does not replace botanical editorial review.
+
+Live evidence 2026-09-24: Fagus sylvatica resolved to GooseCanada, CC BY-SA 4.0, Commons File:Fagus-sylvatica-cansiglio-forest-italy.jpg. Commons now returns `thumb.wikimedia.org` thumbnails; the exact-host allowlist includes this host plus `upload.wikimedia.org`. Bellis perennis and Leontopodium alpinum did not yield accepted photos in the first smoke. Node syntax and focused ESLint pass; no tests added.
+
+Still required before wiring: preserve source/license URL and automatic-origin metadata in public DTO, web/native caches and UI; prefer authored media; expose provider unavailability honestly; verify several taxa and actual image downloads; integrate into content service without mutating published releases. Adapter is deliberately not wired into runtime yet, so no automatic photos appear in the running app from this commit.
+
 ### MEDIA-10 first slice — authored photos
 
 `PlantPhotoGallery` now renders available plant photos in the pre-quiz notebook alongside the existing facts, with alt text, author and license. Images use contain rather than cropping diagnostic features. Empty/broken media has an explicitly labeled symbolic fallback. `HttpCatalogRepository` resolves root-relative CMS upload URLs against the configured API deployment before caching them. Analyzer passes; live authored-upload acceptance, source links, unified detail gallery and automatic provider resolution remain open. This is not completion of milestone 3.
