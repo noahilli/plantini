@@ -398,7 +398,10 @@ final class ContentSyncService {
             ..url = mediaMap['url'] as String? ?? ''
             ..altText = mediaMap['altText'] as String? ?? ''
             ..license = mediaMap['license'] as String? ?? 'CC-BY-4.0'
-            ..author = mediaMap['author'] as String?;
+            ..author = mediaMap['author'] as String?
+            ..source = mediaMap['source'] as String?
+            ..licenseUrl = mediaMap['licenseUrl'] as String?
+            ..automatic = mediaMap['automatic'] == true;
         })
         .toList(growable: false);
 

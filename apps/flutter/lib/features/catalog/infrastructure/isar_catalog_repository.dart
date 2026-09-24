@@ -118,6 +118,9 @@ class IsarCatalogRepository implements CatalogRepository {
                     altText: item.altText,
                     license: item.license,
                     author: item.author,
+                    source: item.source,
+                    licenseUrl: item.licenseUrl,
+                    automatic: item.automatic,
                   ),
                 )
                 .toList(growable: false),

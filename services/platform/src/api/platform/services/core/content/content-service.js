@@ -7,6 +7,7 @@ const { pageFromQuery } = require('../validation');
 class ContentService {
   constructor(options) {
     this.repository = options.repository;
+    this.photoSource = options.photoSource;
   }
 
   async getManifest(ifNoneMatch) {
@@ -59,7 +60,14 @@ class ContentService {
     requireUuid(plantId, 'plantId');
     const plant = await this.repository.findPublishedPlant(plantId);
     if (!plant) throw notFound('PLANT_NOT_FOUND');
-    return mapPlant(plant);
+    const result = mapPlant(plant);
+    // External imagery is supplemental: do not mutate a published CMS release.
+    // Authored media always wins, even when the provider has a cached image.
+    if (result.media.length === 0 && this.photoSource) {
+      const photo = await this.photoSource.find(plant.scientificName);
+      if (photo) result.media = [photo];
+    }
+    return result;
   }
 
   async listQuizItems(actor, levelId, contentVersion) {
@@ -140,6 +148,7 @@ function mapPlant(plant) {
         altText: media.altText,
         license: media.license,
         author: media.author,
+        ...(media.source ? { source: media.source } : {}),
       };
     }),
     releaseVersion: plant.releaseVersion,

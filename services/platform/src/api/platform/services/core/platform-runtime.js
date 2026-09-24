@@ -3,6 +3,7 @@
 const { ActorService } = require('./auth/actor-service');
 const { KeycloakJwtValidator, authenticationError } = require('./auth/jwt-validator');
 const { ContentService } = require('./content/content-service');
+const { WikimediaPhotoSource } = require('./content/wikimedia-photo-source');
 const { FieldService } = require('./field/field-service');
 const { HerbariumService } = require('./herbarium/herbarium-service');
 const { LearningService } = require('./learning/learning-service');
@@ -33,7 +34,11 @@ function getPlatformRuntime(strapi) {
     validator,
     actorService,
     profile: new ProfileService({ actorService }),
-    content: new ContentService({ repository: repositories.content }),
+    content: new ContentService({
+      repository: repositories.content,
+      photoSource: process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS === 'disabled'
+        ? undefined : new WikimediaPhotoSource(),
+    }),
     learning: new LearningService({
       repository: repositories.learning,
       herbariumRepository: repositories.herbarium,

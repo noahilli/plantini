@@ -243,6 +243,9 @@ final class CatalogDto {
             altText: altText,
             license: license,
             author: _optionalString(media, 'author'),
+            source: _optionalString(media, 'source'),
+            licenseUrl: _optionalString(media, 'licenseUrl'),
+            automatic: media['automatic'] == true,
           );
         })
         .toList(growable: false);

@@ -2,10 +2,12 @@
 
 const https = require('node:https');
 const { createHash } = require('node:crypto');
+let providerRetryAt = 0;
 
 // These hosts are fixed: neither CMS input nor provider responses can choose
 // the destination of backend requests. All requests explicitly use IPv4.
 function query(host, parameters) {
+  if (providerRetryAt > Date.now()) return Promise.reject(new Error('PHOTO_SOURCE_COOLDOWN'));
   const url = new URL(`https://${host}/w/api.php`);
   url.search = new URLSearchParams({ format: 'json', ...parameters }).toString();
   return new Promise((resolve, reject) => {
@@ -14,8 +16,14 @@ function query(host, parameters) {
       headers: { 'User-Agent': 'Plantini/0.1 (botanical learning photo lookup)', Accept: 'application/json' },
     }, (response) => {
       if (response.statusCode !== 200) {
+        if (response.statusCode === 429 || response.statusCode === 503) {
+          const raw = response.headers['retry-after'];
+          const seconds = Number(raw);
+          const delay = Number.isFinite(seconds) ? seconds * 1000 : Date.parse(raw) - Date.now();
+          providerRetryAt = Date.now() + Math.max(60000, Number.isFinite(delay) ? delay : 60000);
+        }
         response.resume();
-        reject(new Error('PHOTO_SOURCE_UNAVAILABLE'));
+        reject(new Error(`PHOTO_SOURCE_HTTP_${response.statusCode}`));
         return;
       }
       const chunks = [];

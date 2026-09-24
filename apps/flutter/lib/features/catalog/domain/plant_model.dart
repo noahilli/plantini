@@ -45,6 +45,9 @@ final class PlantMedia {
     required this.altText,
     required this.license,
     this.author,
+    this.source,
+    this.licenseUrl,
+    this.automatic = false,
   });
 
   final String id;
@@ -53,4 +56,7 @@ final class PlantMedia {
   final String altText;
   final String license;
   final String? author;
+  final String? source;
+  final String? licenseUrl;
+  final bool automatic;
 }

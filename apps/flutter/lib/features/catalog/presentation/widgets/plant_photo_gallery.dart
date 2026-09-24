@@ -33,6 +33,11 @@ final class PlantPhotoGallery extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+        if (media.automatic)
+          const Text(
+            'Automatisch zugeordnet · botanisch nicht redaktionell geprüft',
+            style: TextStyle(fontSize: 12),
+          ),
         Text(media.altText, style: Theme.of(context).textTheme.bodySmall),
         SelectableText(
           [
@@ -42,6 +47,16 @@ final class PlantPhotoGallery extends StatelessWidget {
           style: Theme.of(context).textTheme.bodySmall
               ?.copyWith(color: AppColors.neutral700),
         ),
+        if (media.source?.isNotEmpty == true)
+          SelectableText(
+            'Bildquelle: ${media.source}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        if (media.licenseUrl?.isNotEmpty == true)
+          SelectableText(
+            'Lizenz: ${media.licenseUrl}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         const SizedBox(height: 16),
       ],
     ],

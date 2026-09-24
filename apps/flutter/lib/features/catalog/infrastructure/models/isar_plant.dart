@@ -41,4 +41,7 @@ class IsarPlantMedia {
   late String altText;
   late String license;
   String? author;
+  String? source;
+  String? licenseUrl;
+  bool automatic = false;
 }

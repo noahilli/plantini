@@ -195,6 +195,9 @@ Map<String, Object?> _plantToJson(Plant value) => {
           'altText': media.altText,
           'license': media.license,
           'author': media.author,
+          'source': media.source,
+          'licenseUrl': media.licenseUrl,
+          'automatic': media.automatic,
         },
       )
       .toList(growable: false),
@@ -267,6 +270,9 @@ List<PlantMedia> _media(Object? value) {
           altText: _string(media, 'altText'),
           license: _string(media, 'license'),
           author: media['author'] as String?,
+          source: media['source'] as String?,
+          licenseUrl: media['licenseUrl'] as String?,
+          automatic: media['automatic'] == true,
         );
       })
       .toList(growable: false);

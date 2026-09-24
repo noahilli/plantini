@@ -3042,6 +3042,9 @@ final IsarPlantMediaSchema = IsarGeneratedSchema(
       IsarPropertySchema(name: 'altText', type: IsarType.string),
       IsarPropertySchema(name: 'license', type: IsarType.string),
       IsarPropertySchema(name: 'author', type: IsarType.string),
+      IsarPropertySchema(name: 'source', type: IsarType.string),
+      IsarPropertySchema(name: 'licenseUrl', type: IsarType.string),
+      IsarPropertySchema(name: 'automatic', type: IsarType.bool),
     ],
     indexes: [],
   ),
@@ -3066,6 +3069,23 @@ int serializeIsarPlantMedia(IsarWriter writer, IsarPlantMedia object) {
       IsarCore.writeString(writer, 6, value);
     }
   }
+  {
+    final value = object.source;
+    if (value == null) {
+      IsarCore.writeNull(writer, 7);
+    } else {
+      IsarCore.writeString(writer, 7, value);
+    }
+  }
+  {
+    final value = object.licenseUrl;
+    if (value == null) {
+      IsarCore.writeNull(writer, 8);
+    } else {
+      IsarCore.writeString(writer, 8, value);
+    }
+  }
+  IsarCore.writeBool(writer, 9, value: object.automatic);
   return 0;
 }
 
@@ -3078,6 +3098,9 @@ IsarPlantMedia deserializeIsarPlantMedia(IsarReader reader) {
   object.altText = IsarCore.readString(reader, 4) ?? '';
   object.license = IsarCore.readString(reader, 5) ?? '';
   object.author = IsarCore.readString(reader, 6);
+  object.source = IsarCore.readString(reader, 7);
+  object.licenseUrl = IsarCore.readString(reader, 8);
+  object.automatic = IsarCore.readBool(reader, 9);
   return object;
 }
 
@@ -3939,6 +3962,325 @@ extension IsarPlantMediaQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(property: 6, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 7));
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 7));
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 7, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceGreaterThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceLessThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 7, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceLessThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceBetween(String? lower, String? upper, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 7,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 7,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 7,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 7, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  sourceIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 7, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 8, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlGreaterThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlLessThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 8, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlLessThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlBetween(String? lower, String? upper, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 8,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 8,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 8, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  licenseUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 8, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarPlantMedia, IsarPlantMedia, QAfterFilterCondition>
+  automaticEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(property: 9, value: value),
       );
     });
   }

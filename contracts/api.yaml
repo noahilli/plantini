@@ -639,7 +639,15 @@ components:
     PublicMedia:
       type: object
       required: [id, url, altText, license, author]
-      properties: {id: {$ref: '#/components/schemas/Id'}, url: {type: string, format: uri}, altText: {type: string}, license: {type: string}, author: {type: string}}
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        url: {type: string, format: uri}
+        altText: {type: string}
+        license: {type: string}
+        author: {type: string}
+        source: {type: string, format: uri, description: Original image description and attribution page}
+        licenseUrl: {type: string, format: uri}
+        automatic: {type: boolean, default: false, description: Supplemental provider image not editorially reviewed or part of the immutable release}
     QuizItem:
       type: object
       required: [id, levelId, type, contentVersion, prompt]

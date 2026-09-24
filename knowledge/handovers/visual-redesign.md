@@ -24,6 +24,14 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### MEDIA-10 runtime integration 2026-09-24
+
+- ContentService now requests a supplemental image only when authored published media is empty. Runtime enables the provider by default; `PLATFORM_EXTERNAL_PLANT_PHOTOS=disabled` opts out. No CMS records or immutable release manifests are rewritten.
+- PublicMedia contract, Flutter DTO/model, preferences cache and additive Isar embedded fields retain source, license URL and automatic-origin flag. Shared gallery appears in both pre-quiz lesson and detail profile with facts, attribution and explicit unreviewed-image label.
+- Metadata caching does not guarantee downloaded photo files offline. External image requests expose client IP to Wikimedia; a same-origin image proxy/persistent licensed-image cache remains open.
+- Final Flutter analyzer and Linux release build passed; focused backend ESLint passed. API restart preserved volumes. IPv4 live Plant API for Rotbuche returned 200 and a licensed attributed photo. Alpine Edelweiss and meadow sage returned 200 without photos; direct diagnosis found provider HTTP 429, not missing profile content. Added shared Retry-After cooldown for 429/503. Whole-dataset imagery coverage is NOT proven.
+- Linux app restarted with the new gallery on DISPLAY=:0; startup log shows no database failure. Interactive authenticated visual acceptance still pending. No new tests or test runs.
+
 ### MEDIA-10 provider adapter — not yet connected
 
 `services/platform/src/api/platform/services/core/content/wikimedia-photo-source.js` implements IPv4-only Wikipedia page-image → exact Wikidata P225 taxon verification → Commons image metadata lookup. Fixed hosts, 2.2s per-request deadlines, 1MiB response ceiling, max four concurrent lookups, bounded positive/negative in-memory cache and request deduplication. Only attributed CC BY / CC BY-SA 2.0/2.5/3.0/4.0 images without listed restrictions are accepted. This does not replace botanical editorial review.
