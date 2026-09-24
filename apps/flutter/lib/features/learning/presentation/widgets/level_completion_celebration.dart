@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../design_system/world_art.dart';
 import '../../../catalog/domain/catalog_models.dart';
 import '../../domain/learning_models.dart';
 
@@ -35,13 +36,43 @@ final class LevelCompletionCelebration extends StatelessWidget {
             key: ValueKey('learning-earned-star-${level.id}'),
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: AppColors.sage200,
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.sage200,
+                  AppColors.neutral100,
+                  AppColors.accent200,
+                ],
+              ),
               borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: AppColors.accent300),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.accent700.withValues(alpha: .12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-            child: const Column(
+            child: Column(
               children: [
-                Icon(Icons.star_rounded, size: 80, color: AppColors.accent700),
-                Text(
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(
+                      Icons.star_rounded,
+                      size: 180,
+                      color: AppColors.accent300,
+                    ),
+                    Image.asset(
+                      WorldArt.explorer,
+                      height: 160,
+                      excludeFromSemantics: true,
+                    ),
+                  ],
+                ),
+                const Text(
                   'Dein Levelstern',
                   style: TextStyle(color: AppColors.sage800),
                 ),

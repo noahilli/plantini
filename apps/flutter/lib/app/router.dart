@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../auth/auth_service.dart';
 import '../core/theme/app_colors.dart';
+import '../design_system/world_art.dart';
 import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
@@ -249,15 +250,16 @@ final class ProfileScreen extends StatelessWidget {
                       color: AppColors.sage800,
                       borderRadius: BorderRadius.circular(28),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 26,
-                          backgroundColor: AppColors.sage300,
-                          child: Icon(Icons.person, color: AppColors.sage800),
+                        Image.asset(
+                          WorldArt.explorer,
+                          width: 80,
+                          height: 96,
+                          excludeFromSemantics: true,
                         ),
-                        SizedBox(width: 14),
-                        Expanded(
+                        const SizedBox(width: 14),
+                        const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -389,10 +391,14 @@ final class LoginScreen extends StatelessWidget {
               children: [
                 Align(
                   child: Container(
-                    width: 88,
-                    height: 88,
+                    width: 260,
+                    height: 230,
                     decoration: const BoxDecoration(
                       color: AppColors.sage800,
+                      image: DecorationImage(
+                        image: AssetImage(WorldArt.forest),
+                        fit: BoxFit.cover,
+                      ),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(38),
                         topRight: Radius.circular(38),
@@ -400,10 +406,13 @@ final class LoginScreen extends StatelessWidget {
                         bottomLeft: Radius.circular(12),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.eco_rounded,
-                      color: AppColors.sage200,
-                      size: 44,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        WorldArt.explorer,
+                        height: 180,
+                        excludeFromSemantics: true,
+                      ),
                     ),
                   ),
                 ),

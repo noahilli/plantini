@@ -253,90 +253,132 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Custom Header matching 1p
             Padding(
-              padding: const EdgeInsets.fromLTRB(22, 10, 22, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'MEIN HERBARIUM',
-                        style: AppTypography.textTheme.labelSmall?.copyWith(
-                          color: AppColors.sage700,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.3,
+              padding: const EdgeInsets.fromLTRB(22, 12, 22, 14),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(18, 16, 10, 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.sage800, AppColors.sage700],
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x263D472B),
+                      blurRadius: 18,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: AppColors.sage300.withOpacity(.18),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.sage300.withOpacity(.38),
                         ),
                       ),
-                      IconButton(
-                        key: const ValueKey('herbarium-sync-button'),
-                        tooltip: 'Synchronisieren',
-                        onPressed: _isSyncing ? null : _handleSync,
-                        icon: _isSyncing
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.sage700,
+                      child: const Icon(
+                        Icons.local_florist_rounded,
+                        color: AppColors.sage100,
+                        size: 25,
+                      ),
+                    ),
+                    const SizedBox(width: 13),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'PERSÖNLICHE SAMMLUNG',
+                            style: AppTypography.textTheme.labelSmall?.copyWith(
+                              color: AppColors.sage200,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          RichText(
+                            text: TextSpan(
+                              style: AppTypography.textTheme.titleMedium
+                                  ?.copyWith(color: AppColors.neutral100),
+                              children: [
+                                TextSpan(
+                                  text: '${_allEntries.length} ',
+                                  style: AppTypography.textTheme.headlineMedium
+                                      ?.copyWith(
+                                        color: AppColors.neutral100,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                 ),
-                              )
-                            : const Icon(
-                                Icons.sync,
-                                color: AppColors.sage700,
-                                size: 20,
+                                const TextSpan(text: 'Funde bewahrt'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      key: const ValueKey('herbarium-sync-button'),
+                      tooltip: 'Synchronisieren',
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.neutral100.withOpacity(.12),
+                        foregroundColor: AppColors.neutral100,
+                      ),
+                      onPressed: _isSyncing ? null : _handleSync,
+                      icon: _isSyncing
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.neutral100,
                               ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Text(
-                        '${_allEntries.length}',
-                        style: AppTypography.textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 34,
-                          color: AppColors.ink,
-                        ),
-                      ),
-                      const SizedBox(width: 9),
-                      Text(
-                        'Funde',
-                        style: AppTypography.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          color: AppColors.neutral600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                            )
+                          : const Icon(Icons.sync_rounded, size: 20),
+                    ),
+                  ],
+                ),
               ),
             ),
 
             if (_hasCatalog)
               Padding(
                 padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                child: Row(
                   children: [
-                    ChoiceChip(
-                      key: const ValueKey('herbarium-tab-collection'),
-                      label: const Text('Sammlung'),
-                      selected: _showCollection,
-                      onSelected: (_) => setState(() => _showCollection = true),
+                    Expanded(
+                      child: ChoiceChip(
+                        key: const ValueKey('herbarium-tab-collection'),
+                        label: const Text('Sammlung'),
+                        selected: _showCollection,
+                        onSelected: (_) =>
+                            setState(() => _showCollection = true),
+                        showCheckmark: false,
+                        labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                    ChoiceChip(
-                      key: const ValueKey('herbarium-tab-observations'),
-                      label: const Text('Beobachtungen'),
-                      selected: !_showCollection,
-                      onSelected: (_) =>
-                          setState(() => _showCollection = false),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ChoiceChip(
+                        key: const ValueKey('herbarium-tab-observations'),
+                        label: const Text('Beobachtungen'),
+                        selected: !_showCollection,
+                        onSelected: (_) =>
+                            setState(() => _showCollection = false),
+                        showCheckmark: false,
+                        labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ],
                 ),

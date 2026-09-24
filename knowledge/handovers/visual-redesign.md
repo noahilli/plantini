@@ -24,7 +24,17 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
-- Modernize remaining pages and quizzes; rebuild and restart Linux app.
+### Update 2026-09-24 — milestone 2 implementation
+
+- Home, login and profile now use the bundled scenery/explorer. Quiz questions use high-contrast question cards and lettered answer controls; correctness remains server-authoritative. Completion screen displays the explorer and the existing earned level star.
+- Herbarium header and detail presentation updated; missing/broken observation photos have an explicit fallback. Raw identifiers and exact coordinates are no longer presented in the detail summary; private stored data is unchanged.
+- Field capture has an expedition-style header; capture, confirmation and consent behavior are unchanged.
+- Interrupted helper-agent edits were inspected and completed by the parent (duplicate argument, missing photo widget and unfinished list syntax corrected).
+- Final `flutter analyze --no-pub lib`, `git diff --check` and Linux release build succeeded including field-header polish. Linux app started again on DISPLAY=:0 on 2026-09-24. No tests added or run. Full interactive visual/accessibility acceptance is still open, not implied by compilation.
+- Photo lookup research: MediaWiki PageImages and Imageinfo APIs provide candidate filenames and image-specific attribution/license metadata. An IPv4 query for Fagus sylvatica returned a page image. No automatic lookup is implemented yet; taxon validation, license allowlist, source links, timeout/cache, authored-photo precedence and offline behavior remain required.
+
+References: https://www.mediawiki.org/wiki/Extension:PageImages and https://www.mediawiki.org/wiki/API:Imageinfo
+
+- Review the implemented pages in the running app, especially narrow windows and large text.
 - Authored plant photos first, automatic licensed external-photo lookup second; attractive image-and-facts cards with attribution and honest unavailable states.
 - No new tests requested. Preserve existing unrelated WIP tests.
-

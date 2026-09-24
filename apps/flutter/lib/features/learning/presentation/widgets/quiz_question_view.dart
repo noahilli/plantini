@@ -41,9 +41,39 @@ final class QuizQuestionView extends StatelessWidget {
         key: ValueKey('question-page-${question.id}'),
         padding: const EdgeInsets.all(22),
         children: [
-          Text(
-            'Frage ${session.currentQuestionIndex + 1} von ${session.quizItems.length}',
-            style: Theme.of(context).textTheme.labelLarge,
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.sage800,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.explore_rounded,
+                  color: AppColors.neutral100,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'WISSENSPFAD',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        letterSpacing: 2,
+                        color: AppColors.sage700,
+                      ),
+                    ),
+                    Text(
+                      'Frage ${session.currentQuestionIndex + 1} von ${session.quizItems.length}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           LinearProgressIndicator(
@@ -71,10 +101,29 @@ final class QuizQuestionView extends StatelessWidget {
           const SizedBox(height: 24),
           Semantics(
             header: true,
-            child: Text(
-              question.prompt,
-              key: const ValueKey('quiz-question'),
-              style: Theme.of(context).textTheme.headlineMedium,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.sage800, AppColors.sage900],
+                ),
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.sage900.withValues(alpha: .14),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Text(
+                question.prompt,
+                key: const ValueKey('quiz-question'),
+                style: Theme.of(context).textTheme.headlineMedium
+                    ?.copyWith(color: AppColors.neutral100, height: 1.3),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -104,10 +153,30 @@ final class QuizQuestionView extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      answer?.choiceId == choice.id
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_off,
+                    AnimatedContainer(
+                      duration: MediaQuery.disableAnimationsOf(context)
+                          ? Duration.zero
+                          : const Duration(milliseconds: 180),
+                      width: 36,
+                      height: 36,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: answer?.choiceId == choice.id
+                            ? AppColors.sage800
+                            : AppColors.bg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        String.fromCharCode(
+                          65 + question.choices.indexOf(choice),
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: answer?.choiceId == choice.id
+                              ? AppColors.neutral100
+                              : AppColors.sage800,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(child: Text(choice.label)),

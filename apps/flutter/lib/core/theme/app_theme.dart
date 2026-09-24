@@ -38,17 +38,20 @@ abstract final class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.bg,
+        color: AppColors.neutral100,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+          side: BorderSide(color: AppColors.sage300.withValues(alpha: .5)),
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.terracotta,
           foregroundColor: AppColors.bg,
-          minimumSize: const Size(48, 48),
+          minimumSize: const Size(52, 52),
           shape: const StadiumBorder(),
           textStyle: const TextStyle(
             fontFamily: AppTypography.headingFamily,
@@ -97,7 +100,7 @@ abstract final class AppTheme {
         height: 74,
         backgroundColor: AppColors.neutral100,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: AppColors.accent200,
+        indicatorColor: AppColors.sage200,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontFamily: AppTypography.bodyFamily,

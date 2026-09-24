@@ -5,6 +5,7 @@ import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
+import '../../../design_system/world_art.dart';
 import '../domain/catalog_models.dart';
 
 /// A station preview; the playable route begins with the plant introduction.
@@ -108,13 +109,17 @@ final class _LevelOverviewScreenState extends State<LevelOverviewScreen> {
                         borderRadius: BorderRadius.circular(32),
                         border: Border.all(color: AppColors.sage400, width: 3),
                       ),
-                      child: Icon(
-                        complete ? Icons.star_rounded : Icons.eco_rounded,
-                        size: 58,
-                        color: complete
-                            ? AppColors.accent800
-                            : AppColors.sage200,
-                      ),
+                      child: complete
+                          ? const Icon(
+                              Icons.star_rounded,
+                              size: 58,
+                              color: AppColors.accent800,
+                            )
+                          : Image.asset(
+                              WorldArt.explorer,
+                              height: 96,
+                              excludeFromSemantics: true,
+                            ),
                     ),
                     const SizedBox(height: 20),
                     Text(

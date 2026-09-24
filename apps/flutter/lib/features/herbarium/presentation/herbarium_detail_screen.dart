@@ -5,6 +5,46 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../domain/herbarium_models.dart';
 
+final class _ObservationHero extends StatelessWidget {
+  const _ObservationHero({required this.entry});
+  final HerbariumEntry entry;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(28),
+    child: SizedBox(
+      height: 250,
+      child: entry.mediaUrl?.isNotEmpty == true
+          ? Image.network(
+              entry.mediaUrl!,
+              fit: BoxFit.cover,
+              semanticLabel: 'Fundfoto: ${entry.displayTitle}',
+              errorBuilder: (_, _, _) =>
+                  _placeholder('Fundfoto nicht verfügbar'),
+            )
+          : _placeholder('Noch kein Fundfoto'),
+    ),
+  );
+
+  Widget _placeholder(String label) => ColoredBox(
+    color: AppColors.sage200,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.local_florist_outlined,
+            size: 64,
+            color: AppColors.sage700,
+          ),
+          const SizedBox(height: 12),
+          Text(label),
+        ],
+      ),
+    ),
+  );
+}
+
 /// Screen presenting the detailed observation record from the digital herbarium.
 class HerbariumDetailScreen extends StatefulWidget {
   const HerbariumDetailScreen({
@@ -119,9 +159,8 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Custom App Bar
             Padding(
-              padding: const EdgeInsets.fromLTRB(22, 6, 22, 8),
+              padding: const EdgeInsets.fromLTRB(22, 10, 22, 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -129,24 +168,26 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                     onTap: () => Navigator.of(context).pop(),
                     borderRadius: BorderRadius.circular(999),
                     child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: const BoxDecoration(
-                        color: AppColors.bg,
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
                         shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.line),
                       ),
                       child: const Icon(
                         Icons.arrow_back,
-                        size: 16,
+                        size: 19,
                         color: AppColors.ink,
                       ),
                     ),
                   ),
                   Text(
-                    'Fund-Detail',
-                    style: AppTypography.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.ink,
+                    'HERBARIUM',
+                    style: AppTypography.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      color: AppColors.sage700,
                     ),
                   ),
                   if (widget.onDelete != null)
@@ -155,21 +196,22 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                       onTap: () => _confirmDelete(context),
                       borderRadius: BorderRadius.circular(999),
                       child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: const BoxDecoration(
-                          color: AppColors.bg,
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
                           shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.line),
                         ),
                         child: const Icon(
                           Icons.delete_outline,
-                          size: 16,
+                          size: 19,
                           color: AppColors.danger,
                         ),
                       ),
                     )
                   else
-                    const SizedBox(width: 32),
+                    const SizedBox(width: 40),
                 ],
               ),
             ),
@@ -181,74 +223,15 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 12),
-                    // Large Hero Image with Status Pill
-                    Container(
-                      height: 186,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(26),
-                        color: AppColors.beige,
-                        image:
-                            entry.mediaUrl != null && entry.mediaUrl!.isNotEmpty
-                            ? DecorationImage(
-                                image: NetworkImage(entry.mediaUrl!),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      alignment: Alignment.topRight,
-                      padding: const EdgeInsets.all(12),
-                      child: entry.mediaUrl == null || entry.mediaUrl!.isEmpty
-                          ? const Center(
-                              child: Icon(
-                                Icons.eco_rounded,
-                                size: 48,
-                                color: AppColors.sage,
-                              ),
-                            )
-                          : Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 11,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.neutral100,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 7,
-                                    height: 7,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.sage600,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    entry.syncStatus == SyncStatus.synced
-                                        ? 'synchronisiert'
-                                        : 'lokal',
-                                    style: AppTypography.textTheme.labelSmall
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10.5,
-                                          color: AppColors.sage800,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                    ),
-                    const SizedBox(height: 12),
+                    _ObservationHero(entry: entry),
+                    const SizedBox(height: 18),
 
                     // Title Area
                     Text(
                       entry.displayTitle,
                       style: AppTypography.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 28,
                         color: AppColors.ink,
                       ),
                     ),
@@ -263,7 +246,7 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
 
                     // Sync status banner (existing)
                     _SyncStatusBanner(entry: entry),
@@ -275,7 +258,6 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                       const SizedBox(height: 20),
                     ],
 
-                    // Notes section
                     _SectionHeader(
                       icon: Icons.edit_note_rounded,
                       title: 'Notizen & Feldeindrücke',
@@ -310,7 +292,6 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Funddetails / Metadata
                     _SectionHeader(
                       icon: Icons.info_outline_rounded,
                       title: 'Fundinformationen',
@@ -326,23 +307,9 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                       _MetadataTile(
                         icon: Icons.location_on_outlined,
                         label: 'Fundort',
-                        value: '${entry.latitude}, ${entry.longitude}',
+                        value: 'Privat gespeichert',
                       ),
                     ],
-                    if (entry.confirmedPlantId != null) ...[
-                      const SizedBox(height: 8),
-                      _MetadataTile(
-                        icon: Icons.eco_outlined,
-                        label: 'Bestätigte Pflanzen-ID',
-                        value: entry.confirmedPlantId!,
-                      ),
-                    ],
-                    const SizedBox(height: 8),
-                    _MetadataTile(
-                      icon: Icons.tag_rounded,
-                      label: 'Eintrags-ID',
-                      value: entry.id,
-                    ),
                     const SizedBox(height: 32),
                   ],
                 ),

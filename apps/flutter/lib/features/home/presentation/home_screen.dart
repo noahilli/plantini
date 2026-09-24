@@ -5,6 +5,7 @@ import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
+import '../../../design_system/world_art.dart';
 import '../../catalog/domain/catalog_models.dart';
 
 final class HomeScreen extends StatefulWidget {
@@ -112,10 +113,23 @@ final class _HomeContent extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.sage800,
               borderRadius: BorderRadius.circular(30),
+              image: DecorationImage(
+                image: AssetImage(WorldArt.forSlug(ecosystems.first.slug)),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  AppColors.sage900.withValues(alpha: .72),
+                  BlendMode.srcATop,
+                ),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Image.asset(
+                  WorldArt.explorer,
+                  height: 100,
+                  excludeFromSemantics: true,
+                ),
                 Text(
                   'DEINE SPIELWELT',
                   style: Theme.of(context).textTheme.labelSmall
@@ -206,17 +220,22 @@ final class _HomeContent extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   onTap: () => context.go('/ecosystems/${ecosystem.id}'),
-                  child: Padding(
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(WorldArt.forSlug(ecosystem.slug)),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.sage900.withValues(alpha: .55),
+                          BlendMode.srcATop,
+                        ),
+                      ),
+                    ),
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.park_outlined,
-                          color: index == 0
-                              ? AppColors.neutral100
-                              : AppColors.sage700,
-                        ),
+                        Icon(Icons.park_outlined, color: AppColors.neutral100),
                         const Spacer(),
                         Text(
                           ecosystem.title,
@@ -224,9 +243,7 @@ final class _HomeContent extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            color: index == 0
-                                ? AppColors.neutral100
-                                : AppColors.ink,
+                            color: AppColors.neutral100,
                           ),
                         ),
                       ],

@@ -591,10 +591,37 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 22),
                 children: [
-                  Text(
-                    'Finde und bestimme\neine Pflanze',
-                    style: AppTypography.textTheme.headlineMedium?.copyWith(
-                      fontSize: 29,
+                  Container(
+                    padding: const EdgeInsets.all(22),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [AppColors.sage800, AppColors.sage700],
+                      ),
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.explore_rounded,
+                          size: 36,
+                          color: AppColors.accent300,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Finde und bestimme\neine Pflanze',
+                          style: AppTypography.textTheme.headlineMedium
+                              ?.copyWith(
+                                fontSize: 29,
+                                color: AppColors.neutral100,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Dein nächster Fund wartet draußen.',
+                          style: TextStyle(color: AppColors.sage200),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),
