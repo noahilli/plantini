@@ -138,6 +138,22 @@ paths:
       responses:
         '200': {description: Published plant profile, content: {application/json: {schema: {$ref: '#/components/schemas/Plant'}}}}
         '404': {$ref: '#/components/responses/NotFound'}
+  /plants/{plantId}/photo:
+    get:
+      summary: Read the attributed supplemental photo for a published plant
+      tags: [Content]
+      operationId: getPlantPhoto
+      security: []
+      parameters: [{$ref: '#/components/parameters/PlantId'}]
+      responses:
+        '200':
+          description: Same-origin cached image. Attribution and license are in the plant profile.
+          content:
+            image/jpeg: {schema: {type: string, format: binary}}
+            image/png: {schema: {type: string, format: binary}}
+            image/webp: {schema: {type: string, format: binary}}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '503': {description: Image provider or cache temporarily unavailable}
   /quiz-items:
     get:
       summary: List quiz items for a level and content version

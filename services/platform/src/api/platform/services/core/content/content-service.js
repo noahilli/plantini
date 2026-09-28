@@ -8,6 +8,7 @@ class ContentService {
   constructor(options) {
     this.repository = options.repository;
     this.photoSource = options.photoSource;
+    this.photoCache = options.photoCache;
   }
 
   async getManifest(ifNoneMatch) {
@@ -65,9 +66,22 @@ class ContentService {
     // Authored media always wins, even when the provider has a cached image.
     if (result.media.length === 0 && this.photoSource) {
       const photo = await this.photoSource.find(plant.scientificName);
-      if (photo) result.media = [photo];
+      if (photo) result.media = [{ ...photo,
+        url: this.photoCache ? `/api/v1/plants/${plantId}/photo` : photo.url,
+      }];
     }
     return result;
+  }
+
+  async getPlantPhoto(plantId) {
+    requireUuid(plantId, 'plantId');
+    const plant = await this.repository.findPublishedPlant(plantId);
+    if (!plant) throw notFound('PLANT_NOT_FOUND');
+    if (!this.photoSource || !this.photoCache || mapPlant(plant).media.length) throw notFound('PHOTO_NOT_FOUND');
+    const photo = await this.photoSource.find(plant.scientificName);
+    if (!photo) throw notFound('PHOTO_NOT_FOUND');
+    try { return await this.photoCache.get(photo.url); }
+    catch { throw new ProblemError('PHOTO_UNAVAILABLE', { status: 503, detail: 'Das Pflanzenfoto ist momentan nicht verfügbar.' }); }
   }
 
   async listQuizItems(actor, levelId, contentVersion) {

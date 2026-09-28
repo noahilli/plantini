@@ -66,6 +66,18 @@ module.exports = {
     return execute(ctx, async (runtime) => runtime.content.getPlant(ctx.params.plantId));
   },
 
+  async getPlantPhoto(ctx) {
+    return execute(ctx, async (runtime) => {
+      rejectUnknownQuery(ctx.query, []);
+      const photo = await runtime.content.getPlantPhoto(ctx.params.plantId);
+      ctx.set('Cache-Control', 'public, max-age=3600');
+      ctx.set('X-Content-Type-Options', 'nosniff');
+      ctx.type = photo.type;
+      ctx.body = photo.bytes;
+      return undefined;
+    });
+  },
+
   async listQuizItems(ctx) {
     return withActor(ctx, (runtime, actor) => {
       rejectUnknownQuery(ctx.query, ['levelId', 'contentVersion']);

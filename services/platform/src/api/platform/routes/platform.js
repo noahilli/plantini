@@ -23,6 +23,7 @@ module.exports = {
     route('GET', '/v1/ecosystems/:ecosystemId/progress', 'getEcosystemProgress'),
     route('GET', '/v1/levels/:levelId', 'getLevel'),
     route('GET', '/v1/plants/:plantId', 'getPlant'),
+    route('GET', '/v1/plants/:plantId/photo', 'getPlantPhoto'),
     route('GET', '/v1/quiz-items', 'listQuizItems'),
     route('POST', '/v1/level-attempts', 'startLevelAttempt'),
     route('POST', '/v1/level-attempts/:attemptId/complete', 'completeLevelAttempt'),

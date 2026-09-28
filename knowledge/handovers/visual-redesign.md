@@ -24,6 +24,14 @@ Use case: stylized-concept. Asset type: transparent-background game player chara
 
 ## Remaining milestones
 
+### 2026-09-28 — same-origin image delivery and persistent file cache
+
+Resumed from the uncommitted proxy work; the local E2E containers were all stopped. Started the existing Compose stack with the authoring source overlay, `--no-build --wait`, without resetting volumes or data.
+
+Supplemental photos now use `/api/v1/plants/{plantId}/photo`. The endpoint resolves only published plants and the server-selected attributed provider image; it accepts no caller-supplied remote URL. Private observation files cannot be selected. IPv4, exact Wikimedia host allowlist, no redirects, five-second timeout, 2MiB download limit, image signature checks, four concurrent fills and one-minute failed-fill cooldown constrain remote work. Successful files are atomically cached in `PRIVATE_UPLOAD_DIR/public-plant-photos`, a separate subdirectory of the existing persistent volume. Up to 256 files are stored; cached files are fresh for seven days. This is a bounded server cache, not an offline device image store or a production object-storage implementation.
+
+Live evidence: Rotbuche profile returned a same-origin photo path; image endpoint returned HTTP 200 `image/jpeg`, 757019 bytes. Cache file with that size was present in the container volume. After a backend restart, the same endpoint returned the same size in 35ms. Invalid plant ID returned 400. Focused ESLint and Flutter analyzer passed. Flutter SDK emitted an unrelated broken remote-ref warning during its tag check; app analysis still completed successfully. No tests added or run. Full visual acceptance, all-taxon coverage and device-offline image caching remain open.
+
 ### Persistent photo metadata
 
 The resolver now uses the existing Strapi core store namespace `core_plantini-photo-metadata-v1_` to retain attributed provider metadata by SHA-256 scientific-name key. Entry schema version 1, freshness deadline and last verification time are retained; incompatible or older-than-seven-day entries are ignored. Reads/writes fail open to the existing bounded memory/provider path, never blocking lessons merely because cache storage fails. This stores public image metadata only, not image bytes or private observations. The existing core-store implementation was inspected locally; no schema migration is needed.

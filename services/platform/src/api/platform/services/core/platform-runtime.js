@@ -4,6 +4,7 @@ const { ActorService } = require('./auth/actor-service');
 const { KeycloakJwtValidator, authenticationError } = require('./auth/jwt-validator');
 const { ContentService } = require('./content/content-service');
 const { WikimediaPhotoSource } = require('./content/wikimedia-photo-source');
+const { PublicPhotoCache } = require('./content/public-photo-cache');
 const { FieldService } = require('./field/field-service');
 const { HerbariumService } = require('./herbarium/herbarium-service');
 const { LearningService } = require('./learning/learning-service');
@@ -36,6 +37,7 @@ function getPlatformRuntime(strapi) {
     profile: new ProfileService({ actorService }),
     content: new ContentService({
       repository: repositories.content,
+      photoCache: new PublicPhotoCache(),
       photoSource: process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS === 'disabled'
         ? undefined : new WikimediaPhotoSource({
           metadataStore: strapi.store({ type: 'core', name: 'plantini-photo-metadata-v1' }),
