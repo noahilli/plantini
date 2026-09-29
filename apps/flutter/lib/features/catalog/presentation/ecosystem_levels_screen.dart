@@ -204,12 +204,16 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: OutlinedButton.icon(
                 onPressed: path.levels.any((level) => level.isUnlocked)
-                    ? () => context.push('/ecosystems/${Uri.encodeComponent(widget.ecosystemId)}/practice')
+                    ? () => context.push(
+                        '/ecosystems/${Uri.encodeComponent(widget.ecosystemId)}/practice',
+                      )
                     : null,
                 icon: const Icon(Icons.style_outlined),
-                label: Text(path.levels.any((level) => level.isUnlocked)
-                    ? 'Karteikarten üben · Selbsteinschätzung'
-                    : 'Karteikarten üben · noch gesperrt'),
+                label: Text(
+                  path.levels.any((level) => level.isUnlocked)
+                      ? 'Karteikarten üben · Selbsteinschätzung'
+                      : 'Karteikarten üben · noch gesperrt',
+                ),
               ),
             ),
             Expanded(

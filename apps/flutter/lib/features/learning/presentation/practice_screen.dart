@@ -85,15 +85,19 @@ final class _PracticeScreenState extends State<PracticeScreen> {
     }
   }
 
-  void _assess(Plant plant, bool known) => setState(() {
-    if (known) {
-      _known++;
-    } else {
-      _repeat.add(plant);
-    }
-    _index++;
-    _phase = _Phase.study;
-  });
+  void _assess(Plant plant, bool known) {
+    // A rapid second tap must not skip the next card or count twice.
+    if (_phase != _Phase.revealed) return;
+    setState(() {
+      if (known) {
+        _known++;
+      } else {
+        _repeat.add(plant);
+      }
+      _index++;
+      _phase = _Phase.study;
+    });
+  }
 
   void _restart(List<Plant> plants) => setState(() {
     final next = List<Plant>.of(plants);
@@ -179,6 +183,14 @@ final class _PracticeScreenState extends State<PracticeScreen> {
                     'Selbsteinschätzung · keine Punkte oder Levelabschlüsse. Deine Angaben bleiben nur in dieser Sitzung; beim Verlassen werden sie verworfen.',
                   ),
                   const SizedBox(height: 16),
+                  LinearProgressIndicator(
+                    value: finished ? 1 : _index / round.length,
+                    minHeight: 6,
+                    borderRadius: BorderRadius.circular(8),
+                    semanticsLabel: 'Fortschritt der Übungsrunde',
+                    semanticsValue: '$_index von ${round.length} Pflanzen',
+                  ),
+                  const SizedBox(height: 20),
                   if (finished) ...[
                     Semantics(
                       header: true,

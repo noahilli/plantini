@@ -1,5 +1,7 @@
 # Pflanzenkartei und echte 3D-Welt — 29.09.2026
 
+Fortsetzung der Kartengestaltung, Bildabdeckung und neuer Übungsmodus: siehe [Editorial-Karten und Lernmodus](editorial-cards-and-practice.md).
+
 ## Karten-Vorlage
 
 `PlantIndexCard` ist die gemeinsame Flutter-Vorlage für Steckbrief vor dem Quiz und Pflanzendetail. Registerlasche, Papierfläche, Titel/lateinischer Name/Familie, Bild und Quellenangaben, strukturierte Faktenabschnitte und Sicherheitshinweis. Ab 680px und bei moderater Schriftvergrößerung zweispaltig; sonst untereinander. Keine feste Kartenhöhe, keine erfundenen botanischen Angaben. Alle Inhalte stammen aus `Plant`/`profileCards` und damit aus dem CMS. Die BANini25-Seite dient als Strukturvorbild, keine kopierten Bildassets oder erfundenen Angaben.
