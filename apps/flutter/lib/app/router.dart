@@ -11,6 +11,7 @@ import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/learning/presentation/learning_screen.dart';
+import '../features/learning/presentation/practice_screen.dart';
 import 'app_dependencies.dart';
 
 /// Creates the declarative [GoRouter] for Plantini.
@@ -58,6 +59,13 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
         GoRoute(
           path: '/ecosystems/:ecosystemId',
           builder: (context, state) => EcosystemLevelsScreen(
+            dependencies: dependencies,
+            ecosystemId: state.pathParameters['ecosystemId']!,
+          ),
+        ),
+        GoRoute(
+          path: '/ecosystems/:ecosystemId/practice',
+          builder: (context, state) => PracticeScreen(
             dependencies: dependencies,
             ecosystemId: state.pathParameters['ecosystemId']!,
           ),
