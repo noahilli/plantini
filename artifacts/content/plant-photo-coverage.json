@@ -1,0 +1,272 @@
+{
+  "checkedAt": "2026-09-29T16:03:23.542Z",
+  "releaseCursor": "c5dc0c260d0de3442573410d029085ef8a3dfdef82c0f72207de8bf7b4123372",
+  "total": 30,
+  "available": 6,
+  "plants": [
+    {
+      "id": "e86229bc-320e-41ff-8741-033e3a118cd4",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Fagus-sylvatica-cansiglio-forest-italy.jpg",
+          "license": "CC BY-SA 4.0",
+          "automatic": true,
+          "status": "available",
+          "bytes": 757019
+        }
+      ],
+      "name": "Rotbuche",
+      "scientificName": "Fagus sylvatica"
+    },
+    {
+      "id": "2f45b87e-e05f-473d-b56d-2e14f10e45a5",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Stiel-Eiche",
+      "scientificName": "Quercus robur"
+    },
+    {
+      "id": "f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Carpinus_betulus_-_Hunsr%C3%BCck_001.jpg",
+          "license": "CC BY 2.5",
+          "automatic": true,
+          "status": "available",
+          "bytes": 361566
+        }
+      ],
+      "name": "Hainbuche",
+      "scientificName": "Carpinus betulus"
+    },
+    {
+      "id": "659be7cc-1737-4a79-8b21-50b86b0537a3",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Acer_pseudoplatanus_005.jpg",
+          "license": "CC BY 2.5",
+          "automatic": true,
+          "status": "available",
+          "bytes": 359118
+        }
+      ],
+      "name": "Berg-Ahorn",
+      "scientificName": "Acer pseudoplatanus"
+    },
+    {
+      "id": "d4f49d12-b256-458b-bf1b-fcb155e7ae0a",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Fraxinus_excelsior.jpg",
+          "license": "CC BY 2.5",
+          "automatic": true,
+          "status": "available",
+          "bytes": 208176
+        }
+      ],
+      "name": "Gewöhnliche Esche",
+      "scientificName": "Fraxinus excelsior"
+    },
+    {
+      "id": "7a113a98-fc4e-458b-907d-d55a4803d5aa",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Winter-Linde",
+      "scientificName": "Tilia cordata"
+    },
+    {
+      "id": "6c667c53-23d7-4dbd-b266-0b85a2947cc0",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Gewöhnliche Hasel",
+      "scientificName": "Corylus avellana"
+    },
+    {
+      "id": "82703a08-eef7-4b3c-80ab-a6e8fafd9f9e",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Busch-Windröschen",
+      "scientificName": "Anemone nemorosa"
+    },
+    {
+      "id": "c7d10394-2753-4665-9971-663476bdbcbe",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Bär-Lauch",
+      "scientificName": "Allium ursinum"
+    },
+    {
+      "id": "f096894a-1d60-4771-bd6b-ebfdcd43f1d7",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Gewöhnlicher Wurmfarn",
+      "scientificName": "Dryopteris filix-mas"
+    },
+    {
+      "id": "61fca777-f4aa-4d9d-813e-f022306b74fc",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Alpen-Edelweiß",
+      "scientificName": "Leontopodium alpinum"
+    },
+    {
+      "id": "daee54d0-fbec-41e4-b664-4eca35e953a6",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Kalk-Glocken-Enzian",
+      "scientificName": "Gentiana clusii"
+    },
+    {
+      "id": "e2cd9134-7a3c-47b0-bab6-eeed780389ee",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Rhododendron_hirsutum2006.jpg",
+          "license": "CC BY 2.5",
+          "automatic": true,
+          "status": "available",
+          "bytes": 200464
+        }
+      ],
+      "name": "Bewimperte Alpenrose",
+      "scientificName": "Rhododendron hirsutum"
+    },
+    {
+      "id": "9776bf4c-fb4b-4d74-bdd1-1d98246a0efb",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Silberwurz",
+      "scientificName": "Dryas octopetala"
+    },
+    {
+      "id": "16cf9ea8-190c-43c7-8d4a-7867dfaa81f2",
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo",
+          "source": "https://commons.wikimedia.org/wiki/File:Carlina_acaulis_160907.jpg",
+          "license": "CC BY-SA 3.0",
+          "automatic": true,
+          "status": "available",
+          "bytes": 297746
+        }
+      ],
+      "name": "Silberdistel",
+      "scientificName": "Carlina acaulis"
+    },
+    {
+      "id": "70b1b74f-9761-410d-b818-1ee17697d038",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Trollblume",
+      "scientificName": "Trollius europaeus"
+    },
+    {
+      "id": "5fda6409-e95f-4dfc-9005-a4d18037b1ac",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Alpen-Aster",
+      "scientificName": "Aster alpinus"
+    },
+    {
+      "id": "4e82b1df-47ce-45a1-97a5-7c3740746736",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Gegenblättriger Steinbrech",
+      "scientificName": "Saxifraga oppositifolia"
+    },
+    {
+      "id": "c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Aurikel",
+      "scientificName": "Primula auricula"
+    },
+    {
+      "id": "fb460472-9e4c-42f3-bef9-f2118117daf8",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Alpen-Küchenschelle",
+      "scientificName": "Pulsatilla alpina"
+    },
+    {
+      "id": "1dfb7d58-4ba0-4915-a3ca-e17426bfef0f",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Wiesen-Salbei",
+      "scientificName": "Salvia pratensis"
+    },
+    {
+      "id": "3733c0ea-edf7-482d-a6f0-f7733eb0bdea",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Wiesen-Margerite",
+      "scientificName": "Leucanthemum vulgare agg."
+    },
+    {
+      "id": "c7858edc-eb32-47e2-baa3-0e22419007bc",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Wiesen-Flockenblume",
+      "scientificName": "Centaurea jacea"
+    },
+    {
+      "id": "513e9299-a7dd-4649-ba02-78a16cb41485",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Acker-Witwenblume",
+      "scientificName": "Knautia arvensis"
+    },
+    {
+      "id": "2d4dc3a2-9837-4e6f-a874-dae20f0b5682",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Gewöhnlicher Hornklee",
+      "scientificName": "Lotus corniculatus"
+    },
+    {
+      "id": "ed12a6a2-3aab-469e-bd58-aff68b373bdd",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Kleiner Klappertopf",
+      "scientificName": "Rhinanthus minor"
+    },
+    {
+      "id": "d27cd375-c51f-40f3-be9d-e8d3fdff472c",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Wiesen-Bocksbart",
+      "scientificName": "Tragopogon pratensis"
+    },
+    {
+      "id": "5afe1048-5fde-4bc0-a74e-8bbe334952d1",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Wiesen-Glockenblume",
+      "scientificName": "Campanula patula"
+    },
+    {
+      "id": "3ec91620-f9ca-422a-af8e-40251676440c",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Spitzwegerich",
+      "scientificName": "Plantago lanceolata"
+    },
+    {
+      "id": "3749cd97-b589-41bc-8cf4-abb1e8632400",
+      "status": "no-photo-returned",
+      "photos": [],
+      "name": "Gewöhnliche Schafgarbe",
+      "scientificName": "Achillea millefolium agg."
+    }
+  ]
+}
