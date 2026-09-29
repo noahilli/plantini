@@ -24,7 +24,7 @@ Der ursprüngliche Wald ist eine kleine Low-Poly-Spielzeuginsel mit wiederholten
 
 `ModularForestView` projiziert echte Mesh-Geometrie mit Flutter Canvas (CPU-Projektion, Dreieckssortierung, einfache Flächenbeleuchtung; kein GLB-Player und kein Screenshot-Hintergrund). Jeweils nur aktuelles Modul und beide Nachbarn werden aufgebaut. Modulanzahl = aufgerundete Levelanzahl / 6. Die Länge ist damit nicht auf 30 Level begrenzt. Bäume und Wasserreflexe bewegen sich; die 3D-Figur steht am ersten offenen Level. Pause, System-Reduced-Motion und TickerMode werden berücksichtigt. Seitliches Ziehen dreht die Ansicht, vertikales Ziehen bzw. Slider und Pfeile bewegen durch die Module.
 
-`ResearcherPathView` verwendet den Renderer für Ökosystem-Slugs mit `laubwald`. Levelstatus, IDs und Klick-Callbacks kommen unverändert aus dem Katalog; gesperrte Level bleiben gesperrt. Das bestehende Finale wird am letzten Modul eingeblendet. Wiese und Alpen behalten vorerst ihre vorhandene Ansicht. Keine Änderung an Authentifizierung, API oder Fortschrittsspeicherung.
+`ResearcherPathView` verwendet den Renderer inzwischen für Wald, Wiese und Alpen (Zuordnung über `EcosystemWorld.forSlug`, einschließlich englischer Aliasse). Unbekannte Slugs behalten die bisherige 2D-Ansicht. Levelstatus, IDs und Klick-Callbacks kommen unverändert aus dem Katalog; gesperrte Level bleiben gesperrt. Das bestehende Finale wird am letzten Modul eingeblendet. Keine Änderung an Authentifizierung, API oder Fortschrittsspeicherung.
 
 ### Nachweise und Grenzen
 
@@ -33,4 +33,20 @@ Der ursprüngliche Wald ist eine kleine Low-Poly-Spielzeuginsel mit wiederholten
 - Manuelle Browser-Laufzeitprüfung mit Chromium: 31 Level → sechs Module, mit echten Pointer-Klicks bis Modul sechs; dort genau die letzte Station sichtbar. Bewegung verändert das Bild, Pause hält es stabil. Desktop und Mobilansicht visuell kontrolliert; Screenshots unter `artifacts/3d/modular-forest-*.png`.
 - Dabei Layoutfehler korrigiert: Stack muss die verfügbare Fläche ausfüllen, sonst konnte die Welt nach dem Ausblenden außerhalb liegender Stationen auf null Größe schrumpfen.
 - Flutter-Semantik-Overlay verhindert teilweise Playwright-Locator-Klicks; echte Mauskoordinaten funktionieren. Keine neuen Tests geschrieben, vorhandene fremde Teständerungen unangetastet.
-- Offen: angemeldeter kompletter Lernablauf mit dieser Ansicht, Performance auf echten Mobilgeräten, Wiesen-/Alpenmodule. Renderer bewusst einfach: keine Echtzeitschatten, keine Flüssigkeitssimulation und kein GPU-Z-Buffer. Das Cycles-Referenzrender bleibt optisch hochwertiger als dieser portable Echtzeit-Renderer.
+- Offen: angemeldeter kompletter Lernablauf mit dieser Ansicht und Performance auf echten Mobilgeräten. Renderer bewusst einfach: keine Echtzeitschatten, keine Flüssigkeitssimulation und kein GPU-Z-Buffer. Das Cycles-Referenzrender bleibt optisch hochwertiger als dieser portable Echtzeit-Renderer.
+
+## Wiese und Alpen — WORLD-11 Erweiterung
+
+Owner: Flutter-Frontend. Scope: Renderer, Designvorschau, lokale Mesh-Assets, Blender-Generator und dieser Handoff. Keine neuen Tests gemäß Nutzerwunsch; fremde Änderungen im Herbarium und in bestehenden Tests bleiben unangetastet.
+
+`python tools/blender/create_ecosystem_modules.py` erzeugt reproduzierbar `meadow_module.json` und `alpine_module.json` aus eigenen geometrischen Primitiven. Pfad, Stationssockel und Forscherfigur werden aus dem versionierten Waldmodul übernommen. In Blender ausgeführt legt dasselbe Skript zusätzlich separate editierbare Szenen an, ohne vorhandene Szenen zu löschen. Über den IPv4-MCP-Socket ausgeführt; die Szenen sind in der laufenden Blender-Sitzung vorhanden. Zur Wiederherstellung genügt der Generator; keine neue Blend-Datei gespeichert.
+
+- Wiese: 426 Meshes / 6017 Dreiecke; pastellfarbene Blüten, Gras, Schilf, niedrige Hügel und Teich mit bewegten Reflexen.
+- Alpen: 156 Meshes / 2330 Dreiecke; kantige Felsgipfel mit Schneekappen, Nadelbäume, Bergblumen und durchgängig anschließender Bach.
+- `plant` ergänzt die vorhandene Vegetationsanimation; alle Varianten teilen Pause, Reduced Motion und die auf drei sichtbare Module begrenzte Darstellung. Szenenwechsel verwendet eine eigene Widget-Identität und pro Variante gecachte Asset-Futures.
+- Designvorschau: `?world=meadow` oder `?world=alpine`, optional `&levels=300`. Explizite initiale Route verhindert eine leere Vorschau bei Query-Parametern. Diese Vorschau bleibt getrennt von echter Anmeldung und echten Fortschritten.
+- Nachweise: `flutter analyze --no-pub lib`, Web-Releasebuild und Linux-Releasebuild erfolgreich. Chromium-Laufzeitprüfung: beide Varianten mit 31 Leveln bis Abschnitt 6 navigiert; Animation verändert Screenshot, Pause hält Screenshot stabil. Desktop (1100×900) und Mobilformat (390×844) visuell geprüft. Screenshots `artifacts/3d/modular-{meadow,alpine}-{desktop,mobile}.png`.
+
+Die 3D-Ansichten der drei vorhandenen Landschaftstypen sind damit implementiert, nicht aber sämtliche Produktanforderungen abgenommen. Inhaltliche Vollständigkeit, echter Levelabschluss/Herbarium-Finale und native Mobilgeräte müssen separat geprüft werden. Botanische Deko ist stilisierte Spielgrafik, keine Bestimmungshilfe.
+
+Zusätzliche Laufzeit-Stichproben: Wiese mit 300 Leveln zeigt 50 Abschnitte; Alpen mit einem Level genau einen Abschnitt. Keine feste 30-Level-Grenze.

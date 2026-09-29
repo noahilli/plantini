@@ -6,8 +6,13 @@ import '../core/theme/app_theme.dart';
 import '../features/catalog/domain/catalog_models.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart';
 
-void main() =>
-    runApp(MaterialApp(theme: AppTheme.lightTheme, home: const _Preview()));
+void main() => runApp(
+  MaterialApp(
+    initialRoute: '/',
+    theme: AppTheme.lightTheme,
+    home: const _Preview(),
+  ),
+);
 
 class _Preview extends StatefulWidget {
   const _Preview();
@@ -16,15 +21,26 @@ class _Preview extends StatefulWidget {
 }
 
 class _PreviewState extends State<_Preview> {
-  int count = 31;
+  int count = int.tryParse(Uri.base.queryParameters['levels'] ?? '') ?? 31;
+  EcosystemWorld world = EcosystemWorld.values.firstWhere(
+    (w) => w.asset == Uri.base.queryParameters['world'],
+    orElse: () => EcosystemWorld.forest,
+  );
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: const Text('Designvorschau · keine echten Fortschritte'),
       actions: [
+        DropdownButton<EcosystemWorld>(
+          value: world,
+          items: EcosystemWorld.values
+              .map((w) => DropdownMenuItem(value: w, child: Text(w.title)))
+              .toList(),
+          onChanged: (w) => setState(() => world = w!),
+        ),
         DropdownButton<int>(
           value: count,
-          items: [1, 7, 30, 31, 60, 300]
+          items: ({1, 7, 30, 31, 60, 300, count}.toList()..sort())
               .map((n) => DropdownMenuItem(value: n, child: Text('$n Level')))
               .toList(),
           onChanged: (n) => setState(() => count = n!),
@@ -32,6 +48,8 @@ class _PreviewState extends State<_Preview> {
       ],
     ),
     body: ModularForestView(
+      key: ValueKey(world),
+      world: world,
       levels: List.generate(
         count,
         (i) => Level(

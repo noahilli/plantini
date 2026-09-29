@@ -56,8 +56,11 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
   Widget build(BuildContext context) {
     final sorted = _sorted;
     if (sorted.isEmpty) return const Center(child: Text('Noch keine Level.'));
-    if (widget.ecosystem.slug.contains('laubwald')) {
+    final world = EcosystemWorld.forSlug(widget.ecosystem.slug);
+    if (world != null) {
       return ModularForestView(
+        key: ValueKey(widget.ecosystem.id),
+        world: world,
         levels: sorted,
         onLevelTap: widget.onLevelTap,
         finale: widget.finale,

@@ -8,16 +8,41 @@ import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
 
+enum EcosystemWorld {
+  forest('forest', 'Waldpfad', Color(0xFFE2E9DC)),
+  meadow('meadow', 'Wiesenpfad', Color(0xFFEEF1D9)),
+  alpine('alpine', 'Bergpfad', Color(0xFFE3EDF0));
+
+  const EcosystemWorld(this.asset, this.title, this.background);
+  final String asset, title;
+  final Color background;
+
+  static EcosystemWorld? forSlug(String slug) {
+    final s = slug.toLowerCase();
+    if (s.contains('alpen') ||
+        s.contains('alpin') ||
+        s.contains('berg') ||
+        s.contains('mountain')) {
+      return alpine;
+    }
+    if (s.contains('wiese') || s.contains('meadow')) return meadow;
+    if (s.contains('wald') || s.contains('forest')) return forest;
+    return null;
+  }
+}
+
 /// Real, projected Blender mesh geometry. No native GL plugin or remote CDN.
 /// Only the current module and its neighbours are rendered, regardless of size.
 final class ModularForestView extends StatefulWidget {
   const ModularForestView({
     super.key,
     required this.levels,
+    this.world = EcosystemWorld.forest,
     this.onLevelTap,
     this.finale,
   });
   final List<Level> levels;
+  final EcosystemWorld world;
   final ValueChanged<Level>? onLevelTap;
   final Widget? finale;
   @override
@@ -26,9 +51,13 @@ final class ModularForestView extends StatefulWidget {
 
 final class _ModularForestViewState extends State<ModularForestView>
     with SingleTickerProviderStateMixin {
-  static final _module = rootBundle
-      .loadString('assets/worlds/forest_module.json')
-      .then((s) => _Module.fromJson(jsonDecode(s) as Map<String, dynamic>));
+  static final _modules = <EcosystemWorld, Future<_Module>>{};
+  Future<_Module> get _module => _modules.putIfAbsent(
+    widget.world,
+    () => rootBundle
+        .loadString('assets/worlds/${widget.world.asset}_module.json')
+        .then((s) => _Module.fromJson(jsonDecode(s) as Map<String, dynamic>)),
+  );
   late final AnimationController _clock = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 6),
@@ -99,19 +128,19 @@ final class _ModularForestViewState extends State<ModularForestView>
           children: [
             IconButton(
               key: const ValueKey('map-previous-chapter'),
-              tooltip: 'Vorheriges Waldmodul',
+              tooltip: 'Vorheriger Abschnitt',
               onPressed: chapter > 0 ? () => _move(chapter - 1.0) : null,
               icon: const Icon(Icons.chevron_left),
             ),
             Expanded(
               child: Text(
-                'Waldpfad ${chapter + 1} / $_count · ${levels.length} Level',
+                '${widget.world.title} ${chapter + 1} / $_count · ${levels.length} Level',
                 textAlign: TextAlign.center,
               ),
             ),
             IconButton(
               key: const ValueKey('map-next-chapter'),
-              tooltip: 'Nächstes Waldmodul',
+              tooltip: 'Nächster Abschnitt',
               onPressed: chapter < _count - 1
                   ? () => _move(chapter + 1.0)
                   : null,
@@ -129,6 +158,7 @@ final class _ModularForestViewState extends State<ModularForestView>
         ),
         Expanded(
           child: FutureBuilder<_Module>(
+            key: ValueKey(widget.world),
             future: _module,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -169,7 +199,7 @@ final class _ModularForestViewState extends State<ModularForestView>
                             },
                             child: RepaintBoundary(
                               child: CustomPaint(
-                                key: const ValueKey('forest-3d-world'),
+                                key: ValueKey('${widget.world.asset}-3d-world'),
                                 painter: _ForestPainter(
                                   module,
                                   view,
@@ -177,6 +207,7 @@ final class _ModularForestViewState extends State<ModularForestView>
                                   _clock,
                                   MediaQuery.disableAnimationsOf(context),
                                   _frames,
+                                  widget.world.background,
                                   levels.indexWhere(
                                     (l) =>
                                         l.isUnlocked &&
@@ -217,9 +248,9 @@ final class _ModularForestViewState extends State<ModularForestView>
         ),
         if (_count > 1)
           Slider(
-            label: 'Waldmodul ${chapter + 1}',
+            label: 'Abschnitt ${chapter + 1}',
             semanticFormatterCallback: (v) =>
-                'Waldmodul ${v.round() + 1} von $_count',
+                'Abschnitt ${v.round() + 1} von $_count',
             min: 0,
             max: (_count - 1).toDouble(),
             value: position,
@@ -233,7 +264,7 @@ final class _ModularForestViewState extends State<ModularForestView>
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
-            'Ziehen: den Wald erkunden · Level antippen',
+            'Ziehen: die Welt erkunden · Level antippen',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
@@ -372,6 +403,7 @@ final class _ForestPainter extends CustomPainter {
     this.clock,
     this.reduceMotion,
     Listenable frames,
+    this.background,
     this.currentIndex,
   ) : super(repaint: frames);
   final _Module module;
@@ -380,9 +412,10 @@ final class _ForestPainter extends CustomPainter {
   final Animation<double> clock;
   final bool reduceMotion;
   final int currentIndex;
+  final Color background;
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawColor(const Color(0xFFE2E9DC), BlendMode.src);
+    canvas.drawColor(background, BlendMode.src);
     final faces = <_Face>[];
     final center = (view.focus / 10).round();
     final phase = reduceMotion ? 0.0 : clock.value * math.pi * 2;
@@ -404,7 +437,7 @@ final class _ForestPainter extends CustomPainter {
           final x =
               v[0] +
               (ranger == null ? 0 : ranger[0] + .65) +
-              (mesh.motion == 'tree'
+              (mesh.motion == 'tree' || mesh.motion == 'plant'
                   ? math.sin(phase + m) * .022 * math.max(0, v[2])
                   : 0);
           final y =
@@ -487,5 +520,6 @@ final class _ForestPainter extends CustomPainter {
       old.view != view ||
       old.module != module ||
       old.levelCount != levelCount ||
+      old.background != background ||
       old.reduceMotion != reduceMotion;
 }
