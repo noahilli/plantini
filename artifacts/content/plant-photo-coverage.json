@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-29T17:25:48.900Z",
+  "checkedAt": "2026-09-29T18:24:38.457Z",
   "releaseCursor": "c5dc0c260d0de3442573410d029085ef8a3dfdef82c0f72207de8bf7b4123372",
   "total": 30,
   "available": 28,
@@ -9,12 +9,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo",
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=6a43e6a9-e55f-51ef-afa8-233ccab365c1",
           "source": "https://www.inaturalist.org/photos/199420434",
           "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
           "bytes": 98726
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=b0a5d43c-adae-5a29-ab7d-87ef87c75946",
+          "source": "https://www.inaturalist.org/photos/335978296",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 93161
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=dd9a8c28-face-5ac0-a532-7eb2fc063f5a",
+          "source": "https://www.inaturalist.org/photos/737550854",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 291585
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=b9c9a832-c952-5aae-abc9-b5780fc7a7bb",
+          "source": "https://www.inaturalist.org/photos/737550816",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 332600
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=4d77edb7-fe13-5b9b-a359-4a1b9b3d7eec",
+          "source": "https://www.inaturalist.org/photos/449356324",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 28724
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=a6512499-925c-5a11-a956-67eb983fb178",
+          "source": "https://www.inaturalist.org/photos/192275460",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 66787
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=cdbba88e-ea1a-5166-ae39-688080d85cb9",
+          "source": "https://www.inaturalist.org/photos/377077623",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 254617
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=4132de2d-b3a2-5fe5-ad21-51f30a0c83c2",
+          "source": "https://www.inaturalist.org/photos/394535806",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 156070
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=7be1b722-149d-53de-a564-05f72c07a023",
+          "source": "https://www.inaturalist.org/photos/2305631",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 127812
+        },
+        {
+          "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo?photoId=88b62ed2-3ab1-582c-a7bf-6e7cefba8e94",
+          "source": "https://www.inaturalist.org/photos/461898887",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 137416
         }
       ],
       "name": "Rotbuche",
@@ -25,12 +97,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo",
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=57814066-740f-5293-a26e-59c5edf919e0",
           "source": "https://www.inaturalist.org/photos/482832455",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 132334
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=afcf3d1d-2f81-5f12-a6c8-5db105f00800",
+          "source": "https://www.inaturalist.org/photos/110607739",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 92319
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=01689103-ebd5-5114-a646-c263402c1f93",
+          "source": "https://www.inaturalist.org/photos/2305598",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 138930
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=d302984c-36ec-5dff-a078-6069ee67055f",
+          "source": "https://www.inaturalist.org/photos/326660041",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 209898
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=d6de4feb-c821-5867-ae82-02dc102a8939",
+          "source": "https://www.inaturalist.org/photos/51334217",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 108460
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=139cd993-b7e7-5647-a8ad-5ab4fc9688f6",
+          "source": "https://www.inaturalist.org/photos/42783877",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 141022
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=de2cf3a2-d173-5898-a62b-e434cba6f0bb",
+          "source": "https://www.inaturalist.org/photos/467469040",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 30793
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=d46b7367-44c7-5959-a8cd-589a55a16c00",
+          "source": "https://www.inaturalist.org/photos/79210297",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 28981
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=a818ceac-385e-5d7d-a916-b4fcad27e075",
+          "source": "https://www.inaturalist.org/photos/264844829",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 149405
+        },
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo?photoId=eb754490-0bc8-5791-a147-727b47d70f1d",
+          "source": "https://www.inaturalist.org/photos/654174819",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 79556
         }
       ],
       "name": "Stiel-Eiche",
@@ -41,12 +185,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo",
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=20e93285-4186-5176-a79a-99e0b113574b",
           "source": "https://www.inaturalist.org/photos/46763976",
           "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
           "bytes": 88056
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=47c71137-0999-5629-abb2-df06dc080df8",
+          "source": "https://www.inaturalist.org/photos/49923080",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 181177
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=36cd808f-04f0-5889-ab56-951ca72b8d28",
+          "source": "https://www.inaturalist.org/photos/105993037",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 36188
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=d20d9365-822d-51eb-a808-b541ded85f0c",
+          "source": "https://www.inaturalist.org/photos/171859554",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 76310
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=73276973-9a58-5222-a101-a0d9599fd6f8",
+          "source": "https://www.inaturalist.org/photos/50638873",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142020
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=4a2e733d-209f-5d1c-a285-650620d907ed",
+          "source": "https://www.inaturalist.org/photos/73696342",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 149286
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=b98a4bba-6d08-5411-adf6-baa745e11f04",
+          "source": "https://www.inaturalist.org/photos/67880274",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 103891
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=b7dbf8d3-f1a8-5193-a635-d8f1a3bf1720",
+          "source": "https://www.inaturalist.org/photos/50703013",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 129274
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=23b39411-673b-5d84-ad0a-274dcd2381ff",
+          "source": "https://www.inaturalist.org/photos/94811329",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 179971
+        },
+        {
+          "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo?photoId=459d55bb-8622-5450-ae41-2f6f2030fa40",
+          "source": "https://www.inaturalist.org/photos/2338263",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 69783
         }
       ],
       "name": "Hainbuche",
@@ -57,12 +273,28 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo",
+          "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo?photoId=5dfaaf64-0836-5af5-a47a-86eb48855aed",
           "source": "https://www.inaturalist.org/photos/270771593",
           "license": "cc-by-sa",
           "automatic": true,
           "status": "available",
           "bytes": 162092
+        },
+        {
+          "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo?photoId=0c79a99b-c306-5a79-a346-d16eacd1566b",
+          "source": "https://www.inaturalist.org/photos/270771607",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 61597
+        },
+        {
+          "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo?photoId=bc88bde0-1512-5693-a7de-3edd2fb8a632",
+          "source": "https://www.inaturalist.org/photos/270771613",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 61661
         }
       ],
       "name": "Berg-Ahorn",
@@ -73,12 +305,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo",
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=43f6d486-67bd-59a5-af07-4aab0664764b",
           "source": "https://www.inaturalist.org/photos/218128525",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 241859
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=118e77f4-8e9b-5d63-a314-a6f9d2dc2b7d",
+          "source": "https://www.inaturalist.org/photos/383571342",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 104298
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=79cf2d83-5ba5-521b-a905-d0d3e98b3211",
+          "source": "https://www.inaturalist.org/photos/65934865",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 165039
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=2a6b0ce4-b0a5-5c2e-a514-703fa64bd39b",
+          "source": "https://www.inaturalist.org/photos/70006332",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 108238
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=dd3bb779-09d1-57df-a6a8-dd312828e5c0",
+          "source": "https://www.inaturalist.org/photos/143158012",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 57707
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=98305628-f109-511e-a910-a802920d142e",
+          "source": "https://www.inaturalist.org/photos/353425729",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 88522
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=5024e470-49a0-5816-a92b-0f4e7a223c3b",
+          "source": "https://www.inaturalist.org/photos/70006387",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 141864
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=658b534a-05c4-540d-a0c8-ef99b8b8119d",
+          "source": "https://www.inaturalist.org/photos/281056884",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 146824
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=95dcd0f0-7f05-5a89-a346-656b13700dd7",
+          "source": "https://www.inaturalist.org/photos/76699802",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 194522
+        },
+        {
+          "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo?photoId=dd5bf8a3-bb7d-56f8-aa60-1a776735b3f9",
+          "source": "https://www.inaturalist.org/photos/63840220",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 36505
         }
       ],
       "name": "Gewöhnliche Esche",
@@ -89,12 +393,68 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo",
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=aac64275-91ff-52da-a918-0a521ade33a0",
           "source": "https://www.inaturalist.org/photos/12491246",
           "license": "pd",
           "automatic": true,
           "status": "available",
           "bytes": 77185
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=e5290087-f421-554f-a96a-8f281f0fb705",
+          "source": "https://www.inaturalist.org/photos/72466718",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 66640
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=4be68d27-8f6c-5ef5-ae98-34bb69d3fea0",
+          "source": "https://www.inaturalist.org/photos/12491247",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 62710
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=5eb6e14a-bc02-5ce8-a988-e61da1307e44",
+          "source": "https://www.inaturalist.org/photos/84172521",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 147964
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=26438887-d96b-56e3-a1ad-b5f8969b3d52",
+          "source": "https://www.inaturalist.org/photos/391299446",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 65084
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=9999df56-c20f-5360-a4bf-d909ef5b2f70",
+          "source": "https://www.inaturalist.org/photos/51993476",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 116207
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=ca39783f-5033-5670-af6a-f78e66b080b0",
+          "source": "https://www.inaturalist.org/photos/78828290",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 81328
+        },
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo?photoId=7425a1d7-f62a-538c-a1e1-83d71be3a4f9",
+          "source": "https://www.inaturalist.org/photos/141484",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 96834
         }
       ],
       "name": "Winter-Linde",
@@ -105,12 +465,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo",
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=055ee2f2-4ef3-5627-a367-0452eae5d05f",
           "source": "https://www.inaturalist.org/photos/249644515",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 59572
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=2ff950db-da2f-57dc-a6e9-c5e82b16d2c0",
+          "source": "https://www.inaturalist.org/photos/180832374",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 39875
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=e180943d-2830-5bc5-a26e-ed49d8ae901a",
+          "source": "https://www.inaturalist.org/photos/27607570",
+          "license": "cc0",
+          "automatic": true,
+          "status": "available",
+          "bytes": 130664
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=3115e145-c1d3-58cf-ab25-7b40cb919085",
+          "source": "https://www.inaturalist.org/photos/1411794",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 118622
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=59f6013c-9370-5de5-abaf-c514597067f1",
+          "source": "https://www.inaturalist.org/photos/51333859",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 90745
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=c9161a7d-f34c-5cd0-ad48-64442f4205e2",
+          "source": "https://www.inaturalist.org/photos/7689249",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 163063
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=82a7d00c-ac22-508d-a1ed-809dc40d1b90",
+          "source": "https://www.inaturalist.org/photos/1411797",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 129248
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=d6813a2e-93fa-5fc3-a060-029ca47a6b24",
+          "source": "https://www.inaturalist.org/photos/4736342",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 265630
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=d1cd59f7-ffb1-5bc7-aeaf-66aabea54e19",
+          "source": "https://www.inaturalist.org/photos/9442",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 121128
+        },
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo?photoId=65f35cf8-c054-5ed4-abc4-660f302fdd93",
+          "source": "https://www.inaturalist.org/photos/1411795",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 52436
         }
       ],
       "name": "Gewöhnliche Hasel",
@@ -121,12 +553,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo",
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=499ddcd0-a80a-51ba-a117-42c853aa6181",
           "source": "https://www.inaturalist.org/photos/732011",
           "license": "cc-by-nc-sa",
           "automatic": true,
           "status": "available",
           "bytes": 228785
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=6ce8528a-97c6-5531-a7d6-d9a3d9e8b974",
+          "source": "https://www.inaturalist.org/photos/270125673",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 102291
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=1c15d09b-242a-5c40-ac25-8a178d3b5698",
+          "source": "https://www.inaturalist.org/photos/119189818",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 75924
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=863178c6-ff72-5d66-a3e6-e8abdc807feb",
+          "source": "https://www.inaturalist.org/photos/10587",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 169415
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=8561d6c8-f0c7-58e9-a61f-cbc0cfb76c4e",
+          "source": "https://www.inaturalist.org/photos/52650777",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 140284
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=4a4a1b54-b712-56a4-aec0-327b3e71fa4a",
+          "source": "https://www.inaturalist.org/photos/7931081",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 202903
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=7eebbb63-14ed-5511-a295-ffa15af57e22",
+          "source": "https://www.inaturalist.org/photos/33295711",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 139433
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=1cb7677a-da3b-5be1-a9de-64874cbd9222",
+          "source": "https://www.inaturalist.org/photos/9751",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 258503
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=7799dc34-721e-546d-adda-152a7e6dcbe1",
+          "source": "https://www.inaturalist.org/photos/709374",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 148658
+        },
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo?photoId=342dedd1-afc5-5f90-a1f5-c84bdeb493f4",
+          "source": "https://www.inaturalist.org/photos/40950986",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 136972
         }
       ],
       "name": "Busch-Windröschen",
@@ -137,12 +641,76 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo",
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=b2a61731-d4e3-5b74-a7b1-12dd352275dc",
           "source": "https://www.inaturalist.org/photos/10674",
           "license": "cc-by",
           "automatic": true,
           "status": "available",
           "bytes": 94233
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=5d8343b9-b114-583b-adaf-bb411534ba12",
+          "source": "https://www.inaturalist.org/photos/10675",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 116761
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=c8b834fb-6d22-5b67-ad29-d3405144f933",
+          "source": "https://www.inaturalist.org/photos/10676",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 338022
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=00a562d3-5fc0-56a1-a04f-dd1be59fe760",
+          "source": "https://www.inaturalist.org/photos/10677",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 77380
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=5fc64bd1-e58e-5af0-af9d-a5416ba2fa71",
+          "source": "https://www.inaturalist.org/photos/10678",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 64948
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=72f468fe-cce2-5a49-a773-4e6a3f04c4b6",
+          "source": "https://www.inaturalist.org/photos/10679",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 106019
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=d9613b24-6ac5-5eeb-a2c2-d181fcee8d22",
+          "source": "https://www.inaturalist.org/photos/10680",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 89409
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=a6497086-06b2-518b-ad59-97e20dae02ec",
+          "source": "https://www.inaturalist.org/photos/65728422",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 151837
+        },
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo?photoId=3c08ab39-9ee5-5090-a3ab-8a77edf4b1c6",
+          "source": "https://www.inaturalist.org/photos/42951428",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 48113
         }
       ],
       "name": "Bär-Lauch",
@@ -153,12 +721,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo",
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=2623d4e0-7a79-54b9-a38b-e4c9f99d9e80",
           "source": "https://www.inaturalist.org/photos/19955604",
           "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
           "bytes": 148872
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=77655cc5-fbaa-544d-aba2-8fe0968c4f63",
+          "source": "https://www.inaturalist.org/photos/93296392",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 53631
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=09831e88-697d-556b-aa42-40e650a1dbd1",
+          "source": "https://www.inaturalist.org/photos/27804415",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 83875
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=fb1340a5-ca19-5231-aa63-45796bf19dc9",
+          "source": "https://www.inaturalist.org/photos/22349153",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 127327
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=fbe07958-11c1-59f6-ac81-c280af5e610e",
+          "source": "https://www.inaturalist.org/photos/53355061",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 58725
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=7acc8637-f48e-5305-a99b-939ffb099266",
+          "source": "https://www.inaturalist.org/photos/76066835",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 54774
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=0472ef2d-add8-5a25-ab9f-4972c485f157",
+          "source": "https://www.inaturalist.org/photos/114518292",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 150957
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=dcdc0810-aed3-5189-a3b9-e357ae11d4d4",
+          "source": "https://www.inaturalist.org/photos/17040260",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 89270
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=a931299f-c153-560c-afc5-9f8cb18229ce",
+          "source": "https://www.inaturalist.org/photos/53383540",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 95972
+        },
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo?photoId=2d62ba9e-b75c-57cd-a2ea-d3b52d191878",
+          "source": "https://www.inaturalist.org/photos/53801019",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 109779
         }
       ],
       "name": "Gewöhnlicher Wurmfarn",
@@ -169,12 +809,76 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo",
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=c55e7eab-7e5a-52f7-a484-7c4408fee155",
           "source": "https://www.inaturalist.org/photos/291625",
           "license": "cc-by-nc-sa",
           "automatic": true,
           "status": "available",
           "bytes": 240481
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=787d4acf-df57-59fb-af35-b61b8973d13d",
+          "source": "https://www.inaturalist.org/photos/147571302",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 84021
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=014aeff5-5631-516e-a8d6-2607cb2a3d52",
+          "source": "https://www.inaturalist.org/photos/96213090",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 126362
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=f0bd504b-2631-5874-adf8-01919f4a69f6",
+          "source": "https://www.inaturalist.org/photos/310137512",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 129263
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=cb0dfeff-fde1-5956-ae6d-8fd386917540",
+          "source": "https://www.inaturalist.org/photos/161891802",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 73694
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=ae104532-e397-5d30-af5c-2da8d788b041",
+          "source": "https://www.inaturalist.org/photos/316754225",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 66054
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=342db5a2-a2ec-55f7-a15c-0b24e671adae",
+          "source": "https://www.inaturalist.org/photos/228715963",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 106460
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=4598d8a9-3463-5a22-a40f-171a539416fc",
+          "source": "https://www.inaturalist.org/photos/9545318",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142127
+        },
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo?photoId=85ef94d5-dddd-5a0b-ac51-5d9d079fccab",
+          "source": "https://www.inaturalist.org/photos/21003959",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 103658
         }
       ],
       "name": "Alpen-Edelweiß",
@@ -185,12 +889,60 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo",
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=1c7f336a-ca5b-53ba-a581-028388574d79",
           "source": "https://www.inaturalist.org/photos/444577889",
           "license": "cc-by",
           "automatic": true,
           "status": "available",
           "bytes": 190153
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=5a4bd399-d8d0-5316-a408-de7e63e776a0",
+          "source": "https://www.inaturalist.org/photos/74148052",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 109498
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=e356f8e5-241c-5134-a976-b34bec6c5669",
+          "source": "https://www.inaturalist.org/photos/74148122",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 176615
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=5a10a8a9-d28a-5a4d-a1e3-f6047e92318e",
+          "source": "https://www.inaturalist.org/photos/75688513",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 190857
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=611b63a2-6848-5aa9-afb1-d25b13bf035c",
+          "source": "https://www.inaturalist.org/photos/482113",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 55949
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=ce915779-0519-5167-a4dd-36d305344a82",
+          "source": "https://www.inaturalist.org/photos/133621328",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 193898
+        },
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo?photoId=e81a2e75-4a10-5297-a8e5-44cf246fd730",
+          "source": "https://www.inaturalist.org/photos/5871646",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 81847
         }
       ],
       "name": "Kalk-Glocken-Enzian",
@@ -201,12 +953,52 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo",
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=4bf9449a-f6bf-5b0b-a7bc-af038cdae960",
           "source": "https://www.inaturalist.org/photos/22630264",
           "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
           "bytes": 117110
+        },
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=a5568587-b1c7-5fee-a503-c5ec0248a4d1",
+          "source": "https://www.inaturalist.org/photos/1627382",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 150355
+        },
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=360c8c7f-f641-5dc2-a7cb-528ba1619ef1",
+          "source": "https://www.inaturalist.org/photos/27015969",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 82614
+        },
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=5544dd73-f2e6-5c56-a09e-c8b3e3d04ed2",
+          "source": "https://www.inaturalist.org/photos/112627725",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 135475
+        },
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=cff7e97f-00db-52df-a59f-66500661e2c8",
+          "source": "https://www.inaturalist.org/photos/4176670",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 84339
+        },
+        {
+          "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo?photoId=94756107-ee91-59e3-a0f6-2ef1fc475e83",
+          "source": "https://www.inaturalist.org/photos/91401573",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 226589
         }
       ],
       "name": "Bewimperte Alpenrose",
@@ -217,12 +1009,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo",
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=983384f4-db12-5937-af8f-7317dcc962b0",
           "source": "https://www.inaturalist.org/photos/65287013",
           "license": "cc-by",
           "automatic": true,
           "status": "available",
           "bytes": 155355
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=0c20e11b-db39-5f42-ad29-16cdd0280d23",
+          "source": "https://www.inaturalist.org/photos/65369761",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 94688
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=120ef757-4e33-58ed-ae15-4406fdbe196d",
+          "source": "https://www.inaturalist.org/photos/50481336",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 118156
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=2ecd444d-9658-5520-a92a-8ce38c5836db",
+          "source": "https://www.inaturalist.org/photos/58205308",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 114144
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=99360d74-c345-52ee-acec-90073e9e60f7",
+          "source": "https://www.inaturalist.org/photos/717355951",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 195312
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=ed43f3e0-0bf2-5fa0-ae42-9794da6014f9",
+          "source": "https://www.inaturalist.org/photos/43165453",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142778
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=30bb0675-cd78-50ee-a392-3977f465d96b",
+          "source": "https://www.inaturalist.org/photos/50481346",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 94345
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=5c6aa1d8-4d21-5a9d-a0ca-f7be21551142",
+          "source": "https://www.inaturalist.org/photos/9392859",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 95791
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=adfb6e67-06d6-5799-abb0-76201a0d1930",
+          "source": "https://www.inaturalist.org/photos/50493305",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 133377
+        },
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo?photoId=f2d4cdc2-4807-5130-ab0d-a258392f1023",
+          "source": "https://www.inaturalist.org/photos/61017434",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 165686
         }
       ],
       "name": "Silberwurz",
@@ -233,12 +1097,60 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo",
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=fe2b1b12-b007-5d3e-a796-4dc21f3df25c",
           "source": "https://www.inaturalist.org/photos/5200445",
           "license": "cc-by-sa",
           "automatic": true,
           "status": "available",
           "bytes": 171691
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=3f9e5fde-5058-5700-a587-a5f43c07ce35",
+          "source": "https://www.inaturalist.org/photos/5200446",
+          "license": "pd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 146268
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=af0d381c-2d46-5eff-aa7a-dd053ee321f4",
+          "source": "https://www.inaturalist.org/photos/5200447",
+          "license": "pd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 124870
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=a4d4856b-f4c9-593c-a9af-9d24b06bd1b8",
+          "source": "https://www.inaturalist.org/photos/5200448",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 88960
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=ef04faee-4e7c-5e65-aea5-d29546beb4ee",
+          "source": "https://www.inaturalist.org/photos/5200449",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 175694
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=c1483f73-1b13-50df-accc-96a46bd1bed4",
+          "source": "https://www.inaturalist.org/photos/5200450",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 87980
+        },
+        {
+          "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo?photoId=4b8afe75-7628-523b-a4e8-4fca03dde033",
+          "source": "https://www.inaturalist.org/photos/5200451",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 388173
         }
       ],
       "name": "Silberdistel",
@@ -249,12 +1161,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo",
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=ce0fc6a7-db0f-5541-a16c-cf3ed88c314a",
           "source": "https://www.inaturalist.org/photos/288127084",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 57712
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=e77e53f6-8cb2-5c47-a4c0-a869aa4a62af",
+          "source": "https://www.inaturalist.org/photos/389661868",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 60922
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=eaaf4a34-3086-5d14-a963-3bfe015028b0",
+          "source": "https://www.inaturalist.org/photos/418830709",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 59501
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=bb9e48ea-6d1d-5e50-a2d4-ba88018c7ecd",
+          "source": "https://www.inaturalist.org/photos/389710957",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 120490
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=37a69514-b790-5ac1-ab05-b8c7dc755b0b",
+          "source": "https://www.inaturalist.org/photos/64930309",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 147163
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=2d42a96a-a596-532b-ae82-66e076c76a94",
+          "source": "https://www.inaturalist.org/photos/92817919",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 28212
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=b47efb4f-ee2d-5e35-a216-6055a1f74e89",
+          "source": "https://www.inaturalist.org/photos/379745854",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 63434
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=79c06a6d-2a00-5d8c-a39c-e7bd079265e6",
+          "source": "https://www.inaturalist.org/photos/13863",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 30829
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=b7ab7ccf-58ab-5fb0-aae2-ba1da743b9cd",
+          "source": "https://www.inaturalist.org/photos/38559311",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 60061
+        },
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo?photoId=a62a9f01-8936-5533-a392-95d3c6426c17",
+          "source": "https://www.inaturalist.org/photos/294636733",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 134485
         }
       ],
       "name": "Trollblume",
@@ -265,12 +1249,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo",
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=77e42b81-4fc0-5cd7-a1a0-0db3bf8ddc31",
           "source": "https://www.inaturalist.org/photos/419213976",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 81500
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=8478122e-2e72-57e6-a288-c84081a70161",
+          "source": "https://www.inaturalist.org/photos/59329532",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 191258
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=74d88a66-1474-51c2-a570-6eed67831653",
+          "source": "https://www.inaturalist.org/photos/678797692",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 66649
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=3a16fee2-9eef-5f0c-ad68-e4bf87a4654a",
+          "source": "https://www.inaturalist.org/photos/11241242",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 67013
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=1bea8e79-8f9c-561f-a072-571ec9ed00ed",
+          "source": "https://www.inaturalist.org/photos/141278313",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 83162
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=d1114eba-4ca6-5420-ae2b-edba66c0a20d",
+          "source": "https://www.inaturalist.org/photos/4798329",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 99217
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=368f106d-dba4-5377-afe7-cd8ea10a426f",
+          "source": "https://www.inaturalist.org/photos/21623272",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 135713
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=8b022e95-5e7a-58d3-a1d6-f25b7b38c682",
+          "source": "https://www.inaturalist.org/photos/29228946",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 98997
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=422fcc84-f4f3-57b1-a0d6-1f932c3ac8de",
+          "source": "https://www.inaturalist.org/photos/31430295",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 76973
+        },
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo?photoId=0be9748d-3b82-5b4c-af61-7a5e430050ed",
+          "source": "https://www.inaturalist.org/photos/59329527",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 190109
         }
       ],
       "name": "Alpen-Aster",
@@ -281,12 +1337,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo",
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=3200cbc3-7247-5e45-a838-163f90f275c4",
           "source": "https://www.inaturalist.org/photos/32017311",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 74830
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=ae234b6f-8c8c-51ad-a107-f09ba7cd8aac",
+          "source": "https://www.inaturalist.org/photos/94813447",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 123348
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=79f662fa-66ff-55fe-aa38-2e6114e5c131",
+          "source": "https://www.inaturalist.org/photos/4259959",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 101556
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=0762044d-be20-518c-aa69-cd6a5160a36f",
+          "source": "https://www.inaturalist.org/photos/154344487",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 128970
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=e5915283-8306-5eb8-ac93-03e9b35a66c4",
+          "source": "https://www.inaturalist.org/photos/4259956",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 149116
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=0b41192c-5587-5586-ad6c-530a1ed8d406",
+          "source": "https://www.inaturalist.org/photos/43229122",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 74889
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=227e82ef-1d45-5cfc-a2bb-0a318ae2dfc8",
+          "source": "https://www.inaturalist.org/photos/4259958",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 79643
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=93bc2fe7-5c5f-525c-a526-be34fb037569",
+          "source": "https://www.inaturalist.org/photos/4259957",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 149772
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=ebaaee9b-9824-597f-adbf-995f6df2ef7e",
+          "source": "https://www.inaturalist.org/photos/4259960",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 263352
+        },
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo?photoId=f7eda52d-7b01-549f-acd1-8582ca170281",
+          "source": "https://www.inaturalist.org/photos/118357589",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 170226
         }
       ],
       "name": "Gegenblättriger Steinbrech",
@@ -297,12 +1425,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo",
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=0fcc507c-d07e-5769-ab8c-8ed853f1e544",
           "source": "https://www.inaturalist.org/photos/268688",
           "license": "cc-by-nc-sa",
           "automatic": true,
           "status": "available",
           "bytes": 123832
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=2050aacc-19ae-5491-a7d4-6a39ee4a2333",
+          "source": "https://www.inaturalist.org/photos/128690822",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 94098
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=fefd2f83-0c86-5721-a017-7085b5faffdc",
+          "source": "https://www.inaturalist.org/photos/18283884",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 131036
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=c7efc789-7dc7-559d-ab1f-b8abd181ed56",
+          "source": "https://www.inaturalist.org/photos/70410817",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 155795
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=5fc2c99f-5155-57f0-a553-74a7318e7582",
+          "source": "https://www.inaturalist.org/photos/42634002",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 65585
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=dccf3ddf-9533-50a6-a94b-543148e30bd6",
+          "source": "https://www.inaturalist.org/photos/52492581",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 61869
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=413d30c2-f8d2-5660-aaf8-74d9ce9952d0",
+          "source": "https://www.inaturalist.org/photos/19880148",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 175612
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=a3e4fbdc-377c-55e5-aed5-d9605f956a8a",
+          "source": "https://www.inaturalist.org/photos/23582901",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 167258
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=c02541a3-af3c-596e-aea3-aa77d5536ba9",
+          "source": "https://www.inaturalist.org/photos/17921297",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 128234
+        },
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo?photoId=6be5a77f-123f-5c91-a1f5-fb6e5e653859",
+          "source": "https://www.inaturalist.org/photos/17857574",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 164318
         }
       ],
       "name": "Aurikel",
@@ -313,12 +1513,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo",
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=3b6e2e5c-eb63-5a43-a373-e05806439048",
           "source": "https://www.inaturalist.org/photos/1674791",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 110434
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=a4a9e187-833d-5e1c-a6f5-a69d2ecff222",
+          "source": "https://www.inaturalist.org/photos/200991431",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 112846
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=498eea33-f967-5bbb-acae-c53893a93b4a",
+          "source": "https://www.inaturalist.org/photos/176838399",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 83414
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=899426ac-7648-56ec-a51f-bfc741b68f21",
+          "source": "https://www.inaturalist.org/photos/81068497",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 75770
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=33e2f89b-b357-599d-a332-578a7f247815",
+          "source": "https://www.inaturalist.org/photos/215952309",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 204139
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=47b6ac1e-2157-51b2-ae15-16377921c196",
+          "source": "https://www.inaturalist.org/photos/42345127",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 126825
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=2800b8e4-8012-52cc-af66-b6bd1d207c0d",
+          "source": "https://www.inaturalist.org/photos/42915932",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 134317
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=bdb3af87-e466-5e32-a1be-777f4507a857",
+          "source": "https://www.inaturalist.org/photos/41535023",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 78196
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=dbbf4750-09e3-5548-a5af-85ded8675de8",
+          "source": "https://www.inaturalist.org/photos/8159791",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 190687
+        },
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo?photoId=b33eadd6-c03d-590f-a92f-1cf8a623a1df",
+          "source": "https://www.inaturalist.org/photos/4092363",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 180462
         }
       ],
       "name": "Alpen-Küchenschelle",
@@ -329,12 +1601,76 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo",
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=043aff51-8371-589f-ad52-96813b26c16f",
           "source": "https://www.inaturalist.org/photos/19428761",
           "license": "cc-by-nc-sa",
           "automatic": true,
           "status": "available",
           "bytes": 102160
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=7d3171c1-979d-5784-aaef-ed2a3b8cdfac",
+          "source": "https://www.inaturalist.org/photos/51713",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 116240
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=6c38ca77-1082-56b6-a034-39a7fa037e5c",
+          "source": "https://www.inaturalist.org/photos/199080794",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 146200
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=726a0472-f41f-591f-ad16-4ba043f24306",
+          "source": "https://www.inaturalist.org/photos/233511363",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 186375
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=fda8720e-cfbb-5755-a2b8-7f4230259005",
+          "source": "https://www.inaturalist.org/photos/200989723",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 179567
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=01eeb8d8-eb4f-5695-adf8-b32bb0c63660",
+          "source": "https://www.inaturalist.org/photos/112792500",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 43070
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=0ed6588b-90a8-5bb6-a31c-5d43ce198089",
+          "source": "https://www.inaturalist.org/photos/85233818",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 36469
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=dc3b620f-4f80-51c2-a7df-b6246277dee5",
+          "source": "https://www.inaturalist.org/photos/154117983",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 90314
+        },
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo?photoId=528f0277-0099-5bdd-aa5e-574bf2aaec5b",
+          "source": "https://www.inaturalist.org/photos/37669665",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 104902
         }
       ],
       "name": "Wiesen-Salbei",
@@ -352,12 +1688,68 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo",
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=95ab0627-a60c-5553-a77f-fe995f1d5b35",
           "source": "https://www.inaturalist.org/photos/221830445",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 91777
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=8e9d29ad-5768-5203-a5ec-29b767094653",
+          "source": "https://www.inaturalist.org/photos/335736479",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 116222
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=d938f24b-5ad9-5ffd-a859-c2665721e818",
+          "source": "https://www.inaturalist.org/photos/420907760",
+          "license": "cc0",
+          "automatic": true,
+          "status": "available",
+          "bytes": 41524
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=552b16bb-c8c2-51a6-a81a-3d9e4df9c345",
+          "source": "https://www.inaturalist.org/photos/213279189",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 40060
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=74745977-ee69-5b5b-a320-11304ed5a351",
+          "source": "https://www.inaturalist.org/photos/360962008",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 133031
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=394745ba-01fc-5f70-ae0c-92ad00cb600b",
+          "source": "https://www.inaturalist.org/photos/82023047",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 78488
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=75a23805-48ec-5f2a-aff7-bd5454147cfe",
+          "source": "https://www.inaturalist.org/photos/21832739",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 97786
+        },
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo?photoId=b9d88a1c-b175-570a-a44b-b0e523f16e1e",
+          "source": "https://www.inaturalist.org/photos/313916197",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 64652
         }
       ],
       "name": "Wiesen-Flockenblume",
@@ -368,12 +1760,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo",
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=8d53d6ea-1a9c-53d0-a609-2c03578b2b9c",
           "source": "https://www.inaturalist.org/photos/252157733",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 94200
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=84c74101-57b6-5d3d-a1a4-31f91d75fdf8",
+          "source": "https://www.inaturalist.org/photos/73626323",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 76254
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=877d1873-dd49-5830-ad51-7dc08c3b0fc8",
+          "source": "https://www.inaturalist.org/photos/83748210",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 82445
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=1d3c35c5-7c90-5f1c-a8b2-9b8512c76c0a",
+          "source": "https://www.inaturalist.org/photos/40741101",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 136867
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=0518241a-eece-5f20-a188-6dba0cc6e8d9",
+          "source": "https://www.inaturalist.org/photos/71611025",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 208379
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=be0f8564-dc76-5b1c-a5dd-605aa80e5c3a",
+          "source": "https://www.inaturalist.org/photos/80089959",
+          "license": "pd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 53263
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=cf7e87e3-b9ca-552f-ad9f-6fcda5f1b031",
+          "source": "https://www.inaturalist.org/photos/125123048",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 161504
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=58670fce-11c4-518b-a1fc-7287fc59bd84",
+          "source": "https://www.inaturalist.org/photos/40652944",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 79905
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=f6bc299b-808d-5df2-abaf-274db6e354a0",
+          "source": "https://www.inaturalist.org/photos/99854721",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 80422
+        },
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo?photoId=285db938-3cc0-5fc8-a973-ff87ea0507f1",
+          "source": "https://www.inaturalist.org/photos/67353899",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 57247
         }
       ],
       "name": "Acker-Witwenblume",
@@ -384,12 +1848,76 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo",
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=a9ac6cc0-29ee-5399-af7a-100879b1e908",
           "source": "https://www.inaturalist.org/photos/366803576",
           "license": "cc-by-sa",
           "automatic": true,
           "status": "available",
           "bytes": 120439
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=ea66eaaa-4ece-5897-ad4f-d1cf3cf6e358",
+          "source": "https://www.inaturalist.org/photos/264511103",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 139804
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=ea83c2c1-ff74-5c15-ac01-59dd8092134b",
+          "source": "https://www.inaturalist.org/photos/398013950",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 69576
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=1f36c75e-8684-579e-a1ae-5f0474ffdbe9",
+          "source": "https://www.inaturalist.org/photos/366803594",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 71084
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=73838170-8066-57dc-a812-45f5693b8095",
+          "source": "https://www.inaturalist.org/photos/45639536",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 81407
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=de9f8812-29c9-551c-a385-5260b3f688a6",
+          "source": "https://www.inaturalist.org/photos/366803518",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 79871
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=1a59c8bc-fa27-5895-a145-72d47bdc20ef",
+          "source": "https://www.inaturalist.org/photos/366803643",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 42221
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=0b28116f-bfec-53c7-ab7a-02aadcac4b54",
+          "source": "https://www.inaturalist.org/photos/300686967",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 208737
+        },
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo?photoId=1b27a98b-10ec-5338-a6fe-353a51e62007",
+          "source": "https://www.inaturalist.org/photos/399886389",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 175527
         }
       ],
       "name": "Gewöhnlicher Hornklee",
@@ -400,12 +1928,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo",
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=efb200db-689f-59b5-a1ce-2063d88ff531",
           "source": "https://www.inaturalist.org/photos/15760",
           "license": "cc-by-nc-nd",
           "automatic": true,
           "status": "available",
           "bytes": 34096
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=44c6f7d4-a72c-58f7-a8c3-920d73db2e00",
+          "source": "https://www.inaturalist.org/photos/77519626",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 255491
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=b61a661d-73a9-559b-a01d-21ee4239a691",
+          "source": "https://www.inaturalist.org/photos/1865320",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 69001
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=64fc02b3-1d9c-5db9-a1c3-e488f5a7e8dc",
+          "source": "https://www.inaturalist.org/photos/11403126",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 167188
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=10595067-a9aa-5265-a185-a658bdcdfa69",
+          "source": "https://www.inaturalist.org/photos/709970544",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 199105
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=f711c87e-5477-5cdd-a6ee-a74126b8e477",
+          "source": "https://www.inaturalist.org/photos/8554459",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 93969
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=eb1d6dfb-47f8-58f5-a437-a8b2f141b8b5",
+          "source": "https://www.inaturalist.org/photos/61980398",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 39536
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=f74f3b08-b456-55ff-ada2-239501ad3961",
+          "source": "https://www.inaturalist.org/photos/257323308",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 102301
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=22a029fb-22ac-516c-a52c-f5297528896f",
+          "source": "https://www.inaturalist.org/photos/15761",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 31701
+        },
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo?photoId=f40b06dc-82a9-5fa2-a0ff-40fe387f9d8e",
+          "source": "https://www.inaturalist.org/photos/15703",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 69587
         }
       ],
       "name": "Kleiner Klappertopf",
@@ -416,12 +2016,84 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo",
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=5b683d9c-3f3f-5378-a2da-ddc33db9a860",
           "source": "https://www.inaturalist.org/photos/400604608",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 49198
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=1fc4d367-f889-57e7-ac33-beafeea2295d",
+          "source": "https://www.inaturalist.org/photos/219312271",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 22953
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=b93f3186-f587-5afd-aea9-7e43c56551ac",
+          "source": "https://www.inaturalist.org/photos/21634648",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 186158
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=250368db-dc63-5000-adac-cd79d9f1b7cd",
+          "source": "https://www.inaturalist.org/photos/64744814",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 226875
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=fafb1990-d1a4-5ca4-a76b-9641129e81c9",
+          "source": "https://www.inaturalist.org/photos/395323536",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 71027
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=c16a0b56-16a7-5cbc-a34c-eb51a5860984",
+          "source": "https://www.inaturalist.org/photos/369418",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 37926
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=5d1c47a5-4df5-5815-a699-cf4af84ad234",
+          "source": "https://www.inaturalist.org/photos/205041868",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142136
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=705bf206-1c61-5ed7-a6dd-3d94996fde90",
+          "source": "https://www.inaturalist.org/photos/414258280",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 110770
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=57320deb-0109-5324-a016-bf681addd17f",
+          "source": "https://www.inaturalist.org/photos/123165457",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 77701
+        },
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo?photoId=030aae0d-731e-5d64-acfa-ba6ccc69f90b",
+          "source": "https://www.inaturalist.org/photos/670363475",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 113227
         }
       ],
       "name": "Wiesen-Bocksbart",
@@ -432,12 +2104,68 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo",
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=09b1adcb-2cc6-5e33-a168-74d9013af5cc",
           "source": "https://www.inaturalist.org/photos/13275284",
           "license": "cc-by-nc-sa",
           "automatic": true,
           "status": "available",
           "bytes": 83405
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=8adaca5d-f7f9-54a7-a2ab-591be4ae230c",
+          "source": "https://www.inaturalist.org/photos/75678672",
+          "license": "cc0",
+          "automatic": true,
+          "status": "available",
+          "bytes": 168585
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=8955778b-d0dc-541e-a846-d837e4dff645",
+          "source": "https://www.inaturalist.org/photos/136077674",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 169515
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=e15b299f-e57a-55f7-a505-d96f26b08e15",
+          "source": "https://www.inaturalist.org/photos/289983126",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142435
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=5ac0e990-b2b9-5174-a3a5-bb70854f2478",
+          "source": "https://www.inaturalist.org/photos/13275285",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 172543
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=f1db2684-b791-5681-a7e8-7c13947610d4",
+          "source": "https://www.inaturalist.org/photos/89729146",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 142465
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=429d12ea-a014-51cb-a6ce-43f0101a8ba1",
+          "source": "https://www.inaturalist.org/photos/289983244",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 181497
+        },
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo?photoId=50a09738-9b8e-56fa-ad77-3bbff2553a61",
+          "source": "https://www.inaturalist.org/photos/289983285",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 124056
         }
       ],
       "name": "Wiesen-Glockenblume",
@@ -448,12 +2176,68 @@
       "status": "available",
       "photos": [
         {
-          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo",
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=3e4889d1-55e6-5977-a163-c1c327bb9a69",
           "source": "https://www.inaturalist.org/photos/384758481",
           "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
           "bytes": 34812
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=21d83648-22d7-5639-a604-2938cb61a967",
+          "source": "https://www.inaturalist.org/photos/269756628",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 174843
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=af4bf943-7cff-5c86-a2ae-6bd423d9147e",
+          "source": "https://www.inaturalist.org/photos/289213594",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 129961
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=e30b44f7-8a9a-5316-af16-d86be5f85878",
+          "source": "https://www.inaturalist.org/photos/587478702",
+          "license": "cc-by-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 80073
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=2f8159de-bf73-53d8-afd8-e85ff172e120",
+          "source": "https://www.inaturalist.org/photos/74509744",
+          "license": "cc-by-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 49187
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=60c92cc9-a766-5847-a34e-38dcd198cb6b",
+          "source": "https://www.inaturalist.org/photos/191710460",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 160320
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=36cfd32e-5987-54bf-a1c1-1e0827415eb2",
+          "source": "https://www.inaturalist.org/photos/66892509",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 146496
+        },
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo?photoId=dc85ca13-0137-5d24-a13f-004372b51958",
+          "source": "https://www.inaturalist.org/photos/447206924",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 75379
         }
       ],
       "name": "Spitzwegerich",
