@@ -9,12 +9,14 @@ import 'package:openapi/api.dart';
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **String** |  |
+**slug** | **String** |  | [optional]
 **scientificName** | **String** |  |
 **commonName** | **String** |  | [optional]
 **family** | **String** |  | [optional]
 **description** | **String** |  | [optional]
 **warning** | **String** |  | [optional]
 **sources** | **BuiltList&lt;String&gt;** |  | [optional]
+**profileCards** | [**BuiltList&lt;PlantProfileCardsInner&gt;**](PlantProfileCardsInner.md) | Readable CMS-authored lesson sections. Does not include quiz solution keys. Absent in older releases. | [optional]
 **media** | [**BuiltList&lt;PublicMedia&gt;**](PublicMedia.md) |  | [optional]
 **releaseVersion** | **String** |  |
 

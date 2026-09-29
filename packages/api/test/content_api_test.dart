@@ -62,6 +62,15 @@ void main() {
       // TODO
     });
 
+    // Read an attributed supplemental photo for a published plant
+    //
+    // Without photoId the primary supplemental photo is returned. The plant profile lists up to ten photos (authored first) whose URLs carry the photoId of each supplemental photo.
+    //
+    //Future<Uint8List> getPlantPhoto(String plantId, { String photoId }) async
+    test('test getPlantPhoto', () async {
+      // TODO
+    });
+
     // List published ecosystems
     //
     //Future<EcosystemPage> listEcosystems({ int page, int pageSize }) async

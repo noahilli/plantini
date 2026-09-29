@@ -51,7 +51,9 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
 
   void _sample() {
     final media = widget.plant.media;
-    final url = media.isEmpty ? null : media[_selected].url;
+    // Palette is anchored to the primary (first) botanical image. Browsing
+    // alternate angles must not make the whole card flicker between colors.
+    final url = media.isEmpty ? null : media.first.url;
     if (_sampledUrl == url) return;
     _sampledUrl = url;
     final generation = ++_generation;
@@ -153,6 +155,17 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
     ).hasMatch(identity);
   }
 
+  void _swipePhoto(DragEndDetails details) {
+    final velocity = details.primaryVelocity ?? 0;
+    if (velocity.abs() < 160 || widget.plant.media.length < 2) return;
+    setState(() {
+      _selected = velocity < 0
+          ? (_selected + 1) % widget.plant.media.length
+          : (_selected - 1 + widget.plant.media.length) %
+                widget.plant.media.length;
+    });
+  }
+
   @override
   void dispose() {
     _generation++;
@@ -195,24 +208,27 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
                     fit: StackFit.expand,
                     children: [
                       // Fit.contain intentionally preserves leaves, stems and margins.
-                      Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.network(
-                            photo.url,
-                            fit: BoxFit.contain,
-                            semanticLabel: photo.altText,
-                            loadingBuilder: (context, child, progress) =>
-                                progress == null
-                                ? child
-                                : const Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                      GestureDetector(
+                        onHorizontalDragEnd: _swipePhoto,
+                        child: Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.network(
+                              photo.url,
+                              fit: BoxFit.contain,
+                              semanticLabel: photo.altText,
+                              loadingBuilder: (context, child, progress) =>
+                                  progress == null
+                                  ? child
+                                  : const Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     ),
-                                  ),
-                            errorBuilder: (_, _, _) => _unavailable(
-                              'Foto momentan nicht verfügbar',
-                              compact: true,
+                              errorBuilder: (_, _, _) => _unavailable(
+                                'Foto momentan nicht verfügbar',
+                                compact: true,
+                              ),
                             ),
                           ),
                         ),

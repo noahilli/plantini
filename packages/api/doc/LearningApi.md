@@ -10,6 +10,7 @@ All URIs are relative to *http://127.0.0.1:1338/api/v1*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**completeLevelAttempt**](LearningApi.md#completelevelattempt) | **POST** /level-attempts/{attemptId}/complete | Complete an attempt with server-side scoring
+[**getEcosystemProgress**](LearningApi.md#getecosystemprogress) | **GET** /ecosystems/{ecosystemId}/progress | Compute the actor&#39;s ecosystem completion from passed levels and collected species
 [**getProgress**](LearningApi.md#getprogress) | **GET** /progress | Read server-authoritative learning progress
 [**listAchievements**](LearningApi.md#listachievements) | **GET** /achievements | List earned and next learning achievements
 [**listQuizItems**](LearningApi.md#listquizitems) | **GET** /quiz-items | List quiz items for a level and content version
@@ -59,6 +60,49 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getEcosystemProgress**
+> EcosystemProgress getEcosystemProgress(ecosystemId)
+
+Compute the actor's ecosystem completion from passed levels and collected species
+
+Read-only authoritative snapshot. Collection can precede any quiz. All quiz levels remain passable without collection when collectionScope is ecosystem. A deleted herbarium record no longer counts; duplicates and foreign species do not satisfy additional targets. No completion mutation is required.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getLearningApi();
+final String ecosystemId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // String |
+
+try {
+    final response = api.getEcosystemProgress(ecosystemId);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling LearningApi->getEcosystemProgress: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ecosystemId** | **String**|  |
+
+### Return type
+
+[**EcosystemProgress**](EcosystemProgress.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -188,6 +232,8 @@ Name | Type | Description  | Notes
 > LevelAttempt startLevelAttempt(idempotencyKey, startLevelAttemptRequest)
 
 Start or resume an idempotent level attempt
+
+Missing requiredLevelIds returns 409 LEVEL_LOCKED. Passed levels permit revisits; failed attempts can be retried using a new clientAttemptId.
 
 ### Example
 ```dart

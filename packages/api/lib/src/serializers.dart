@@ -34,6 +34,7 @@ import 'package:openapi/src/model/create_observation_request.dart';
 import 'package:openapi/src/model/create_upload_request.dart';
 import 'package:openapi/src/model/ecosystem.dart';
 import 'package:openapi/src/model/ecosystem_page.dart';
+import 'package:openapi/src/model/ecosystem_progress.dart';
 import 'package:openapi/src/model/event_batch_ack.dart';
 import 'package:openapi/src/model/identification_candidate.dart';
 import 'package:openapi/src/model/identification_job.dart';
@@ -49,6 +50,7 @@ import 'package:openapi/src/model/observation.dart';
 import 'package:openapi/src/model/observation_page.dart';
 import 'package:openapi/src/model/page_meta.dart';
 import 'package:openapi/src/model/plant.dart';
+import 'package:openapi/src/model/plant_profile_cards_inner.dart';
 import 'package:openapi/src/model/private_location.dart';
 import 'package:openapi/src/model/problem.dart';
 import 'package:openapi/src/model/progress_snapshot.dart';
@@ -87,6 +89,7 @@ part 'serializers.g.dart';
   CreateUploadRequest,
   Ecosystem,
   EcosystemPage,
+  EcosystemProgress,
   EventBatchAck,
   IdentificationCandidate,
   IdentificationJob,
@@ -102,6 +105,7 @@ part 'serializers.g.dart';
   ObservationPage,
   PageMeta,
   Plant,
+  PlantProfileCardsInner,
   PrivateLocation,
   Problem,
   ProgressSnapshot,
@@ -125,6 +129,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(LevelProgress)]),
         () => ListBuilder<LevelProgress>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltSet, [FullType(String)]),
+        () => SetBuilder<String>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(IdentificationCandidate)]),
@@ -153,6 +161,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ContentPackage)]),
         () => ListBuilder<ContentPackage>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PlantProfileCardsInner)]),
+        () => ListBuilder<PlantProfileCardsInner>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(Observation)]),

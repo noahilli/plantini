@@ -77,6 +77,7 @@ Class | Method | HTTP request | Description
 [*ContentApi*](doc/ContentApi.md) | [**getEcosystem**](doc/ContentApi.md#getecosystem) | **GET** /ecosystems/{ecosystemId} | Read one published ecosystem
 [*ContentApi*](doc/ContentApi.md) | [**getLevel**](doc/ContentApi.md#getlevel) | **GET** /levels/{levelId} | Read an accessible level and its user state
 [*ContentApi*](doc/ContentApi.md) | [**getPlant**](doc/ContentApi.md#getplant) | **GET** /plants/{plantId} | Read one published plant profile
+[*ContentApi*](doc/ContentApi.md) | [**getPlantPhoto**](doc/ContentApi.md#getplantphoto) | **GET** /plants/{plantId}/photo | Read an attributed supplemental photo for a published plant
 [*ContentApi*](doc/ContentApi.md) | [**listEcosystems**](doc/ContentApi.md#listecosystems) | **GET** /ecosystems | List published ecosystems
 [*FieldApi*](doc/FieldApi.md) | [**confirmIdentification**](doc/FieldApi.md#confirmidentification) | **POST** /identifications/{jobId}/confirm | Confirm one candidate before it can enter the private herbarium
 [*FieldApi*](doc/FieldApi.md) | [**createIdentification**](doc/FieldApi.md#createidentification) | **POST** /identifications | Create an asynchronous identification job
@@ -90,6 +91,7 @@ Class | Method | HTTP request | Description
 [*HerbariumApi*](doc/HerbariumApi.md) | [**listObservations**](doc/HerbariumApi.md#listobservations) | **GET** /observations | List caller-owned herbarium observations
 [*HerbariumApi*](doc/HerbariumApi.md) | [**updateObservation**](doc/HerbariumApi.md#updateobservation) | **PATCH** /observations/{observationId} | Update an observation with optimistic concurrency
 [*LearningApi*](doc/LearningApi.md) | [**completeLevelAttempt**](doc/LearningApi.md#completelevelattempt) | **POST** /level-attempts/{attemptId}/complete | Complete an attempt with server-side scoring
+[*LearningApi*](doc/LearningApi.md) | [**getEcosystemProgress**](doc/LearningApi.md#getecosystemprogress) | **GET** /ecosystems/{ecosystemId}/progress | Compute the actor&#39;s ecosystem completion from passed levels and collected species
 [*LearningApi*](doc/LearningApi.md) | [**getProgress**](doc/LearningApi.md#getprogress) | **GET** /progress | Read server-authoritative learning progress
 [*LearningApi*](doc/LearningApi.md) | [**listAchievements**](doc/LearningApi.md#listachievements) | **GET** /achievements | List earned and next learning achievements
 [*LearningApi*](doc/LearningApi.md) | [**listQuizItems**](doc/LearningApi.md#listquizitems) | **GET** /quiz-items | List quiz items for a level and content version
@@ -126,6 +128,7 @@ Class | Method | HTTP request | Description
  - [CreateUploadRequest](doc/CreateUploadRequest.md)
  - [Ecosystem](doc/Ecosystem.md)
  - [EcosystemPage](doc/EcosystemPage.md)
+ - [EcosystemProgress](doc/EcosystemProgress.md)
  - [EventBatchAck](doc/EventBatchAck.md)
  - [IdentificationCandidate](doc/IdentificationCandidate.md)
  - [IdentificationJob](doc/IdentificationJob.md)
@@ -141,6 +144,7 @@ Class | Method | HTTP request | Description
  - [ObservationPage](doc/ObservationPage.md)
  - [PageMeta](doc/PageMeta.md)
  - [Plant](doc/Plant.md)
+ - [PlantProfileCardsInner](doc/PlantProfileCardsInner.md)
  - [PrivateLocation](doc/PrivateLocation.md)
  - [Problem](doc/Problem.md)
  - [ProgressSnapshot](doc/ProgressSnapshot.md)

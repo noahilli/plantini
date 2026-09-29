@@ -140,11 +140,18 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
   /plants/{plantId}/photo:
     get:
-      summary: Read the attributed supplemental photo for a published plant
+      summary: Read an attributed supplemental photo for a published plant
+      description: Without photoId the primary supplemental photo is returned. The plant profile lists up to ten photos (authored first) whose URLs carry the photoId of each supplemental photo.
       tags: [Content]
       operationId: getPlantPhoto
       security: []
-      parameters: [{$ref: '#/components/parameters/PlantId'}]
+      parameters:
+        - {$ref: '#/components/parameters/PlantId'}
+        - name: photoId
+          in: query
+          required: false
+          description: Identifier of one supplemental photo of this plant, as referenced by the plant profile media URL.
+          schema: {type: string, minLength: 1, maxLength: 64}
       responses:
         '200':
           description: Same-origin cached image. Attribution and license are in the plant profile.
@@ -152,6 +159,7 @@ paths:
             image/jpeg: {schema: {type: string, format: binary}}
             image/png: {schema: {type: string, format: binary}}
             image/webp: {schema: {type: string, format: binary}}
+        '400': {$ref: '#/components/responses/BadRequest'}
         '404': {$ref: '#/components/responses/NotFound'}
         '503': {description: Image provider or cache temporarily unavailable}
   /quiz-items:

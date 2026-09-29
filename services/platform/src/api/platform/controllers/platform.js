@@ -68,8 +68,12 @@ module.exports = {
 
   async getPlantPhoto(ctx) {
     return execute(ctx, async (runtime) => {
-      rejectUnknownQuery(ctx.query, []);
-      const photo = await runtime.content.getPlantPhoto(ctx.params.plantId);
+      rejectUnknownQuery(ctx.query, ['photoId']);
+      const photoId = ctx.query.photoId;
+      if (photoId !== undefined && (typeof photoId !== 'string' || photoId.length > 64)) {
+        throw new ProblemError('INVALID_QUERY', { status: 400, detail: 'photoId is invalid.' });
+      }
+      const photo = await runtime.content.getPlantPhoto(ctx.params.plantId, photoId);
       ctx.set('Cache-Control', 'public, max-age=3600');
       ctx.set('X-Content-Type-Options', 'nosniff');
       ctx.type = photo.type;

@@ -17,6 +17,7 @@ Method | HTTP request | Description
 [**getEcosystem**](ContentApi.md#getecosystem) | **GET** /ecosystems/{ecosystemId} | Read one published ecosystem
 [**getLevel**](ContentApi.md#getlevel) | **GET** /levels/{levelId} | Read an accessible level and its user state
 [**getPlant**](ContentApi.md#getplant) | **GET** /plants/{plantId} | Read one published plant profile
+[**getPlantPhoto**](ContentApi.md#getplantphoto) | **GET** /plants/{plantId}/photo | Read an attributed supplemental photo for a published plant
 [**listEcosystems**](ContentApi.md#listecosystems) | **GET** /ecosystems | List published ecosystems
 
 
@@ -345,6 +346,51 @@ No authorization required
 
  - **Content-Type**: Not defined
  - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getPlantPhoto**
+> Uint8List getPlantPhoto(plantId, photoId)
+
+Read an attributed supplemental photo for a published plant
+
+Without photoId the primary supplemental photo is returned. The plant profile lists up to ten photos (authored first) whose URLs carry the photoId of each supplemental photo.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getContentApi();
+final String plantId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // String |
+final String photoId = photoId_example; // String | Identifier of one supplemental photo of this plant, as referenced by the plant profile media URL.
+
+try {
+    final response = api.getPlantPhoto(plantId, photoId);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling ContentApi->getPlantPhoto: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **plantId** | **String**|  |
+ **photoId** | **String**| Identifier of one supplemental photo of this plant, as referenced by the plant profile media URL. | [optional]
+
+### Return type
+
+[**Uint8List**](Uint8List.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: image/jpeg, image/png, image/webp, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

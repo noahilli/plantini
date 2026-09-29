@@ -4,6 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:built_collection/built_collection.dart';
+import 'package:openapi/src/model/plant_profile_cards_inner.dart';
 import 'package:openapi/src/model/public_media.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
@@ -14,18 +15,23 @@ part 'plant.g.dart';
 ///
 /// Properties:
 /// * [id]
+/// * [slug]
 /// * [scientificName]
 /// * [commonName]
 /// * [family]
 /// * [description]
 /// * [warning]
 /// * [sources]
+/// * [profileCards] - Readable CMS-authored lesson sections. Does not include quiz solution keys. Absent in older releases.
 /// * [media]
 /// * [releaseVersion]
 @BuiltValue()
 abstract class Plant implements Built<Plant, PlantBuilder> {
   @BuiltValueField(wireName: r'id')
   String get id;
+
+  @BuiltValueField(wireName: r'slug')
+  String? get slug;
 
   @BuiltValueField(wireName: r'scientificName')
   String get scientificName;
@@ -44,6 +50,10 @@ abstract class Plant implements Built<Plant, PlantBuilder> {
 
   @BuiltValueField(wireName: r'sources')
   BuiltList<String>? get sources;
+
+  /// Readable CMS-authored lesson sections. Does not include quiz solution keys. Absent in older releases.
+  @BuiltValueField(wireName: r'profileCards')
+  BuiltList<PlantProfileCardsInner>? get profileCards;
 
   @BuiltValueField(wireName: r'media')
   BuiltList<PublicMedia>? get media;
@@ -79,6 +89,13 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
       object.id,
       specifiedType: const FullType(String),
     );
+    if (object.slug != null) {
+      yield r'slug';
+      yield serializers.serialize(
+        object.slug,
+        specifiedType: const FullType(String),
+      );
+    }
     yield r'scientificName';
     yield serializers.serialize(
       object.scientificName,
@@ -117,6 +134,14 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
       yield serializers.serialize(
         object.sources,
         specifiedType: const FullType(BuiltList, [FullType(String)]),
+      );
+    }
+    if (object.profileCards != null) {
+      yield r'profileCards';
+      yield serializers.serialize(
+        object.profileCards,
+        specifiedType:
+            const FullType(BuiltList, [FullType(PlantProfileCardsInner)]),
       );
     }
     if (object.media != null) {
@@ -162,6 +187,14 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
             specifiedType: const FullType(String),
           ) as String;
           result.id = valueDes;
+          break;
+        case r'slug':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.slug = valueDes;
           break;
         case r'scientificName':
           final valueDes = serializers.deserialize(
@@ -210,6 +243,15 @@ class _$PlantSerializer implements PrimitiveSerializer<Plant> {
           ) as BuiltList<String>?;
           if (valueDes == null) continue;
           result.sources.replace(valueDes);
+          break;
+        case r'profileCards':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(
+                BuiltList, [FullType(PlantProfileCardsInner)]),
+          ) as BuiltList<PlantProfileCardsInner>?;
+          if (valueDes == null) continue;
+          result.profileCards.replace(valueDes);
           break;
         case r'media':
           final valueDes = serializers.deserialize(

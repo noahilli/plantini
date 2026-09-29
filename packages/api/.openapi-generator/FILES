@@ -23,6 +23,7 @@ doc/CreateObservationRequest.md
 doc/CreateUploadRequest.md
 doc/Ecosystem.md
 doc/EcosystemPage.md
+doc/EcosystemProgress.md
 doc/EventBatchAck.md
 doc/FieldApi.md
 doc/HerbariumApi.md
@@ -41,6 +42,7 @@ doc/Observation.md
 doc/ObservationPage.md
 doc/PageMeta.md
 doc/Plant.md
+doc/PlantProfileCardsInner.md
 doc/PrivateLocation.md
 doc/Problem.md
 doc/ProfileApi.md
@@ -91,6 +93,7 @@ lib/src/model/create_upload_request.dart
 lib/src/model/date.dart
 lib/src/model/ecosystem.dart
 lib/src/model/ecosystem_page.dart
+lib/src/model/ecosystem_progress.dart
 lib/src/model/event_batch_ack.dart
 lib/src/model/identification_candidate.dart
 lib/src/model/identification_job.dart
@@ -106,6 +109,7 @@ lib/src/model/observation.dart
 lib/src/model/observation_page.dart
 lib/src/model/page_meta.dart
 lib/src/model/plant.dart
+lib/src/model/plant_profile_cards_inner.dart
 lib/src/model/private_location.dart
 lib/src/model/problem.dart
 lib/src/model/progress_snapshot.dart
@@ -142,6 +146,7 @@ test/create_import_request_test.dart
 test/create_observation_request_test.dart
 test/create_upload_request_test.dart
 test/ecosystem_page_test.dart
+test/ecosystem_progress_test.dart
 test/ecosystem_test.dart
 test/event_batch_ack_test.dart
 test/field_api_test.dart
@@ -160,6 +165,7 @@ test/media_upload_test.dart
 test/observation_page_test.dart
 test/observation_test.dart
 test/page_meta_test.dart
+test/plant_profile_cards_inner_test.dart
 test/plant_test.dart
 test/private_location_test.dart
 test/problem_test.dart

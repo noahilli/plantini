@@ -62,23 +62,32 @@ class ContentService {
     const plant = await this.repository.findPublishedPlant(plantId);
     if (!plant) throw notFound('PLANT_NOT_FOUND');
     const result = mapPlant(plant);
-    // External imagery is supplemental: do not mutate a published CMS release.
-    // Authored media always wins, even when the provider has a cached image.
-    if (result.media.length === 0 && this.photoSource) {
-      const photo = await this.photoSource.find(plant.scientificName);
-      if (photo) result.media = [{ ...photo,
-        url: this.photoCache ? `/api/v1/plants/${plantId}/photo` : photo.url,
-      }];
+    result.media = result.media.slice(0, 10);
+    // Automatically sourced imagery supplements authored CMS media without
+    // changing the published release. Keep authored imagery first, and cap
+    // the combined card gallery at ten photos.
+    if (this.photoSource && result.media.length < 10) {
+      const photos = await this.photoSource.findMany(plant.scientificName, 10 - result.media.length);
+      const authoredUrls = new Set(result.media.map((media) => media.url));
+      result.media.push(...photos.filter((photo) => !authoredUrls.has(photo.url)).map((photo) => ({
+        ...photo,
+        url: this.photoCache
+          ? `/api/v1/plants/${plantId}/photo?photoId=${encodeURIComponent(photo.id)}`
+          : photo.url,
+      })));
     }
     return result;
   }
 
-  async getPlantPhoto(plantId) {
+  async getPlantPhoto(plantId, photoId) {
     requireUuid(plantId, 'plantId');
     const plant = await this.repository.findPublishedPlant(plantId);
     if (!plant) throw notFound('PLANT_NOT_FOUND');
-    if (!this.photoSource || !this.photoCache || mapPlant(plant).media.length) throw notFound('PHOTO_NOT_FOUND');
-    const photo = await this.photoSource.find(plant.scientificName);
+    if (!this.photoSource || !this.photoCache) throw notFound('PHOTO_NOT_FOUND');
+    const photos = photoId
+      ? await this.photoSource.findMany(plant.scientificName, 10)
+      : [await this.photoSource.find(plant.scientificName)];
+    const photo = photoId ? photos.find((candidate) => candidate.id === photoId) : photos[0];
     if (!photo) throw notFound('PHOTO_NOT_FOUND');
     try { return await this.photoCache.get(photo.url); }
     catch { throw new ProblemError('PHOTO_UNAVAILABLE', { status: 503, detail: 'Das Pflanzenfoto ist momentan nicht verfügbar.' }); }

@@ -16,6 +16,9 @@ part 'public_media.g.dart';
 /// * [altText]
 /// * [license]
 /// * [author]
+/// * [source_] - Original image description and attribution page
+/// * [licenseUrl]
+/// * [automatic] - Supplemental provider image not editorially reviewed or part of the immutable release
 @BuiltValue()
 abstract class PublicMedia implements Built<PublicMedia, PublicMediaBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -33,12 +36,23 @@ abstract class PublicMedia implements Built<PublicMedia, PublicMediaBuilder> {
   @BuiltValueField(wireName: r'author')
   String get author;
 
+  /// Original image description and attribution page
+  @BuiltValueField(wireName: r'source')
+  String? get source_;
+
+  @BuiltValueField(wireName: r'licenseUrl')
+  String? get licenseUrl;
+
+  /// Supplemental provider image not editorially reviewed or part of the immutable release
+  @BuiltValueField(wireName: r'automatic')
+  bool? get automatic;
+
   PublicMedia._();
 
   factory PublicMedia([void updates(PublicMediaBuilder b)]) = _$PublicMedia;
 
   @BuiltValueHook(initializeBuilder: true)
-  static void _defaults(PublicMediaBuilder b) => b;
+  static void _defaults(PublicMediaBuilder b) => b..automatic = false;
 
   @BuiltValueSerializer(custom: true)
   static Serializer<PublicMedia> get serializer => _$PublicMediaSerializer();
@@ -81,6 +95,27 @@ class _$PublicMediaSerializer implements PrimitiveSerializer<PublicMedia> {
       object.author,
       specifiedType: const FullType(String),
     );
+    if (object.source_ != null) {
+      yield r'source';
+      yield serializers.serialize(
+        object.source_,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.licenseUrl != null) {
+      yield r'licenseUrl';
+      yield serializers.serialize(
+        object.licenseUrl,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.automatic != null) {
+      yield r'automatic';
+      yield serializers.serialize(
+        object.automatic,
+        specifiedType: const FullType(bool),
+      );
+    }
   }
 
   @override
@@ -140,6 +175,30 @@ class _$PublicMediaSerializer implements PrimitiveSerializer<PublicMedia> {
             specifiedType: const FullType(String),
           ) as String;
           result.author = valueDes;
+          break;
+        case r'source':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.source_ = valueDes;
+          break;
+        case r'licenseUrl':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.licenseUrl = valueDes;
+          break;
+        case r'automatic':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(bool),
+          ) as bool?;
+          if (valueDes == null) continue;
+          result.automatic = valueDes;
           break;
         default:
           unhandled.add(key);

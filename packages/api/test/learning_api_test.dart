@@ -13,6 +13,15 @@ void main() {
       // TODO
     });
 
+    // Compute the actor's ecosystem completion from passed levels and collected species
+    //
+    // Read-only authoritative snapshot. Collection can precede any quiz. All quiz levels remain passable without collection when collectionScope is ecosystem. A deleted herbarium record no longer counts; duplicates and foreign species do not satisfy additional targets. No completion mutation is required.
+    //
+    //Future<EcosystemProgress> getEcosystemProgress(String ecosystemId) async
+    test('test getEcosystemProgress', () async {
+      // TODO
+    });
+
     // Read server-authoritative learning progress
     //
     //Future<ProgressSnapshot> getProgress({ DateTime since }) async
@@ -35,6 +44,8 @@ void main() {
     });
 
     // Start or resume an idempotent level attempt
+    //
+    // Missing requiredLevelIds returns 409 LEVEL_LOCKED. Passed levels permit revisits; failed attempts can be retried using a new clientAttemptId.
     //
     //Future<LevelAttempt> startLevelAttempt(String idempotencyKey, StartLevelAttemptRequest startLevelAttemptRequest) async
     test('test startLevelAttempt', () async {

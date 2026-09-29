@@ -18,6 +18,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AdministrativeJobStatusEnum.serializer)
       ..add(CompleteLevelAttemptRequest.serializer)
       ..add(CompletionRule.serializer)
+      ..add(CompletionRuleCollectionScopeEnum.serializer)
       ..add(ConfirmIdentificationRequest.serializer)
       ..add(ContentChange.serializer)
       ..add(ContentChangeEntityEnum.serializer)
@@ -34,6 +35,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CreateUploadRequestContentTypeEnum.serializer)
       ..add(Ecosystem.serializer)
       ..add(EcosystemPage.serializer)
+      ..add(EcosystemProgress.serializer)
+      ..add(EcosystemProgressStatusEnum.serializer)
       ..add(EventBatchAck.serializer)
       ..add(IdentificationCandidate.serializer)
       ..add(IdentificationJob.serializer)
@@ -57,6 +60,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ObservationSyncStatusEnum.serializer)
       ..add(PageMeta.serializer)
       ..add(Plant.serializer)
+      ..add(PlantProfileCardsInner.serializer)
       ..add(PrivateLocation.serializer)
       ..add(Problem.serializer)
       ..add(ProgressSnapshot.serializer)
@@ -129,6 +133,13 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(PlantProfileCardsInner)]),
+          () => ListBuilder<PlantProfileCardsInner>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PublicMedia)]),
+          () => ListBuilder<PublicMedia>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
@@ -138,8 +149,11 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(PublicMedia)]),
-          () => ListBuilder<PublicMedia>())
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltSet, const [const FullType(String)]),
+          () => SetBuilder<String>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(UserProfileRolesEnum)]),
@@ -151,7 +165,19 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(
               BuiltMap, const [const FullType(String), const FullType(num)]),
-          () => MapBuilder<String, num>()))
+          () => MapBuilder<String, num>())
+      ..addBuilderFactory(
+          const FullType(BuiltSet, const [const FullType(String)]),
+          () => SetBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltSet, const [const FullType(String)]),
+          () => SetBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltSet, const [const FullType(String)]),
+          () => SetBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltSet, const [const FullType(String)]),
+          () => SetBuilder<String>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

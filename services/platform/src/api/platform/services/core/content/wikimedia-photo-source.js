@@ -68,7 +68,31 @@ class WikimediaPhotoSource {
   constructor({ metadataStore } = {}) {
     this.cache = new Map();
     this.pending = new Map();
+    this.galleryCache = new Map();
     this.metadataStore = metadataStore;
+  }
+
+  async findMany(scientificName, limit = 10) {
+    const name = String(scientificName || '').trim();
+    if (!name || name.length > 160) return [];
+    const cached = this.galleryCache.get(name);
+    if (cached && cached.expires > Date.now()) return cached.photos.slice(0, limit);
+
+    const primary = await this.find(name);
+    let extra = [];
+    let degraded = false;
+    try { extra = await this.lookupInaturalistPhotos(name, limit); }
+    catch { degraded = true; /* Keep the primary photo visible if the gallery source is down. */ }
+    const seen = new Set();
+    const photos = [primary, ...extra].filter((photo) => {
+      if (!photo || seen.has(photo.url)) return false;
+      seen.add(photo.url);
+      return true;
+    }).slice(0, Math.max(1, Math.min(10, limit)));
+    if (this.galleryCache.size >= 500) this.galleryCache.delete(this.galleryCache.keys().next().value);
+    // A gallery reduced by a provider failure is retried soon, not for a day.
+    this.galleryCache.set(name, { photos, expires: Date.now() + (degraded ? 300000 : 86400000) });
+    return photos;
   }
 
   async find(scientificName) {
@@ -169,35 +193,58 @@ class WikimediaPhotoSource {
   }
 
   async lookupInaturalist(name) {
+    return (await this.lookupInaturalistPhotos(name, 1))[0] || null;
+  }
+
+  async lookupInaturalistPhotos(name, limit = 10) {
     const url = new URL('https://api.inaturalist.org/v1/taxa');
     url.search = new URLSearchParams({ q: name, all_names: 'true' }).toString();
     const taxa = await getJson(url);
     const taxon = (taxa.results || []).find((result) =>
       result.name === name || (result.names || []).some((synonym) =>
         synonym.locale === 'sci' && synonym.name === name && synonym.is_valid === false));
-    let photo = taxon?.default_photo;
-    if (!taxon) return null;
-    if (!photo) {
-      const observationsUrl = new URL('https://api.inaturalist.org/v1/observations');
-      observationsUrl.search = new URLSearchParams({ taxon_id: String(taxon.id), photos: 'true', per_page: '30', order_by: 'created_at' }).toString();
-      const observations = await getJson(observationsUrl);
-      const observation = (observations.results || []).find((result) =>
-        result.taxon?.name === taxon.name && result.photos?.length);
-      const observed = observation?.photos?.[0];
-      if (observed) photo = { ...observed, medium_url: String(observed.url || '').replace('/square.', '/medium.') };
+    if (!taxon) return [];
+    const candidates = taxon.default_photo ? [taxon.default_photo] : [];
+    // The taxon record lists iNaturalist's curated photos in a small payload.
+    // Recent observations (30 per page) exceed the 1 MiB response cap, so they
+    // are only a smaller fallback for taxa without curated photos.
+    const detail = await getJson(new URL(`https://api.inaturalist.org/v1/taxa/${encodeURIComponent(taxon.id)}`));
+    const detailTaxon = (detail.results || [])[0];
+    if (detailTaxon?.name === taxon.name) {
+      candidates.push(...(detailTaxon.taxon_photos || []).map((entry) => entry.photo).filter(Boolean));
     }
-    if (!photo || !/^https:\/\/(inaturalist-open-data\.s3\.amazonaws\.com|static\.inaturalist\.org)\/photos\/\d+\/(medium|large)\.(jpe?g|png|webp)$/i.test(photo.medium_url || '')) return null;
-    const digest = createHash('sha256').update(`inat:${photo.id}`).digest('hex');
-    const id = `${digest.slice(0, 8)}-${digest.slice(8, 12)}-5${digest.slice(13, 16)}-a${digest.slice(17, 20)}-${digest.slice(20, 32)}`;
-    return {
-      id,
-      url: photo.medium_url,
-      altText: `${name} – iNaturalist Foto (internes Testing)`,
-      author: plain(photo.attribution_name || photo.attribution) || 'Attribution unavailable',
-      license: photo.license_code || 'Unverified (internal testing)',
-      source: `https://www.inaturalist.org/photos/${photo.id}`,
-      automatic: true,
-    };
+    if (candidates.length < 2) {
+      const observationsUrl = new URL('https://api.inaturalist.org/v1/observations');
+      observationsUrl.search = new URLSearchParams({
+        taxon_id: String(taxon.id), photos: 'true', per_page: '10', order_by: 'created_at',
+      }).toString();
+      const observations = await getJson(observationsUrl);
+      for (const observation of observations.results || []) {
+        if (observation.taxon?.name !== taxon.name) continue;
+        candidates.push(...(observation.photos || []));
+      }
+    }
+
+    const results = [];
+    const seen = new Set();
+    for (const candidate of candidates) {
+      const imageUrl = String(candidate.medium_url || candidate.url || '').replace('/square.', '/medium.');
+      if (!/^https:\/\/(inaturalist-open-data\.s3\.amazonaws\.com|static\.inaturalist\.org)\/photos\/\d+\/(medium|large)\.(jpe?g|png|webp)$/i.test(imageUrl) || seen.has(imageUrl)) continue;
+      seen.add(imageUrl);
+      const digest = createHash('sha256').update(`inat:${candidate.id}`).digest('hex');
+      const id = `${digest.slice(0, 8)}-${digest.slice(8, 12)}-5${digest.slice(13, 16)}-a${digest.slice(17, 20)}-${digest.slice(20, 32)}`;
+      results.push({
+        id,
+        url: imageUrl,
+        altText: `${name} – iNaturalist Foto (internes Testing)`,
+        author: plain(candidate.attribution_name || candidate.attribution) || 'Attribution unavailable',
+        license: candidate.license_code || 'Unverified (internal testing)',
+        source: `https://www.inaturalist.org/photos/${candidate.id}`,
+        automatic: true,
+      });
+      if (results.length >= Math.max(1, Math.min(10, limit))) break;
+    }
+    return results;
   }
 }
 

@@ -10,6 +10,8 @@ class _$Plant extends Plant {
   @override
   final String id;
   @override
+  final String? slug;
+  @override
   final String scientificName;
   @override
   final String? commonName;
@@ -22,6 +24,8 @@ class _$Plant extends Plant {
   @override
   final BuiltList<String>? sources;
   @override
+  final BuiltList<PlantProfileCardsInner>? profileCards;
+  @override
   final BuiltList<PublicMedia>? media;
   @override
   final String releaseVersion;
@@ -31,12 +35,14 @@ class _$Plant extends Plant {
 
   _$Plant._(
       {required this.id,
+      this.slug,
       required this.scientificName,
       this.commonName,
       this.family,
       this.description,
       this.warning,
       this.sources,
+      this.profileCards,
       this.media,
       required this.releaseVersion})
       : super._();
@@ -52,12 +58,14 @@ class _$Plant extends Plant {
     if (identical(other, this)) return true;
     return other is Plant &&
         id == other.id &&
+        slug == other.slug &&
         scientificName == other.scientificName &&
         commonName == other.commonName &&
         family == other.family &&
         description == other.description &&
         warning == other.warning &&
         sources == other.sources &&
+        profileCards == other.profileCards &&
         media == other.media &&
         releaseVersion == other.releaseVersion;
   }
@@ -66,12 +74,14 @@ class _$Plant extends Plant {
   int get hashCode {
     var _$hash = 0;
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, slug.hashCode);
     _$hash = $jc(_$hash, scientificName.hashCode);
     _$hash = $jc(_$hash, commonName.hashCode);
     _$hash = $jc(_$hash, family.hashCode);
     _$hash = $jc(_$hash, description.hashCode);
     _$hash = $jc(_$hash, warning.hashCode);
     _$hash = $jc(_$hash, sources.hashCode);
+    _$hash = $jc(_$hash, profileCards.hashCode);
     _$hash = $jc(_$hash, media.hashCode);
     _$hash = $jc(_$hash, releaseVersion.hashCode);
     _$hash = $jf(_$hash);
@@ -82,12 +92,14 @@ class _$Plant extends Plant {
   String toString() {
     return (newBuiltValueToStringHelper(r'Plant')
           ..add('id', id)
+          ..add('slug', slug)
           ..add('scientificName', scientificName)
           ..add('commonName', commonName)
           ..add('family', family)
           ..add('description', description)
           ..add('warning', warning)
           ..add('sources', sources)
+          ..add('profileCards', profileCards)
           ..add('media', media)
           ..add('releaseVersion', releaseVersion))
         .toString();
@@ -100,6 +112,10 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
   String? _id;
   String? get id => _$this._id;
   set id(String? id) => _$this._id = id;
+
+  String? _slug;
+  String? get slug => _$this._slug;
+  set slug(String? slug) => _$this._slug = slug;
 
   String? _scientificName;
   String? get scientificName => _$this._scientificName;
@@ -126,6 +142,12 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
   ListBuilder<String> get sources => _$this._sources ??= ListBuilder<String>();
   set sources(ListBuilder<String>? sources) => _$this._sources = sources;
 
+  ListBuilder<PlantProfileCardsInner>? _profileCards;
+  ListBuilder<PlantProfileCardsInner> get profileCards =>
+      _$this._profileCards ??= ListBuilder<PlantProfileCardsInner>();
+  set profileCards(ListBuilder<PlantProfileCardsInner>? profileCards) =>
+      _$this._profileCards = profileCards;
+
   ListBuilder<PublicMedia>? _media;
   ListBuilder<PublicMedia> get media =>
       _$this._media ??= ListBuilder<PublicMedia>();
@@ -144,12 +166,14 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
     final $v = _$v;
     if ($v != null) {
       _id = $v.id;
+      _slug = $v.slug;
       _scientificName = $v.scientificName;
       _commonName = $v.commonName;
       _family = $v.family;
       _description = $v.description;
       _warning = $v.warning;
       _sources = $v.sources?.toBuilder();
+      _profileCards = $v.profileCards?.toBuilder();
       _media = $v.media?.toBuilder();
       _releaseVersion = $v.releaseVersion;
       _$v = null;
@@ -176,6 +200,7 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
       _$result = _$v ??
           _$Plant._(
             id: BuiltValueNullFieldError.checkNotNull(id, r'Plant', 'id'),
+            slug: slug,
             scientificName: BuiltValueNullFieldError.checkNotNull(
                 scientificName, r'Plant', 'scientificName'),
             commonName: commonName,
@@ -183,6 +208,7 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
             description: description,
             warning: warning,
             sources: _sources?.build(),
+            profileCards: _profileCards?.build(),
             media: _media?.build(),
             releaseVersion: BuiltValueNullFieldError.checkNotNull(
                 releaseVersion, r'Plant', 'releaseVersion'),
@@ -192,6 +218,8 @@ class PlantBuilder implements Builder<Plant, PlantBuilder> {
       try {
         _$failedField = 'sources';
         _sources?.build();
+        _$failedField = 'profileCards';
+        _profileCards?.build();
         _$failedField = 'media';
         _media?.build();
       } catch (e) {

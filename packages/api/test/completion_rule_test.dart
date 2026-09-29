@@ -16,5 +16,22 @@ void main() {
     test('to test the property `requiredQuizIds`', () async {
       // TODO
     });
+
+    // BuiltList<String> requiredLevelIds
+    test('to test the property `requiredLevelIds`', () async {
+      // TODO
+    });
+
+    // Explicit collection targets. Ecosystem-scoped ordinary levels return []; only the final level lists the three public UUIDs. Clients must not infer targets from plantIds.
+    // BuiltSet<String> requiredPlantIds
+    test('to test the property `requiredPlantIds`', () async {
+      // TODO
+    });
+
+    // Legacy rules default to level and retain their per-level collection gate. Ecosystem rules never block quiz completion; GET ecosystem progress evaluates the final collection gate.
+    // String collectionScope (default value: 'level')
+    test('to test the property `collectionScope`', () async {
+      // TODO
+    });
   });
 }

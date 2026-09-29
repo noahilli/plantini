@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:openapi/src/api_util.dart';
 import 'package:openapi/src/model/achievement_page.dart';
 import 'package:openapi/src/model/complete_level_attempt_request.dart';
+import 'package:openapi/src/model/ecosystem_progress.dart';
 import 'package:openapi/src/model/event_batch_ack.dart';
 import 'package:openapi/src/model/learning_event_batch.dart';
 import 'package:openapi/src/model/level_attempt.dart';
@@ -128,6 +129,91 @@ class LearningApi {
     }
 
     return Response<LevelCompletion>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Compute the actor&#39;s ecosystem completion from passed levels and collected species
+  /// Read-only authoritative snapshot. Collection can precede any quiz. All quiz levels remain passable without collection when collectionScope is ecosystem. A deleted herbarium record no longer counts; duplicates and foreign species do not satisfy additional targets. No completion mutation is required.
+  ///
+  /// Parameters:
+  /// * [ecosystemId]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [EcosystemProgress] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<EcosystemProgress>> getEcosystemProgress({
+    required String ecosystemId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/ecosystems/{ecosystemId}/progress'.replaceAll(
+        '{' r'ecosystemId' '}',
+        encodeQueryParameter(_serializers, ecosystemId, const FullType(String))
+            .toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[
+          {
+            'type': 'http',
+            'scheme': 'bearer',
+            'name': 'bearerAuth',
+          },
+        ],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    EcosystemProgress? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(EcosystemProgress),
+            ) as EcosystemProgress;
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<EcosystemProgress>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -402,7 +488,7 @@ class LearningApi {
   }
 
   /// Start or resume an idempotent level attempt
-  ///
+  /// Missing requiredLevelIds returns 409 LEVEL_LOCKED. Passed levels permit revisits; failed attempts can be retried using a new clientAttemptId.
   ///
   /// Parameters:
   /// * [idempotencyKey]

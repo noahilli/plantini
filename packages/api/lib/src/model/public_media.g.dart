@@ -17,6 +17,12 @@ class _$PublicMedia extends PublicMedia {
   final String license;
   @override
   final String author;
+  @override
+  final String? source_;
+  @override
+  final String? licenseUrl;
+  @override
+  final bool? automatic;
 
   factory _$PublicMedia([void Function(PublicMediaBuilder)? updates]) =>
       (PublicMediaBuilder()..update(updates))._build();
@@ -26,7 +32,10 @@ class _$PublicMedia extends PublicMedia {
       required this.url,
       required this.altText,
       required this.license,
-      required this.author})
+      required this.author,
+      this.source_,
+      this.licenseUrl,
+      this.automatic})
       : super._();
   @override
   PublicMedia rebuild(void Function(PublicMediaBuilder) updates) =>
@@ -43,7 +52,10 @@ class _$PublicMedia extends PublicMedia {
         url == other.url &&
         altText == other.altText &&
         license == other.license &&
-        author == other.author;
+        author == other.author &&
+        source_ == other.source_ &&
+        licenseUrl == other.licenseUrl &&
+        automatic == other.automatic;
   }
 
   @override
@@ -54,6 +66,9 @@ class _$PublicMedia extends PublicMedia {
     _$hash = $jc(_$hash, altText.hashCode);
     _$hash = $jc(_$hash, license.hashCode);
     _$hash = $jc(_$hash, author.hashCode);
+    _$hash = $jc(_$hash, source_.hashCode);
+    _$hash = $jc(_$hash, licenseUrl.hashCode);
+    _$hash = $jc(_$hash, automatic.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -65,7 +80,10 @@ class _$PublicMedia extends PublicMedia {
           ..add('url', url)
           ..add('altText', altText)
           ..add('license', license)
-          ..add('author', author))
+          ..add('author', author)
+          ..add('source_', source_)
+          ..add('licenseUrl', licenseUrl)
+          ..add('automatic', automatic))
         .toString();
   }
 }
@@ -93,6 +111,18 @@ class PublicMediaBuilder implements Builder<PublicMedia, PublicMediaBuilder> {
   String? get author => _$this._author;
   set author(String? author) => _$this._author = author;
 
+  String? _source_;
+  String? get source_ => _$this._source_;
+  set source_(String? source_) => _$this._source_ = source_;
+
+  String? _licenseUrl;
+  String? get licenseUrl => _$this._licenseUrl;
+  set licenseUrl(String? licenseUrl) => _$this._licenseUrl = licenseUrl;
+
+  bool? _automatic;
+  bool? get automatic => _$this._automatic;
+  set automatic(bool? automatic) => _$this._automatic = automatic;
+
   PublicMediaBuilder() {
     PublicMedia._defaults(this);
   }
@@ -105,6 +135,9 @@ class PublicMediaBuilder implements Builder<PublicMedia, PublicMediaBuilder> {
       _altText = $v.altText;
       _license = $v.license;
       _author = $v.author;
+      _source_ = $v.source_;
+      _licenseUrl = $v.licenseUrl;
+      _automatic = $v.automatic;
       _$v = null;
     }
     return this;
@@ -135,6 +168,9 @@ class PublicMediaBuilder implements Builder<PublicMedia, PublicMediaBuilder> {
               license, r'PublicMedia', 'license'),
           author: BuiltValueNullFieldError.checkNotNull(
               author, r'PublicMedia', 'author'),
+          source_: source_,
+          licenseUrl: licenseUrl,
+          automatic: automatic,
         );
     replace(_$result);
     return _$result;

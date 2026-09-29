@@ -31,5 +31,22 @@ void main() {
     test('to test the property `author`', () async {
       // TODO
     });
+
+    // Original image description and attribution page
+    // String source_
+    test('to test the property `source_`', () async {
+      // TODO
+    });
+
+    // String licenseUrl
+    test('to test the property `licenseUrl`', () async {
+      // TODO
+    });
+
+    // Supplemental provider image not editorially reviewed or part of the immutable release
+    // bool automatic (default value: false)
+    test('to test the property `automatic`', () async {
+      // TODO
+    });
   });
 }

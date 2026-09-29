@@ -12,6 +12,11 @@ void main() {
       // TODO
     });
 
+    // String slug
+    test('to test the property `slug`', () async {
+      // TODO
+    });
+
     // String scientificName
     test('to test the property `scientificName`', () async {
       // TODO
@@ -39,6 +44,12 @@ void main() {
 
     // BuiltList<String> sources
     test('to test the property `sources`', () async {
+      // TODO
+    });
+
+    // Readable CMS-authored lesson sections. Does not include quiz solution keys. Absent in older releases.
+    // BuiltList<PlantProfileCardsInner> profileCards
+    test('to test the property `profileCards`', () async {
       // TODO
     });
 
