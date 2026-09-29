@@ -15,7 +15,7 @@ function imageType(bytes) {
 
 function download(url) {
   return new Promise((resolve, reject) => {
-    const request = https.get(url, { family: 4, headers: { 'User-Agent': 'Plantini/0.1 (botanical learning photos)' } }, (response) => {
+      const request = https.get(url, { family: 4, headers: { 'User-Agent': 'PlantiniBot/0.2 (https://github.com/noahilli/plantini)' } }, (response) => {
       // No redirects: a provider cannot send the server to another destination.
       if (response.statusCode !== 200) { response.resume(); reject(new Error('Photo unavailable')); return; }
       let size = 0;
@@ -44,7 +44,7 @@ class PublicPhotoCache {
   async get(value) {
     const url = new URL(value);
     if (url.protocol !== 'https:' || url.username || url.password || url.port ||
-        !['upload.wikimedia.org', 'thumb.wikimedia.org'].includes(url.hostname)) throw new Error('Unsupported photo host');
+        !['upload.wikimedia.org', 'thumb.wikimedia.org', 'inaturalist-open-data.s3.amazonaws.com', 'static.inaturalist.org'].includes(url.hostname)) throw new Error('Unsupported photo host');
     const key = createHash('sha256').update(url.toString()).digest('hex');
     if (this.pending.has(key)) return this.pending.get(key);
     if ((this.retryAt.get(key) || 0) > Date.now()) throw new Error('Photo retry pending');

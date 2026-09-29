@@ -9,11 +9,16 @@ let providerRetryAt = 0;
 function query(host, parameters) {
   if (providerRetryAt > Date.now()) return Promise.reject(new Error('PHOTO_SOURCE_COOLDOWN'));
   const url = new URL(`https://${host}/w/api.php`);
-  url.search = new URLSearchParams({ format: 'json', ...parameters }).toString();
+  url.search = new URLSearchParams({ format: 'json', maxlag: '5', ...parameters }).toString();
   return new Promise((resolve, reject) => {
     const request = https.get(url, {
       family: 4,
-      headers: { 'User-Agent': 'Plantini/0.1 (botanical learning photo lookup)', Accept: 'application/json' },
+      headers: {
+        // Wikimedia asks automated clients to identify themselves and provide
+        // a contact URL. Keep the project URL here so operators can reach us.
+        'User-Agent': 'PlantiniBot/0.2 (https://github.com/noahilli/plantini)',
+        Accept: 'application/json',
+      },
     }, (response) => {
       if (response.statusCode !== 200) {
         if (response.statusCode === 429 || response.statusCode === 503) {
@@ -74,7 +79,7 @@ class WikimediaPhotoSource {
     if (!cached && this.metadataStore) {
       try {
         const stored = await this.metadataStore.get({ key });
-        if (stored?.schemaVersion === 1 && Number.isFinite(stored.expires) &&
+        if (stored?.schemaVersion === 5 && Number.isFinite(stored.expires) &&
             Number.isFinite(stored.verifiedAt) && stored.verifiedAt > Date.now() - 7 * 86400000) {
           cached = stored;
           if (this.cache.size >= 500) this.cache.delete(this.cache.keys().next().value);
@@ -97,7 +102,7 @@ class WikimediaPhotoSource {
     }).then(async (photo) => {
       if (this.cache.size >= 500) this.cache.delete(this.cache.keys().next().value);
       const entry = {
-        schemaVersion: 1,
+        schemaVersion: 5,
         photo,
         verifiedAt: failed ? cached?.verifiedAt : Date.now(),
         expires: Date.now() + (failed ? 60000 : photo ? 86400000 : 300000),
@@ -114,9 +119,20 @@ class WikimediaPhotoSource {
   }
 
   async lookup(name) {
+    try {
+      const wikimedia = await this.lookupWikimedia(name);
+      if (wikimedia) return wikimedia;
+    } catch { /* A throttled/unavailable primary source must not block fallback. */ }
+    return this.lookupInaturalist(name);
+  }
+
+  async lookupWikimedia(name) {
     const pageData = await query('en.wikipedia.org', {
       action: 'query', titles: name, redirects: '1',
-      prop: 'pageimages|pageprops', piprop: 'name', pilicense: 'free',
+      // Internal demo lookup: allow any page image, not just Wikimedia's
+      // pre-classified free subset. Taxon identity and image host are still
+      // verified; the returned card is explicitly marked unverified-license.
+      prop: 'pageimages|pageprops', piprop: 'name',
     });
     const page = Object.values(pageData.query?.pages || {})[0];
     const taxonId = page?.pageprops?.wikibase_item;
@@ -134,25 +150,84 @@ class WikimediaPhotoSource {
     });
     const info = Object.values(imageData.query?.pages || {})[0]?.imageinfo?.[0];
     const meta = info?.extmetadata || {};
-    const license = plain(meta.LicenseShortName?.value);
+    const license = plain(meta.LicenseShortName?.value) || 'Unverified (internal testing)';
     const licenseUrl = meta.LicenseUrl?.value?.replace(/^http:/, 'https:');
-    const author = plain(meta.Artist?.value);
+    const author = plain(meta.Artist?.value) || 'Attribution unavailable';
     const url = info?.thumburl || info?.url;
-    if (!/^image\/(jpeg|png|webp)$/.test(info?.mime || '') || !author ||
-        !/^CC (BY|BY-SA) (2\.0|2\.5|3\.0|4\.0)$/.test(license) ||
-        !allowedUrl(licenseUrl, 'creativecommons.org') ||
+    if (!/^image\/(jpeg|png|webp)$/.test(info?.mime || '') ||
         !(allowedUrl(url, 'upload.wikimedia.org') || allowedUrl(url, 'thumb.wikimedia.org')) ||
-        !allowedUrl(info?.descriptionurl, 'commons.wikimedia.org') ||
-        plain(meta.Restrictions?.value)) return null;
+        !allowedUrl(info?.descriptionurl, 'commons.wikimedia.org')) return null;
     const hash = createHash('sha256').update(info.descriptionurl).digest('hex');
     const id = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-5${hash.slice(13, 16)}-a${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
     return {
       id,
       url, altText: `${name} – automatisch zugeordnetes Wikimedia-Foto`,
-      author, license, licenseUrl, source: info.descriptionurl,
+      author, license, licenseUrl: allowedUrl(licenseUrl, 'creativecommons.org') ? licenseUrl : null,
+      source: info.descriptionurl,
       automatic: true,
     };
   }
+
+  async lookupInaturalist(name) {
+    const url = new URL('https://api.inaturalist.org/v1/taxa');
+    url.search = new URLSearchParams({ q: name, all_names: 'true' }).toString();
+    const taxa = await getJson(url);
+    const taxon = (taxa.results || []).find((result) =>
+      result.name === name || (result.names || []).some((synonym) =>
+        synonym.locale === 'sci' && synonym.name === name && synonym.is_valid === false));
+    let photo = taxon?.default_photo;
+    if (!taxon) return null;
+    if (!photo) {
+      const observationsUrl = new URL('https://api.inaturalist.org/v1/observations');
+      observationsUrl.search = new URLSearchParams({ taxon_id: String(taxon.id), photos: 'true', per_page: '30', order_by: 'created_at' }).toString();
+      const observations = await getJson(observationsUrl);
+      const observation = (observations.results || []).find((result) =>
+        result.taxon?.name === taxon.name && result.photos?.length);
+      const observed = observation?.photos?.[0];
+      if (observed) photo = { ...observed, medium_url: String(observed.url || '').replace('/square.', '/medium.') };
+    }
+    if (!photo || !/^https:\/\/(inaturalist-open-data\.s3\.amazonaws\.com|static\.inaturalist\.org)\/photos\/\d+\/(medium|large)\.(jpe?g|png|webp)$/i.test(photo.medium_url || '')) return null;
+    const digest = createHash('sha256').update(`inat:${photo.id}`).digest('hex');
+    const id = `${digest.slice(0, 8)}-${digest.slice(8, 12)}-5${digest.slice(13, 16)}-a${digest.slice(17, 20)}-${digest.slice(20, 32)}`;
+    return {
+      id,
+      url: photo.medium_url,
+      altText: `${name} – iNaturalist Foto (internes Testing)`,
+      author: plain(photo.attribution_name || photo.attribution) || 'Attribution unavailable',
+      license: photo.license_code || 'Unverified (internal testing)',
+      source: `https://www.inaturalist.org/photos/${photo.id}`,
+      automatic: true,
+    };
+  }
+}
+
+function getJson(url) {
+  return new Promise((resolve, reject) => {
+    const request = https.get(url, {
+      family: 4,
+      headers: {
+        'User-Agent': 'PlantiniBot/0.2 (https://github.com/noahilli/plantini)',
+        Accept: 'application/json',
+      },
+    }, (response) => {
+      if (response.statusCode !== 200) { response.resume(); reject(new Error(`PHOTO_SOURCE_HTTP_${response.statusCode}`)); return; }
+      const chunks = [];
+      let size = 0;
+      response.on('data', (chunk) => {
+        size += chunk.length;
+        if (size > 1024 * 1024) request.destroy(new Error('PHOTO_SOURCE_TOO_LARGE'));
+        else chunks.push(chunk);
+      });
+      response.on('error', reject);
+      response.on('end', () => {
+        try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+        catch { reject(new Error('PHOTO_SOURCE_INVALID')); }
+      });
+    });
+    const timer = setTimeout(() => request.destroy(new Error('PHOTO_SOURCE_TIMEOUT')), 5000);
+    request.on('close', () => clearTimeout(timer));
+    request.on('error', reject);
+  });
 }
 
 module.exports = { WikimediaPhotoSource };

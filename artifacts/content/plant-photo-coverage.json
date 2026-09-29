@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-09-29T16:03:23.542Z",
+  "checkedAt": "2026-09-29T17:25:48.900Z",
   "releaseCursor": "c5dc0c260d0de3442573410d029085ef8a3dfdef82c0f72207de8bf7b4123372",
   "total": 30,
-  "available": 6,
+  "available": 28,
   "plants": [
     {
       "id": "e86229bc-320e-41ff-8741-033e3a118cd4",
@@ -10,11 +10,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/e86229bc-320e-41ff-8741-033e3a118cd4/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Fagus-sylvatica-cansiglio-forest-italy.jpg",
-          "license": "CC BY-SA 4.0",
+          "source": "https://www.inaturalist.org/photos/199420434",
+          "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
-          "bytes": 757019
+          "bytes": 98726
         }
       ],
       "name": "Rotbuche",
@@ -22,8 +22,17 @@
     },
     {
       "id": "2f45b87e-e05f-473d-b56d-2e14f10e45a5",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/2f45b87e-e05f-473d-b56d-2e14f10e45a5/photo",
+          "source": "https://www.inaturalist.org/photos/482832455",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 132334
+        }
+      ],
       "name": "Stiel-Eiche",
       "scientificName": "Quercus robur"
     },
@@ -33,11 +42,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/f69cf8fa-bc7c-4d53-a5f2-e158d75a21d3/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Carpinus_betulus_-_Hunsr%C3%BCck_001.jpg",
-          "license": "CC BY 2.5",
+          "source": "https://www.inaturalist.org/photos/46763976",
+          "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
-          "bytes": 361566
+          "bytes": 88056
         }
       ],
       "name": "Hainbuche",
@@ -49,11 +58,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/659be7cc-1737-4a79-8b21-50b86b0537a3/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Acer_pseudoplatanus_005.jpg",
-          "license": "CC BY 2.5",
+          "source": "https://www.inaturalist.org/photos/270771593",
+          "license": "cc-by-sa",
           "automatic": true,
           "status": "available",
-          "bytes": 359118
+          "bytes": 162092
         }
       ],
       "name": "Berg-Ahorn",
@@ -65,11 +74,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/d4f49d12-b256-458b-bf1b-fcb155e7ae0a/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Fraxinus_excelsior.jpg",
-          "license": "CC BY 2.5",
+          "source": "https://www.inaturalist.org/photos/218128525",
+          "license": "cc-by-nc",
           "automatic": true,
           "status": "available",
-          "bytes": 208176
+          "bytes": 241859
         }
       ],
       "name": "Gewöhnliche Esche",
@@ -77,50 +86,113 @@
     },
     {
       "id": "7a113a98-fc4e-458b-907d-d55a4803d5aa",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/7a113a98-fc4e-458b-907d-d55a4803d5aa/photo",
+          "source": "https://www.inaturalist.org/photos/12491246",
+          "license": "pd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 77185
+        }
+      ],
       "name": "Winter-Linde",
       "scientificName": "Tilia cordata"
     },
     {
       "id": "6c667c53-23d7-4dbd-b266-0b85a2947cc0",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/6c667c53-23d7-4dbd-b266-0b85a2947cc0/photo",
+          "source": "https://www.inaturalist.org/photos/249644515",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 59572
+        }
+      ],
       "name": "Gewöhnliche Hasel",
       "scientificName": "Corylus avellana"
     },
     {
       "id": "82703a08-eef7-4b3c-80ab-a6e8fafd9f9e",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/82703a08-eef7-4b3c-80ab-a6e8fafd9f9e/photo",
+          "source": "https://www.inaturalist.org/photos/732011",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 228785
+        }
+      ],
       "name": "Busch-Windröschen",
       "scientificName": "Anemone nemorosa"
     },
     {
       "id": "c7d10394-2753-4665-9971-663476bdbcbe",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/c7d10394-2753-4665-9971-663476bdbcbe/photo",
+          "source": "https://www.inaturalist.org/photos/10674",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 94233
+        }
+      ],
       "name": "Bär-Lauch",
       "scientificName": "Allium ursinum"
     },
     {
       "id": "f096894a-1d60-4771-bd6b-ebfdcd43f1d7",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/f096894a-1d60-4771-bd6b-ebfdcd43f1d7/photo",
+          "source": "https://www.inaturalist.org/photos/19955604",
+          "license": "Unverified (internal testing)",
+          "automatic": true,
+          "status": "available",
+          "bytes": 148872
+        }
+      ],
       "name": "Gewöhnlicher Wurmfarn",
       "scientificName": "Dryopteris filix-mas"
     },
     {
       "id": "61fca777-f4aa-4d9d-813e-f022306b74fc",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/61fca777-f4aa-4d9d-813e-f022306b74fc/photo",
+          "source": "https://www.inaturalist.org/photos/291625",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 240481
+        }
+      ],
       "name": "Alpen-Edelweiß",
       "scientificName": "Leontopodium alpinum"
     },
     {
       "id": "daee54d0-fbec-41e4-b664-4eca35e953a6",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/daee54d0-fbec-41e4-b664-4eca35e953a6/photo",
+          "source": "https://www.inaturalist.org/photos/444577889",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 190153
+        }
+      ],
       "name": "Kalk-Glocken-Enzian",
       "scientificName": "Gentiana clusii"
     },
@@ -130,11 +202,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/e2cd9134-7a3c-47b0-bab6-eeed780389ee/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Rhododendron_hirsutum2006.jpg",
-          "license": "CC BY 2.5",
+          "source": "https://www.inaturalist.org/photos/22630264",
+          "license": "Unverified (internal testing)",
           "automatic": true,
           "status": "available",
-          "bytes": 200464
+          "bytes": 117110
         }
       ],
       "name": "Bewimperte Alpenrose",
@@ -142,8 +214,17 @@
     },
     {
       "id": "9776bf4c-fb4b-4d74-bdd1-1d98246a0efb",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/9776bf4c-fb4b-4d74-bdd1-1d98246a0efb/photo",
+          "source": "https://www.inaturalist.org/photos/65287013",
+          "license": "cc-by",
+          "automatic": true,
+          "status": "available",
+          "bytes": 155355
+        }
+      ],
       "name": "Silberwurz",
       "scientificName": "Dryas octopetala"
     },
@@ -153,11 +234,11 @@
       "photos": [
         {
           "url": "/api/v1/plants/16cf9ea8-190c-43c7-8d4a-7867dfaa81f2/photo",
-          "source": "https://commons.wikimedia.org/wiki/File:Carlina_acaulis_160907.jpg",
-          "license": "CC BY-SA 3.0",
+          "source": "https://www.inaturalist.org/photos/5200445",
+          "license": "cc-by-sa",
           "automatic": true,
           "status": "available",
-          "bytes": 297746
+          "bytes": 171691
         }
       ],
       "name": "Silberdistel",
@@ -165,43 +246,97 @@
     },
     {
       "id": "70b1b74f-9761-410d-b818-1ee17697d038",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/70b1b74f-9761-410d-b818-1ee17697d038/photo",
+          "source": "https://www.inaturalist.org/photos/288127084",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 57712
+        }
+      ],
       "name": "Trollblume",
       "scientificName": "Trollius europaeus"
     },
     {
       "id": "5fda6409-e95f-4dfc-9005-a4d18037b1ac",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/5fda6409-e95f-4dfc-9005-a4d18037b1ac/photo",
+          "source": "https://www.inaturalist.org/photos/419213976",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 81500
+        }
+      ],
       "name": "Alpen-Aster",
       "scientificName": "Aster alpinus"
     },
     {
       "id": "4e82b1df-47ce-45a1-97a5-7c3740746736",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/4e82b1df-47ce-45a1-97a5-7c3740746736/photo",
+          "source": "https://www.inaturalist.org/photos/32017311",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 74830
+        }
+      ],
       "name": "Gegenblättriger Steinbrech",
       "scientificName": "Saxifraga oppositifolia"
     },
     {
       "id": "c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/c2b18bb2-3dd4-4ddf-b13f-19a3490c8c0b/photo",
+          "source": "https://www.inaturalist.org/photos/268688",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 123832
+        }
+      ],
       "name": "Aurikel",
       "scientificName": "Primula auricula"
     },
     {
       "id": "fb460472-9e4c-42f3-bef9-f2118117daf8",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/fb460472-9e4c-42f3-bef9-f2118117daf8/photo",
+          "source": "https://www.inaturalist.org/photos/1674791",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 110434
+        }
+      ],
       "name": "Alpen-Küchenschelle",
       "scientificName": "Pulsatilla alpina"
     },
     {
       "id": "1dfb7d58-4ba0-4915-a3ca-e17426bfef0f",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/1dfb7d58-4ba0-4915-a3ca-e17426bfef0f/photo",
+          "source": "https://www.inaturalist.org/photos/19428761",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 102160
+        }
+      ],
       "name": "Wiesen-Salbei",
       "scientificName": "Salvia pratensis"
     },
@@ -214,50 +349,113 @@
     },
     {
       "id": "c7858edc-eb32-47e2-baa3-0e22419007bc",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/c7858edc-eb32-47e2-baa3-0e22419007bc/photo",
+          "source": "https://www.inaturalist.org/photos/221830445",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 91777
+        }
+      ],
       "name": "Wiesen-Flockenblume",
       "scientificName": "Centaurea jacea"
     },
     {
       "id": "513e9299-a7dd-4649-ba02-78a16cb41485",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/513e9299-a7dd-4649-ba02-78a16cb41485/photo",
+          "source": "https://www.inaturalist.org/photos/252157733",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 94200
+        }
+      ],
       "name": "Acker-Witwenblume",
       "scientificName": "Knautia arvensis"
     },
     {
       "id": "2d4dc3a2-9837-4e6f-a874-dae20f0b5682",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/2d4dc3a2-9837-4e6f-a874-dae20f0b5682/photo",
+          "source": "https://www.inaturalist.org/photos/366803576",
+          "license": "cc-by-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 120439
+        }
+      ],
       "name": "Gewöhnlicher Hornklee",
       "scientificName": "Lotus corniculatus"
     },
     {
       "id": "ed12a6a2-3aab-469e-bd58-aff68b373bdd",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/ed12a6a2-3aab-469e-bd58-aff68b373bdd/photo",
+          "source": "https://www.inaturalist.org/photos/15760",
+          "license": "cc-by-nc-nd",
+          "automatic": true,
+          "status": "available",
+          "bytes": 34096
+        }
+      ],
       "name": "Kleiner Klappertopf",
       "scientificName": "Rhinanthus minor"
     },
     {
       "id": "d27cd375-c51f-40f3-be9d-e8d3fdff472c",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/d27cd375-c51f-40f3-be9d-e8d3fdff472c/photo",
+          "source": "https://www.inaturalist.org/photos/400604608",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 49198
+        }
+      ],
       "name": "Wiesen-Bocksbart",
       "scientificName": "Tragopogon pratensis"
     },
     {
       "id": "5afe1048-5fde-4bc0-a74e-8bbe334952d1",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/5afe1048-5fde-4bc0-a74e-8bbe334952d1/photo",
+          "source": "https://www.inaturalist.org/photos/13275284",
+          "license": "cc-by-nc-sa",
+          "automatic": true,
+          "status": "available",
+          "bytes": 83405
+        }
+      ],
       "name": "Wiesen-Glockenblume",
       "scientificName": "Campanula patula"
     },
     {
       "id": "3ec91620-f9ca-422a-af8e-40251676440c",
-      "status": "no-photo-returned",
-      "photos": [],
+      "status": "available",
+      "photos": [
+        {
+          "url": "/api/v1/plants/3ec91620-f9ca-422a-af8e-40251676440c/photo",
+          "source": "https://www.inaturalist.org/photos/384758481",
+          "license": "cc-by-nc",
+          "automatic": true,
+          "status": "available",
+          "bytes": 34812
+        }
+      ],
       "name": "Spitzwegerich",
       "scientificName": "Plantago lanceolata"
     },
