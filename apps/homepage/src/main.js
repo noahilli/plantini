@@ -7,7 +7,7 @@ import './style.css';
 import content from './content.json';
 import { STORE_URLS } from './config.js';
 import { renderCard, renderMosaic } from './cards.js';
-import { addLights, buildWorld, loadWorldData, makeShadow, webglAvailable } from './world.js';
+import { addLights, buildWorld, loadWorldData, makeShadow, softwareRenderer, webglAvailable } from './world.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -77,34 +77,117 @@ function initStores() {
 }
 
 // ---- three.js helpers -------------------------------------------------------
-function createStage(canvas) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+// Rendering budget: the scenes are small (< 20k vertices), so cost is dominated by
+// pixels and by how often we draw. We therefore cap the pixel ratio, limit
+// to ~30 fps, and adapt: if frames are slow the resolution drops, and if that is
+// not enough (or WebGL runs on the CPU) the scene switches to "lite" mode, which
+// only draws while the visitor interacts. `?perf=lite|full` forces a mode.
+const forcedPerf = new URLSearchParams(window.location.search).get('perf');
+const software = forcedPerf === 'lite' || (forcedPerf !== 'full' && softwareRenderer());
+const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+const maxRatio = software ? 1 : Math.min(window.devicePixelRatio || 1, coarsePointer ? 1.25 : 1.5);
+
+function createStage(canvas, host) {
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: !software && (window.devicePixelRatio || 1) < 1.5,
+    alpha: true,
+    powerPreference: 'high-performance',
+  });
   renderer.setClearColor(0x000000, 0);
   const scene = new THREE.Scene();
   addLights(scene);
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-  return { renderer, scene, camera };
+  const stage = {
+    renderer, scene, camera, ratio: maxRatio, width: 1, height: 1, onResize: () => {},
+    resize() {
+      renderer.setPixelRatio(stage.ratio);
+      stage.width = Math.max(host.clientWidth, 1);
+      stage.height = Math.max(host.clientHeight, 1);
+      renderer.setSize(stage.width, stage.height, false);
+      camera.aspect = stage.width / stage.height;
+      camera.updateProjectionMatrix();
+      stage.onResize();
+    },
+    setRatio(ratio) { stage.ratio = ratio; stage.resize(); },
+  };
+  stage.resize();
+  return stage;
 }
 
 // Runs `frame` only while the canvas is on screen and the tab is visible.
-function createLoop(host, frame) {
+function createLoop(host, stage, frame) {
   let visible = false;
   let raf = 0;
+  let last = 0;
+  let samples = [];
+  let lite = software || reducedMotion;
+  let automatic = false;
   const started = performance.now();
-  const tick = () => {
+  const listeners = new Set();
+  const loop = {
+    get lite() { return lite; },
+    get automatic() { return automatic; },
+    onLite(listener) { listeners.add(listener); },
+    setLite(value, auto = false) {
+      lite = value;
+      automatic = auto;
+      samples = [];
+      last = 0;
+      listeners.forEach((listener) => listener(lite));
+      loop.render();
+    },
+    render() { if (!raf) raf = requestAnimationFrame(tick); },
+  };
+  let slowStreak = 0;
+  function adapt(dt) {
+    if (dt <= 0) return; // first frame after (re)start has no interval
+    // Very slow frames (software GL, overloaded machine) must count, not be discarded.
+    slowStreak = dt > 500 ? slowStreak + 1 : 0;
+    if (slowStreak >= 3) { loop.setLite(true, true); slowStreak = 0; return; }
+    samples.push(Math.min(dt, 1000));
+    if (samples.length < 12) return;
+    const median = [...samples].sort((x, y) => x - y)[samples.length >> 1];
+    samples = [];
+    if (median <= 50) return;
+    if (stage.ratio > 0.7) stage.setRatio(Math.max(0.65, stage.ratio * 0.75));
+    else loop.setLite(true, true);
+  }
+  function tick(now) {
     raf = 0;
     if (!visible || document.hidden) return;
+    if (!lite && last && now - last < 30) { // ~30 fps is plenty for slow vegetation sway
+      raf = requestAnimationFrame(tick);
+      return;
+    }
+    const dt = last ? now - last : 0;
+    last = lite ? 0 : now;
     frame((performance.now() - started) / 1000);
-    if (!reducedMotion) raf = requestAnimationFrame(tick);
-  };
-  const start = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    if (!lite) {
+      adapt(dt);
+      if (!lite) raf = requestAnimationFrame(tick);
+    }
+  }
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
-    if (visible) start();
+    if (visible) loop.render();
+    else last = 0;
   }, { threshold: 0.05 }).observe(host);
-  document.addEventListener('visibilitychange', start);
-  return { render: start };
+  document.addEventListener('visibilitychange', () => loop.render());
+  return loop;
+}
+
+// Lets visitors stop the motion (also the accessible choice for WCAG 2.2.2).
+function addAnimationToggle(host, loop) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'anim-toggle';
+  const label = () => { button.textContent = loop.lite ? 'Animation abspielen' : 'Animation pausieren'; };
+  label();
+  button.addEventListener('click', () => loop.setLite(!loop.lite));
+  loop.onLite(label);
+  host.append(button);
+  return button;
 }
 
 function fallback(host) {
@@ -123,7 +206,8 @@ async function initHero() {
   const canvas = $('#hero-canvas');
   if (!webglAvailable()) return fallback(host);
   const time = { value: 0 };
-  const { renderer, scene, camera } = createStage(canvas);
+  const stage = createStage(canvas, host);
+  const { renderer, scene, camera } = stage;
   const tiles = [];
   const hits = [];
   const datas = await Promise.all(ecosystems.map((ecosystem) => loadWorldData(worldUrl(ecosystem.key))));
@@ -148,38 +232,42 @@ async function initHero() {
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2(9, 9);
   let hovered = null;
+  let focusedEco = null; // set by the picker buttons (hover/focus)
   const buttons = $$('.tile-picker button');
 
-  function fit() {
-    const width = host.clientWidth;
-    const height = host.clientHeight;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
+  stage.onResize = () => {
     const distance = Math.max(13, 19 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
     camera.position.set(0, distance * 0.62, distance * 0.86);
     camera.lookAt(0, -0.2, 0);
-    camera.updateProjectionMatrix();
-  }
-  new ResizeObserver(() => { fit(); loop.render(); }).observe(host);
-  fit();
+  };
+  stage.onResize();
+  new ResizeObserver(() => { stage.resize(); loop.render(); }).observe(host);
 
-  const loop = createLoop(host, (seconds) => {
+  const loop = createLoop(host, stage, (seconds) => {
     time.value = seconds;
-    raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects(hits, false)[0];
-    hovered = hit ? hit.object.userData.eco : hovered && buttons.some((b) => b.matches(':hover, :focus-visible') && b.dataset.eco === hovered) ? hovered : null;
+    let hit;
+    if (pointer.x < 5) { // only ray-cast while the pointer is over the canvas
+      raycaster.setFromCamera(pointer, camera);
+      hit = raycaster.intersectObjects(hits, false)[0];
+    }
+    hovered = hit ? hit.object.userData.eco : focusedEco;
     canvas.classList.toggle('pointing', Boolean(hit));
+    const still = loop.lite;
+    let settling = false;
     for (const item of tiles) {
       item.built.update(seconds);
       const target = item.key === hovered ? 0.9 : 0;
-      item.lift += (target - item.lift) * 0.12;
-      const bob = reducedMotion ? 0 : Math.sin(seconds * 0.9 + item.base.x) * 0.12;
+      item.lift += (target - item.lift) * (still ? 1 : 0.12);
+      if (Math.abs(target - item.lift) > 0.01) settling = true;
+      const bob = still ? 0 : Math.sin(seconds * 0.9 + item.base.x) * 0.12;
       item.tile.position.y = item.base.y + item.lift + bob;
-      item.tile.rotation.y = item.baseRot + (reducedMotion ? 0 : Math.sin(seconds * 0.35 + item.base.x) * 0.06);
+      item.tile.rotation.y = item.baseRot + (still ? 0 : Math.sin(seconds * 0.35 + item.base.x) * 0.06);
       item.shadow.material.opacity = 1 - item.lift * 0.35;
     }
     renderer.render(scene, camera);
+    if (still && settling) loop.render(); // finish the hover easing without a permanent loop
   });
+  addAnimationToggle(host, loop);
 
   canvas.addEventListener('pointermove', (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -189,10 +277,11 @@ async function initHero() {
   canvas.addEventListener('pointerleave', () => { pointer.set(9, 9); loop.render(); });
   canvas.addEventListener('click', () => { if (hovered) goToEcosystem(hovered); });
   for (const button of buttons) {
-    button.addEventListener('pointerenter', () => { hovered = button.dataset.eco; loop.render(); });
-    button.addEventListener('focus', () => { hovered = button.dataset.eco; loop.render(); });
-    button.addEventListener('pointerleave', () => { hovered = null; loop.render(); });
-    button.addEventListener('blur', () => { hovered = null; loop.render(); });
+    const set = (eco) => { focusedEco = eco; loop.render(); };
+    button.addEventListener('pointerenter', () => set(button.dataset.eco));
+    button.addEventListener('focus', () => set(button.dataset.eco));
+    button.addEventListener('pointerleave', () => set(null));
+    button.addEventListener('blur', () => set(null));
     button.addEventListener('click', () => goToEcosystem(button.dataset.eco));
   }
 }
@@ -212,7 +301,8 @@ async function initDemo() {
     return;
   }
   const time = { value: 0 };
-  const { renderer, scene, camera } = createStage(canvas);
+  const stage = createStage(canvas, host);
+  const { renderer, scene, camera } = stage;
   const built = new Map();
   const root = new THREE.Group();
   scene.add(root);
@@ -221,29 +311,27 @@ async function initDemo() {
   const controls = new OrbitControls(camera, canvas);
   controls.enablePan = false;
   controls.enableZoom = false;
-  controls.enableDamping = true;
   controls.minPolarAngle = 0.55;
   controls.maxPolarAngle = 1.32;
-  controls.autoRotate = !reducedMotion;
   controls.autoRotateSpeed = 0.7;
   controls.target.set(0, 0.6, 0);
   // Vertical swipes must still scroll the page on touch devices.
   canvas.style.touchAction = 'pan-y';
+  const applyMotion = (lite) => {
+    controls.enableDamping = !lite;
+    controls.autoRotate = !lite;
+  };
+  applyMotion(software || reducedMotion);
 
-  function fit() {
-    const width = host.clientWidth;
-    const height = host.clientHeight;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
+  camera.position.set(0, 9, 15);
+  stage.onResize = () => {
     const distance = Math.max(17, 16 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
     const direction = camera.position.clone().sub(controls.target);
     if (direction.lengthSq() < 1e-6) direction.set(0, 0.55, 1);
     camera.position.copy(controls.target).add(direction.normalize().multiplyScalar(distance));
-    camera.updateProjectionMatrix();
-  }
-  camera.position.set(0, 9, 15);
-  new ResizeObserver(() => { fit(); loop.render(); }).observe(host);
-  fit();
+  };
+  stage.onResize();
+  new ResizeObserver(() => { stage.resize(); loop.render(); }).observe(host);
 
   let current = null;
   let markers = [];
@@ -275,23 +363,28 @@ async function initDemo() {
   }
 
   const projected = new THREE.Vector3();
-  const loop = createLoop(host, (seconds) => {
+  const loop = createLoop(host, stage, (seconds) => {
     time.value = seconds;
     controls.update();
     current?.update(seconds);
     renderer.render(scene, camera);
-    const width = host.clientWidth;
-    const height = host.clientHeight;
+    // Sizes come from the resize handler: reading clientWidth here would force a layout every frame.
     for (const marker of markers) {
       projected.copy(marker.position).project(camera);
-      const x = (projected.x * 0.5 + 0.5) * width;
-      const y = (-projected.y * 0.5 + 0.5) * height;
+      const x = (projected.x * 0.5 + 0.5) * stage.width;
+      const y = (-projected.y * 0.5 + 0.5) * stage.height;
       marker.button.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
     }
   });
+  const hint = $('#demo-hint');
+  loop.onLite((lite) => {
+    applyMotion(lite);
+    if (loop.automatic) hint.textContent = 'Animation pausiert, damit es flüssig bleibt';
+  });
+  addAnimationToggle(host, loop);
   controls.addEventListener('change', () => loop.render());
-  controls.addEventListener('start', () => { controls.autoRotate = false; $('#demo-hint').classList.add('gone'); });
-  controls.addEventListener('end', () => { controls.autoRotate = !reducedMotion; });
+  controls.addEventListener('start', () => { controls.autoRotate = false; hint.classList.add('gone'); });
+  controls.addEventListener('end', () => { controls.autoRotate = !loop.lite; });
 
   let shown = null;
   listeners.add((next) => {
@@ -341,4 +434,6 @@ initStores();
 initCards();
 renderMosaic($('#mosaic'), ecosystems);
 initHero().catch((error) => { console.error(error); fallback($('#hero-stage')); });
-initDemo().catch((error) => { console.error(error); fallback($('#demo-stage')); });
+const startDemo = () => initDemo().catch((error) => { console.error(error); fallback($('#demo-stage')); });
+if ('requestIdleCallback' in window) window.requestIdleCallback(startDemo, { timeout: 1500 });
+else window.setTimeout(startDemo, 400);

@@ -163,3 +163,16 @@ export function webglAvailable() {
     return false;
   }
 }
+
+// True when WebGL runs on the CPU (SwiftShader, llvmpipe, ...). Common on Linux
+// browsers without GPU acceleration; continuous 3D animation is unusable there.
+export function softwareRenderer() {
+  try {
+    const gl = document.createElement('canvas').getContext('webgl');
+    const info = gl?.getExtension('WEBGL_debug_renderer_info');
+    const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    return /swiftshader|llvmpipe|softpipe|software|basic render/i.test(name);
+  } catch {
+    return false;
+  }
+}
