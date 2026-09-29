@@ -82,29 +82,54 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
           format: ui.ImageByteFormat.rawRgba,
         );
         if (bytes == null || !mounted || generation != _generation) return;
-        double r = 0, g = 0, b = 0, weight = 0;
+        final plant = widget.plant;
+        final woody = _looksWoody(plant);
+        final hues = List<double>.filled(36, 0);
+        final reds = List<double>.filled(36, 0);
+        final greens = List<double>.filled(36, 0);
+        final blues = List<double>.filled(36, 0);
         for (var i = 0; i < bytes.lengthInBytes; i += 4) {
           if (bytes.getUint8(i + 3) < 128) continue;
           final red = bytes.getUint8(i),
               green = bytes.getUint8(i + 1),
               blue = bytes.getUint8(i + 2);
           final hsv = HSVColor.fromColor(Color.fromARGB(255, red, green, blue));
-          if (hsv.value < .12 || hsv.value > .94 && hsv.saturation < .12) {
+          if (hsv.value < .16 || hsv.value > .94 || hsv.saturation < .22) {
             continue;
           }
-          final w = .1 + hsv.saturation;
-          r += red * w;
-          g += green * w;
-          b += blue * w;
-          weight += w;
+          final hue = hsv.hue;
+          // Woody plants get a leaf-green palette. On flowering plants, prefer
+          // petal hues (warm, yellow, pink, violet) over the green photo field.
+          final isGreen = hue >= 68 && hue <= 168;
+          final isFlowerHue =
+              hue <= 68 || hue >= 270 || hue >= 235 && hue < 270;
+          if (woody ? !isGreen : !isFlowerHue) continue;
+          final bin = (hue / 10).floor().clamp(0, hues.length - 1).toInt();
+          final weight = hsv.saturation * hsv.saturation * (.55 + hsv.value);
+          hues[bin] += weight;
+          reds[bin] += red * weight;
+          greens[bin] += green * weight;
+          blues[bin] += blue * weight;
         }
-        if (weight == 0) return;
-        final color = Color.fromARGB(
-          255,
-          (r / weight).round(),
-          (g / weight).round(),
-          (b / weight).round(),
-        );
+        var strongest = 0;
+        for (var i = 1; i < hues.length; i++) {
+          if (hues[i] > hues[strongest]) strongest = i;
+        }
+        final weight = hues[strongest];
+        // With white/very pale blossoms there may be no useful chromatic
+        // pixels. Use a paper-white wash; for a tree with no green pixels,
+        // leave the card's calm botanical-green default alone.
+        final color = weight < 1
+            ? woody
+                  ? null
+                  : const Color(0xFFF7F5E9)
+            : Color.fromARGB(
+                255,
+                (reds[strongest] / weight).round(),
+                (greens[strongest] / weight).round(),
+                (blues[strongest] / weight).round(),
+              );
+        if (color == null) return;
         if (_paletteCache.length >= 64) {
           _paletteCache.remove(_paletteCache.keys.first);
         }
@@ -117,6 +142,15 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
       }
     }, onError: (Object _, StackTrace? _) {});
     _stream!.addListener(_listener!);
+  }
+
+  bool _looksWoody(Plant plant) {
+    final identity =
+        '${plant.commonName} ${plant.scientificName} ${plant.family}'
+            .toLowerCase();
+    return RegExp(
+      r'\b(baum|buche|eiche|ahorn|esche|linde|hasel|weide|pappel|tanne|fichte|kiefer|birke|ulme|kastanie|erle|fagus|quercus|acer|fraxinus|tilia|corylus|salix|populus|abies|picea|pinus|betula|ulmus|castanea|alnus)\b',
+    ).hasMatch(identity);
   }
 
   @override
