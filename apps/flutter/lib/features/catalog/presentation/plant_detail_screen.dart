@@ -1,150 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_typography.dart';
 import '../domain/plant_model.dart';
-import 'widgets/plant_photo_gallery.dart';
+import 'widgets/plant_index_card.dart';
 
-/// Screen presenting the detailed plant profile ("Pflanzensteckbrief").
+/// Shared editorial card, also used before each quiz.
 class PlantDetailScreen extends StatelessWidget {
   const PlantDetailScreen({super.key, required this.plant});
-
   final Plant plant;
 
   @override
   Widget build(BuildContext context) {
-    final hasWarning =
-        plant.warning != null && plant.warning!.trim().isNotEmpty;
-    final title = plant.commonName.isNotEmpty
-        ? plant.commonName
-        : plant.scientificName;
-
+    final title = plant.commonName.isEmpty
+        ? plant.scientificName
+        : plant.commonName;
     return Scaffold(
-      appBar: AppBar(title: const Text('Steckbrief')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PlantPhotoGallery(plant: plant),
-            const SizedBox(height: 16),
-
-            Text(
-              title,
-              style: AppTypography.textTheme.headlineMedium?.copyWith(
-                color: AppColors.ink,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              plant.scientificName,
-              style: AppTypography.textTheme.bodyLarge?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: AppColors.neutral600,
-              ),
-            ),
-            const SizedBox(height: 9),
-
-            // Familie
-            if (plant.family.isNotEmpty) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.mint,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  plant.family,
-                  style: AppTypography.textTheme.labelMedium?.copyWith(
-                    color: AppColors.forest,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Warnung falls vorhanden (gelbe Box)
-            if (hasWarning) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14.0),
-                decoration: BoxDecoration(
-                  color: AppColors.warningBg,
-                  borderRadius: BorderRadius.circular(22.0),
-                  border: Border.all(
-                    color: AppColors.warningBorder,
-                    width: 1.5,
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(
-                      Icons.warning_amber_rounded,
-                      color: AppColors.bark,
-                      size: 24,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        plant.warning!,
-                        style: AppTypography.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.bark,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            // Beschreibung
-            Text(
-              'Beschreibung',
-              style: AppTypography.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.forest,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              plant.description.isNotEmpty
-                  ? plant.description
-                  : 'Keine Beschreibung vorhanden.',
-              style: AppTypography.textTheme.bodyLarge?.copyWith(
-                color: AppColors.ink,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            for (final fact in plant.profileCards) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        fact.heading,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(fact.text),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-            ],
-            FilledButton.icon(
+      appBar: AppBar(title: const Text('Pflanzenkartei')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          PlantIndexCard(plant: plant),
+          const SizedBox(height: 24),
+          Center(
+            child: FilledButton.icon(
               onPressed: () => context.go(
                 Uri(
                   path: '/field',
@@ -157,45 +35,8 @@ class PlantDetailScreen extends StatelessWidget {
               icon: const Icon(Icons.explore_outlined),
               label: Text('$title in der Natur bestimmen'),
             ),
-            const SizedBox(height: 24),
-
-            // Quellen-Liste am Ende
-            if (plant.sources.isNotEmpty) ...[
-              const Divider(color: AppColors.line),
-              const SizedBox(height: 12),
-              Text(
-                'Quellen',
-                style: AppTypography.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.forest,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ...plant.sources.map(
-                (source) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '• ',
-                        style: TextStyle(color: AppColors.muted),
-                      ),
-                      Expanded(
-                        child: Text(
-                          source,
-                          style: AppTypography.textTheme.bodySmall?.copyWith(
-                            color: AppColors.muted,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
