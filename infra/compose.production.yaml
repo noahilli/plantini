@@ -152,6 +152,24 @@ services:
       start_period: 40s
     security_opt: [no-new-privileges:true]
 
+  homepage:
+    image: ${HOMEPAGE_IMAGE:?set the plantini/homepage image built from apps/homepage}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    ports:
+      - "127.0.0.1:${HOMEPAGE_LOOPBACK_PORT:-8083}:8080"
+    # Only a published port on a normal network: internal networks cannot publish.
+    networks: [edge]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    security_opt: [no-new-privileges:true]
+
 networks:
   edge: {}
   app:

@@ -1,0 +1,674 @@
+{
+  "generatedAt": "2026-09-29T21:03:47.308Z",
+  "releaseVersion": "demo",
+  "ecosystems": [
+    {
+      "key": "wald",
+      "short": "Wald",
+      "world": "forest",
+      "slug": "mitteleuropaeischer-laubwald",
+      "name": "Mitteleuropäischer Laubwald",
+      "description": "Starte eine geführte Wald-Expedition durch Baum-, Strauch- und Krautschicht: Beobachte Rinde, Knospen, Blätter und Früchte nur mit den Augen. Löse die Quizfragen und sammle drei fotografische Funde, ohne Pflanzen zu pflücken oder zu verzehren.",
+      "plants": [
+        {
+          "slug": "rotbuche",
+          "commonName": "Rotbuche",
+          "scientificName": "Fagus sylvatica",
+          "family": "Buchengewächse (Fagaceae)",
+          "description": "Bis etwa 40 Meter hoher, schattentoleranter Laubbaum mit glatter weißgrauer Rinde, langen schmalen spitzen Knospen und eiförmigen, schwach wellig gerandeten Blättern. Die dreikantigen Nüsse liegen in einem verholzenden Fruchtbecher.",
+          "warning": "Früchte und andere Pflanzenteile nicht verzehren; Beobachtung zur Bestimmung genügt.",
+          "notes": [
+            {
+              "heading": "Rinde",
+              "text": "Die Rinde der Rotbuche ist glatt und weißgrau. Vergleiche ihre Oberfläche mit den deutlich gefurchten oder schuppigen Rinden anderer Waldbäume."
+            },
+            {
+              "heading": "Winterknospen",
+              "text": "Auch ohne Blätter liefert der Zweig einen Hinweis: Die Winterknospen sind lang, schmal und spitz. Schau dir mehrere Knospen an, ohne sie abzubrechen."
+            },
+            {
+              "heading": "Bucheckern",
+              "text": "Die Frucht lässt sich so beschreiben: dreikantige Nuss im Fruchtbecher. Zusammen mit Rinde und Knospen hilft dieses Merkmal beim Erkennen; gegessen wird bei unserer Expedition nichts."
+            }
+          ],
+          "photos": [
+            {
+              "file": "rotbuche-1.jpg",
+              "alt": "Fagus sylvatica – iNaturalist Foto (internes Testing)",
+              "author": "Rebecca Gimenez Husted",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/394535806"
+            }
+          ]
+        },
+        {
+          "slug": "stieleiche",
+          "commonName": "Stiel-Eiche",
+          "scientificName": "Quercus robur",
+          "family": "Buchengewächse (Fagaceae)",
+          "description": "Großer Laubbaum feuchterer, nährstoffreicher Standorte. Typisch sind sehr kurz gestielte, tief gelappte Blätter mit oft geöhrtem Blattgrund sowie Eicheln an deutlich langen Fruchtstielen.",
+          "warning": "Nicht anhand eines einzelnen Blattes bestimmen; mehrere Blätter und möglichst Früchte vergleichen.",
+          "notes": [
+            {
+              "heading": "Blattgrund",
+              "text": "Sehr kurzer Blattstiel und oft geöhrter Grund: Diese beiden Merkmale sprechen für die Stiel-Eiche. Die kleinen Ausbuchtungen am Blattgrund erinnern an Ohren; prüfe mehrere Blätter statt nur eines."
+            },
+            {
+              "heading": "Eicheln",
+              "text": "Die Eicheln sitzen an deutlich langen Fruchtstielen. Der Name Stiel-Eiche bezieht sich auf diese Fruchtstiele, nicht auf einen langen Blattstiel."
+            },
+            {
+              "heading": "Standort",
+              "text": "Gut wasserversorgter, nährstoffreicher Tieflandboden passt zur Stiel-Eiche. Beachte den Standort zusätzlich zu den gelappten Blättern und den lang gestielten Eicheln."
+            }
+          ],
+          "photos": [
+            {
+              "file": "stieleiche-2.jpg",
+              "alt": "Quercus robur – iNaturalist Foto (internes Testing)",
+              "author": "zebedeugalinha",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/467469040"
+            },
+            {
+              "file": "stieleiche-1.jpg",
+              "alt": "Quercus robur – iNaturalist Foto (internes Testing)",
+              "author": "Veronica Jendrick",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/326660041"
+            }
+          ]
+        },
+        {
+          "slug": "hainbuche",
+          "commonName": "Hainbuche",
+          "scientificName": "Carpinus betulus",
+          "family": "Birkengewächse (Betulaceae)",
+          "description": "Laubbaum mit geflammter, unruhiger Rinde, oft spannrückigem Stamm und zweizeilig angeordneten, eiförmigen, gefalteten und doppelt gesägten Blättern. Die Nüsschen tragen einen auffälligen dreilappigen Flügel.",
+          "warning": "Nicht mit der Rotbuche verwechseln: Beide haben ähnliche Knospen, gehören aber verschiedenen Familien an.",
+          "notes": [
+            {
+              "heading": "Name und Familie",
+              "text": "Der Name kann täuschen: Die Hainbuche gehört in die Familie der Birkengewächse. Die Rotbuche gehört dagegen zu den Buchengewächsen."
+            },
+            {
+              "heading": "Blattspuren",
+              "text": "Eiförmig, gefaltet und doppelt gesägt – so lässt sich ein typisches Hainbuchenblatt beschreiben. Betrachte Form, Blattfläche und Rand gemeinsam."
+            },
+            {
+              "heading": "Stamm",
+              "text": "Betrachte einen älteren Stamm: Er ist unruhig geflammt und spannrückig. Damit unterscheidet er sich von der meist glatten, gleichmäßigeren Rinde der Rotbuche."
+            }
+          ],
+          "photos": [
+            {
+              "file": "hainbuche-2.jpg",
+              "alt": "Carpinus betulus – iNaturalist Foto (internes Testing)",
+              "author": "Grzegorz Grzejszczak",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/50638873"
+            },
+            {
+              "file": "hainbuche-1.jpg",
+              "alt": "Carpinus betulus – iNaturalist Foto (internes Testing)",
+              "author": "Zo Clark",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/171859554"
+            }
+          ]
+        },
+        {
+          "slug": "bergahorn",
+          "commonName": "Berg-Ahorn",
+          "scientificName": "Acer pseudoplatanus",
+          "family": "Seifenbaumgewächse (Sapindaceae)",
+          "description": "Bis etwa 30 Meter hoher Ahorn mit gegenständigen, meist fünflappigen und unregelmäßig gekerbt-gesägten Blättern. Die Borke blättert im Alter schuppig ab; die paarigen Fruchtflügel stehen ungefähr rechtwinklig zueinander.",
+          "warning": "Bei jungen Bäumen zusätzlich Knospen und Blattstiel prüfen, da Ahornblätter verwechselt werden können.",
+          "notes": [
+            {
+              "heading": "Am Zweig",
+              "text": "Die Blätter sind gegenständig angeordnet: Zwei Blätter stehen sich an einem Zweig gegenüber. Ihre Spreiten sind meist in fünf Lappen geteilt."
+            },
+            {
+              "heading": "Fruchtflügel",
+              "text": "Ungefähr ein rechter Winkel liegt zwischen den beiden Fruchtflügeln. Vergleiche diese paarigen Flügel zusätzlich mit den Blättern."
+            },
+            {
+              "heading": "Borke",
+              "text": "Bei älteren Berg-Ahornen verändert sich die Borke: Sie blättert schuppig ab. Die Rinde ist deshalb ein weiterer Hinweis neben den gelappten Blättern."
+            }
+          ],
+          "photos": [
+            {
+              "file": "bergahorn-1.jpg",
+              "alt": "Acer pseudoplatanus – iNaturalist Foto (internes Testing)",
+              "author": "Willow",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/270771593"
+            },
+            {
+              "file": "bergahorn-2.jpg",
+              "alt": "Acer pseudoplatanus – iNaturalist Foto (internes Testing)",
+              "author": "Willow",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/270771607"
+            }
+          ]
+        },
+        {
+          "slug": "gewoehnliche-esche",
+          "commonName": "Gewöhnliche Esche",
+          "scientificName": "Fraxinus excelsior",
+          "family": "Ölbaumgewächse (Oleaceae)",
+          "description": "Hoher Laubbaum mit gegenständigen, unpaarig gefiederten Blättern und auffällig mattschwarzen Knospen. Die einsamigen, zungenförmig geflügelten Früchte hängen oft in Büscheln.",
+          "warning": "Abgestorbene Äste können herabfallen; geschädigte Eschen nur aus sicherem Abstand betrachten.",
+          "notes": [
+            {
+              "heading": "Schwarze Knospen",
+              "text": "Die Knospen der Gewöhnlichen Esche sind auffällig mattschwarz. Dieses Kennzeichen hilft besonders, wenn noch keine Blätter zu sehen sind."
+            },
+            {
+              "heading": "Gefiederte Blätter",
+              "text": "Ein Eschenblatt ist unpaarig gefiedert. Mehrere Teilblättchen bilden gemeinsam ein Blatt; an seiner Spitze sitzt ein einzelnes Endblättchen."
+            },
+            {
+              "heading": "Abstand halten",
+              "text": "Bei einer geschädigten Esche ist es wichtig, wegen möglicher Totäste Abstand zu halten. Beobachte den Baum von einem sicheren Platz aus statt unter die Krone zu gehen."
+            }
+          ],
+          "photos": [
+            {
+              "file": "gewoehnliche-esche-1.jpg",
+              "alt": "Fraxinus excelsior – iNaturalist Foto (internes Testing)",
+              "author": "Jais Knudsen",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/281056884"
+            }
+          ]
+        },
+        {
+          "slug": "winterlinde",
+          "commonName": "Winter-Linde",
+          "scientificName": "Tilia cordata",
+          "family": "Malvengewächse (Malvaceae)",
+          "description": "Laubbaum mit wechselständigen, herzförmigen Blättern. Auf der Blattunterseite sitzen in den Nervenwinkeln rostbraune Haarbüschel. Der blassgrüne Hochblatt-Flügel bleibt mit dem Fruchtstand verbunden.",
+          "warning": "Für die Abgrenzung zur Sommer-Linde mehrere voll entwickelte Blätter prüfen.",
+          "notes": [
+            {
+              "heading": "Blattform",
+              "text": "Herzförmige Spreite: So sieht die Blattfläche einer Winter-Linde typischerweise aus. Prüfe zusätzlich die Unterseite, denn die Form allein reicht für die Abgrenzung nicht aus."
+            },
+            {
+              "heading": "Unterseite",
+              "text": "In den Nervenwinkeln auf der Blattunterseite sitzen rostbraune Haarbüschel. Suche diese kleinen Stellen an mehreren voll entwickelten Blättern."
+            },
+            {
+              "heading": "Flughilfe",
+              "text": "Ein blassgrünes, flügelartiges Hochblatt bleibt mit dem Fruchtstand verbunden. Es unterstützt dessen Ausbreitung und ist ein auffälliges Merkmal der Linden."
+            }
+          ],
+          "photos": [
+            {
+              "file": "winterlinde-1.jpg",
+              "alt": "Tilia cordata – iNaturalist Foto (internes Testing)",
+              "author": "AnRo0002",
+              "license": "pd",
+              "licenseLabel": "Gemeinfrei",
+              "source": "https://www.inaturalist.org/photos/12491246"
+            },
+            {
+              "file": "winterlinde-2.jpg",
+              "alt": "Tilia cordata – iNaturalist Foto (internes Testing)",
+              "author": "Alreadyexist",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/12491247"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "wiese",
+      "short": "Wiese",
+      "world": "meadow",
+      "slug": "artenreiche-wiese",
+      "name": "Artenreiche Wiese",
+      "description": "Erkunde eine artenreiche Wiese als geführte Beobachtungstour: Vergleiche Blüten, Blätter und Wuchsform, ohne etwas zu sammeln. Löse die Quizfragen und dokumentiere drei fotografische Funde; so bleibt der Lebensraum für Pflanzen und Insekten erhalten.",
+      "plants": [
+        {
+          "slug": "wiesen-salbei",
+          "commonName": "Wiesen-Salbei",
+          "scientificName": "Salvia pratensis",
+          "family": "Lippenblütler (Lamiaceae)",
+          "description": "Mehrjährige Wiesenpflanze mit kräftig blauvioletten Lippenblüten in lockeren Scheinquirlen. Der vierkantige Stängel und die meist grundständigen, runzeligen Blätter sind wichtige Hinweise. Typisch sind eher trockene, sonnige und nährstoffärmere Wiesen.",
+          "warning": "Nicht allein nach der Blütenfarbe bestimmen; Lippenblütler können ähnlich aussehen. Keine Aussage zur Essbarkeit ableiten.",
+          "notes": [
+            {
+              "heading": "Lippenblüten",
+              "text": "Blauviolette Lippenblüten an einem vierkantigen Stängel passen zum Wiesen-Salbei. Die Kombination aus Blüte und Stängel ist aussagekräftiger als die Farbe allein."
+            },
+            {
+              "heading": "Sonnige Wiese",
+              "text": "Trockene, sonnige und eher nährstoffarme Wiese beschreibt seinen typischen Lebensraum. Achte beim Fund auf die Umgebung der Pflanze."
+            },
+            {
+              "heading": "Mehrere Merkmale",
+              "text": "Blütenform, Stängelquerschnitt und Blätter solltest du gemeinsam prüfen. So stützt sich deine Beobachtung nicht nur auf die blauviolette Blütenfarbe."
+            }
+          ],
+          "photos": []
+        },
+        {
+          "slug": "wiesen-margerite",
+          "commonName": "Wiesen-Margerite",
+          "scientificName": "Leucanthemum vulgare agg.",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Ausdauernde Pflanze mit großen Blütenkörben: weiße Zungenblüten umgeben gelbe Röhrenblüten. Die oberen Stängelblätter sitzen wechselständig und sind gröber gezähnt als die grundständigen Blätter. Der Name umfasst eine schwer unterscheidbare Artengruppe.",
+          "warning": "Die Arten der Margeriten-Gruppe sind im Feld oft nicht sicher trennbar; deshalb wird hier bewusst das Aggregat geführt.",
+          "notes": [
+            {
+              "heading": "Ein Kopf, viele Blüten",
+              "text": "Der Blütenkopf besteht aus weißen Zungen- und gelben Röhrenblüten. Was aus der Entfernung wie eine einzelne Blüte aussieht, setzt sich aus vielen Einzelblüten zusammen."
+            },
+            {
+              "heading": "Was bedeutet agg.?",
+              "text": "Der Name bezeichnet eine schwer trennbare Artengruppe. Dafür steht hier der Zusatz „agg.“; die Lektion behandelt diese Gruppe und verspricht keine sichere Trennung aller zugehörigen Arten."
+            },
+            {
+              "heading": "Unpassende Merkmale",
+              "text": "Gegenständige Blätter und gelbe Lippenblüten passen nicht zur Wiesen-Margerite. Ihr Blütenkopf zeigt stattdessen die Kombination aus weißen Zungen- und gelben Röhrenblüten."
+            }
+          ],
+          "photos": []
+        },
+        {
+          "slug": "wiesen-flockenblume",
+          "commonName": "Wiesen-Flockenblume",
+          "scientificName": "Centaurea jacea",
+          "family": "Korbblütler (Asteraceae)",
+          "description": "Mehrjährige Wiesenart mit purpurfarbenen Blütenkörben. Die randlichen Blüten sind oft vergrößert; die Hüllblätter tragen trockenhäutige, unregelmäßig eingerissene Anhängsel. Sie wächst besonders in mäßig nährstoffreichen Wiesen.",
+          "warning": "Flockenblumen sind variabel und können miteinander hybridisieren. Für eine sichere Artansprache auch die Hüllblätter prüfen.",
+          "notes": [
+            {
+              "heading": "Hüllblätter prüfen",
+              "text": "Trockenhäutige, eingerissene Anhängsel der Hüllblätter helfen beim Bestimmen. Schau deshalb auch unter den auffälligen Blütenbereich und nicht nur auf dessen Farbe."
+            },
+            {
+              "heading": "Blütenfarbe",
+              "text": "Die Blüten der Wiesen-Flockenblume sind typischerweise purpurfarben. Diese Farbe ist ein erster Hinweis, aber noch kein ausreichender Artnachweis."
+            },
+            {
+              "heading": "Warum genau vergleichen?",
+              "text": "Weil Flockenblumen variabel sind und hybridisieren können, genügt die Blütenfarbe allein nicht. Für die Unterscheidung brauchst du zusätzliche Merkmale, insbesondere die Hüllblätter."
+            }
+          ],
+          "photos": [
+            {
+              "file": "wiesen-flockenblume-2.jpg",
+              "alt": "Centaurea jacea – iNaturalist Foto (internes Testing)",
+              "author": "Ellyne Geurts",
+              "license": "cc0",
+              "licenseLabel": "CC0 1.0",
+              "source": "https://www.inaturalist.org/photos/420907760"
+            },
+            {
+              "file": "wiesen-flockenblume-1.jpg",
+              "alt": "Centaurea jacea – iNaturalist Foto (internes Testing)",
+              "author": "Thierry Arbault",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/335736479"
+            }
+          ]
+        },
+        {
+          "slug": "acker-witwenblume",
+          "commonName": "Acker-Witwenblume",
+          "scientificName": "Knautia arvensis",
+          "family": "Geißblattgewächse (Caprifoliaceae)",
+          "description": "Behaarte Wiesenpflanze mit flachen, blauvioletten Blütenköpfen. Die Randblüten sind deutlich größer als die inneren Blüten. Stängelblätter sind häufig fiederteilig; die Blütenköpfe besitzen keinen gemeinsamen Außenkelch wie Skabiosen.",
+          "warning": "Nicht nur auf violette Blütenköpfe achten: Skabiosen und Teufelsabbiss können ähnlich wirken.",
+          "notes": [
+            {
+              "heading": "Blütenkopf",
+              "text": "Der Blütenstand wirkt als flacher blauvioletter Kopf mit größeren Randblüten. Vergleiche die Mitte mit dem äußeren Rand."
+            },
+            {
+              "heading": "Geteilte Blätter",
+              "text": "Fiederteilige Stängelblätter sind bei der Acker-Witwenblume häufig zu sehen. Beachte diese Blätter zusätzlich zum Blütenkopf."
+            },
+            {
+              "heading": "Ähnliche Pflanzen",
+              "text": "Skabiosen und Teufelsabbiss gehören zu den Pflanzen, die du bei einem violetten Blütenkopf mitprüfen solltest. Ein ähnlicher Farbeindruck allein trennt diese Gruppen nicht sicher."
+            }
+          ],
+          "photos": [
+            {
+              "file": "acker-witwenblume-2.jpg",
+              "alt": "Knautia arvensis – iNaturalist Foto (internes Testing)",
+              "author": "AnRo0002",
+              "license": "pd",
+              "licenseLabel": "Gemeinfrei",
+              "source": "https://www.inaturalist.org/photos/80089959"
+            },
+            {
+              "file": "acker-witwenblume-1.jpg",
+              "alt": "Knautia arvensis – iNaturalist Foto (internes Testing)",
+              "author": "Patrick Hacker",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/71611025"
+            }
+          ]
+        },
+        {
+          "slug": "gewoehnlicher-hornklee",
+          "commonName": "Gewöhnlicher Hornklee",
+          "scientificName": "Lotus corniculatus",
+          "family": "Hülsenfrüchtler (Fabaceae)",
+          "description": "Niedrige bis aufsteigende Pflanze mit gelben Schmetterlingsblüten, die außen oft rötlich überlaufen sind. Das Blatt hat fünf Teilblättchen: drei obere und zwei nahe am Stängel stehende untere. Das untere Paar wirkt wie Nebenblätter, gehört aber zum Blatt. Reife Hülsen stehen wie kleine Hörner ab.",
+          "warning": "Gelb blühende Hülsenfrüchtler ähneln einander. Blattform, Blütenstand und Früchte gemeinsam prüfen; nicht probieren.",
+          "notes": [
+            {
+              "heading": "Fünf Teilblättchen",
+              "text": "Drei obere und zwei untere Fiederblättchen bilden das Blatt des Hornklees. Das untere Paar steht nahe am Stängel und kann wie Nebenblätter wirken; es gehört aber zum Blatt."
+            },
+            {
+              "heading": "Schmale Hülsen",
+              "text": "Eine schmale Hülse ist die typische Frucht des Gewöhnlichen Hornklees. Beobachte bei einer Pflanze mit Früchten deren Form zusätzlich zu den Blättern."
+            },
+            {
+              "heading": "Schmetterlingsblüte",
+              "text": "Gelbe Schmetterlingsblüte beschreibt die Blütenform des Hornklees. Verbinde dieses Merkmal mit dem fünfteiligen Blatt und den schmalen Hülsen."
+            }
+          ],
+          "photos": [
+            {
+              "file": "gewoehnlicher-hornklee-1.jpg",
+              "alt": "Lotus corniculatus – iNaturalist Foto (internes Testing)",
+              "author": "Douglas Goldman",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/366803576"
+            },
+            {
+              "file": "gewoehnlicher-hornklee-2.jpg",
+              "alt": "Lotus corniculatus – iNaturalist Foto (internes Testing)",
+              "author": "Douglas Goldman",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/366803594"
+            }
+          ]
+        },
+        {
+          "slug": "kleiner-klappertopf",
+          "commonName": "Kleiner Klappertopf",
+          "scientificName": "Rhinanthus minor",
+          "family": "Sommerwurzgewächse (Orobanchaceae)",
+          "description": "Einjährige, gelb blühende Wiesenpflanze mit gegenständigen, gezähnten Blättern. Die seitlich abgeflachte Kelchhülle umschließt später eine trockene Frucht, in der reife Samen hörbar klappern. Als Halbschmarotzer entzieht sie benachbarten Gräsern Wasser und Nährstoffe.",
+          "warning": "Mehrere Klappertopf-Arten ähneln sich stark. Für die Artbestimmung Blüte, Kelch und Tragblätter vergleichen.",
+          "notes": [
+            {
+              "heading": "Namensrätsel",
+              "text": "Reife Samen klappern in der trockenen Frucht. Dieses Geräusch erklärt den Namen Klappertopf."
+            },
+            {
+              "heading": "Nachbarn unter der Erde",
+              "text": "Er ist ein Halbschmarotzer an Wurzeln anderer Pflanzen. Der Kleine Klappertopf steht damit in einer besonderen Beziehung zu seinen Pflanzennachbarn."
+            },
+            {
+              "heading": "Merkmale kombinieren",
+              "text": "Gelbe Blüten, gegenständige gezähnte Blätter, abgeflachter Kelch: Suche diese Kombination. Kein einzelnes Farbmerkmal ersetzt den Vergleich der ganzen Pflanze."
+            }
+          ],
+          "photos": [
+            {
+              "file": "kleiner-klappertopf-1.jpg",
+              "alt": "Rhinanthus minor – iNaturalist Foto (internes Testing)",
+              "author": "Caleb Catto",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/61980398"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "alpen",
+      "short": "Alpen",
+      "world": "alpine",
+      "slug": "alpenraum",
+      "name": "Alpenraum",
+      "description": "Begib dich auf eine geführte Expedition durch Fels, Schutt, alpine Rasen und Zwergstrauchheiden. Bleib auf sicheren Wegen, beobachte Formen und Standorte aus Abstand, löse die Quizfragen und halte drei Pflanzenfunde fotografisch fest – nichts wird gepflückt oder betreten.",
+      "plants": [
+        {
+          "slug": "alpen-edelweiss",
+          "commonName": "Alpen-Edelweiß",
+          "scientificName": "Leontopodium alpinum",
+          "family": "Asteraceae",
+          "description": "Kleine, weißwollig-filzige Alpenpflanze. Sternförmig ausgebreitete, dicht behaarte Hochblätter umgeben mehrere kleine gelbliche Blütenköpfchen. Sie wächst vor allem in kalkreichen Steinrasen und Felsspalten.",
+          "warning": "Nicht pflücken oder ausgraben; im Nationalpark und anderen Schutzgebieten streng vor Ort schützen. Keine Nutzungsempfehlung.",
+          "notes": [
+            {
+              "heading": "Weißer Stern",
+              "text": "Dicht behaarte, sternförmig angeordnete Hochblätter erzeugen den bekannten weißen Stern. Schau deshalb nicht nur auf die Farbe, sondern auch auf die Anordnung und Behaarung."
+            },
+            {
+              "heading": "Lebensraum",
+              "text": "Kalkreiche Steinrasen und Felsspalten sind typische Standorte des Alpen-Edelweißes. Ein Standortmerkmal ergänzt die Beobachtung der Pflanze, ersetzt sie aber nicht."
+            },
+            {
+              "heading": "Foto statt Pflücken",
+              "text": "Nur beobachten und fotografieren ist bei einem Edelweißfund im Nationalpark richtig. Für unsere Sammlung bleiben die Pflanzen an ihrem Wuchsort."
+            }
+          ],
+          "photos": [
+            {
+              "file": "alpen-edelweiss-1.jpg",
+              "alt": "Leontopodium alpinum – iNaturalist Foto (internes Testing)",
+              "author": "Jonathan",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/96213090"
+            }
+          ]
+        },
+        {
+          "slug": "kalk-glocken-enzian",
+          "commonName": "Kalk-Glocken-Enzian",
+          "scientificName": "Gentiana clusii",
+          "family": "Gentianaceae",
+          "description": "Niedrige Rosettenpflanze mit einzelner, großer, tiefblauer Glockenblüte. Die zugespitzten Kelchzipfel liegen der Kronröhre an. Typisch sind kalkreiche, steinige Rasen und Quellfluren der montanen bis subalpinen Stufe.",
+          "warning": "Besonders geschützte Art: nicht pflücken, ausgraben oder beschädigen. Nicht mit ähnlich blühenden Enzianarten allein nach Farbe bestimmen.",
+          "notes": [
+            {
+              "heading": "Blaue Glocke",
+              "text": "Große tiefblaue Glocke auf einer niedrigen Rosette: Diese Kombination beschreibt den Kalk-Glocken-Enzian. Betrachte Blütenform und Wuchs zusammen."
+            },
+            {
+              "heading": "Kalk im Namen",
+              "text": "Er ist an kalkreiche Standorte gebunden. Der Name Kalk-Glocken-Enzian gibt dir damit bereits einen Hinweis auf seinen Lebensraum."
+            },
+            {
+              "heading": "Farbe allein genügt nicht",
+              "text": "Mehrere Enzianarten blühen ähnlich blau. Prüfe deshalb weitere Pflanzenmerkmale und den Standort, bevor du dich auf eine Art festlegst."
+            }
+          ],
+          "photos": [
+            {
+              "file": "kalk-glocken-enzian-1.jpg",
+              "alt": "Gentiana clusii – iNaturalist Foto (internes Testing)",
+              "author": "Wolfgang Jauch",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/444577889"
+            },
+            {
+              "file": "kalk-glocken-enzian-2.jpg",
+              "alt": "Gentiana clusii – iNaturalist Foto (internes Testing)",
+              "author": "Wolfgang Jauch",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/74148052"
+            }
+          ]
+        },
+        {
+          "slug": "bewimperte-alpenrose",
+          "commonName": "Bewimperte Alpenrose",
+          "scientificName": "Rhododendron hirsutum",
+          "family": "Ericaceae",
+          "description": "Immergrüner Zwergstrauch mit rosaroten Trichterblüten. Die Blätter sind beiderseits grün, drüsig punktiert und am flachen Rand deutlich bewimpert. Sie besiedelt kalkreiche Felsbänder, Schotterhalden und lichte Latschengebüsche.",
+          "warning": "Pflanzenteile nicht verzehren; Alpenrosen enthalten problematische Inhaltsstoffe. Am Standort belassen und Verwechslungen mit anderen Rhododendron-Arten beachten.",
+          "notes": [
+            {
+              "heading": "Wimpern am Blatt",
+              "text": "Ein flacher Rand mit deutlich sichtbaren Wimperhaaren ist das namensgebende Blattmerkmal. Die feinen Härchen am Rand helfen beim genauen Vergleichen."
+            },
+            {
+              "heading": "Kalkstandorte",
+              "text": "Die Bewimperte Alpenrose wächst typischerweise auf kalkreichen Felsbändern und Schotterhalden. Verbinde den Standort mit den beobachteten Blattmerkmalen."
+            },
+            {
+              "heading": "Sicher beobachten",
+              "text": "Pflanzenteile nicht verzehren: Das gilt auch für die Bewimperte Alpenrose. Halte deinen Fund fotografisch fest und lasse die Pflanze unbeschädigt."
+            }
+          ],
+          "photos": [
+            {
+              "file": "bewimperte-alpenrose-1.jpg",
+              "alt": "Rhododendron hirsutum – iNaturalist Foto (internes Testing)",
+              "author": "Wolfgang Jauch",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/27015969"
+            }
+          ]
+        },
+        {
+          "slug": "silberwurz",
+          "commonName": "Silberwurz",
+          "scientificName": "Dryas octopetala",
+          "family": "Rosaceae",
+          "description": "Niederliegender Spalierstrauch mit ledrigen, gekerbten Blättern: oben dunkelgrün, unten weißfilzig. Die meist achtzähligen weißen Blüten entwickeln auffällige, fedrig behaarte Fruchtstände. Die Art wächst auf kalkreichem Schutt und in Steinrasen.",
+          "warning": "Empfindliche Polster nicht betreten oder abreißen. Die Information ist keine Empfehlung für eine Nutzung als Heil- oder Nahrungspflanze.",
+          "notes": [
+            {
+              "heading": "Zwei Blattseiten",
+              "text": "Oben dunkelgrün, unten weißfilzig: So unterscheiden sich die Blattseiten der Silberwurz. Gerade dieser Gegensatz ist beim genauen Beobachten hilfreich."
+            },
+            {
+              "heading": "Bodennaher Wuchs",
+              "text": "Niederliegender Spalierstrauch beschreibt ihre Wuchsform. Die Pflanze bleibt dicht am Boden und passt damit zu ihrem alpinen Standort."
+            },
+            {
+              "heading": "Fedrige Früchte",
+              "text": "Den Fruchtstand erkennst du an fedrig verlängerten, weiß behaarten Griffeln. Achte nach der Blüte auf diese auffälligen Strukturen."
+            }
+          ],
+          "photos": [
+            {
+              "file": "silberwurz-1.jpg",
+              "alt": "Dryas octopetala – iNaturalist Foto (internes Testing)",
+              "author": "William Stephens",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/65287013"
+            },
+            {
+              "file": "silberwurz-2.jpg",
+              "alt": "Dryas octopetala – iNaturalist Foto (internes Testing)",
+              "author": "Karl Palsson",
+              "license": "cc-by",
+              "licenseLabel": "CC BY",
+              "source": "https://www.inaturalist.org/photos/717355951"
+            }
+          ]
+        },
+        {
+          "slug": "silberdistel",
+          "commonName": "Silberdistel",
+          "scientificName": "Carlina acaulis",
+          "family": "Asteraceae",
+          "description": "Meist bodennahe, dornige Rosettenpflanze mit großem Blütenkorb. Lange silberweiße innere Hüllblätter umgeben die Röhrenblüten und öffnen sich bei trockenem Wetter stärker. Sie wächst in mageren, basenreichen Rasen und lichten Wäldern.",
+          "warning": "In Deutschland besonders geschützt und auf der Vorwarnliste: nicht sammeln, abschneiden oder ausgraben. Vorsicht an den dornigen Blättern.",
+          "notes": [
+            {
+              "heading": "Silberner Kranz",
+              "text": "Innere Hüllblätter des Blütenkorbs bilden den silbernen Strahlenkranz. Der auffällige Rand ist also nicht einfach eine Reihe großer Blütenblätter."
+            },
+            {
+              "heading": "Wetterdistel",
+              "text": "Ihr Blütenkorb öffnet sich bei Trockenheit stärker. Diese Beobachtung erklärt den gebräuchlichen Namen Wetterdistel."
+            },
+            {
+              "heading": "Pflanze schützen",
+              "text": "Für Deutschland wird die Silberdistel als besonders geschützt geführt. Unsere Beobachtungsregel bleibt deshalb eindeutig: fotografieren und am Standort stehen lassen."
+            }
+          ],
+          "photos": [
+            {
+              "file": "silberdistel-1.jpg",
+              "alt": "Carlina acaulis – iNaturalist Foto (internes Testing)",
+              "author": "Udo Schmidt",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/5200445"
+            },
+            {
+              "file": "silberdistel-2.jpg",
+              "alt": "Carlina acaulis – iNaturalist Foto (internes Testing)",
+              "author": "Me",
+              "license": "pd",
+              "licenseLabel": "Gemeinfrei",
+              "source": "https://www.inaturalist.org/photos/5200446"
+            }
+          ]
+        },
+        {
+          "slug": "trollblume",
+          "commonName": "Trollblume",
+          "scientificName": "Trollius europaeus",
+          "family": "Ranunculaceae",
+          "description": "Mehrjährige Pflanze feuchter Bergwiesen mit handförmig geteilten Blättern. Die zahlreichen gelben Blütenblätter bilden eine fast geschlossene Kugel. Sie bevorzugt feuchte, nährstoffreichere Wiesen, Quellfluren und Hochstaudenbereiche.",
+          "warning": "Nicht verzehren; Hahnenfußgewächse können reizende Inhaltsstoffe enthalten. Vorkommen nicht betreten oder pflücken, insbesondere auf geschützten Feuchtwiesen.",
+          "notes": [
+            {
+              "heading": "Gelbe Kugel",
+              "text": "Fast kugelig und leuchtend gelb wirkt die Blüte der Trollblume. Diese Form ist ein guter erster Hinweis, der mit weiteren Merkmalen verglichen werden sollte."
+            },
+            {
+              "heading": "Feuchter Standort",
+              "text": "Feuchte Bergwiesen und Quellfluren sind passende Lebensräume. Die Feuchtigkeit des Standorts hilft dir, den Fund einzuordnen."
+            },
+            {
+              "heading": "Pflanzenfamilie",
+              "text": "Die Trollblume gehört zur Familie der Hahnenfußgewächse. Lerne neben der Blütenform auch die Familie kennen, um Pflanzen miteinander vergleichen zu können."
+            }
+          ],
+          "photos": [
+            {
+              "file": "trollblume-1.jpg",
+              "alt": "Trollius europaeus – iNaturalist Foto (internes Testing)",
+              "author": "Joan Simon",
+              "license": "cc-by-sa",
+              "licenseLabel": "CC BY-SA",
+              "source": "https://www.inaturalist.org/photos/13863"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plantini – Artenkenntnis für alle</title>
+  <meta name="description" content="Plantini macht Pflanzenkunde zugänglich: in Ökosystemen lernen, draußen entdecken und Pflanzen bestimmen. Ein Open-Source-Projekt im Dienst des Bildungsauftrags – besonders für Schulen.">
+  <meta name="theme-color" content="#F7F1E5">
+  <meta property="og:title" content="Plantini – Artenkenntnis für alle">
+  <meta property="og:description" content="Pflanzenkunde zugänglich machen: lernen, entdecken, bestimmen. Open Source, für Schulen gemacht.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://plantini.eu/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top" aria-label="Plantini – Startseite">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="currentColor"/><path d="M32 50V30M32 30c0-10 7-16 17-17 1 10-5 17-17 17ZM32 38c0-8-6-13-15-14-1 9 4 14 15 14Z" fill="none" stroke="#F7F1E5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Plantini</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menü</button>
+      <nav class="nav-links" id="nav-links" aria-label="Hauptnavigation">
+        <a href="#idee">Idee</a>
+        <a href="#demo">Ökosysteme</a>
+        <a href="#karten">Karteikarten</a>
+        <a href="#schulen">Für Schulen</a>
+        <a href="#mitmachen">Mitmachen</a>
+        <a href="#preise">Preise</a>
+        <a class="btn btn-small" href="__APP_URL__">App öffnen</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Open Source · Bildung · Natur</p>
+          <h1>Artenkenntnis<br>für <em>alle</em>.</h1>
+          <p class="lead">Plantini macht Pflanzenkunde zugänglich: Lerne Pflanzen in spielerischen Ökosystem-Expeditionen kennen, entdecke sie draußen und bestimme sie mit dem Handy – als Teil eines modernen Bildungsauftrags.</p>
+          <div class="cta-row">
+            <a class="btn" href="__APP_URL__">App öffnen</a>
+            <a class="btn btn-ghost" href="#demo">Ökosysteme erkunden</a>
+          </div>
+          <div class="stores" aria-label="App-Stores">
+            <span class="store" data-store="play" aria-disabled="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5v17l14-8.5-14-8.5Z" fill="currentColor"/></svg>
+              <span><small>Bald bei</small>Google Play</span>
+            </span>
+            <span class="store" data-store="apple" aria-disabled="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 18.5h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <span><small>Bald im</small>App Store</span>
+            </span>
+          </div>
+          <p class="note">Apps für Android und iOS sind in Vorbereitung. Bis dahin läuft Plantini direkt im Browser.</p>
+        </div>
+        <div class="hero-stage" id="hero-stage">
+          <canvas id="hero-canvas" role="img" aria-label="Drei schwebende 3D-Karten: Wald, Wiese und Alpen"></canvas>
+          <div class="tile-picker" role="group" aria-label="Ökosystem wählen">
+            <button type="button" data-eco="wald">Wald</button>
+            <button type="button" data-eco="wiese">Wiese</button>
+            <button type="button" data-eco="alpen">Alpen</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="idee">
+      <div class="wrap">
+        <p class="eyebrow">Warum Plantini</p>
+        <h2 class="reveal">Pflanzenkunde ist Bildung – und sollte für alle zugänglich sein.</h2>
+        <div class="two-col reveal">
+          <p>Wer Arten kennt, versteht Lebensräume. Doch Artenkenntnis ist keine Selbstverständlichkeit mehr – in Schule, Studium und Alltag. Plantini will sie wieder zugänglich machen: verständlich, motivierend und überall verfügbar.</p>
+          <p>Das Projekt versteht sich als Teil des Bildungsauftrags: kuratierte Inhalte statt Zufall, Quellen statt Behauptungen und eine ehrliche Antwort auf die Frage, wie sicher eine Bestimmung wirklich ist.</p>
+        </div>
+        <div class="pillars">
+          <article class="pillar reveal">
+            <span class="pillar-num">01</span>
+            <h3>Lernen in Ökosystemen</h3>
+            <p>Wald, Wiese und Alpen: jeweils 30 kurze Level. Steckbrief lesen, Fragen beantworten, Stern sammeln – Schritt für Schritt zur Artenkenntnis.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-num">02</span>
+            <h3>Draußen bestimmen</h3>
+            <p>Foto aufnehmen, Vorschläge erhalten. Die Bestimmung erfolgt mit <strong>Pl@ntNet</strong> und zeigt Wahrscheinlichkeiten – nie eine Garantie. Du bestätigst den Fund selbst.</p>
+          </article>
+          <article class="pillar reveal">
+            <span class="pillar-num">03</span>
+            <h3>Dein Herbarium</h3>
+            <p>Funde bleiben privat. Der Standort ist optional und wird nicht automatisch geteilt. Lernen und Sammeln funktionieren auch ohne Netz und werden später abgeglichen.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="demo">
+      <div class="wrap">
+        <p class="eyebrow">Live-Demo</p>
+        <h2 class="reveal">Die Ökosysteme zum Anfassen.</h2>
+        <p class="section-lead reveal">Drehe die Welt mit Maus oder Finger. Jede Nummer ist eine Station – ein Level, eine Pflanze. Tippe darauf und sieh dir die Karteikarte an. Ein Ausschnitt aus der App: 6 von 30 Stationen je Ökosystem.</p>
+        <div class="eco-tabs" role="tablist" aria-label="Ökosystem">
+          <button type="button" role="tab" data-eco="wald" aria-selected="true">Wald</button>
+          <button type="button" role="tab" data-eco="wiese" aria-selected="false">Wiese</button>
+          <button type="button" role="tab" data-eco="alpen" aria-selected="false">Alpen</button>
+        </div>
+        <div class="demo-grid">
+          <div class="demo-stage" id="demo-stage">
+            <canvas id="demo-canvas" role="img" aria-label="Interaktive 3D-Ansicht des gewählten Ökosystems"></canvas>
+            <div class="stations" id="stations"></div>
+            <p class="demo-hint" id="demo-hint">Ziehen zum Drehen</p>
+          </div>
+          <div class="demo-card" id="demo-card" aria-live="polite"></div>
+        </div>
+        <p class="eco-desc" id="eco-desc"></p>
+      </div>
+    </section>
+
+    <section class="section" id="karten">
+      <div class="wrap">
+        <p class="eyebrow">Karteikarten</p>
+        <h2 class="reveal">Steckbriefe wie im Feldbuch.</h2>
+        <p class="section-lead reveal">Zu jeder Pflanze gibt es eine Karteikarte: Foto, Merkmale zum genauen Hinsehen und Hinweise zur Sicherheit. Bildnachweise sind immer sichtbar.</p>
+        <div class="cards-strip" id="cards-strip" tabindex="0" role="region" aria-label="Karteikarten des gewählten Ökosystems"></div>
+        <h3 class="sub reveal">Pflanzen im Bild</h3>
+        <div class="mosaic" id="mosaic"></div>
+        <p class="note"><a href="/bildnachweise/">Alle Bildnachweise und Lizenzen</a></p>
+      </div>
+    </section>
+
+    <section class="section section-sage" id="schulen">
+      <div class="wrap">
+        <p class="eyebrow eyebrow-light">Für Schulen</p>
+        <h2 class="reveal">Für Schulen gemacht – und gezielt gefördert.</h2>
+        <p class="section-lead reveal">Plantini ist für den Einsatz im Unterricht gedacht und wird für Schulen speziell gefördert. Lehrkräfte sehen den Lernfortschritt ihrer Schüler*innen und verbinden Pflanzenkunde im Klassenzimmer, auf Exkursionen und zuhause.</p>
+        <div class="pillars pillars-light">
+          <article class="pillar reveal">
+            <h3>Lernfortschritt im Blick</h3>
+            <p>Lehrkräfte sehen, welche Ökosysteme und Level ihre Schüler*innen abgeschlossen haben.</p>
+          </article>
+          <article class="pillar reveal">
+            <h3>Datenschutz zuerst</h3>
+            <p>Fotos und genaue Fundorte gehören den Lernenden. Der Standort ist optional.</p>
+          </article>
+          <article class="pillar reveal">
+            <h3>Schulung und Support</h3>
+            <p>Einführung für Kollegien und persönlicher Support – siehe Preise.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="mitmachen">
+      <div class="wrap">
+        <p class="eyebrow">Mitmachen</p>
+        <h2 class="reveal">Ein offenes Projekt, das wächst.</h2>
+        <div class="two-col reveal">
+          <p>Plantini ist ein Open-Source-Projekt. Die Arten und Ökosysteme werden ständig erweitert – und jede*r kann neue Ökosysteme und weitere Arten hinzufügen.</p>
+          <p>Dafür entsteht bald ein offener redaktioneller Zugang mit Review-Prozess: Beiträge werden fachlich geprüft, bevor sie veröffentlicht werden. So sollen viele Arten und Ökosysteme in vielen Sprachen weltweit verfügbar werden.</p>
+        </div>
+        <ul class="chips reveal">
+          <li>Neue Ökosysteme</li><li>Weitere Arten</li><li>Viele Sprachen</li><li>Review-Prozess</li><li>Open Source</li>
+        </ul>
+        <p class="reveal"><a class="btn btn-ghost" href="mailto:noah@illmann.net?subject=Plantini%20%E2%80%93%20Mitmachen">Interesse? Schreib uns</a></p>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="preise">
+      <div class="wrap">
+        <p class="eyebrow">Preise</p>
+        <h2 class="reveal">Faire Preise – mit dem Ziel „kostenlos“.</h2>
+        <p class="section-lead reveal">Vorläufige Preisplanung. Aktuell ist Plantini kostenlos nutzbar.</p>
+        <div class="prices">
+          <article class="price reveal"><h3>Einzelpersonen</h3><p class="amount">4,99 €<small>/ Jahr</small></p><p>Für alle, die für sich lernen und entdecken wollen.</p></article>
+          <article class="price reveal"><h3>Schüler*innen</h3><p class="amount">20 €<small>einmalig</small></p><p>Pro Schüler*in, einmalig.</p></article>
+          <article class="price reveal"><h3>Lehrkräfte</h3><p class="amount">100 €<small>/ Jahr</small></p><p>Pro Lehrkraft, inklusive Fortschrittsansicht der Klasse.</p></article>
+          <article class="price reveal"><h3>Schulung &amp; Support</h3><p class="amount">1.000 €</p><p>Einführung für Kollegien und persönlicher Support.</p></article>
+          <article class="price price-wide reveal"><h3>Eigene Version der App</h3><p class="amount">5.000 €</p><p>Mit eigenem Branding, redaktionellem Zugriff, Content-Anpassung und mehr.</p></article>
+        </div>
+        <aside class="goal reveal">
+          <h3>Unser Ziel</h3>
+          <p>Plantini soll langfristig als frei verfügbares Bildungsangebot bereitstehen. Dafür streben wir eine Kooperation mit der EU und dem deutschen Staat an.</p>
+        </aside>
+        <p class="note">Alle Preise sind vorläufig, Angaben ohne Gewähr. Angaben zu Umsatzsteuer und Abrechnung folgen mit dem Start des Bezahlangebots.</p>
+      </div>
+    </section>
+
+    <section class="section final">
+      <div class="wrap final-inner">
+        <h2 class="reveal">Jetzt ausprobieren.</h2>
+        <p class="section-lead reveal">Plantini läuft im Browser – ohne Installation.</p>
+        <div class="cta-row">
+          <a class="btn" href="__APP_URL__">App öffnen</a>
+        </div>
+        <div class="stores stores-center">
+          <span class="store" data-store="play" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5v17l14-8.5-14-8.5Z" fill="currentColor"/></svg>
+            <span><small>Bald bei</small>Google Play</span>
+          </span>
+          <span class="store" data-store="apple" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 18.5h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span><small>Bald im</small>App Store</span>
+          </span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p><strong>Plantini</strong> · ein Projekt der [Betreiber]</p>
+      <p class="footer-small">Pflanzenbestimmung mit Pl@ntNet. Fotos unter freien Lizenzen, siehe <a href="/bildnachweise/">Bildnachweise</a>.</p>
+      <nav class="footer-links" aria-label="Rechtliches"><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/bildnachweise/">Bildnachweise</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

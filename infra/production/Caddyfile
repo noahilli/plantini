@@ -14,8 +14,18 @@
 	}
 }
 
-# Flutter web app
+# Project homepage (static container, see apps/homepage)
 {$PLANTINI_DOMAIN} {
+	import security_headers
+	reverse_proxy 127.0.0.1:{$HOMEPAGE_PORT:8083}
+}
+
+www.{$PLANTINI_DOMAIN} {
+	redir https://{$PLANTINI_DOMAIN}{uri} permanent
+}
+
+# Flutter web app
+app.{$PLANTINI_DOMAIN} {
 	import security_headers
 	root * /srv/web
 	encode zstd gzip
@@ -23,10 +33,6 @@
 	respond @healthz "ok" 200
 	try_files {path} /index.html
 	file_server
-}
-
-www.{$PLANTINI_DOMAIN} {
-	redir https://{$PLANTINI_DOMAIN}{uri} permanent
 }
 
 # Fach-API. Only the public API prefix is reachable: Strapi's /admin and its
