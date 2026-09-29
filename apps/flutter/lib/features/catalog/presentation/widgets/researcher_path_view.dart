@@ -7,6 +7,7 @@ import '../../../../design_system/world_art.dart';
 import '../../domain/catalog_models.dart';
 import '../../domain/level_collection_progress.dart';
 import 'world_landscape_painter.dart';
+import 'modular_forest_view.dart';
 
 /// Traversable world with ten stations per chapter. Earlier levels stay playable.
 final class ResearcherPathView extends StatefulWidget {
@@ -55,6 +56,13 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
   Widget build(BuildContext context) {
     final sorted = _sorted;
     if (sorted.isEmpty) return const Center(child: Text('Noch keine Level.'));
+    if (widget.ecosystem.slug.contains('laubwald')) {
+      return ModularForestView(
+        levels: sorted,
+        onLevelTap: widget.onLevelTap,
+        finale: widget.finale,
+      );
+    }
     final chapters = (sorted.length / 10).ceil();
     final chapter = _chapter.clamp(0, chapters - 1);
     final stations = sorted.skip(chapter * 10).take(10).toList();
