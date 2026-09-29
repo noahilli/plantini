@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/plant_model.dart';
+import 'blossom_color.dart';
 
 /// Uncropped botanical photos, with an adaptive matte and intact attribution.
 final class PlantPhotoGallery extends StatefulWidget {
@@ -22,6 +23,7 @@ final class PlantPhotoGallery extends StatefulWidget {
 
 final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
   static final _paletteCache = <String, Color>{};
+  static const _sampleSize = 64;
   int _selected = 0;
   int _generation = 0;
   ImageStream? _stream;
@@ -72,8 +74,8 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
     }
     _stream = ResizeImage(
       NetworkImage(url),
-      width: 32,
-      height: 32,
+      width: _sampleSize,
+      height: _sampleSize,
     ).resolve(createLocalImageConfiguration(context));
     _listener = ImageStreamListener((info, _) async {
       // Own a clone across the async read; never dispose the image cache's copy.
@@ -86,6 +88,9 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
         if (bytes == null || !mounted || generation != _generation) return;
         final plant = widget.plant;
         final woody = _looksWoody(plant);
+        // Blossom colour named by the profile text steers the sampling; woody
+        // plants keep the leaf-green palette.
+        final blossom = woody ? null : blossomHueOf(plant);
         final hues = List<double>.filled(36, 0);
         final reds = List<double>.filled(36, 0);
         final greens = List<double>.filled(36, 0);
@@ -96,18 +101,32 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
               green = bytes.getUint8(i + 1),
               blue = bytes.getUint8(i + 2);
           final hsv = HSVColor.fromColor(Color.fromARGB(255, red, green, blue));
-          if (hsv.value < .16 || hsv.value > .94 || hsv.saturation < .22) {
+          // Pale petals are less saturated than leaves, so a named blossom
+          // family accepts a lower saturation than the generic search.
+          final minSaturation = blossom == null ? .22 : .16;
+          if (hsv.value < .16 ||
+              hsv.value > .97 ||
+              hsv.saturation < minSaturation) {
             continue;
           }
           final hue = hsv.hue;
-          // Woody plants get a leaf-green palette. On flowering plants, prefer
-          // petal hues (warm, yellow, pink, violet) over the green photo field.
           final isGreen = hue >= 68 && hue <= 168;
-          final isFlowerHue =
-              hue <= 68 || hue >= 270 || hue >= 235 && hue < 270;
-          if (woody ? !isGreen : !isFlowerHue) continue;
+          final wanted = woody
+              ? isGreen
+              : blossom != null
+              ? blossom.containsHue(hue)
+              // No colour named: prefer petal hues (warm, pink, violet) over
+              // the green photo field.
+              : hue <= 68 || hue >= 235;
+          if (!wanted) continue;
+          // Blossoms usually sit near the middle of the frame.
+          final pixel = i ~/ 4;
+          final dx = (pixel % _sampleSize) / (_sampleSize - 1) - .5;
+          final dy = (pixel ~/ _sampleSize) / (_sampleSize - 1) - .5;
+          final centre = 1 - .65 * ((dx * dx + dy * dy) * 2).clamp(0.0, 1.0);
           final bin = (hue / 10).floor().clamp(0, hues.length - 1).toInt();
-          final weight = hsv.saturation * hsv.saturation * (.55 + hsv.value);
+          final weight =
+              hsv.saturation * hsv.saturation * (.55 + hsv.value) * centre;
           hues[bin] += weight;
           reds[bin] += red * weight;
           greens[bin] += green * weight;
@@ -118,19 +137,34 @@ final class _PlantPhotoGalleryState extends State<PlantPhotoGallery> {
           if (hues[i] > hues[strongest]) strongest = i;
         }
         final weight = hues[strongest];
-        // With white/very pale blossoms there may be no useful chromatic
-        // pixels. Use a paper-white wash; for a tree with no green pixels,
-        // leave the card's calm botanical-green default alone.
-        final color = weight < 1
-            ? woody
-                  ? null
-                  : const Color(0xFFF7F5E9)
-            : Color.fromARGB(
-                255,
-                (reds[strongest] / weight).round(),
-                (greens[strongest] / weight).round(),
-                (blues[strongest] / weight).round(),
-              );
+        // Enough chromatic pixels are needed for a stable average (the sample
+        // has 4x the pixels of the former 32x32 one).
+        const minimumWeight = 4.0;
+        final Color? color;
+        if (blossom == BlossomHue.white) {
+          color = blossom!.fallback;
+        } else if (weight >= minimumWeight) {
+          // The weighted mean of shaded petals is dull; keep its hue but lift
+          // it to a clear, mid-light tint so the card does not turn grey.
+          final mean = HSVColor.fromColor(
+            Color.fromARGB(
+              255,
+              (reds[strongest] / weight).round(),
+              (greens[strongest] / weight).round(),
+              (blues[strongest] / weight).round(),
+            ),
+          );
+          color = mean
+              .withSaturation(mean.saturation.clamp(.5, .85).toDouble())
+              .withValue(mean.value.clamp(.7, .95).toDouble())
+              .toColor();
+        } else if (blossom != null) {
+          // The photo shows none of the named colour (leaves, habitat...).
+          color = blossom.fallback;
+        } else {
+          // Nothing chromatic: paper white for flowers, default green for trees.
+          color = woody ? null : const Color(0xFFF7F5E9);
+        }
         if (color == null) return;
         if (_paletteCache.length >= 64) {
           _paletteCache.remove(_paletteCache.keys.first);
