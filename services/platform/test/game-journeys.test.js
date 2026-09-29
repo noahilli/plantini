@@ -67,7 +67,7 @@ test('GAME-03 seed exposes 30 ordered playable levels per ecosystem with unique,
       // The plant description is retrieved separately through the published
       // plant endpoint; the level goal only announces this round's task.
       assert.match(level.learningGoal, /[Ff]ragen|[Ww]iederholung|[Ff]estige/);
-      if (index >= 10) assert.match(level.learningGoal, /[Ww]iederholung/);
+      if (index >= 10) assert.match(level.learningGoal, /Spurensuche|Forscherfinale/); // GAME-07 mission wording
       assert.equal(level.completionRule.collectionScope, 'ecosystem');
       assert.deepEqual(level.completionRule.requiredLevelIds, index ? [ecosystem.levelIds[index - 1]] : []);
       assert.equal(level.completionRule.requiredPlantIds.length, index === 29 ? 3 : 0);
@@ -80,8 +80,11 @@ test('GAME-03 seed exposes 30 ordered playable levels per ecosystem with unique,
         allQuizIds.add(quiz.publicId);
         const original = source.quizzes.find((item) => item.slug === quiz.data.sourceQuizSlug);
         assert.equal(quiz.data.prompt, original.prompt);
-        assert.deepEqual(quiz.data.choices, original.choices);
-        assert.equal(quiz.data.correctChoiceId, original.correctChoiceId);
+        // Choices are re-identified and rotated per round (rotateChoices), so
+        // compare what the learner sees: the same labels, the same right answer.
+        const labelOf = (choices, id) => choices.find((choice) => choice.id === id).label;
+        assert.deepEqual(quiz.data.choices.map((choice) => choice.label).sort(), original.choices.map((choice) => choice.label).sort());
+        assert.equal(labelOf(quiz.data.choices, quiz.data.correctChoiceId), labelOf(original.choices, original.correctChoiceId));
         assert.equal(w.entities.table(uid('plant')).find((p) => p.id === quiz.plant).publicId, plant.id);
         assert.equal(quiz.level.publicId, levelId);
       }
@@ -229,6 +232,9 @@ test('GAME-03 malformed new collection rules and invalid journeys fail closed', 
   assert.throws(() => normaliseCompletionRule({ collectionScope: 'ecosystem', requiredPlantIds: [42] }, []), { code: 'CONTENT_INTEGRITY_FAILED' });
   assert.throws(() => normaliseCompletionRule({ collectionScope: 'ecosystem', requiredPlantIds: ['not-a-uuid'] }, []), { code: 'CONTENT_INTEGRITY_FAILED' });
   const item = structuredClone(content.ecosystems[0]);
+  // Plants with learning cards derive their questions from the cards; drop the
+  // cards so the source-question requirement is what is being tested.
+  for (const plant of item.plants) plant.learningCards = [];
   item.quizzes.pop();
   assert.throws(() => buildJourney(item), /three source questions/);
   item.plants.pop();

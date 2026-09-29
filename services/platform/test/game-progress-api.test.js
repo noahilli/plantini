@@ -14,6 +14,9 @@ test('GAME-03 ecosystem progress route authenticates and exposes only the server
   const oldStrapi = globalThis.strapi;
   const oldIssuer = process.env.PLATFORM_OIDC_ISSUER;
   const oldAudience = process.env.PLATFORM_OIDC_AUDIENCE;
+  const oldPhotos = process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS;
+  // The runtime only needs strapi.store for the external photo source.
+  process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS = 'disabled';
   process.env.PLATFORM_OIDC_ISSUER = 'http://127.0.0.1:9999/realms/test';
   process.env.PLATFORM_OIDC_AUDIENCE = 'test';
   globalThis.strapi = { entityService: entities };
@@ -23,6 +26,8 @@ test('GAME-03 ecosystem progress route authenticates and exposes only the server
     else process.env.PLATFORM_OIDC_ISSUER = oldIssuer;
     if (oldAudience === undefined) delete process.env.PLATFORM_OIDC_AUDIENCE;
     else process.env.PLATFORM_OIDC_AUDIENCE = oldAudience;
+    if (oldPhotos === undefined) delete process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS;
+    else process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS = oldPhotos;
   });
   const runtime = getPlatformRuntime(globalThis.strapi);
   // JWT cryptography is tested separately; this boundary fixture proves the
