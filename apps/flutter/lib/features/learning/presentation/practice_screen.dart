@@ -7,17 +7,16 @@ import '../../../design_system/async_state_view.dart';
 import '../../catalog/domain/catalog_models.dart';
 import '../../catalog/presentation/widgets/plant_index_card.dart';
 
-/// Session-only self-assessment using published profiles, never quiz solutions.
+/// Unlimited browsing of published ecosystem plants, independent of game locks.
+/// Recall is optional self-assessment and never modifies level progress.
 final class PracticeScreen extends StatefulWidget {
   const PracticeScreen({
     super.key,
     required this.dependencies,
     required this.ecosystemId,
   });
-
   final AppDependencies dependencies;
   final String ecosystemId;
-
   @override
   State<PracticeScreen> createState() => _PracticeScreenState();
 }
@@ -25,49 +24,39 @@ final class PracticeScreen extends StatefulWidget {
 enum _Phase { study, recall, revealed }
 
 final class _PracticeScreenState extends State<PracticeScreen> {
-  late Future<Result<_PracticeContent>> _future = _load();
-  List<Plant>? _round;
-  final List<Plant> _repeat = [];
+  late Future<Result<List<Plant>>> _future = _load();
   int _index = 0;
-  int _known = 0;
+  int _round = 1;
   _Phase _phase = _Phase.study;
+  final Map<String, bool> _assessments = {};
 
-  Future<Result<_PracticeContent>> _load() async {
+  Future<Result<List<Plant>>> _load() async {
     final result = await widget.dependencies.loadLevels(widget.ecosystemId);
     if (result case Failure<List<Level>>(:final failure)) {
       return Result.failure(failure);
     }
     final levels = [...result.valueOrNull!]
       ..sort((a, b) => a.sequence.compareTo(b.sequence));
-    final accessible = levels.where((level) => level.isUnlocked).toList();
-    final ids = accessible.expand((level) => level.plantIds).toSet();
+    // Locks constrain playing a level, not reading its published plant profile.
+    final ids = levels.expand((level) => level.plantIds).toSet();
     final plants = <Plant>[];
     for (final id in ids) {
       final result = await widget.dependencies.loadPlant(id);
       if (result case Failure<Plant>(:final failure)) {
         return Result.failure(failure);
       }
-      final plant = result.valueOrNull!;
-      if (plant.profileCards.any(_usable)) plants.add(plant);
+      plants.add(
+        result.valueOrNull!,
+      ); // Even profiles without recall notes remain browsable.
     }
-    return Result.success(
-      _PracticeContent(
-        plants,
-        locked: levels.isNotEmpty && accessible.isEmpty,
-        skipped: ids.length - plants.length,
-      ),
-    );
+    return Result.success(plants);
   }
 
-  bool _usable(PlantProfileCard card) =>
-      card.heading.trim().isNotEmpty && card.text.trim().isNotEmpty;
-
   void _reset() {
-    _round = null;
-    _repeat.clear();
     _index = 0;
-    _known = 0;
+    _round = 1;
     _phase = _Phase.study;
+    _assessments.clear();
   }
 
   void _reload() => setState(() {
@@ -85,33 +74,42 @@ final class _PracticeScreenState extends State<PracticeScreen> {
     }
   }
 
-  void _assess(Plant plant, bool known) {
-    // A rapid second tap must not skip the next card or count twice.
-    if (_phase != _Phase.revealed) return;
-    setState(() {
-      if (known) {
-        _known++;
-      } else {
-        _repeat.add(plant);
-      }
-      _index++;
-      _phase = _Phase.study;
-    });
-  }
-
-  void _restart(List<Plant> plants) => setState(() {
-    final next = List<Plant>.of(plants);
-    _reset();
-    _round = next;
+  void _move(int delta, int count) => setState(() {
+    if (delta > 0 && _index == count - 1) {
+      _round++;
+      _assessments.clear();
+    }
+    _index = (_index + delta) % count;
+    _phase = _Phase.study;
   });
 
-  Widget _message(String message) => Center(
+  void _assess(Plant plant, bool known, int count) {
+    if (_phase != _Phase.revealed) return;
+    _assessments[plant.id] = known;
+    _move(1, count);
+  }
+
+  PlantProfileCard? _recall(Plant plant) {
+    final cards = plant.profileCards
+        .where((c) => c.heading.trim().isNotEmpty && c.text.trim().isNotEmpty)
+        .toList();
+    if (cards.isNotEmpty) return cards[(_round - 1) % cards.length];
+    if (plant.description.trim().isNotEmpty) {
+      return PlantProfileCard(
+        heading: 'Auf einen Blick',
+        text: plant.description,
+      );
+    }
+    return null;
+  }
+
+  Widget _message(String text) => Center(
     child: SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(message, textAlign: TextAlign.center),
+          Text(text, textAlign: TextAlign.center),
           const SizedBox(height: 16),
           OutlinedButton(onPressed: _reload, child: const Text('Erneut laden')),
         ],
@@ -122,7 +120,7 @@ final class _PracticeScreenState extends State<PracticeScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Karteikarten üben'),
+      title: const Text('Alle Pflanzenkarten'),
       leading: IconButton(
         tooltip: 'Zum Lernpfad',
         onPressed: () => context.go(
@@ -131,7 +129,7 @@ final class _PracticeScreenState extends State<PracticeScreen> {
         icon: const Icon(Icons.arrow_back),
       ),
     ),
-    body: FutureBuilder<Result<_PracticeContent>>(
+    body: FutureBuilder<Result<List<Plant>>>(
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
@@ -139,163 +137,171 @@ final class _PracticeScreenState extends State<PracticeScreen> {
         }
         if (snapshot.hasError) {
           return _message(
-            'Die Karteikarten konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
+            'Die Karten konnten nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.',
           );
         }
-        final result = snapshot.data;
-        if (result case Failure<_PracticeContent>(:final failure)) {
+        if (snapshot.data case Failure<List<Plant>>(:final failure)) {
           return AsyncStateView(
             kind: AsyncViewKind.recoverableError,
             failure: failure,
             onRetry: _reload,
           );
         }
-        final content = result?.valueOrNull;
-        if (content == null) {
-          return _message('Die Karteikarten sind gerade nicht verfügbar.');
-        }
-        if (content.locked) {
+        final plants = snapshot.data?.valueOrNull;
+        if (plants == null || plants.isEmpty) {
           return _message(
-            'Die Level dieses Ökosystems sind noch gesperrt. Schalte zuerst ein Level im Lernpfad frei.',
+            'In diesem Ökosystem sind noch keine Pflanzenkarten veröffentlicht.',
           );
         }
-        if (content.plants.isEmpty) {
-          return _message(
-            'In den freigeschalteten Leveln gibt es noch keine veröffentlichten Steckbriefabschnitte zum Üben.',
-          );
-        }
-        final round = _round ?? content.plants;
-        final finished = _index >= round.length;
-        final plant = finished ? null : round[_index];
-        final card = plant?.profileCards.firstWhere(_usable);
-        return SingleChildScrollView(
-          key: ValueKey(
-            '${widget.ecosystemId}-$_index-${_phase.name}-$finished',
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 920),
+        final plant = plants[_index];
+        final card = _recall(plant);
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'Selbsteinschätzung · keine Punkte oder Levelabschlüsse. Deine Angaben bleiben nur in dieser Sitzung; beim Verlassen werden sie verworfen.',
+                    'Alle veröffentlichten Pflanzen · unabhängig vom Levelstand',
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  LinearProgressIndicator(
-                    value: finished ? 1 : _index / round.length,
-                    minHeight: 6,
-                    borderRadius: BorderRadius.circular(8),
-                    semanticsLabel: 'Fortschritt der Übungsrunde',
-                    semanticsValue: '$_index von ${round.length} Pflanzen',
-                  ),
-                  const SizedBox(height: 20),
-                  if (finished) ...[
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        'Übungsrunde beendet',
-                        style: Theme.of(context).textTheme.headlineSmall,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: 'Vorherige Karte',
+                        onPressed: () => _move(-1, plants.length),
+                        icon: const Icon(Icons.chevron_left),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Deine Einschätzung: $_known von ${round.length} gewusst · ${_repeat.length} noch üben.',
-                    ),
-                    const SizedBox(height: 16),
-                    if (_repeat.isNotEmpty)
-                      FilledButton(
-                        onPressed: () => _restart(_repeat),
-                        child: const Text('Noch üben wiederholen'),
-                      ),
-                    OutlinedButton(
-                      onPressed: () => _restart(content.plants),
-                      child: const Text('Alle Karten wiederholen'),
-                    ),
-                  ] else ...[
-                    Semantics(
-                      liveRegion: true,
-                      child: Text(
-                        'Pflanze ${_index + 1} von ${round.length} · ${_phase == _Phase.study ? 'Ansehen' : 'Erinnern'}',
-                      ),
-                    ),
-                    if (content.skipped > 0)
-                      Text(
-                        '${content.skipped} Pflanzen ohne vollständigen Steckbriefabschnitt ausgelassen.',
-                      ),
-                    const SizedBox(height: 16),
-                    if (_phase == _Phase.study) ...[
-                      PlantIndexCard(plant: plant!),
-                      const SizedBox(height: 20),
-                      FilledButton(
-                        onPressed: () => setState(() => _phase = _Phase.recall),
-                        child: const Text('Karte verdecken & kurz erinnern'),
-                      ),
-                    ] else ...[
-                      Text(
-                        plant!.commonName.isEmpty
-                            ? plant.scientificName
-                            : plant.commonName,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Was weißt du über „${card!.heading}“ bei dieser Pflanze?',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Rufe dir die wichtigsten Punkte ins Gedächtnis. Vergleiche anschließend selbst mit dem Steckbrief.',
-                      ),
-                      const SizedBox(height: 20),
-                      if (_phase == _Phase.recall)
-                        FilledButton(
-                          onPressed: () =>
-                              setState(() => _phase = _Phase.revealed),
-                          child: const Text('Steckbrieftext aufdecken'),
+                      Expanded(
+                        child: Semantics(
+                          liveRegion: true,
+                          child: Text(
+                            'Runde $_round · Karte ${_index + 1} von ${plants.length}',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      if (_phase == _Phase.revealed) ...[
-                        const Text(
-                          'Zum Vergleichen: Originaltext aus dem Steckbrief',
-                        ),
-                        const SizedBox(height: 8),
-                        SelectableText(card.text),
-                        const SizedBox(height: 20),
-                        Wrap(
-                          spacing: 12,
-                          runSpacing: 12,
-                          children: [
-                            FilledButton(
-                              onPressed: () => _assess(plant, true),
-                              child: const Text('Gewusst'),
-                            ),
-                            OutlinedButton(
-                              onPressed: () => _assess(plant, false),
-                              child: const Text('Noch üben'),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
+                      IconButton(
+                        tooltip: 'Nächste Karte',
+                        onPressed: () => _move(1, plants.length),
+                        icon: const Icon(Icons.chevron_right),
+                      ),
                     ],
-                  ],
+                  ),
+                  LinearProgressIndicator(
+                    value: (_index + 1) / plants.length,
+                    semanticsLabel: 'Position in der Kartenrunde',
+                    semanticsValue: '${_index + 1} von ${plants.length}',
+                  ),
                 ],
               ),
             ),
-          ),
+            Expanded(
+              child: SingleChildScrollView(
+                key: ValueKey(
+                  '${widget.ecosystemId}-$_round-$_index-${_phase.name}',
+                ),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1040),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_phase == _Phase.study) ...[
+                          PlantIndexCard(plant: plant),
+                          const SizedBox(height: 20),
+                          if (card != null)
+                            FilledButton.icon(
+                              onPressed: () =>
+                                  setState(() => _phase = _Phase.recall),
+                              icon: const Icon(Icons.psychology_outlined),
+                              label: const Text(
+                                'Karte verdecken & kurz erinnern',
+                              ),
+                            ),
+                          const SizedBox(height: 10),
+                          OutlinedButton(
+                            onPressed: () => _move(1, plants.length),
+                            child: Text(
+                              _index == plants.length - 1
+                                  ? 'Weiter · neue Runde'
+                                  : 'Nur anschauen · nächste Karte',
+                            ),
+                          ),
+                        ] else if (card != null) ...[
+                          Text(
+                            plant.commonName.isEmpty
+                                ? plant.scientificName
+                                : plant.commonName,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Was weißt du über „${card.heading}“ bei dieser Pflanze?',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Erinnere dich kurz und vergleiche anschließend mit dem Originaltext.',
+                          ),
+                          const SizedBox(height: 20),
+                          if (_phase == _Phase.recall)
+                            FilledButton(
+                              onPressed: () =>
+                                  setState(() => _phase = _Phase.revealed),
+                              child: const Text('Steckbrieftext aufdecken'),
+                            ),
+                          if (_phase == _Phase.revealed) ...[
+                            const Text(
+                              'Zum Vergleichen: Originaltext aus dem Steckbrief',
+                            ),
+                            const SizedBox(height: 8),
+                            SelectableText(card.text),
+                            const SizedBox(height: 20),
+                            Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: [
+                                FilledButton(
+                                  onPressed: () =>
+                                      _assess(plant, true, plants.length),
+                                  child: const Text('Gewusst'),
+                                ),
+                                OutlinedButton(
+                                  onPressed: () =>
+                                      _assess(plant, false, plants.length),
+                                  child: const Text('Noch üben'),
+                                ),
+                              ],
+                            ),
+                          ],
+                          TextButton(
+                            onPressed: () =>
+                                setState(() => _phase = _Phase.study),
+                            child: const Text('Karte wieder ansehen'),
+                          ),
+                        ],
+                        const SizedBox(height: 16),
+                        Text(
+                          'In dieser Runde selbst eingeschätzt: ${_assessments.values.where((v) => v).length} gewusst · ${_assessments.values.where((v) => !v).length} noch üben.',
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Nach der letzten Karte geht es automatisch von vorne los. Keine Punkte oder Levelabschlüsse; deine Selbsteinschätzung gilt nur für diese Runde.',
+                          style: TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     ),
   );
-}
-
-final class _PracticeContent {
-  const _PracticeContent(
-    this.plants, {
-    required this.locked,
-    required this.skipped,
-  });
-  final List<Plant> plants;
-  final bool locked;
-  final int skipped;
 }
