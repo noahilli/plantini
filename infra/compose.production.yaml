@@ -55,9 +55,11 @@ services:
     security_opt: [no-new-privileges:true]
 
   keycloak:
-    image: ${KEYCLOAK_IMAGE:?set an immutable Keycloak image reference}
+    image: ${KEYCLOAK_IMAGE:?set a Keycloak image built from services/identity/Dockerfile}
     restart: unless-stopped
-    command: ["start", "--optimized", "--health-enabled=true"]
+    # --optimized needs the build-time options baked in by that Dockerfile.
+    # --import-realm only creates the realm when it does not exist yet.
+    command: ["start", "--optimized", "--import-realm"]
     depends_on:
       postgres-keycloak:
         condition: service_healthy
@@ -68,18 +70,26 @@ services:
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?missing KEYCLOAK_DB_PASSWORD}
       KC_HOSTNAME: ${AUTH_PUBLIC_HOST:?missing AUTH_PUBLIC_HOST}
       KC_HOSTNAME_STRICT: "true"
-      KC_PROXY_HEADERS: xforwarded
+      # Keycloak 24: TLS terminates at the host proxy which sets X-Forwarded-*.
+      KC_PROXY: edge
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
+      # Keycloak 24 bootstrap names; only used while the master realm is empty.
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME:?missing KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?missing KEYCLOAK_ADMIN_PASSWORD}
     ports:
       - "127.0.0.1:${AUTH_LOOPBACK_PORT:-8082}:8080"
+    volumes:
+      - ${KEYCLOAK_REALM_FILE:?set the generated production realm file}:/opt/keycloak/data/import/plantini-realm.json:ro
     networks: [app, data]
     healthcheck:
-      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/9000'"]
+      # No curl in the image. Keycloak 24 serves health on the main port (the
+      # separate management port 9000 only exists from Keycloak 25).
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8080'"]
       interval: 10s
       timeout: 5s
       retries: 18
-      start_period: 40s
+      start_period: 60s
     security_opt: [no-new-privileges:true]
 
   platform:
@@ -112,6 +122,10 @@ services:
       PLATFORM_OIDC_AUDIENCE: plantini-api
       PLATFORM_OIDC_JWKS_URI: http://keycloak:8080/realms/plantini/protocol/openid-connect/certs
       PRIVATE_UPLOAD_DIR: /var/lib/plantini/private-media
+      # Synthetic demo release (30 species). The only content the project has;
+      # not yet botanically reviewed (CONTENT-10). Set to false for an empty catalogue.
+      PLATFORM_SEED_DEMO_CONTENT: ${PLATFORM_SEED_DEMO_CONTENT:-false}
+      PLATFORM_EXTERNAL_PLANT_PHOTOS: ${PLATFORM_EXTERNAL_PLANT_PHOTOS:-disabled}
       PLANTNET_MODE: real
       PLANTNET_BASE_URL: https://my-api.plantnet.org
       PLANTNET_API_KEY: ${PLANTNET_API_KEY:?missing PLANTNET_API_KEY}

@@ -1,0 +1,22 @@
+name: plantini-proxy
+
+# Public HTTPS edge (ports 80/443 on the host). Independent from the stack in
+# ../compose.production.yaml so the proxy can be restarted separately.
+services:
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2.8.4-alpine}
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      PLANTINI_DOMAIN: ${PLANTINI_DOMAIN:?missing PLANTINI_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?missing ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${WEB_ROOT:?set the directory with the Flutter web build}:/srv/web:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    security_opt: [no-new-privileges:true]
+
+volumes:
+  caddy-data:
+  caddy-config:

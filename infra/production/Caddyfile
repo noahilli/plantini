@@ -1,0 +1,59 @@
+# Plantini production edge. TLS certificates are issued automatically by
+# Caddy (ACME HTTP-01), so the DNS records must point at this host first.
+# Runs with host networking because the services bind to 127.0.0.1 only.
+{
+	email {$ACME_EMAIL}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+# Flutter web app
+{$PLANTINI_DOMAIN} {
+	import security_headers
+	root * /srv/web
+	encode zstd gzip
+	@healthz path /healthz
+	respond @healthz "ok" 200
+	try_files {path} /index.html
+	file_server
+}
+
+www.{$PLANTINI_DOMAIN} {
+	redir https://{$PLANTINI_DOMAIN}{uri} permanent
+}
+
+# Fach-API. Only the public API prefix is reachable: Strapi's /admin and its
+# built-in /api/auth/local/register are deliberately not proxied.
+api.{$PLANTINI_DOMAIN} {
+	import security_headers
+	encode zstd gzip
+	request_body {
+		max_size 22MB
+	}
+	handle /api/v1/* {
+		reverse_proxy 127.0.0.1:1338
+	}
+	handle {
+		respond "Not found" 404
+	}
+}
+
+# Keycloak. Realm "plantini" and its assets only: no admin console, no master
+# realm. Administer through an SSH tunnel to 127.0.0.1:8082.
+auth.{$PLANTINI_DOMAIN} {
+	import security_headers
+	@public path /realms/plantini/* /resources/* /robots.txt
+	handle @public {
+		reverse_proxy 127.0.0.1:8082
+	}
+	handle {
+		respond "Not found" 404
+	}
+}
