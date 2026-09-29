@@ -32,8 +32,9 @@ abstract final class AppTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(
-          fontFamily: AppTypography.headingFamily,
-          fontSize: 16,
+          fontFamily: AppTypography.bodyFamily,
+          fontWeight: FontWeight.w700,
+          fontSize: 17,
           color: AppColors.ink,
         ),
       ),

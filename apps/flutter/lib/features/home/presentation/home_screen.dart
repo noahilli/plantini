@@ -5,8 +5,10 @@ import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
-import '../../../design_system/world_art.dart';
 import '../../catalog/domain/catalog_models.dart';
+import '../../catalog/presentation/widgets/ecosystem_vitrine.dart';
+import '../../catalog/presentation/widgets/modular_forest_view.dart'
+    show EcosystemWorld;
 
 final class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.dependencies});
@@ -81,97 +83,109 @@ final class _HomeContent extends StatelessWidget {
           .where((level) => level.status == LevelStatus.completed)
           .length;
       final progress = levels.isEmpty ? null : completed / levels.length;
+      final theme = Theme.of(context);
+      final first = ecosystems.first;
+      final world = EcosystemWorld.forSlug(first.slug);
       return ListView(
         key: const ValueKey('ecosystem-list-ready'),
         padding: const EdgeInsets.fromLTRB(22, 18, 22, 28),
         children: [
           Row(
             children: [
-              Container(
-                width: 27,
-                height: 27,
-                decoration: const BoxDecoration(
-                  color: AppColors.sage700,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(13),
-                    topRight: Radius.circular(13),
-                    bottomRight: Radius.circular(13),
-                    bottomLeft: Radius.circular(4),
-                  ),
-                ),
-              ),
+              const _BrandMark(),
               const SizedBox(width: 9),
-              Text(
-                'plantini',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
+              Text('plantini', style: theme.textTheme.headlineSmall),
+              const Spacer(),
+              if (progress != null)
+                _StarChip(completed: completed, total: levels.length),
             ],
           ),
           const SizedBox(height: 22),
+          Text(
+            'DEINE FORSCHUNGSREISE',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: AppColors.sage700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Bereit für die nächste Expedition?',
+            style: theme.textTheme.headlineLarge,
+          ),
+          const SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: AppColors.sage800,
-              borderRadius: BorderRadius.circular(30),
-              image: DecorationImage(
-                image: AssetImage(WorldArt.forSlug(ecosystems.first.slug)),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  AppColors.sage900.withValues(alpha: .72),
-                  BlendMode.srcATop,
+              borderRadius: BorderRadius.circular(34),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.sage900.withValues(alpha: .28),
+                  blurRadius: 26,
+                  offset: const Offset(0, 12),
                 ),
-              ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  WorldArt.explorer,
-                  height: 100,
-                  excludeFromSemantics: true,
-                ),
-                Text(
-                  'DEINE SPIELWELT',
-                  style: Theme.of(context).textTheme.labelSmall
-                      ?.copyWith(color: AppColors.sage300),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  progress == null
-                      ? 'Dein Weg beginnt'
-                      : '$completed / ${levels.length} Sterne',
-                  style: Theme.of(context).textTheme.displaySmall
-                      ?.copyWith(color: AppColors.neutral100),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  active?.title ??
-                      (levels.isEmpty
-                          ? 'Wähle dein erstes Ökosystem.'
-                          : 'Alle Quizlevel geschafft – besuche dein Ökosystem-Finale.'),
-                  style: const TextStyle(color: AppColors.sage300),
-                ),
-                if (progress != null) ...[
-                  const SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(999),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 9,
-                      backgroundColor: AppColors.sage700,
-                    ),
+                if (world != null)
+                  EcosystemVitrine(
+                    world: world,
+                    title: first.title,
+                    aspectRatio: 1.18,
+                    animate: true,
+                  )
+                else
+                  const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 16, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        progress == null
+                            ? 'Dein Weg beginnt'
+                            : '$completed von ${levels.length} Sternen',
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          color: AppColors.neutral100,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        active?.title ??
+                            (levels.isEmpty
+                                ? 'Wähle dein erstes Ökosystem.'
+                                : 'Alle Quizlevel geschafft – besuche dein Ökosystem-Finale.'),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: AppColors.sage200,
+                        ),
+                      ),
+                      if (progress != null) ...[
+                        const SizedBox(height: 16),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(999),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 10,
+                            color: AppColors.accent400,
+                            backgroundColor: AppColors.sage700,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
+                ),
               ],
             ),
           ),
           const SizedBox(height: 14),
           if (active != null)
             Container(
-              padding: const EdgeInsets.all(17),
+              padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
               decoration: BoxDecoration(
                 color: AppColors.accent200,
-                borderRadius: BorderRadius.circular(26),
+                borderRadius: BorderRadius.circular(28),
               ),
               child: Row(
                 children: [
@@ -181,16 +195,16 @@ final class _HomeContent extends StatelessWidget {
                       children: [
                         Text(
                           'NÄCHSTER SCHRITT',
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: AppColors.accent700,
+                          ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          active.title,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
+                        Text(active.title, style: theme.textTheme.titleLarge),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 12),
                   FilledButton(
                     onPressed: () => context.go('/levels/${active!.id}'),
                     child: const Text('Weiter'),
@@ -198,56 +212,62 @@ final class _HomeContent extends StatelessWidget {
                 ],
               ),
             ),
-          const SizedBox(height: 22),
-          Text('Ökosysteme', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 10),
+          const SizedBox(height: 26),
+          Text('Ökosysteme', style: theme.textTheme.headlineMedium),
+          const SizedBox(height: 12),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
-              crossAxisSpacing: 9,
-              mainAxisSpacing: 9,
-              childAspectRatio: .88,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: .92,
             ),
             itemCount: ecosystems.length,
             itemBuilder: (context, index) {
               final ecosystem = ecosystems[index];
-              return Material(
-                key: ValueKey('ecosystem-card-${ecosystem.id}'),
-                color: index == 0 ? AppColors.terracotta : AppColors.bg,
-                borderRadius: BorderRadius.circular(23),
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: () => context.go('/ecosystems/${ecosystem.id}'),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(WorldArt.forSlug(ecosystem.slug)),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(
-                          AppColors.sage900.withValues(alpha: .55),
-                          BlendMode.srcATop,
-                        ),
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.park_outlined, color: AppColors.neutral100),
-                        const Spacer(),
-                        Text(
-                          ecosystem.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.neutral100,
+              final tileWorld = EcosystemWorld.forSlug(ecosystem.slug);
+              return Semantics(
+                button: true,
+                label: 'Ökosystem ${ecosystem.title}',
+                child: Material(
+                  key: ValueKey('ecosystem-card-${ecosystem.id}'),
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(24),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () => context.go('/ecosystems/${ecosystem.id}'),
+                    child: tileWorld != null
+                        ? EcosystemVitrine(
+                            world: tileWorld,
+                            title: tileWorld.shortName,
+                            aspectRatio: .92,
+                            yaw: .5 + index * .12,
+                          )
+                        : DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFFB1C28B), Color(0xFF61744D)],
+                              ),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  ecosystem.title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: AppColors.neutral100,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               );
@@ -256,5 +276,63 @@ final class _HomeContent extends StatelessWidget {
         ],
       );
     },
+  );
+}
+
+final class _BrandMark extends StatelessWidget {
+  const _BrandMark();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 27,
+    height: 27,
+    decoration: const BoxDecoration(
+      color: AppColors.sage700,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(13),
+        topRight: Radius.circular(13),
+        bottomRight: Radius.circular(13),
+        bottomLeft: Radius.circular(4),
+      ),
+    ),
+  );
+}
+
+/// Stars earned so far: real progress from the server, nothing invented.
+final class _StarChip extends StatelessWidget {
+  const _StarChip({required this.completed, required this.total});
+  final int completed, total;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: '$completed von $total Sternen',
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+      decoration: BoxDecoration(
+        color: AppColors.accent200,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: ExcludeSemantics(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.star_rounded,
+              size: 18,
+              color: AppColors.accent600,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              '$completed / $total',
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                color: AppColors.accent800,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }

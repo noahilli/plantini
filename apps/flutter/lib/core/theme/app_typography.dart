@@ -52,9 +52,9 @@ abstract final class AppTypography {
       height: 1.35,
       fontWeight: FontWeight.w700,
     ),
-    bodyLarge: TextStyle(fontFamily: bodyFamily, fontSize: 15, height: 1.55),
-    bodyMedium: TextStyle(fontFamily: bodyFamily, fontSize: 13, height: 1.5),
-    bodySmall: TextStyle(fontFamily: bodyFamily, fontSize: 11, height: 1.45),
+    bodyLarge: TextStyle(fontFamily: bodyFamily, fontSize: 16, height: 1.55),
+    bodyMedium: TextStyle(fontFamily: bodyFamily, fontSize: 14, height: 1.5),
+    bodySmall: TextStyle(fontFamily: bodyFamily, fontSize: 12, height: 1.45),
     labelLarge: TextStyle(
       fontFamily: bodyFamily,
       fontSize: 13,
@@ -67,7 +67,7 @@ abstract final class AppTypography {
     ),
     labelSmall: TextStyle(
       fontFamily: bodyFamily,
-      fontSize: 10,
+      fontSize: 11,
       fontWeight: FontWeight.w700,
       letterSpacing: 1.1,
     ),

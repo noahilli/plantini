@@ -78,6 +78,35 @@ flutter:
   uses-material-design: true
   assets:
     - assets/worlds/
+    - assets/fonts/Caprasimo-OFL.txt
+    - assets/fonts/Figtree-OFL.txt
+
+  # Bundled so headings and body render in the design-system faces on every
+  # platform, without fetching fallback fonts from a CDN. Both are SIL OFL 1.1;
+  # the Figtree weights are static instances cut from the variable font.
+  fonts:
+    # Caprasimo only ships one (already heavy) weight. Mapping it to every
+    # weight stops Flutter from synthesising a smeared faux-bold.
+    - family: Caprasimo
+      fonts:
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+          weight: 500
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+          weight: 600
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+          weight: 700
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+          weight: 800
+        - asset: assets/fonts/Caprasimo-Regular.ttf
+          weight: 900
+    - family: Figtree
+      fonts:
+        - asset: assets/fonts/Figtree-Regular.ttf
+        - asset: assets/fonts/Figtree-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Figtree-Bold.ttf
+          weight: 700
 
   # To add assets to your application, add an assets section, like this:
   # assets:

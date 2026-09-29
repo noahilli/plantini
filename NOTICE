@@ -22,3 +22,8 @@ This product includes software developed by the Plantini Project and third-party
 5. PlantNet API Integration
    - Powered by Pl@ntNet (https://plantnet.org)
    - Identification data used for educational biodiversity learning
+
+Fonts bundled with the app (apps/flutter/assets/fonts):
+   - Caprasimo (Copyright 2023 The Caprasimo Project Authors) - SIL Open Font License 1.1
+   - Figtree (Copyright 2022 The Figtree Project Authors) - SIL Open Font License 1.1;
+     the Regular, SemiBold and Bold files are static instances of the variable font.

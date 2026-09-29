@@ -7,6 +7,9 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../design_system/plant_specimen_bottle.dart';
 import '../../../catalog/application/catalog_use_cases.dart';
 import '../../../catalog/domain/catalog_models.dart';
+import '../../../catalog/presentation/widgets/ecosystem_vitrine.dart';
+import '../../../catalog/presentation/widgets/modular_forest_view.dart'
+    show EcosystemWorld;
 import '../../domain/herbarium_models.dart';
 
 /// Catalog loading is independent of observations, so a failed content request
@@ -231,13 +234,13 @@ class _HerbariumBottleCollectionState extends State<HerbariumBottleCollection> {
               ),
             ),
           for (final group in filtered.entries) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 24, bottom: 12),
-              child: Text(
-                group.key,
-                style: Theme.of(context).textTheme.titleLarge
-                    ?.copyWith(color: AppColors.forest),
-              ),
+            _ShelfHeader(
+              title: group.key,
+              collected: (_groups[group.key] ?? group.value)
+                  .where((plant) => entriesByPlant.containsKey(plant.id))
+                  .length,
+              total: (_groups[group.key] ?? group.value).length,
+              showProgress: widget.entriesAvailable,
             ),
             LayoutBuilder(
               builder: (context, constraints) {
@@ -271,6 +274,76 @@ class _HerbariumBottleCollectionState extends State<HerbariumBottleCollection> {
               },
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// One display case per ecosystem: the miniature on the left, how much of the
+/// shelf is filled on the right. Counts come from the catalogue and the
+/// learner's own confirmed finds.
+class _ShelfHeader extends StatelessWidget {
+  const _ShelfHeader({
+    required this.title,
+    required this.collected,
+    required this.total,
+    required this.showProgress,
+  });
+  final String title;
+  final int collected, total;
+  final bool showProgress;
+
+  @override
+  Widget build(BuildContext context) {
+    final world = EcosystemWorld.forSlug(title);
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 26, bottom: 14),
+      child: Row(
+        children: [
+          if (world != null)
+            SizedBox(
+              width: 108,
+              child: EcosystemVitrine(
+                world: world,
+                aspectRatio: 1.05,
+                semanticLabel: 'Vitrine: $title',
+              ),
+            ),
+          if (world != null) const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: AppColors.forest,
+                  ),
+                ),
+                if (showProgress && total > 0) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    '$collected von $total Arten im Regal',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.neutral700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: LinearProgressIndicator(
+                      value: collected / total,
+                      minHeight: 8,
+                      color: AppColors.sage600,
+                      backgroundColor: AppColors.sage200,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );

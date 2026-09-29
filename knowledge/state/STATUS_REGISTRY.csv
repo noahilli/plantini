@@ -138,3 +138,4 @@ OQ-05,open_question,gate,blocked,product-manager;backend-api;devops-release,FA03
 OQ-06,open_question,gate,blocked,product-manager;auth-manager;backend-api,FA055-FA064,ADMIN-01,E-OQ-06,B-OQ-06,pre-admin,2026-08-25,Approve explicit MVP organisation boundary
 OQ-07,open_question,gate,blocked,steering-committee;legal,NFA032;NFA028,NONE,E-OQ-07,B-OQ-07,pre-public-repository,2026-08-25,Approve code and content licence register
 OQ-08,open_question,gate,blocked,auth-manager;release-manager,FA002;FA003;NFA031,NONE,E-OQ-08,B-OQ-08,pre-beta,2026-08-25,Select production providers and redirect domains
+DESIGN-11,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,APP-08,NONE,NONE,alpha,2026-09-30,Accept the vitrine redesign interactively and continue with quiz and field screens

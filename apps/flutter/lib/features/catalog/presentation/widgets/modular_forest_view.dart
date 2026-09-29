@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
+import 'world_module.dart';
 
 enum EcosystemWorld {
   forest('forest', 'Waldpfad', Color(0xFFE2E9DC)),
@@ -16,6 +17,13 @@ enum EcosystemWorld {
   const EcosystemWorld(this.asset, this.title, this.background);
   final String asset, title;
   final Color background;
+
+  /// One-word name for plaques and small tiles.
+  String get shortName => switch (this) {
+    forest => 'Wald',
+    meadow => 'Wiese',
+    alpine => 'Alpen',
+  };
 
   static EcosystemWorld? forSlug(String slug) {
     final s = slug.toLowerCase();
@@ -51,12 +59,14 @@ final class ModularForestView extends StatefulWidget {
 
 final class _ModularForestViewState extends State<ModularForestView>
     with SingleTickerProviderStateMixin {
-  static final _modules = <EcosystemWorld, Future<_Module>>{};
-  Future<_Module> get _module => _modules.putIfAbsent(
+  static final _modules = <EcosystemWorld, Future<WorldModule>>{};
+  Future<WorldModule> get _module => _modules.putIfAbsent(
     widget.world,
     () => rootBundle
         .loadString('assets/worlds/${widget.world.asset}_module.json')
-        .then((s) => _Module.fromJson(jsonDecode(s) as Map<String, dynamic>)),
+        .then(
+          (s) => WorldModule.fromJson(jsonDecode(s) as Map<String, dynamic>),
+        ),
   );
   late final AnimationController _clock = AnimationController(
     vsync: this,
@@ -157,7 +167,7 @@ final class _ModularForestViewState extends State<ModularForestView>
           ],
         ),
         Expanded(
-          child: FutureBuilder<_Module>(
+          child: FutureBuilder<WorldModule>(
             key: ValueKey(widget.world),
             future: _module,
             builder: (context, snapshot) {
@@ -329,43 +339,6 @@ final class _ModularForestViewState extends State<ModularForestView>
   }
 }
 
-final class _Module {
-  _Module(this.meshes, this.slots);
-  final List<_Mesh> meshes;
-  final List<List<double>> slots;
-  factory _Module.fromJson(Map<String, dynamic> data) => _Module(
-    (data['meshes'] as List)
-        .map((m) => _Mesh(m as Map<String, dynamic>))
-        .toList(),
-    (data['slots'] as List)
-        .map((v) => (v as List).map((n) => (n as num).toDouble()).toList())
-        .toList(),
-  );
-}
-
-final class _Mesh {
-  _Mesh(Map<String, dynamic> j)
-    : name = j['name'] as String,
-      vertices = (j['vertices'] as List)
-          .map((v) => (v as List).map((n) => (n as num).toDouble()).toList())
-          .toList(),
-      faces = (j['faces'] as List).map((v) => (v as List).cast<int>()).toList(),
-      color = Color.fromRGBO(
-        ((j['color'][0] as num) * 255).round(),
-        ((j['color'][1] as num) * 255).round(),
-        ((j['color'][2] as num) * 255).round(),
-        1,
-      ),
-      motion = j['motion'] as String,
-      slot = j['slot'] as int?;
-  final List<List<double>> vertices;
-  final String name;
-  final List<List<int>> faces;
-  final Color color;
-  final String motion;
-  final int? slot;
-}
-
 final class _Projection {
   _Projection(this.size, this.focus, this.yaw);
   final Size size;
@@ -406,7 +379,7 @@ final class _ForestPainter extends CustomPainter {
     this.background,
     this.currentIndex,
   ) : super(repaint: frames);
-  final _Module module;
+  final WorldModule module;
   final _Projection view;
   final int levelCount;
   final Animation<double> clock;

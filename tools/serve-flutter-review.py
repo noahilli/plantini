@@ -12,7 +12,13 @@ from urllib.parse import urlsplit
 
 class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        if urlsplit(self.path).path in ('/auth/callback', '/auth/logout-callback'):
+        path = urlsplit(self.path).path
+        # SPA routes (no file extension, no such file) fall back to the app shell,
+        # like a production web server would. Includes the OIDC callbacks.
+        last = path.rsplit('/', 1)[-1]
+        if path in ('/auth/callback', '/auth/logout-callback') or (
+            '.' not in last and not Path(self.translate_path(path)).is_file()
+        ):
             self.path = '/'
         super().do_GET()
 

@@ -5,8 +5,9 @@ import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../design_system/async_state_view.dart';
-import '../../../design_system/world_art.dart';
 import '../domain/catalog_models.dart';
+import 'widgets/ecosystem_vitrine.dart';
+import 'widgets/modular_forest_view.dart' show EcosystemWorld;
 
 final class EcosystemListScreen extends StatefulWidget {
   const EcosystemListScreen({super.key, required this.dependencies});
@@ -148,162 +149,170 @@ final class _EcosystemCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: 'Ökosystem ${ecosystem.title}',
-    child: Material(
-      key: ValueKey('ecosystem-card-${ecosystem.id}'),
-      color: AppColors.sage900,
-      borderRadius: BorderRadius.circular(28),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                WorldArt.forSlug(ecosystem.slug),
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-                errorBuilder: (context, error, stackTrace) =>
-                    const DecoratedBox(
+  Widget build(BuildContext context) {
+    final world = EcosystemWorld.forSlug(ecosystem.slug);
+    final theme = Theme.of(context);
+    return Semantics(
+      button: true,
+      label: 'Ökosystem ${ecosystem.title}',
+      child: Material(
+        key: ValueKey('ecosystem-card-${ecosystem.id}'),
+        color: featured ? AppColors.sage800 : AppColors.neutral100,
+        elevation: 0,
+        shadowColor: AppColors.neutral900,
+        borderRadius: BorderRadius.circular(32),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (world != null)
+                  EcosystemVitrine(
+                    world: world,
+                    title: world.shortName,
+                    aspectRatio: 1.55,
+                    yaw: switch (world) {
+                      EcosystemWorld.forest => .55,
+                      EcosystemWorld.meadow => .42,
+                      EcosystemWorld.alpine => .62,
+                    },
+                  )
+                else
+                  const AspectRatio(
+                    aspectRatio: 1.55,
+                    child: DecoratedBox(
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(24)),
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFFB1C28B),
-                            Color(0xFF61744D),
-                            Color(0xFF34422C),
-                          ],
+                          colors: [Color(0xFFB1C28B), Color(0xFF61744D)],
                         ),
                       ),
                     ),
-              ),
-            ),
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.sage900.withValues(alpha: .68),
-                      AppColors.sage900.withValues(alpha: .18),
-                      AppColors.sage900.withValues(alpha: .76),
-                    ],
-                    stops: const [.0, .54, 1],
                   ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: -62,
-              right: -38,
-              child: Container(
-                width: 168,
-                height: 168,
-                decoration: BoxDecoration(
-                  color: AppColors.neutral100.withValues(alpha: .14),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 14, 10, 8),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          ecosystem.title,
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(
-                                color: AppColors.neutral100,
-                                fontWeight: FontWeight.w900,
-                                shadows: const [
-                                  Shadow(
-                                    color: Color(0x77000000),
-                                    blurRadius: 9,
-                                  ),
-                                ],
-                              ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 11,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: featured
-                              ? AppColors.terracotta
-                              : AppColors.neutral100.withValues(alpha: .9),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          featured ? 'Startpunkt' : 'entdecken',
-                          style: TextStyle(
-                            color: featured ? AppColors.bg : AppColors.sage900,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
+                      // Wrap, not Row: on narrow phones the wide display face
+                      // needs the whole line and the tag drops below it.
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Text(
+                            ecosystem.title,
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontSize: MediaQuery.sizeOf(context).width < 360
+                                  ? 21
+                                  : null,
+                              color: featured
+                                  ? AppColors.neutral100
+                                  : AppColors.ink,
+                            ),
                           ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 11,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: featured
+                                  ? AppColors.terracotta
+                                  : AppColors.sage200,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              featured ? 'Startpunkt' : 'entdecken',
+                              style: TextStyle(
+                                color: featured
+                                    ? AppColors.bg
+                                    : AppColors.sage800,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        ecosystem.description ?? 'Veröffentlichter Lernpfad',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: featured
+                              ? AppColors.sage200
+                              : AppColors.neutral700,
                         ),
+                      ),
+                      const SizedBox(height: 14),
+                      Row(
+                        children: [
+                          _MetaChip(
+                            icon: Icons.route_outlined,
+                            label: '${ecosystem.levelIds.length} Level',
+                            dark: featured,
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 9,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.terracotta,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: const Text(
+                              'Forschen  →',
+                              style: TextStyle(
+                                color: AppColors.bg,
+                                fontFamily: 'Caprasimo',
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 7),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 7,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral100.withValues(alpha: .88),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Text(
-                      '${ecosystem.levelIds.length} Level · ${ecosystem.description ?? 'Veröffentlichter Lernpfad'}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.sage900,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 26),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Expedition öffnen',
-                        style: TextStyle(
-                          color: AppColors.neutral100,
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Text(
-                        'Forschen →',
-                        style: TextStyle(
-                          color: AppColors.neutral100,
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-    ),
+    );
+  }
+}
+
+final class _MetaChip extends StatelessWidget {
+  const _MetaChip({required this.icon, required this.label, this.dark = false});
+  final IconData icon;
+  final String label;
+  final bool dark;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 17, color: dark ? AppColors.sage300 : AppColors.sage700),
+      const SizedBox(width: 6),
+      Text(
+        label,
+        style: TextStyle(
+          color: dark ? AppColors.sage200 : AppColors.neutral800,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
   );
 }

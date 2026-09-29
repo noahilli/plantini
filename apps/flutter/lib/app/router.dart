@@ -7,6 +7,9 @@ import '../design_system/world_art.dart';
 import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
+import '../features/catalog/presentation/widgets/ecosystem_vitrine.dart';
+import '../features/catalog/presentation/widgets/modular_forest_view.dart'
+    show EcosystemWorld;
 import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -388,73 +391,60 @@ final class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: AppColors.bg,
     body: SafeArea(
+      // Scrollable so short phones and landscape never overflow.
       child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 390),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 28),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  child: Container(
-                    width: 260,
-                    height: 230,
-                    decoration: const BoxDecoration(
-                      color: AppColors.sage800,
-                      image: DecorationImage(
-                        image: AssetImage(WorldArt.forest),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(38),
-                        topRight: Radius.circular(38),
-                        bottomRight: Radius.circular(38),
-                        bottomLeft: Radius.circular(12),
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Image.asset(
-                        WorldArt.explorer,
-                        height: 180,
-                        excludeFromSemantics: true,
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 390),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Align(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 260),
+                      child: const EcosystemVitrine(
+                        world: EcosystemWorld.forest,
+                        title: 'Plantini',
+                        aspectRatio: 1.25,
+                        animate: true,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Plantini',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Deine spielbare Forschungsreise durch die Pflanzenwelt.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge
-                      ?.copyWith(color: AppColors.neutral700),
-                ),
-                if (auth.failure != null) ...[
-                  const SizedBox(height: 20),
-                  Text(auth.failure!.message, textAlign: TextAlign.center),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Plantini',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Deine spielbare Forschungsreise durch die Pflanzenwelt.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.copyWith(color: AppColors.neutral700),
+                  ),
+                  if (auth.failure != null) ...[
+                    const SizedBox(height: 20),
+                    Text(auth.failure!.message, textAlign: TextAlign.center),
+                  ],
+                  const SizedBox(height: 34),
+                  FilledButton.icon(
+                    key: const ValueKey('auth-login'),
+                    onPressed: auth.login,
+                    icon: const Icon(Icons.login),
+                    label: const Text('Anmelden'),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Deine Fotos und Fundorte sind nur für dich sichtbar.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColors.neutral700, fontSize: 11),
+                  ),
                 ],
-                const SizedBox(height: 34),
-                FilledButton.icon(
-                  key: const ValueKey('auth-login'),
-                  onPressed: auth.login,
-                  icon: const Icon(Icons.login),
-                  label: const Text('Anmelden'),
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Deine Fotos und Fundorte sind nur für dich sichtbar.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.neutral700, fontSize: 11),
-                ),
-              ],
+              ),
             ),
           ),
         ),
