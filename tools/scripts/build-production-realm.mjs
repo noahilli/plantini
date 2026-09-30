@@ -39,5 +39,14 @@ web.redirectUris = [`${origin}/`, `${origin}/auth/callback`, `${origin}/auth/log
 web.webOrigins = [origin];
 web.attributes = { ...web.attributes, 'post.logout.redirect.uris': `${origin}/auth/logout-callback` };
 
+// Native app: the desktop/Android flow receives the code on a loopback address
+// (RFC 8252). The port is fixed in apps/flutter/lib/auth/auth_platform_io.dart.
+const mobile = realm.clients.find((client) => client.clientId === 'plantini-mobile-production');
+if (!mobile) throw new Error('plantini-mobile-production is missing in the versioned realm');
+mobile.enabled = true;
+mobile.name = 'Plantini Android (production)';
+mobile.redirectUris = ['http://127.0.0.1:4000/'];
+mobile.webOrigins = [];
+
 await writeFile(resolve(out), `${JSON.stringify(realm, null, 2)}\n`);
 console.log(`Production realm written to ${out}`);

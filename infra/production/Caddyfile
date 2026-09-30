@@ -31,6 +31,10 @@ app.{$PLANTINI_DOMAIN} {
 	encode zstd gzip
 	@healthz path /healthz
 	respond @healthz "ok" 200
+	# Entry files are not content-hashed: revalidate them so a deployment is
+	# picked up immediately (the service worker then updates the rest).
+	@entry path / /index.html /flutter_bootstrap.js /flutter_service_worker.js /main.dart.js /version.json /manifest.json
+	header @entry Cache-Control "no-cache"
 	try_files {path} /index.html
 	file_server
 }
