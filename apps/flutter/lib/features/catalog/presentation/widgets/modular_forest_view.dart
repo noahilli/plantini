@@ -9,6 +9,7 @@ import '../../../../core/diagnostics/frame_stats.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
 import 'world_module.dart';
+import 'world_scene.dart';
 
 enum EcosystemWorld {
   forest('forest', 'Waldpfad', Color(0xFFE2E9DC)),
@@ -42,6 +43,9 @@ enum EcosystemWorld {
 
 /// Real, projected Blender mesh geometry. No native GL plugin or remote CDN.
 /// Only the current module and its neighbours are rendered, regardless of size.
+/// Animation frames per 6 s cycle that are recorded once and replayed.
+const _phases = 16;
+
 final class ModularForestView extends StatefulWidget {
   const ModularForestView({
     super.key,
@@ -77,14 +81,18 @@ final class _ModularForestViewState extends State<ModularForestView>
   bool _paused = false;
   double _yaw = .12;
   final _frames = ValueNotifier<int>(0);
-  int _lastFrameMs = -100;
+  final _cache = PictureCache();
+  int _lastPhase = -1;
   @override
   void initState() {
     super.initState();
+    // Repaint only when the animation moves to the next of _phases recorded
+    // frames, not on every tick: sway and water are slow, and a replayed
+    // picture costs almost nothing.
     _clock.addListener(() {
-      final now = _clock.lastElapsedDuration?.inMilliseconds ?? 0;
-      if (now - _lastFrameMs >= 40 || now < _lastFrameMs) {
-        _lastFrameMs = now;
+      final phase = (_clock.value * _phases).floor() % _phases;
+      if (phase != _lastPhase) {
+        _lastPhase = phase;
         _frames.value++;
       }
     });
@@ -120,6 +128,7 @@ final class _ModularForestViewState extends State<ModularForestView>
   void dispose() {
     _clock.dispose();
     _frames.dispose();
+    _cache.dispose();
     super.dispose();
   }
 
@@ -219,6 +228,7 @@ final class _ModularForestViewState extends State<ModularForestView>
                                   MediaQuery.disableAnimationsOf(context),
                                   _frames,
                                   widget.world.background,
+                                  _cache,
                                   levels.indexWhere(
                                     (l) =>
                                         l.isUnlocked &&
@@ -362,13 +372,6 @@ final class _Projection {
       (x * math.sin(yaw) + (y - focus) * math.cos(yaw)) * .85 - z * .7;
 }
 
-final class _Face {
-  _Face(this.points, this.depth, this.color);
-  final List<Offset> points;
-  final double depth;
-  final Color color;
-}
-
 final class _ForestPainter extends CustomPainter {
   _ForestPainter(
     this.module,
@@ -378,6 +381,7 @@ final class _ForestPainter extends CustomPainter {
     this.reduceMotion,
     Listenable frames,
     this.background,
+    this.cache,
     this.currentIndex,
   ) : super(repaint: frames);
   final WorldModule module;
@@ -387,13 +391,34 @@ final class _ForestPainter extends CustomPainter {
   final bool reduceMotion;
   final int currentIndex;
   final Color background;
+  final PictureCache cache;
+
   @override
   void paint(Canvas canvas, Size size) {
     final timer = Stopwatch()..start();
+    final phase = reduceMotion ? 0 : (clock.value * _phases).floor() % _phases;
+    // Same view state, same animation phase: replay the recorded picture.
+    final key = (
+      module,
+      view.size,
+      view.focus,
+      view.yaw,
+      levelCount,
+      currentIndex,
+      background,
+    );
+    final picture = cache.obtain(key, phase, () => _record(size, phase));
+    canvas.drawPicture(picture);
+    FrameStats.note('path-paint', timer.elapsed);
+  }
+
+  ui.Picture _record(Size size, int phaseIndex) {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
     canvas.drawColor(background, BlendMode.src);
-    final faces = <_Face>[];
+    final phase = reduceMotion ? 0.0 : phaseIndex / _phases * math.pi * 2;
     final center = (view.focus / 10).round();
-    final phase = reduceMotion ? 0.0 : clock.value * math.pi * 2;
+    final instances = <SceneInstance>[];
     for (
       var m = math.max(0, center - 1);
       m <= math.min((levelCount / 6).ceil() - 1, center + 1);
@@ -408,87 +433,37 @@ final class _ForestPainter extends CustomPainter {
         final ranger = mesh.motion == 'ranger'
             ? module.slots[currentIndex % 6]
             : null;
-        final vs = mesh.vertices.map((v) {
-          final x =
-              v[0] +
-              (ranger == null ? 0 : ranger[0] + .65) +
-              (mesh.motion == 'tree' || mesh.motion == 'plant'
-                  ? math.sin(phase + m) * .022 * math.max(0, v[2])
-                  : 0);
-          final y =
-              v[1] +
-              (ranger == null ? 0 : ranger[1] - .2) +
-              m * 10 +
-              (mesh.motion == 'water' ? math.sin(phase) * .17 : 0);
-          return [x, y, v[2]];
-        }).toList();
-        final ps = vs.map((v) => view.project(v[0], v[1], v[2])).toList();
-        for (final indices in mesh.faces) {
-          final points = indices.map((i) => ps[i]).toList();
-          if (points.every((p) => p.dy < -40) ||
-              points.every((p) => p.dy > size.height + 40)) {
-            continue;
-          }
-          final a = vs[indices[0]], b = vs[indices[1]], c = vs[indices[2]];
-          final ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
-          final vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
-          final nx = uy * vz - uz * vy,
-              ny = uz * vx - ux * vz,
-              nz = ux * vy - uy * vx;
-          final length = math.sqrt(nx * nx + ny * ny + nz * nz);
-          final light =
-              .70 +
-              .30 *
-                  (length == 0
-                      ? 0
-                      : ((-nx * .3 - ny * .4 + nz * .85) / length).clamp(0, 1));
-          final base = mesh.color;
-          final color = Color.fromRGBO(
-            (math.pow(base.r * light, 1 / 2.2) * 255).round(),
-            (math.pow(base.g * light, 1 / 2.2) * 255).round(),
-            (math.pow(base.b * light, 1 / 2.2) * 255).round(),
-            1,
-          );
-          faces.add(
-            _Face(
-              points,
-              (view.depth(a[0], a[1], a[2]) +
-                          view.depth(b[0], b[1], b[2]) +
-                          view.depth(c[0], c[1], c[2])) /
-                      3 +
-                  _groundDepth(mesh.name),
-              color,
-            ),
-          );
-        }
+        instances.add(
+          SceneInstance(
+            mesh,
+            dx: ranger == null ? 0 : ranger[0] + .65,
+            dy:
+                (ranger == null ? 0 : ranger[1] - .2) +
+                m * 10 +
+                (mesh.motion == 'water' ? math.sin(phase) * .17 : 0),
+            sway: mesh.motion == 'tree' || mesh.motion == 'plant'
+                ? math.sin(phase + m) * .022
+                : 0,
+          ),
+        );
       }
     }
-    faces.sort((a, b) => b.depth.compareTo(a.depth));
-    final points = <Offset>[], colors = <Color>[];
-    for (final face in faces) {
-      points.addAll(face.points);
-      colors.addAll([face.color, face.color, face.color]);
-    }
-    if (points.isNotEmpty) {
-      final vertices = ui.Vertices(
-        ui.VertexMode.triangles,
-        points,
-        colors: colors,
-      );
+    final vertices = SceneBuilder.build(
+      instances,
+      SceneProjection(
+        yaw: view.yaw,
+        focus: view.focus,
+        scale: view.scale,
+        ox: size.width / 2,
+        oy: size.height / 2,
+      ),
+      cullHeight: size.height,
+    );
+    if (vertices != null) {
       canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
       vertices.dispose();
     }
-    FrameStats.note('path-paint', timer.elapsed);
-  }
-
-  // Terrain is a non-intersecting height-layer system. Draw its broad planes
-  // before props rather than sorting their centroids against individual trees.
-  double _groundDepth(String name) {
-    if (name == 'earth' || name == 'grass') return 1000000;
-    if (name.startsWith('Sandy stream')) return 900000;
-    if (name.startsWith('Flowing woodland')) return 800000;
-    if (name.startsWith('Animated water')) return 700000;
-    return 0;
+    return recorder.endRecording();
   }
 
   @override

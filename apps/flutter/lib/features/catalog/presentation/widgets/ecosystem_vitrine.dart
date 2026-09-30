@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/diagnostics/frame_stats.dart';
 import 'modular_forest_view.dart' show EcosystemWorld;
 import 'world_module.dart';
+import 'world_scene.dart';
 
 /// A small display case ("Vitrine") holding a miniature of an ecosystem: the
 /// same Blender module as the level path, on a wooden plinth under glass.
@@ -127,27 +128,61 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
           child: LayoutBuilder(
             builder: (context, constraints) {
               final size = constraints.biggest;
+              final pixelRatio = MediaQuery.devicePixelRatioOf(context);
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  CustomPaint(painter: _CaseBackPainter(world)),
                   FutureBuilder<WorldModule>(
                     future: _module,
                     builder: (context, snapshot) {
                       final module = snapshot.data;
-                      if (module == null) return const SizedBox.shrink();
-                      return CustomPaint(
-                        size: size,
-                        painter: _MiniWorldPainter(
-                          module,
-                          world.asset,
-                          _step,
-                          _bucket,
-                        ),
+                      if (!widget.animate && module != null) {
+                        // Resting vitrine: one baked texture (see _BakedCasePainter).
+                        return CustomPaint(
+                          size: size,
+                          isComplex: true,
+                          willChange: false,
+                          painter: _BakedCasePainter(
+                            world,
+                            module,
+                            widget.yaw,
+                            pixelRatio,
+                          ),
+                        );
+                      }
+                      // Animated (or still loading): layered case, the model
+                      // stepping through cached angles.
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          CustomPaint(
+                            isComplex: true,
+                            willChange: false,
+                            painter: _CaseBackPainter(world),
+                          ),
+                          if (module != null)
+                            CustomPaint(
+                              size: size,
+                              isComplex: true,
+                              willChange: true,
+                              painter: _MiniWorldPainter(
+                                module,
+                                world.asset,
+                                _step,
+                                _bucket,
+                                pixelRatio: pixelRatio,
+                                asImage: false,
+                              ),
+                            ),
+                          const CustomPaint(
+                            isComplex: true,
+                            willChange: false,
+                            painter: _CaseFrontPainter(),
+                          ),
+                        ],
                       );
                     },
                   ),
-                  const CustomPaint(painter: _CaseFrontPainter()),
                   if (widget.title != null)
                     Align(
                       alignment: const Alignment(0, .93),
@@ -167,124 +202,184 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
 // ---------------------------------------------------------------------------
 // Miniature
 
-final class _Face {
-  _Face(this.points, this.depth, this.color);
-  final List<Offset> points;
-  final double depth;
-  final Color color;
-}
-
 /// Replays cached pictures; recording only happens on a cache miss.
 final class _MiniWorldPainter extends CustomPainter {
-  _MiniWorldPainter(this.module, this.asset, this.step, this.bucket)
-    : super(repaint: step);
+  _MiniWorldPainter(
+    this.module,
+    this.asset,
+    this.step,
+    this.bucket, {
+    required this.pixelRatio,
+    required this.asImage,
+  }) : super(repaint: step);
 
   final WorldModule module;
   final String asset;
   final ValueNotifier<int> step;
   final double bucket;
+  final double pixelRatio;
 
-  static final _pictures = <String, ui.Picture>{};
-  static const _maxPictures = 40;
+  /// Resting vitrines are rasterised once into a GPU texture: scrolling then
+  /// costs a textured quad instead of re-drawing ~19k triangles per vitrine
+  /// every frame (measured: ~2 ms/frame on a desktop GPU for seven vitrines,
+  /// a multiple of that on phone GPUs). The swaying hero stays a picture: its
+  /// many angles as full-size textures would cost too much memory.
+  final bool asImage;
+
+  // ui.Picture or ui.Image, most recently used last.
+  static final _cache = <String, Object>{};
+  static final _retired = <Object>[];
+  static const _maxEntries = 40;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty) return;
+    for (final old in _retired) {
+      if (old is ui.Image) old.dispose();
+      if (old is ui.Picture) old.dispose();
+    }
+    _retired.clear();
     final key =
-        '$asset|${step.value}|${size.width.round()}x${size.height.round()}';
-    var picture = _pictures[key];
-    if (picture == null) {
-      if (_pictures.length >= _maxPictures) {
-        _pictures.remove(_pictures.keys.first)?.dispose();
+        '$asset|${step.value}|${size.width.round()}x${size.height.round()}|'
+        '${asImage ? 'i${pixelRatio.toStringAsFixed(2)}' : 'p'}';
+    var entry = _cache.remove(key); // re-insert below: most recent last
+    if (entry == null) {
+      if (_cache.length >= _maxEntries) {
+        _retired.add(_cache.remove(_cache.keys.first)!);
       }
       final timer = Stopwatch()..start();
-      picture = _pictures[key] = _record(size, step.value * bucket);
+      final picture = _record(
+        size,
+        step.value * bucket,
+        asImage ? pixelRatio : 1,
+      );
+      if (asImage) {
+        entry = picture.toImageSync(
+          (size.width * pixelRatio).ceil(),
+          (size.height * pixelRatio).ceil(),
+        );
+        picture.dispose();
+      } else {
+        entry = picture;
+      }
       FrameStats.note('vitrine-record', timer.elapsed);
     }
-    canvas.drawPicture(picture);
+    _cache[key] = entry;
+    if (entry is ui.Image) {
+      canvas.drawImageRect(
+        entry,
+        Rect.fromLTWH(0, 0, entry.width.toDouble(), entry.height.toDouble()),
+        Offset.zero & size,
+        Paint()..filterQuality = FilterQuality.medium,
+      );
+    } else {
+      canvas.drawPicture(entry as ui.Picture);
+    }
   }
 
-  ui.Picture _record(Size size, double yaw) {
+  ui.Picture _record(Size size, double yaw, double scale) {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    final fit = _Fit(module, yaw, size);
-    final faces = <_Face>[];
-    final cosY = math.cos(yaw), sinY = math.sin(yaw);
-    for (final mesh in module.meshes) {
-      // Level stations belong to the path view, not to a display piece.
-      if (mesh.slot != null) continue;
-      final ranger = mesh.motion == 'ranger' ? module.slots.first : null;
-      final vs = [
-        for (final v in mesh.vertices)
-          [
-            v[0] + (ranger == null ? 0 : ranger[0] + .65),
-            v[1] + (ranger == null ? 0 : ranger[1] - .2),
-            v[2],
-          ],
-      ];
-      final ps = [for (final v in vs) fit.project(v[0], v[1], v[2])];
-      for (final indices in mesh.faces) {
-        final a = vs[indices[0]], b = vs[indices[1]], c = vs[indices[2]];
-        final ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
-        final vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
-        final nx = uy * vz - uz * vy,
-            ny = uz * vx - ux * vz,
-            nz = ux * vy - uy * vx;
-        final length = math.sqrt(nx * nx + ny * ny + nz * nz);
-        // Light stays fixed relative to the viewer while the model turns.
-        final lx = nx * cosY - ny * sinY, ly = nx * sinY + ny * cosY;
-        // Mesh colours are already display colours: shade them directly. The
-        // path view's gamma step would wash the small model out.
-        final light =
-            .72 +
-            .32 *
-                (length == 0
-                    ? 0
-                    : ((-lx * .3 - ly * .4 + nz * .85) / length).clamp(0, 1));
-        final base = mesh.color;
-        int ch(double c) => (c * light * 255).clamp(0, 255).round();
-        final color = Color.fromRGBO(ch(base.r), ch(base.g), ch(base.b), 1);
-        double depth(List<double> v) =>
-            (v[0] * sinY + v[1] * cosY) * .85 - v[2] * .7;
-        faces.add(
-          _Face(
-            [for (final i in indices) ps[i]],
-            (depth(a) + depth(b) + depth(c)) / 3 + _groundDepth(mesh.name),
-            color,
-          ),
-        );
-      }
-    }
-    faces.sort((x, y) => y.depth.compareTo(x.depth));
-    final points = <Offset>[], colors = <Color>[];
-    for (final face in faces) {
-      points.addAll(face.points);
-      colors.addAll([face.color, face.color, face.color]);
-    }
-    if (points.isNotEmpty) {
-      final vertices = ui.Vertices(
-        ui.VertexMode.triangles,
-        points,
-        colors: colors,
-      );
-      canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
-      vertices.dispose();
-    }
+    if (scale != 1) canvas.scale(scale);
+    _drawModel(canvas, module, yaw, size);
     return recorder.endRecording();
-  }
-
-  // Broad terrain planes first, then props (same rule as the level path).
-  double _groundDepth(String name) {
-    if (name == 'earth' || name == 'grass') return 1000000;
-    if (name.startsWith('Sandy stream')) return 900000;
-    if (name.startsWith('Flowing woodland')) return 800000;
-    if (name.startsWith('Animated water')) return 700000;
-    return 0;
   }
 
   @override
   bool shouldRepaint(covariant _MiniWorldPainter old) =>
-      old.module != module || old.asset != asset;
+      old.module != module ||
+      old.asset != asset ||
+      old.pixelRatio != pixelRatio ||
+      old.asImage != asImage;
+}
+
+/// Projects and paints the miniature into [canvas] for the given angle.
+void _drawModel(Canvas canvas, WorldModule module, double yaw, Size size) {
+  final fit = _Fit(module, yaw, size);
+  final instances = <SceneInstance>[
+    for (final mesh in module.meshes)
+      // Level stations belong to the path view, not to a display piece.
+      if (mesh.slot == null)
+        SceneInstance(
+          mesh,
+          // The explorer stands at the first station.
+          dx: mesh.motion == 'ranger' ? module.slots.first[0] + .65 : 0,
+          dy: mesh.motion == 'ranger' ? module.slots.first[1] - .2 : 0,
+        ),
+  ];
+  final vertices = SceneBuilder.build(
+    instances,
+    SceneProjection(
+      yaw: yaw,
+      scale: fit.scale,
+      ox: fit.origin.dx,
+      oy: fit.origin.dy,
+    ),
+    shading: SceneShading.viewer,
+  );
+  if (vertices != null) {
+    canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
+    vertices.dispose();
+  }
+}
+
+/// A resting vitrine (back wall, plinth, model, glass) baked into ONE texture.
+/// Scrolling a list of them then costs one textured quad each, instead of
+/// replaying gradients, clips and a blurred shadow per vitrine per frame.
+final class _BakedCasePainter extends CustomPainter {
+  const _BakedCasePainter(this.world, this.module, this.yaw, this.pixelRatio);
+
+  final EcosystemWorld world;
+  final WorldModule module;
+  final double yaw, pixelRatio;
+
+  static final _images = <String, ui.Image>{};
+  static final _retired = <ui.Image>[];
+  static const _maxImages = 24;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    for (final old in _retired) {
+      old.dispose();
+    }
+    _retired.clear();
+    final key =
+        '${world.asset}|${yaw.toStringAsFixed(3)}|${size.width.round()}x${size.height.round()}|${pixelRatio.toStringAsFixed(2)}';
+    var image = _images.remove(key);
+    if (image == null) {
+      if (_images.length >= _maxImages) {
+        _retired.add(_images.remove(_images.keys.first)!);
+      }
+      final timer = Stopwatch()..start();
+      final recorder = ui.PictureRecorder();
+      final rec = Canvas(recorder)..scale(pixelRatio);
+      _CaseBackPainter(world).paint(rec, size);
+      _drawModel(rec, module, yaw, size);
+      const _CaseFrontPainter().paint(rec, size);
+      final picture = recorder.endRecording();
+      image = picture.toImageSync(
+        (size.width * pixelRatio).ceil(),
+        (size.height * pixelRatio).ceil(),
+      );
+      picture.dispose();
+      FrameStats.note('vitrine-bake', timer.elapsed);
+    }
+    _images[key] = image;
+    canvas.drawImageRect(
+      image,
+      Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
+      Offset.zero & size,
+      Paint()..filterQuality = FilterQuality.medium,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _BakedCasePainter old) =>
+      old.world != world ||
+      old.module != module ||
+      old.yaw != yaw ||
+      old.pixelRatio != pixelRatio;
 }
 
 /// Fit-to-bounds projection: the module's bounding box is projected at the
@@ -338,11 +433,6 @@ final class _Fit {
     x * math.cos(yaw) - y * math.sin(yaw),
     -(x * math.sin(yaw) + y * math.cos(yaw)) * .7 - z * .85,
   );
-
-  Offset project(double x, double y, double z) {
-    final p = _raw(x, y, z);
-    return Offset(origin.dx + p.dx * scale, origin.dy + p.dy * scale);
-  }
 }
 
 // ---------------------------------------------------------------------------
