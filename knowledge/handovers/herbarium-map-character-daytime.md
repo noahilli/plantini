@@ -17,7 +17,7 @@ Die App schickte beim Speichern eines Fundes nur `identificationJobId`, nie `med
 
 ## Karte, Artkarten, Quoten
 
-- Karte: dritter Reiter „Karte“ im Herbarium (`herbarium_map_view.dart`, flutter_map + `PlantiniTileProvider`). Kacheln nur über `GET /tiles/{z}/{x}/{y}` (Server lädt `tile.openstreetmap.org`, 14 Tage Cache unter `<PRIVATE_UPLOAD_DIR>/map-tiles`, nur angemeldet, Zoom ≤ 18). Hinweis: OSM-Nutzungsbedingungen (User-Agent mit Kontakt gesetzt, Cache ≥ 7 Tage) bei Last prüfen.
+- Karte: dritter Reiter „Karte“ im Herbarium (`herbarium_map_view.dart`, flutter_map + `PlantiniTileProvider`). Kacheln nur über `GET /tiles/{z}/{x}/{y}` (Server lädt `tile.openstreetmap.org`, 14 Tage Cache unter `<PRIVATE_UPLOAD_DIR>/map-tiles`, nur angemeldet, Zoom ≤ 18). Hinweis: OSM-Nutzungsbedingungen (User-Agent nennt nur die Projekt-URL, Cache 14 Tage; Anfragen laufen durch eine Warteschlange mit höchstens 6 gleichzeitigen Abrufen) bei Last prüfen.
 - Artkarten: `species-card` (Strapi-Inhaltstyp, neue Tabelle `species_cards`): für bestätigte Arten **außerhalb** des Katalogs, Wikipedia-Kurztext (Wikidata-P225-Prüfung, CC BY-SA) und Foto, wöchentlich neu geprüft; nie in Ökosystemen/Leveln. Foto über `GET /species/{key}/photo` (Server-Cache). Im e2e ohne Internetzugang für Wikipedia blieb der Text leer (Foto und Karte wurden angelegt, Wiederholung nach einer Stunde vorgesehen); mit echtem Netz **nicht getestet**.
 - Quoten: `GET /stats/collection` (Anteil der Konten mit bestätigtem Fund; `label` „12 %“, unter 1 % „3 ‰“, unter 0,5 ‰ „<1 ‰“; 10 min Cache; erst ab 20 Konten). In Pflanzenkarte und Fund angezeigt. Bei zu wenigen Konten zeigt die App nichts.
 - Datenschutz: siehe `architecture/security-and-privacy.md` (Fundort kommt jetzt an die besitzende Person zurück).

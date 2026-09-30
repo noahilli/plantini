@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="stylesheet" href="ds/organic.css"><style>body{margin:0;background:var(--color-bg);font-family:var(--font-body)}a{color:var(--color-accent-700);text-decoration:none}a:hover{color:var(--color-accent-600)}.dv-turn{padding:44px 48px 36px;border-bottom:1px solid var(--color-divider);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:var(--color-accent-2-800);color:var(--color-neutral-100);border-radius:4px;text-decoration:none}.dv-tname{font:400 15px/1.2 var(--font-heading);color:var(--color-text)}.dv-grouplabel{font:700 10px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-2-700);margin:34px 0 16px}.dv-opts{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:color-mix(in srgb,var(--color-text) 8%,transparent);color:var(--color-text);border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 var(--font-body);color:color-mix(in srgb,var(--color-text) 60%,transparent)}.dv-opt:target .dv-oid{background:var(--color-accent);color:var(--color-bg)}.dv-note{max-width:1240px;font:400 12.5px/1.6 var(--font-body);color:color-mix(in srgb,var(--color-text) 62%,transparent);margin:16px 0 0}.dv-next{margin:30px 0 0;font:12.5px/1.6 var(--font-body);color:color-mix(in srgb,var(--color-text) 55%,transparent)}</style></helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Plantini — spielbare Lernreise, 18 Screens</span></div>
+<p class="dv-note">Organic-System als Grundlage: Creme-Grund, Terrakotta als Handlungsfarbe, Salbei als zweite Stimme, Caprasimo über Figtree, überrundete Formen. Die Struktur folgt dem bestehenden Konzept (Forscherpfad, Artenpass, Expedition) und der Kernschleife Ökosystem → Lernen → Quiz → Feldaufgabe → Nachweis → Herbarium. Spielgefühl kommt aus drei Metaphern: das Terrarium wächst sichtbar, der Pfad zeigt Wegpunkte und Gates, der Artenpass sammelt Funde. Keine Ranglisten, keine öffentlichen Fundorte. Bilder sind Platzhalter.</p>
+
+<p class="dv-grouplabel">Einstieg &amp; Fortschritt · drei Varianten für Home, zwei für die Levelkarte</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Home · Terrarium wächst mit</div>
+<div data-screen-label="Home Terrarium" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:9px"><span style="display:block;width:26px;height:26px;border-radius:12px 12px 12px 4px;background:var(--color-accent-2-700)"></span><span style="font:400 21px/1 var(--font-heading)">plantini</span></div>
+    <span style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--color-accent-200);font:700 11px var(--font-body);color:var(--color-accent-800)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent)"></span>7 Tage Serie</span>
+  </div>
+  <div>
+    <div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700);margin-bottom:3px">Deine Forschungsreise</div>
+    <div style="font:400 27px/1.1 var(--font-heading)">Hallo, {{ learnerName }}!</div>
+  </div>
+  <div style="border-radius:28px;background:var(--color-accent-2-800);padding:18px;position:relative;overflow:hidden">
+    <span style="position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:999px;background:var(--color-accent-2-700);opacity:.55"></span>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:flex-start">
+      <span style="padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 18%,transparent);font:700 10.5px var(--font-body);color:var(--color-neutral-200)">Wald · Level 1</span>
+      <span style="font:400 30px/1 var(--font-heading);color:var(--color-neutral-100)">42%</span>
+    </div>
+    <div style="position:relative;font:400 21px/1.15 var(--font-heading);color:var(--color-neutral-100);margin:12px 0 14px;max-width:220px">Dein Waldstück<br>füllt sich</div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:58px;font:600 10px var(--font-body);color:var(--color-neutral-300)">Kronen</span><span style="flex:1;height:12px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);overflow:hidden"><span style="display:block;width:72%;height:100%;border-radius:999px;background:var(--color-accent-2-400)"></span></span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:58px;font:600 10px var(--font-body);color:var(--color-neutral-300)">Strauch</span><span style="flex:1;height:12px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);overflow:hidden"><span style="display:block;width:48%;height:100%;border-radius:999px;background:var(--color-accent-2-300)"></span></span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:58px;font:600 10px var(--font-body);color:var(--color-neutral-300)">Kraut</span><span style="flex:1;height:12px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);overflow:hidden"><span style="display:block;width:30%;height:100%;border-radius:999px;background:var(--color-accent-400)"></span></span></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="width:58px;font:600 10px var(--font-body);color:var(--color-neutral-300)">Boden</span><span style="flex:1;height:12px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);overflow:hidden"><span style="display:block;width:8%;height:100%;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+    </div>
+  </div>
+  <div style="border-radius:24px;background:var(--color-bg);padding:15px 16px;display:flex;align-items:center;gap:13px">
+    <span style="display:block;width:46px;height:46px;border-radius:18px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 6px,var(--color-accent-2-300) 6px 12px)"></span>
+    <div style="flex:1">
+      <div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-700)">Nächster Schritt</div>
+      <div style="font:700 14px/1.3 var(--font-body)">Waldmeister sicher erkennen</div>
+      <div style="font:400 11.5px var(--font-body);color:var(--color-neutral-600)">Lerneinheit 5 von 12 · ca. 4 Min</div>
+    </div>
+    <span class="btn btn-primary" style="border-radius:999px;padding:9px 15px">Weiter →</span>
+  </div>
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px"><span style="font:400 17px/1 var(--font-heading)">Ökosysteme</span><a href="#1d" style="font:600 11.5px var(--font-body)">Alle ansehen</a></div>
+    <div style="display:flex;gap:9px">
+      <div style="flex:1;height:86px;border-radius:20px;background:var(--color-accent-2-700);padding:11px;display:flex;flex-direction:column;justify-content:flex-end"><span style="font:700 12.5px var(--font-body);color:var(--color-neutral-100)">Wald</span><span style="font:400 10px var(--font-body);color:var(--color-accent-2-300)">42 % gelernt</span></div>
+      <div style="flex:1;height:86px;border-radius:20px;background:var(--color-accent-500);padding:11px;display:flex;flex-direction:column;justify-content:flex-end"><span style="font:700 12.5px var(--font-body);color:var(--color-neutral-100)">Wiese</span><span style="font:400 10px var(--font-body);color:var(--color-accent-200)">18 % gelernt</span></div>
+      <div style="flex:1;height:86px;border-radius:20px;background:var(--color-neutral-300);padding:11px;display:flex;flex-direction:column;justify-content:flex-end"><span style="font:700 12.5px var(--font-body);color:var(--color-neutral-800)">Gewässer</span><span style="font:400 10px var(--font-body);color:var(--color-neutral-700)">gesperrt</span></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;font:400 11px var(--font-body);color:var(--color-neutral-600)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent-2-500)"></span>Offline-Paket aktuell · Sync vor 3 Min.</div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Home · Pfadkarte des Tages</div>
+<div data-screen-label="Home Pfadkarte" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:15px">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:9px"><span style="display:block;width:26px;height:26px;border-radius:12px 12px 12px 4px;background:var(--color-accent-2-700)"></span><span style="font:400 21px/1 var(--font-heading)">plantini</span></div>
+    <span style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--color-accent-200);font:700 11px var(--font-body);color:var(--color-accent-800)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent)"></span>7 Tage Serie</span>
+  </div>
+  <div>
+    <div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700);margin-bottom:3px">Wald · Level 1 · 12 von 25 Arten</div>
+    <div style="font:400 27px/1.1 var(--font-heading)">Dein Weg heute, {{ learnerName }}</div>
+  </div>
+  <div style="border-radius:28px;background:var(--color-bg);padding:20px 18px;display:flex;flex-direction:column;gap:0">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:none;border-radius:999px;background:var(--color-accent-2-600);font:700 13px var(--font-body);color:var(--color-neutral-100)">✓</span>
+      <div style="flex:1"><div style="font:700 13px var(--font-body)">Steckbriefe gelesen</div><div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">4 von 4 Arten</div></div>
+    </div>
+    <span style="display:block;width:0;height:22px;margin-left:18px;border-left:2px dashed var(--color-accent-2-400)"></span>
+    <div style="display:flex;align-items:center;gap:14px">
+      <span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:none;border-radius:999px;background:var(--color-accent-2-600);font:700 13px var(--font-body);color:var(--color-neutral-100)">✓</span>
+      <div style="flex:1"><div style="font:700 13px var(--font-body)">Merkmalsquiz</div><div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">8 von 10 richtig</div></div>
+    </div>
+    <span style="display:block;width:0;height:22px;margin-left:18px;border-left:2px dashed var(--color-accent-400)"></span>
+    <div style="display:flex;align-items:center;gap:14px;padding:12px;margin:-6px -8px;border-radius:22px;background:var(--color-neutral-100);box-shadow:var(--shadow-sm)">
+      <span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:none;border-radius:999px;background:var(--color-accent);font:700 12px var(--font-body);color:var(--color-bg)">3</span>
+      <div style="flex:1"><div style="font:700 13px var(--font-body)">Bildquiz: 6 Arten</div><div style="font:400 11px var(--font-body);color:var(--color-accent-700)">jetzt dran · ca. 5 Min</div></div>
+      <span style="font:400 18px var(--font-body);color:var(--color-accent-700)">→</span>
+    </div>
+    <span style="display:block;width:0;height:22px;margin-left:18px;border-left:2px dashed var(--color-neutral-400)"></span>
+    <div style="display:flex;align-items:center;gap:14px;opacity:.62">
+      <span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:none;border-radius:999px;background:var(--color-neutral-300);font:700 12px var(--font-body);color:var(--color-neutral-700)">4</span>
+      <div style="flex:1"><div style="font:700 13px var(--font-body)">Feldaufgabe: Waldmeister</div><div style="font:400 11px var(--font-body);color:var(--color-neutral-700)">frei ab 20 sicheren Arten</div></div>
+      <span style="display:block;width:12px;height:14px;border-radius:3px;border:2px solid var(--color-neutral-600)"></span>
+    </div>
+  </div>
+  <div style="display:flex;gap:9px">
+    <div style="flex:1;border-radius:20px;background:var(--color-accent-2-200);padding:13px"><div style="font:400 22px/1 var(--font-heading);color:var(--color-accent-2-800)">12</div><div style="font:600 10.5px var(--font-body);color:var(--color-accent-2-800)">Arten sicher</div></div>
+    <div style="flex:1;border-radius:20px;background:var(--color-accent-200);padding:13px"><div style="font:400 22px/1 var(--font-heading);color:var(--color-accent-800)">3</div><div style="font:600 10.5px var(--font-body);color:var(--color-accent-800)">Wiederholungen</div></div>
+    <div style="flex:1;border-radius:20px;background:var(--color-bg);padding:13px"><div style="font:400 22px/1 var(--font-heading)">4</div><div style="font:600 10.5px var(--font-body);color:var(--color-neutral-700)">Abzeichen</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;font:400 11px var(--font-body);color:var(--color-neutral-600)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent-2-500)"></span>Offline-Paket „Wald“ aktuell · 24 MB</div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Home · Artenpass als Deck</div>
+<div data-screen-label="Home Artenpass" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:15px">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:9px"><span style="display:block;width:26px;height:26px;border-radius:12px 12px 12px 4px;background:var(--color-accent-2-700)"></span><span style="font:400 21px/1 var(--font-heading)">plantini</span></div>
+    <span style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--color-accent-200);font:700 11px var(--font-body);color:var(--color-accent-800)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent)"></span>7 Tage Serie</span>
+  </div>
+  <div>
+    <div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700);margin-bottom:3px">Dein Artenpass</div>
+    <div style="display:flex;align-items:baseline;gap:9px"><span style="font:400 40px/1 var(--font-heading)">18</span><span style="font:400 17px/1 var(--font-heading);color:var(--color-neutral-600)">von 75 Arten</span></div>
+  </div>
+  <div style="height:8px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden;display:flex"><span style="display:block;width:24%;background:var(--color-accent)"></span><span style="display:block;width:9%;background:var(--color-accent-300)"></span></div>
+  <div style="position:relative;height:214px">
+    <div style="position:absolute;left:14px;top:14px;width:150px;height:196px;border-radius:24px;background:var(--color-neutral-300);transform:rotate(-7deg)"></div>
+    <div style="position:absolute;left:34px;top:8px;width:150px;height:196px;border-radius:24px;background:var(--color-accent-2-300);transform:rotate(4deg)"></div>
+    <div style="position:absolute;left:24px;top:0;width:158px;height:204px;border-radius:24px;background:var(--color-neutral-100);box-shadow:var(--shadow-md);padding:10px;display:flex;flex-direction:column;gap:8px">
+      <span style="display:block;flex:1;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 8px,var(--color-accent-2-300) 8px 16px)"></span>
+      <div><div style="font:700 12.5px var(--font-body)">Waldmeister</div><div style="font:400 10.5px var(--font-body);color:var(--color-neutral-600);font-style:italic">Galium odoratum</div></div>
+      <span style="padding:4px 9px;border-radius:999px;background:var(--color-accent-2-200);font:700 9.5px var(--font-body);color:var(--color-accent-2-800);align-self:flex-start">neu im Pass</span>
+    </div>
+    <div style="position:absolute;right:0;top:26px;width:150px;display:flex;flex-direction:column;gap:9px">
+      <div style="border-radius:20px;background:var(--color-bg);padding:12px"><div style="font:700 11px var(--font-body);color:var(--color-accent-700)">Heute fällig</div><div style="font:400 19px/1.1 var(--font-heading);margin-top:2px">3 Karten wiederholen</div></div>
+      <div style="border-radius:20px;background:var(--color-accent-2-800);padding:12px"><div style="font:700 11px var(--font-body);color:var(--color-accent-2-300)">Nächstes Gate</div><div style="font:400 15px/1.15 var(--font-heading);color:var(--color-neutral-100);margin-top:2px">Level 2 bei 25 Arten</div></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag tag-accent-2">Wald 12</span><span class="tag tag-neutral">Wiese 6</span><span class="tag tag-outline">Gewässer 0</span></div>
+  <div style="border-radius:24px;background:var(--color-bg);padding:15px 16px;display:flex;align-items:center;gap:13px">
+    <span style="display:block;width:44px;height:44px;border-radius:999px;flex:none;background:var(--color-accent-2-200);border:3px solid var(--color-accent-2-500)"></span>
+    <div style="flex:1"><div style="font:700 13.5px var(--font-body)">Weiter im Wald-Level</div><div style="font:400 11px var(--font-body);color:var(--color-neutral-600)">6 Arten bis zur Feldaufgabe</div></div>
+    <span class="btn btn-primary" style="border-radius:999px;padding:9px 15px">Start</span>
+  </div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Ökosysteme</div>
+<div data-screen-label="Oekosysteme" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:14px">
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700);margin-bottom:3px">Lebensräume</div><div style="font:400 27px/1.1 var(--font-heading)">Wo willst du forschen?</div></div>
+  <div style="display:flex;gap:7px"><span class="tag tag-accent" style="border-radius:999px">Saison: Frühsommer</span><span class="tag tag-outline" style="border-radius:999px">Alle</span></div>
+  <div style="border-radius:28px;background:var(--color-accent-2-800);padding:16px;position:relative;overflow:hidden">
+    <span style="position:absolute;right:-30px;bottom:-50px;width:140px;height:140px;border-radius:999px;background:var(--color-accent-2-700);opacity:.6"></span>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font:400 24px/1 var(--font-heading);color:var(--color-neutral-100)">Wald</div><div style="font:400 11.5px var(--font-body);color:var(--color-accent-2-300);margin-top:3px">3 Level · 75 Arten · 12 sicher</div></div><span style="padding:5px 11px;border-radius:999px;background:var(--color-accent);font:700 10.5px var(--font-body);color:var(--color-bg)">aktiv</span></div>
+    <div style="position:relative;height:8px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 16%,transparent);margin:14px 0 10px;overflow:hidden"><span style="display:block;width:42%;height:100%;background:var(--color-accent-2-400)"></span></div>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:center"><span style="font:600 10.5px var(--font-body);color:var(--color-neutral-300)">Offline geladen · 24 MB</span><span style="font:700 11.5px var(--font-body);color:var(--color-neutral-100)">Fortsetzen →</span></div>
+  </div>
+  <div style="border-radius:28px;background:var(--color-bg);padding:16px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font:400 24px/1 var(--font-heading)">Wiese</div><div style="font:400 11.5px var(--font-body);color:var(--color-neutral-700);margin-top:3px">3 Level · 60 Arten · 6 sicher</div></div><span class="tag tag-accent-2" style="border-radius:999px">Blütezeit</span></div>
+    <div style="height:8px;border-radius:999px;background:var(--color-neutral-300);margin:14px 0 10px;overflow:hidden"><span style="display:block;width:18%;height:100%;background:var(--color-accent-500)"></span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:600 10.5px var(--font-body);color:var(--color-neutral-700)">Paket 18 MB · nur WLAN</span><span style="font:700 11.5px var(--font-body);color:var(--color-accent-700)">Laden</span></div>
+  </div>
+  <div style="border-radius:28px;background:var(--color-neutral-200);padding:16px;opacity:.8">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font:400 24px/1 var(--font-heading);color:var(--color-neutral-800)">Gewässer</div><div style="font:400 11.5px var(--font-body);color:var(--color-neutral-700);margin-top:3px">Ufer, Röhricht und Wasserpflanzen</div></div><span style="display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--color-neutral-300);font:700 10.5px var(--font-body);color:var(--color-neutral-800)"><span style="display:block;width:9px;height:11px;border-radius:2px;border:2px solid var(--color-neutral-800)"></span>gesperrt</span></div>
+    <div style="margin-top:13px;border-radius:16px;background:var(--color-neutral-100);padding:11px 13px;font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-800)">Freigabe nach <strong style="font-weight:700">Wald Level 2</strong> — noch 13 sichere Arten.</div>
+  </div>
+  <div style="margin-top:2px;border-radius:24px;border:1px dashed var(--color-neutral-400);padding:13px 15px;display:flex;align-items:center;gap:11px"><span style="display:block;width:9px;height:9px;border-radius:999px;background:var(--color-accent-2-500);flex:none"></span><div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Neue Ökosysteme kommen aus dem Content-Release — ohne App-Update.</div></div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Levelübersicht · Forscherpfad</div>
+<div data-screen-label="Levelpfad" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 8px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body)">←</span><span style="font:400 17px/1 var(--font-heading)">Wald</span><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:700 12px var(--font-body)">?</span></div>
+<div style="flex:1;overflow:hidden;padding:4px 22px 0;display:flex;flex-direction:column;gap:14px">
+  <div style="border-radius:24px;background:var(--color-bg);padding:15px 16px">
+    <div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Forscherpfad</div>
+    <div style="font:400 22px/1.1 var(--font-heading);margin:3px 0 11px">Dein Weg durch den Wald</div>
+    <div style="height:9px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:42%;height:100%;background:var(--color-accent-2-500)"></span></div>
+    <div style="display:flex;justify-content:space-between;margin-top:7px;font:600 10.5px var(--font-body);color:var(--color-neutral-700)"><span>12 Arten sicher</span><span>42 %</span></div>
+  </div>
+  <div style="display:flex;flex-direction:column">
+    <div style="display:flex;gap:13px">
+      <div style="display:flex;flex-direction:column;align-items:center"><span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:var(--color-accent-2-600);border:3px solid var(--color-accent-2-300);font:700 14px var(--font-body);color:var(--color-neutral-100)">1</span><span style="flex:1;width:0;border-left:2px dashed var(--color-accent-2-400);margin:4px 0"></span></div>
+      <div style="flex:1;border-radius:24px;background:var(--color-neutral-100);box-shadow:var(--shadow-sm);padding:14px 15px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="padding:5px 11px;border-radius:999px;background:var(--color-accent-2-700);font:700 10.5px var(--font-body);color:var(--color-neutral-100)">aktiv</span><span style="font:600 11.5px var(--font-body);color:var(--color-neutral-700)">12 / 25 Arten</span></div>
+        <div style="font:400 19px/1.15 var(--font-heading);margin:9px 0 3px">Grundlagen des Waldes</div>
+        <div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Bäume, Kräuter und sichere Merkmale</div>
+        <div style="height:8px;border-radius:999px;background:var(--color-neutral-200);margin:11px 0 12px;overflow:hidden"><span style="display:block;width:48%;height:100%;background:var(--color-accent-2-500)"></span></div>
+        <span class="btn btn-primary btn-block" style="border-radius:999px">Weiterlernen →</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:13px">
+      <div style="display:flex;flex-direction:column;align-items:center"><span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:var(--color-neutral-200);border:3px solid var(--color-neutral-300);font:700 14px var(--font-body);color:var(--color-neutral-700)">2</span><span style="flex:1;width:0;border-left:2px dashed var(--color-neutral-400);margin:4px 0"></span></div>
+      <div style="flex:1;border-radius:24px;background:var(--color-bg);padding:14px 15px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--color-neutral-300);font:700 10.5px var(--font-body);color:var(--color-neutral-800)"><span style="display:block;width:8px;height:10px;border-radius:2px;border:2px solid var(--color-neutral-800)"></span>Gate</span><span style="font:600 11.5px var(--font-body);color:var(--color-neutral-700)">50 Arten</span></div>
+        <div style="font:400 19px/1.15 var(--font-heading);margin:9px 0 3px">Arten unterscheiden</div>
+        <div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Voraussetzung: Level 1 abschließen und 20 Arten sicher</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:13px">
+      <div style="display:flex;flex-direction:column;align-items:center"><span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:999px;background:var(--color-neutral-200);border:3px solid var(--color-neutral-300);font:700 14px var(--font-body);color:var(--color-neutral-700)">3</span></div>
+      <div style="flex:1;border-radius:24px;background:var(--color-bg);padding:14px 15px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--color-neutral-300);font:700 10.5px var(--font-body);color:var(--color-neutral-800)"><span style="display:block;width:8px;height:10px;border-radius:2px;border:2px solid var(--color-neutral-800)"></span>Gate</span><span style="font:600 11.5px var(--font-body);color:var(--color-neutral-700)">75 Arten</span></div>
+        <div style="font:400 19px/1.15 var(--font-heading);margin:9px 0 3px">Feldforscher:in</div>
+        <div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Quiz, Expedition und Zertifikat</div>
+      </div>
+    </div>
+  </div>
+  <div style="border-radius:20px;background:var(--color-accent-200);padding:12px 14px;display:flex;align-items:center;gap:10px"><span style="display:block;width:8px;height:8px;border-radius:999px;background:var(--color-accent);flex:none"></span><div style="flex:1;font:600 11.5px var(--font-body);color:var(--color-accent-800)">3 Arten sind unsicher — kurze Wiederholung?</div><span style="font:700 11.5px var(--font-body);color:var(--color-accent-800)">Los</span></div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Levelübersicht · Terrarium-Schichten</div>
+<div data-screen-label="Level Terrarium" style="width:390px;height:844px;background:var(--color-accent-2-900);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body);color:var(--color-neutral-100)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-600)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 10px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:400 15px var(--font-body);color:var(--color-neutral-100)">←</span><span style="font:400 17px/1 var(--font-heading);color:var(--color-neutral-100)">Wald · Terrarium</span><span style="width:32px"></span></div>
+<div style="flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column;gap:12px">
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-400)">Level als Schichten</div><div style="font:400 25px/1.1 var(--font-heading);color:var(--color-neutral-100);margin-top:3px">Baue den Wald von<br>oben nach unten</div></div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:9px;justify-content:flex-end;padding-bottom:6px">
+    <div style="border-radius:24px 24px 10px 10px;background:var(--color-neutral-200);padding:14px 15px;opacity:.55">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 17px/1 var(--font-heading);color:var(--color-neutral-900)">Bodenschicht</span><span style="font:700 10.5px var(--font-body);color:var(--color-neutral-800)">Level 3 · 75 Arten</span></div>
+      <div style="font:400 11px var(--font-body);color:var(--color-neutral-800);margin-top:4px">Moose, Pilze, Keimlinge · gesperrt</div>
+    </div>
+    <div style="border-radius:10px;background:var(--color-neutral-200);padding:14px 15px;opacity:.75">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 17px/1 var(--font-heading);color:var(--color-neutral-900)">Krautschicht</span><span style="font:700 10.5px var(--font-body);color:var(--color-neutral-800)">Level 2 · 50 Arten</span></div>
+      <div style="font:400 11px var(--font-body);color:var(--color-neutral-800);margin-top:4px">frei nach 20 sicheren Arten</div>
+    </div>
+    <div style="border-radius:10px;background:var(--color-accent-300);padding:15px;box-shadow:var(--shadow-lg)">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 20px/1 var(--font-heading);color:var(--color-accent-900)">Strauchschicht</span><span style="padding:4px 10px;border-radius:999px;background:var(--color-accent-900);font:700 10px var(--font-body);color:var(--color-accent-200)">aktiv</span></div>
+      <div style="font:400 11.5px var(--font-body);color:var(--color-accent-900);margin-top:5px">Level 1 · 12 von 25 Arten sicher</div>
+      <div style="height:9px;border-radius:999px;background:color-mix(in srgb,var(--color-accent-900) 22%,transparent);margin:11px 0 12px;overflow:hidden"><span style="display:block;width:48%;height:100%;background:var(--color-accent-800)"></span></div>
+      <span class="btn btn-block" style="border-radius:999px;background:var(--color-accent-900);color:var(--color-accent-100)">Weiterlernen →</span>
+    </div>
+    <div style="border-radius:10px 10px 24px 24px;background:var(--color-accent-2-600);padding:14px 15px">
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 17px/1 var(--font-heading);color:var(--color-neutral-100)">Kronenschicht</span><span style="font:700 10.5px var(--font-body);color:var(--color-accent-2-200)">abgeschlossen · 8 Arten</span></div>
+      <div style="font:400 11px var(--font-body);color:var(--color-accent-2-200);margin-top:4px">Abzeichen „Baumkenner:in“ erhalten</div>
+    </div>
+  </div>
+  <div style="border-radius:20px;background:color-mix(in srgb,var(--color-neutral-100) 12%,transparent);padding:12px 14px;font:400 11px/1.45 var(--font-body);color:var(--color-neutral-300)">Jede abgeschlossene Schicht bleibt sichtbar — der Wald wächst mit deinem Wissen.</div>
+</div>
+<div style="margin-top:auto;display:flex;padding:12px 10px 22px;border-top:1px solid color-mix(in srgb,var(--color-neutral-100) 16%,transparent)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-700)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-400)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent-400)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-300)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-700)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-400)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-700)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-400)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-700)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-400)">Profil</span></span>
+</div>
+</div></div>
+
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><p class="dv-note">Home: <a class="dv-oid" href="#1a">1a</a> macht den Fortschritt zum Bild (die vier Waldschichten füllen sich), <a class="dv-oid" href="#1b">1b</a> ist die klarste Tagesführung mit sichtbarem Gate, <a class="dv-oid" href="#1c">1c</a> stellt das Sammeln nach vorn. Die Levelkarte gibt es als klassischen Pfad <a class="dv-oid" href="#1e">1e</a> und als Schichtenbau <a class="dv-oid" href="#1f">1f</a> — beide zeigen Gates mit ihrer Bedingung im Klartext statt nur „gesperrt“.</p></sc-if>
+<p class="dv-grouplabel">Lernen · Steckbrief, Quiz, Artenwissen</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1g"><div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Lerneinheit</div>
+<div data-screen-label="Lerneinheit" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:6px 22px 10px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body);flex:none">←</span><span style="flex:1;height:7px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:42%;height:100%;background:var(--color-accent)"></span></span><span style="font:600 11px var(--font-body);color:var(--color-neutral-700)">5/12</span></div>
+<div style="flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column;gap:13px">
+  <div style="height:196px;border-radius:26px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 11px,var(--color-accent-2-300) 11px 22px);display:flex;align-items:flex-end;justify-content:space-between;padding:12px">
+    <span style="font:500 10px ui-monospace,Menlo,monospace;letter-spacing:.03em;color:var(--color-accent-2-800);background:var(--color-neutral-100);padding:5px 9px;border-radius:999px">foto · gesamtansicht</span>
+    <span style="display:flex;gap:5px"><span style="display:block;width:20px;height:6px;border-radius:999px;background:var(--color-accent-2-800)"></span><span style="display:block;width:6px;height:6px;border-radius:999px;background:var(--color-neutral-100)"></span><span style="display:block;width:6px;height:6px;border-radius:999px;background:var(--color-neutral-100)"></span></span>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Art 12 · Wald</div><div style="font:400 28px/1.05 var(--font-heading);margin-top:3px">Waldmeister</div><div style="font:400 13px var(--font-body);font-style:italic;color:var(--color-neutral-600)">Galium odoratum</div></div>
+    <span class="tag tag-accent-2" style="border-radius:999px">im Lernen</span>
+  </div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap"><span class="tag tag-outline" style="border-radius:999px">Blattquirle</span><span class="tag tag-outline" style="border-radius:999px">weiße Blüte</span><span class="tag tag-outline" style="border-radius:999px">Laubwald</span></div>
+  <div style="border-radius:22px;background:var(--color-bg);padding:14px 15px">
+    <div style="font:700 12.5px var(--font-body);margin-bottom:4px">So erkennst du die Art</div>
+    <div style="font:400 12px/1.5 var(--font-body);color:var(--color-neutral-800)">Sechs bis acht schmale Blätter stehen sternförmig um den vierkantigen Stängel. Die Blüten sind klein, weiß und vierzählig.</div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-2-200);padding:14px 15px">
+    <div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-2-800);margin-bottom:4px">Merkhilfe</div>
+    <div style="font:400 12px/1.5 var(--font-body);color:var(--color-accent-2-900)">Ein Stern am Stängel, ein Duft im Heu — Waldmeister zählt bis acht.</div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-100);border:1px solid var(--color-accent-300);padding:13px 15px;display:flex;gap:10px">
+    <span style="display:block;width:8px;height:8px;border-radius:999px;background:var(--color-accent-600);margin-top:5px;flex:none"></span>
+    <div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-accent-900)"><strong style="font-weight:700">Verwechslung:</strong> Kletten-Labkraut hat rauhe, hakige Blätter. Vor der Feldaufgabe vergleichen.</div>
+  </div>
+  <div style="margin-top:auto;padding-bottom:14px;display:flex;gap:9px"><span class="btn btn-secondary" style="border-radius:999px;padding:12px 16px">Später</span><span class="btn btn-primary" style="flex:1;border-radius:999px;padding:12px 16px">Im Quiz festigen →</span></div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1h"><div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>Quiz mit Sofortfeedback</div>
+<div data-screen-label="Quiz" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 8px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 14px var(--font-body)">✕</span><span style="font:400 16px/1 var(--font-heading)">Wald-Quiz</span><span style="padding:6px 12px;border-radius:999px;background:var(--color-accent-2-200);font:700 11px var(--font-body);color:var(--color-accent-2-800)">Serie 7</span></div>
+<div style="flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column;gap:12px">
+  <div>
+    <div style="display:flex;justify-content:space-between;font:600 11px var(--font-body);color:var(--color-neutral-700);margin-bottom:6px"><span>Frage 7 von 10</span><span>Merkmale</span></div>
+    <div style="height:7px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:70%;height:100%;background:var(--color-accent)"></span></div>
+  </div>
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Arten sicher unterscheiden</div><div style="font:400 25px/1.1 var(--font-heading);margin-top:3px">Welche Art ist das?</div></div>
+  <div style="height:180px;border-radius:26px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 11px,var(--color-accent-2-300) 11px 22px);display:flex;align-items:flex-end;padding:12px"><span style="font:500 10px ui-monospace,Menlo,monospace;color:var(--color-accent-2-800);background:var(--color-neutral-100);padding:5px 9px;border-radius:999px">foto · blüte im halbschatten</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+    <div style="border-radius:20px;background:var(--color-accent-2-200);border:2px solid var(--color-accent-2-600);padding:14px 13px;display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;background:var(--color-accent-2-700);font:700 11px var(--font-body);color:var(--color-neutral-100);flex:none">✓</span><span style="font:700 12.5px var(--font-body);color:var(--color-accent-2-900)">Waldmeister</span></div>
+    <div style="border-radius:20px;background:var(--color-bg);padding:14px 13px;font:600 12.5px var(--font-body)">Bärlauch</div>
+    <div style="border-radius:20px;background:var(--color-bg);padding:14px 13px;font:600 12.5px var(--font-body)">Kletten-Labkraut</div>
+    <div style="border-radius:20px;background:var(--color-bg);padding:14px 13px;font:600 12.5px var(--font-body)">Maiglöckchen</div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-2-800);padding:14px 15px">
+    <div style="font:700 12px var(--font-body);color:var(--color-accent-2-200);margin-bottom:4px">Richtig — und warum</div>
+    <div style="font:400 11.5px/1.5 var(--font-body);color:var(--color-neutral-200)">Die schmalen Blätter stehen in deutlichen Quirlen um den Stängel. Maiglöckchen hätte zwei breite Grundblätter.</div>
+  </div>
+  <div style="margin-top:auto;padding-bottom:14px;display:flex;align-items:center;gap:11px"><span style="font:600 11px var(--font-body);color:var(--color-neutral-700)">6 richtig · 1 unsicher</span><span class="btn btn-primary" style="flex:1;border-radius:999px;padding:12px 16px">Nächste Frage →</span></div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1i"><div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>Quizabschluss &amp; Freischaltung</div>
+<div data-screen-label="Quizabschluss" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:14px 22px 0;display:flex;flex-direction:column;gap:14px">
+  <div style="border-radius:30px;background:var(--color-accent-2-800);padding:22px 20px;position:relative;overflow:hidden">
+    <span style="position:absolute;left:-30px;bottom:-60px;width:150px;height:150px;border-radius:999px;background:var(--color-accent-2-700);opacity:.6"></span>
+    <div style="position:relative;display:flex;align-items:center;gap:16px">
+      <span style="display:flex;align-items:center;justify-content:center;width:86px;height:86px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);border:5px solid var(--color-accent-2-400);flex:none;font:400 27px/1 var(--font-heading);color:var(--color-neutral-100)">9</span>
+      <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-300)">Quiz beendet</div><div style="font:400 24px/1.1 var(--font-heading);color:var(--color-neutral-100);margin-top:3px">9 von 10<br>richtig</div></div>
+    </div>
+    <div style="position:relative;display:flex;gap:8px;margin-top:16px"><span style="padding:6px 12px;border-radius:999px;background:var(--color-accent);font:700 10.5px var(--font-body);color:var(--color-bg)">Serie 7 Tage gehalten</span><span style="padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 16%,transparent);font:700 10.5px var(--font-body);color:var(--color-neutral-200)">+2 Arten sicher</span></div>
+  </div>
+  <div style="border-radius:26px;background:var(--color-accent-200);padding:17px 18px;display:flex;gap:14px;align-items:center">
+    <span style="display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:999px;background:var(--color-accent);flex:none;font:400 20px var(--font-heading);color:var(--color-bg)">✦</span>
+    <div style="flex:1"><div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-800)">Gate offen</div><div style="font:400 19px/1.1 var(--font-heading);color:var(--color-accent-900);margin-top:2px">Feldaufgabe freigeschaltet</div><div style="font:400 11px var(--font-body);color:var(--color-accent-800);margin-top:3px">20 von 25 Arten sicher erkannt</div></div>
+  </div>
+  <div>
+    <div style="font:400 17px/1 var(--font-heading);margin-bottom:9px">Noch unsicher</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:12px;border-radius:20px;background:var(--color-bg);padding:11px 13px"><span style="display:block;width:38px;height:38px;border-radius:14px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 6px,var(--color-accent-2-300) 6px 12px)"></span><div style="flex:1"><div style="font:700 12.5px var(--font-body)">Kletten-Labkraut</div><div style="font:400 10.5px var(--font-body);color:var(--color-neutral-700)">2 von 3 Fragen falsch</div></div><span style="padding:5px 10px;border-radius:999px;background:var(--color-accent-200);font:700 10px var(--font-body);color:var(--color-accent-800)">üben</span></div>
+      <div style="display:flex;align-items:center;gap:12px;border-radius:20px;background:var(--color-bg);padding:11px 13px"><span style="display:block;width:38px;height:38px;border-radius:14px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 6px,var(--color-accent-2-300) 6px 12px)"></span><div style="flex:1"><div style="font:700 12.5px var(--font-body)">Maiglöckchen</div><div style="font:400 10.5px var(--font-body);color:var(--color-neutral-700)">Blattform verwechselt</div></div><span style="padding:5px 10px;border-radius:999px;background:var(--color-accent-200);font:700 10px var(--font-body);color:var(--color-accent-800)">üben</span></div>
+    </div>
+  </div>
+  <div style="border-radius:20px;border:1px dashed var(--color-neutral-400);padding:12px 14px;font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Wiederholung kostet keinen Levelfortschritt — sie schärft nur die unsicheren Arten.</div>
+  <div style="margin-top:auto;padding-bottom:22px;display:flex;flex-direction:column;gap:9px"><span class="btn btn-primary btn-block" style="border-radius:999px;padding:13px 16px;margin:0">Feldaufgabe starten →</span><span class="btn btn-secondary btn-block" style="border-radius:999px;padding:13px 16px;margin:0">2 Arten wiederholen</span></div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1j"><div class="dv-olabel"><a class="dv-oid" href="#1j">1j</a>Pflanzenübersicht (offline)</div>
+<div data-screen-label="Pflanzenuebersicht" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:12px">
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Pflanzenwissen</div><div style="font:400 27px/1.1 var(--font-heading);margin-top:3px">75 Arten im Katalog</div></div>
+  <div style="display:flex;align-items:center;gap:10px;border-radius:999px;background:var(--color-bg);padding:12px 16px"><span style="display:block;width:13px;height:13px;border-radius:999px;border:2px solid var(--color-neutral-600)"></span><span style="font:400 13px var(--font-body);color:var(--color-neutral-600)">Art, Merkmal oder Familie suchen</span></div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap"><span class="tag tag-accent" style="border-radius:999px">Alle</span><span class="tag tag-outline" style="border-radius:999px">Gelernt 18</span><span class="tag tag-outline" style="border-radius:999px">Unsicher 3</span><span class="tag tag-outline" style="border-radius:999px">Offen 54</span></div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--color-bg);padding:11px 13px"><span style="display:block;width:46px;height:46px;border-radius:16px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 7px,var(--color-accent-2-300) 7px 14px)"></span><div style="flex:1"><div style="font:700 13px var(--font-body)">Waldmeister</div><div style="font:400 10.5px var(--font-body);font-style:italic;color:var(--color-neutral-700)">Galium odoratum</div></div><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="display:block;width:9px;height:9px;border-radius:999px;background:var(--color-accent-2-600)"></span><span style="font:600 9.5px var(--font-body);color:var(--color-neutral-700)">Wald</span></span></div>
+    <div style="display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--color-bg);padding:11px 13px"><span style="display:block;width:46px;height:46px;border-radius:16px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 7px,var(--color-accent-2-300) 7px 14px)"></span><div style="flex:1"><div style="font:700 13px var(--font-body)">Kletten-Labkraut</div><div style="font:400 10.5px var(--font-body);font-style:italic;color:var(--color-neutral-700)">Galium aparine</div></div><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="display:block;width:9px;height:9px;border-radius:999px;background:var(--color-accent)"></span><span style="font:600 9.5px var(--font-body);color:var(--color-neutral-700)">unsicher</span></span></div>
+    <div style="display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--color-bg);padding:11px 13px"><span style="display:block;width:46px;height:46px;border-radius:16px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 7px,var(--color-accent-2-300) 7px 14px)"></span><div style="flex:1"><div style="font:700 13px var(--font-body)">Bärlauch</div><div style="font:400 10.5px var(--font-body);font-style:italic;color:var(--color-neutral-700)">Allium ursinum</div></div><span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span style="display:block;width:9px;height:9px;border-radius:999px;background:var(--color-accent-2-600)"></span><span style="font:600 9.5px var(--font-body);color:var(--color-neutral-700)">Wald</span></span></div>
+    <div style="display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--color-neutral-200);padding:11px 13px;opacity:.72"><span style="display:block;width:46px;height:46px;border-radius:16px;flex:none;background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 7px,var(--color-neutral-400) 7px 14px)"></span><div style="flex:1"><div style="font:700 13px var(--font-body)">Buschwindröschen</div><div style="font:400 10.5px var(--font-body);font-style:italic;color:var(--color-neutral-700)">Anemone nemorosa</div></div><span style="font:600 9.5px var(--font-body);color:var(--color-neutral-700)">Level 2</span></div>
+    <div style="display:flex;align-items:center;gap:12px;border-radius:22px;background:var(--color-neutral-200);padding:11px 13px;opacity:.72"><span style="display:block;width:46px;height:46px;border-radius:16px;flex:none;background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 7px,var(--color-neutral-400) 7px 14px)"></span><div style="flex:1"><div style="font:700 13px var(--font-body)">Sauerklee</div><div style="font:400 10.5px var(--font-body);font-style:italic;color:var(--color-neutral-700)">Oxalis acetosella</div></div><span style="font:600 9.5px var(--font-body);color:var(--color-neutral-700)">Level 2</span></div>
+  </div>
+  <div style="margin-top:auto;margin-bottom:12px;display:flex;align-items:center;gap:8px;font:400 11px var(--font-body);color:var(--color-neutral-600)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent-2-500)"></span>Suche funktioniert offline · Stand Content-Release 2026-05</div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1k"><div class="dv-olabel"><a class="dv-oid" href="#1k">1k</a>Pflanzensteckbrief</div>
+<div data-screen-label="Steckbrief" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 8px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body)">←</span><span style="font:400 16px/1 var(--font-heading)">Steckbrief</span><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 14px var(--font-body)">☆</span></div>
+<div style="flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column;gap:12px">
+  <div style="height:168px;border-radius:26px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 11px,var(--color-accent-2-300) 11px 22px);display:flex;align-items:flex-end;padding:12px"><span style="font:500 10px ui-monospace,Menlo,monospace;color:var(--color-accent-2-800);background:var(--color-neutral-100);padding:5px 9px;border-radius:999px">foto · blüte · 2 von 4</span></div>
+  <div style="display:flex;gap:7px"><span class="tag tag-accent-2" style="border-radius:999px">Gesamt</span><span class="tag tag-outline" style="border-radius:999px">Blüte</span><span class="tag tag-outline" style="border-radius:999px">Blatt</span><span class="tag tag-outline" style="border-radius:999px">Frucht</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font:400 26px/1.05 var(--font-heading)">Waldmeister</div><div style="font:400 12.5px var(--font-body);font-style:italic;color:var(--color-neutral-600)">Galium odoratum · Rötegewächse</div></div><span class="tag tag-accent-2" style="border-radius:999px">gelernt</span></div>
+  <div style="border-radius:22px;background:var(--color-bg);padding:4px 15px">
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font:400 12px var(--font-body)"><span style="color:var(--color-neutral-700)">Wuchshöhe</span><span style="font-weight:700">10–30 cm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font:400 12px var(--font-body)"><span style="color:var(--color-neutral-700)">Blütezeit</span><span style="font-weight:700">Mai bis Juni</span></div>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font:400 12px var(--font-body)"><span style="color:var(--color-neutral-700)">Lebensraum</span><span style="font-weight:700">Buchenwald, schattig</span></div>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;font:400 12px var(--font-body)"><span style="color:var(--color-neutral-700)">Blätter</span><span style="font-weight:700">6–8 im Quirl</span></div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-100);border:1px solid var(--color-accent-300);padding:13px 15px">
+    <div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-800);margin-bottom:5px">Verwechslungsgefahr</div>
+    <div style="display:flex;gap:9px">
+      <div style="flex:1;border-radius:16px;background:var(--color-neutral-100);padding:9px 11px"><div style="font:700 11.5px var(--font-body)">Kletten-Labkraut</div><div style="font:400 10px/1.4 var(--font-body);color:var(--color-neutral-700)">rauhe Häkchen am Stängel</div></div>
+      <div style="flex:1;border-radius:16px;background:var(--color-neutral-100);padding:9px 11px"><div style="font:700 11.5px var(--font-body)">Maiglöckchen</div><div style="font:400 10px/1.4 var(--font-body);color:var(--color-accent-800)">giftig · zwei breite Blätter</div></div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;font:400 10.5px/1.45 var(--font-body);color:var(--color-neutral-600)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-500);flex:none"></span>Quelle: Redaktion Plantini, botanisch geprüft · CC BY 4.0</div>
+  <div style="margin-top:auto;padding-bottom:14px;display:flex;gap:9px"><span class="btn btn-secondary" style="flex:1;border-radius:999px;padding:12px 16px">Zum Herbarium</span><span class="btn btn-primary" style="flex:1;border-radius:999px;padding:12px 16px">Quiz üben →</span></div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><p class="dv-note">Lernen bleibt inhaltlich ehrlich: Merkmale und Merkhilfe vor der Bilderkennung, Verwechslungen immer sichtbar, Quizfeedback mit botanischer Begründung statt nur „richtig“. Der Abschluss <a class="dv-oid" href="#1i">1i</a> ist der Moment, in dem sich das nächste Gate öffnet — das trägt das Spielgefühl.</p></sc-if>
+
+<p class="dv-grouplabel">Expedition · Feldaufgabe bis Nachweis</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1l"><div class="dv-olabel"><a class="dv-oid" href="#1l">1l</a>Feldaufgabe</div>
+<div data-screen-label="Feldaufgabe" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:13px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-700)">Feldaufgabe 1 · Wald</span><span class="tag tag-accent-2" style="border-radius:999px">Saison passt</span></div>
+  <div style="font:400 29px/1.1 var(--font-heading)">Finde Waldmeister<br>im Buchenwald</div>
+  <div style="border-radius:26px;background:var(--color-accent-2-800);padding:16px;display:flex;gap:14px;align-items:center">
+    <span style="display:block;width:64px;height:64px;border-radius:22px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-600) 0 8px,var(--color-accent-2-700) 8px 16px)"></span>
+    <div style="flex:1"><div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-2-300)">Zielart</div><div style="font:400 19px/1.1 var(--font-heading);color:var(--color-neutral-100);margin-top:2px">Waldmeister</div><div style="font:400 11px var(--font-body);font-style:italic;color:var(--color-accent-2-300)">Galium odoratum</div></div>
+  </div>
+  <div style="border-radius:24px;background:var(--color-bg);padding:15px 16px">
+    <div style="font:700 12.5px var(--font-body);margin-bottom:9px">Woran du sie sicher erkennst</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;gap:10px;align-items:flex-start"><span style="display:flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:999px;background:var(--color-accent-2-600);font:700 10px var(--font-body);color:var(--color-neutral-100);flex:none">✓</span><span style="font:400 11.5px/1.4 var(--font-body)">6–8 schmale Blätter im Quirl</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><span style="display:flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:999px;background:var(--color-accent-2-600);font:700 10px var(--font-body);color:var(--color-neutral-100);flex:none">✓</span><span style="font:400 11.5px/1.4 var(--font-body)">vierkantiger, glatter Stängel</span></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><span style="display:block;width:19px;height:19px;border-radius:999px;border:2px solid var(--color-neutral-400);flex:none"></span><span style="font:400 11.5px/1.4 var(--font-body);color:var(--color-neutral-700)">kleine weiße, vierzählige Blüten</span></div>
+    </div>
+  </div>
+  <div style="border-radius:24px;background:var(--color-bg);padding:14px 16px;display:flex;align-items:center;gap:12px">
+    <div style="flex:1"><div style="font:700 12.5px var(--font-body)">Fundort privat speichern</div><div style="font:400 10.5px/1.4 var(--font-body);color:var(--color-neutral-700)">nur grobe Position · nie öffentlich · jederzeit löschbar</div></div>
+    <span style="display:flex;align-items:center;width:46px;height:26px;border-radius:999px;background:var(--color-accent-2-600);padding:3px;flex:none;justify-content:flex-end"><span style="display:block;width:20px;height:20px;border-radius:999px;background:var(--color-neutral-100)"></span></span>
+  </div>
+  <div style="border-radius:24px;border:1px dashed var(--color-neutral-400);padding:13px 15px;display:flex;gap:10px"><span style="display:block;width:8px;height:8px;border-radius:999px;background:var(--color-accent);margin-top:4px;flex:none"></span><div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-700)">Kein Netz? Fotos werden lokal gespeichert und beim nächsten WLAN abgeglichen.</div></div>
+  <div style="margin-top:auto;padding-bottom:14px"><span class="btn btn-primary btn-block" style="border-radius:999px;padding:14px 16px;margin:0;font-size:15px">Kamera öffnen</span></div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1m"><div class="dv-olabel"><a class="dv-oid" href="#1m">1m</a>Kamera &amp; Aufnahmehilfe</div>
+<div data-screen-label="Kamera" style="width:390px;height:844px;background:var(--color-accent-2-900);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body);color:var(--color-neutral-100)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-600)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px 12px"><span style="padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-100)">← Waldmeister finden</span><span style="padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-100)">Hilfe</span></div>
+<div style="position:relative;height:392px;margin:0 20px;border-radius:28px;background:repeating-linear-gradient(135deg,var(--color-accent-2-800) 0 14px,var(--color-accent-2-700) 14px 28px);overflow:hidden;display:flex;align-items:center;justify-content:center">
+  <span style="position:absolute;left:44px;top:60px;width:44px;height:44px;border-left:4px solid var(--color-neutral-100);border-top:4px solid var(--color-neutral-100);border-radius:16px 0 0 0"></span>
+  <span style="position:absolute;right:44px;top:60px;width:44px;height:44px;border-right:4px solid var(--color-neutral-100);border-top:4px solid var(--color-neutral-100);border-radius:0 16px 0 0"></span>
+  <span style="position:absolute;left:44px;bottom:60px;width:44px;height:44px;border-left:4px solid var(--color-neutral-100);border-bottom:4px solid var(--color-neutral-100);border-radius:0 0 0 16px"></span>
+  <span style="position:absolute;right:44px;bottom:60px;width:44px;height:44px;border-right:4px solid var(--color-neutral-100);border-bottom:4px solid var(--color-neutral-100);border-radius:0 0 16px 0"></span>
+  <span style="font:500 10px ui-monospace,Menlo,monospace;color:var(--color-neutral-200);background:color-mix(in srgb,var(--color-accent-2-900) 60%,transparent);padding:6px 10px;border-radius:999px">kamerabild · live</span>
+  <span style="position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;background:var(--color-accent-2-200);font:700 11px var(--font-body);color:var(--color-accent-2-900);white-space:nowrap"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent-2-700)"></span>Blattquirl gut sichtbar</span>
+</div>
+<div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-400)">Organ wählen</span><span style="font:600 11px var(--font-body);color:var(--color-neutral-300)">Aufnahme 1 von 5</span></div>
+  <div style="display:flex;gap:8px"><span style="padding:9px 15px;border-radius:999px;background:var(--color-neutral-100);font:700 11.5px var(--font-body);color:var(--color-accent-2-900)">Gesamt</span><span style="padding:9px 15px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-200)">Blüte</span><span style="padding:9px 15px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-200)">Blatt</span><span style="padding:9px 15px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-200)">Stängel</span></div>
+  <div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-neutral-300)">Ein Organ pro Bild, Hintergrund ruhig halten, Schatten meiden. Mehr Organe heißt sichereres Ergebnis.</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px">
+    <span style="display:block;width:48px;height:48px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-700) 0 7px,var(--color-accent-2-600) 7px 14px)"></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:74px;height:74px;border-radius:999px;background:var(--color-neutral-100);border:5px solid color-mix(in srgb,var(--color-neutral-100) 30%,transparent)"><span style="display:block;width:54px;height:54px;border-radius:999px;background:var(--color-accent)"></span></span>
+    <span style="padding:10px 14px;border-radius:999px;background:color-mix(in srgb,var(--color-neutral-100) 14%,transparent);font:700 11.5px var(--font-body);color:var(--color-neutral-100)">Fertig</span>
+  </div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1n"><div class="dv-olabel"><a class="dv-oid" href="#1n">1n</a>Identifikation läuft</div>
+<div data-screen-label="Identifikation laeuft" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:14px">
+  <div style="display:flex;align-items:center;justify-content:space-between"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body)">←</span><span style="font:400 16px/1 var(--font-heading)">Nachweis</span><span style="width:32px"></span></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:26px 0 8px">
+    <span style="display:flex;align-items:center;justify-content:center;width:150px;height:150px;border-radius:999px;background:var(--color-accent-2-200)"><span style="display:flex;align-items:center;justify-content:center;width:106px;height:106px;border-radius:999px;background:var(--color-accent-2-300)"><span style="display:block;width:62px;height:62px;border-radius:999px;background:var(--color-accent-2-600)"></span></span></span>
+    <div style="text-align:center"><div style="font:400 25px/1.1 var(--font-heading)">Abgleich läuft</div><div style="font:400 12.5px/1.5 var(--font-body);color:var(--color-neutral-700);margin-top:6px;max-width:250px">Deine 3 Bilder werden mit PlantNet verglichen. Das dauert meist unter einer Minute.</div></div>
+  </div>
+  <div style="border-radius:24px;background:var(--color-bg);padding:15px 16px;display:flex;flex-direction:column;gap:11px">
+    <div style="display:flex;align-items:center;gap:11px"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:var(--color-accent-2-600);font:700 11px var(--font-body);color:var(--color-neutral-100);flex:none">✓</span><span style="font:600 12px var(--font-body);flex:1">Bilder lokal gesichert</span></div>
+    <div style="display:flex;align-items:center;gap:11px"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:var(--color-accent);font:700 11px var(--font-body);color:var(--color-bg);flex:none">•</span><span style="font:600 12px var(--font-body);flex:1">Auftrag an Bestimmung übergeben</span><span style="font:600 10.5px var(--font-body);color:var(--color-accent-700)">läuft</span></div>
+    <div style="display:flex;align-items:center;gap:11px;opacity:.6"><span style="display:block;width:22px;height:22px;border-radius:999px;border:2px solid var(--color-neutral-500);flex:none"></span><span style="font:600 12px var(--font-body);flex:1">Ergebnis mit Zielart vergleichen</span></div>
+  </div>
+  <div style="border-radius:24px;background:var(--color-accent-200);padding:14px 16px;display:flex;gap:11px"><span style="display:block;width:8px;height:8px;border-radius:999px;background:var(--color-accent-700);margin-top:5px;flex:none"></span><div style="font:400 11.5px/1.45 var(--font-body);color:var(--color-accent-900)"><strong style="font-weight:700">1 Auftrag in der Warteschlange.</strong> Du kannst die App schließen — das Ergebnis wartet hier auf dich.</div></div>
+  <div style="margin-top:auto;padding-bottom:14px;display:flex;flex-direction:column;gap:9px"><span class="btn btn-secondary btn-block" style="border-radius:999px;padding:13px 16px;margin:0">Später ansehen</span><span style="text-align:center;font:400 11px var(--font-body);color:var(--color-neutral-600)">Offline gespeichert · Sync bei nächster Verbindung</span></div>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1o"><div class="dv-olabel"><a class="dv-oid" href="#1o">1o</a>Identifikationsergebnis</div>
+<div data-screen-label="Ergebnis" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:12px">
+  <div style="display:flex;align-items:center;justify-content:space-between"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body)">←</span><span style="font:400 16px/1 var(--font-heading)">Ergebnis</span><span style="width:32px"></span></div>
+  <div style="border-radius:28px;background:var(--color-accent-2-800);padding:18px;display:flex;gap:15px;align-items:center">
+    <span style="display:block;width:78px;height:78px;border-radius:24px;flex:none;background:repeating-linear-gradient(135deg,var(--color-accent-2-600) 0 8px,var(--color-accent-2-700) 8px 16px)"></span>
+    <div style="flex:1"><div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-2-300)">Zielart bestätigt</div><div style="font:400 22px/1.1 var(--font-heading);color:var(--color-neutral-100);margin-top:3px">Waldmeister</div><div style="display:flex;align-items:center;gap:8px;margin-top:7px"><span style="font:400 24px/1 var(--font-heading);color:var(--color-accent-300)">87 %</span><span style="font:600 10.5px/1.3 var(--font-body);color:var(--color-accent-2-300)">Übereinstimmung<br>der Bestimmung</span></div></div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-100);border:1px solid var(--color-accent-300);padding:13px 15px;font:400 11.5px/1.5 var(--font-body);color:var(--color-accent-900)">Ein Wert ist keine botanische Gewissheit. Prüfe die Merkmale selbst, bevor du den Fund speicherst.</div>
+  <div>
+    <div style="font:400 17px/1 var(--font-heading);margin-bottom:9px">Kandidaten</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="border-radius:20px;background:var(--color-bg);padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:700 12.5px var(--font-body)">Galium odoratum</span><span style="font:700 12.5px var(--font-body);color:var(--color-accent-2-700)">87 %</span></div>
+        <div style="height:7px;border-radius:999px;background:var(--color-neutral-300);margin-top:7px;overflow:hidden"><span style="display:block;width:87%;height:100%;background:var(--color-accent-2-600)"></span></div>
+      </div>
+      <div style="border-radius:20px;background:var(--color-bg);padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:700 12.5px var(--font-body)">Galium aparine</span><span style="font:700 12.5px var(--font-body);color:var(--color-neutral-700)">9 %</span></div>
+        <div style="height:7px;border-radius:999px;background:var(--color-neutral-300);margin-top:7px;overflow:hidden"><span style="display:block;width:9%;height:100%;background:var(--color-neutral-500)"></span></div>
+      </div>
+      <div style="border-radius:20px;background:var(--color-bg);padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:700 12.5px var(--font-body)">Galium mollugo</span><span style="font:700 12.5px var(--font-body);color:var(--color-neutral-700)">4 %</span></div>
+        <div style="height:7px;border-radius:999px;background:var(--color-neutral-300);margin-top:7px;overflow:hidden"><span style="display:block;width:4%;height:100%;background:var(--color-neutral-500)"></span></div>
+      </div>
+    </div>
+  </div>
+  <div style="border-radius:20px;background:var(--color-accent-2-200);padding:13px 15px;display:flex;align-items:center;gap:11px"><span style="display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;background:var(--color-accent-2-700);font:700 12px var(--font-body);color:var(--color-neutral-100);flex:none">✓</span><div style="font:600 11.5px/1.4 var(--font-body);color:var(--color-accent-2-900)">Feldaufgabe erfüllt — Level 1 kann abgeschlossen werden.</div></div>
+  <div style="margin-top:auto;padding-bottom:20px;display:flex;flex-direction:column;gap:9px"><span class="btn btn-primary btn-block" style="border-radius:999px;padding:13px 16px;margin:0">Im Herbarium speichern</span><span class="btn btn-secondary btn-block" style="border-radius:999px;padding:13px 16px;margin:0">Neu fotografieren</span></div>
+</div>
+</div></div>
+
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><p class="dv-note">Die Expedition ist der Belohnungsbogen: klare Zielart mit Merkmals-Checkliste, Kamera mit Organwahl statt Blindschuss, ehrliche Unsicherheit im Ergebnis. Wartezeit und Offline-Queue sind eigene Zustände, damit der Fund im Feld nie verloren geht.</p></sc-if>
+
+<p class="dv-grouplabel">Sammlung &amp; Erfolge</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1p"><div class="dv-olabel"><a class="dv-oid" href="#1p">1p</a>Herbarium</div>
+<div data-screen-label="Herbarium" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:12px">
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Mein Herbarium</div><div style="display:flex;align-items:baseline;gap:9px;margin-top:3px"><span style="font:400 34px/1 var(--font-heading)">18</span><span style="font:400 16px/1 var(--font-heading);color:var(--color-neutral-600)">von 75 Funden</span></div></div>
+  <div style="height:8px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:24%;height:100%;background:var(--color-accent-2-600)"></span></div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap"><span class="tag tag-accent" style="border-radius:999px">Alle</span><span class="tag tag-outline" style="border-radius:999px">Wald 12</span><span class="tag tag-outline" style="border-radius:999px">Wiese 6</span><span class="tag tag-outline" style="border-radius:999px">Diesen Monat</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="border-radius:22px;background:var(--color-bg);padding:9px;box-shadow:var(--shadow-sm)"><span style="display:block;height:96px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 8px,var(--color-accent-2-300) 8px 16px)"></span><div style="padding:8px 4px 3px"><div style="font:700 12px var(--font-body)">Waldmeister</div><div style="font:400 10px var(--font-body);color:var(--color-neutral-700)">18. Mai · 87 %</div></div></div>
+    <div style="border-radius:22px;background:var(--color-bg);padding:9px;box-shadow:var(--shadow-sm)"><span style="display:block;height:96px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 8px,var(--color-accent-2-300) 8px 16px)"></span><div style="padding:8px 4px 3px"><div style="font:700 12px var(--font-body)">Bärlauch</div><div style="font:400 10px var(--font-body);color:var(--color-neutral-700)">2. Mai · 94 %</div></div></div>
+    <div style="border-radius:22px;background:var(--color-bg);padding:9px;box-shadow:var(--shadow-sm)"><span style="display:block;height:96px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 8px,var(--color-accent-2-300) 8px 16px)"></span><div style="padding:8px 4px 3px"><div style="font:700 12px var(--font-body)">Wiesen-Salbei</div><div style="font:400 10px var(--font-body);color:var(--color-accent-700)">offline · nicht synchron</div></div></div>
+    <div style="border-radius:22px;background:var(--color-bg);padding:9px;box-shadow:var(--shadow-sm)"><span style="display:block;height:96px;border-radius:16px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 8px,var(--color-accent-2-300) 8px 16px)"></span><div style="padding:8px 4px 3px"><div style="font:700 12px var(--font-body)">Buche</div><div style="font:400 10px var(--font-body);color:var(--color-neutral-700)">28. April · 91 %</div></div></div>
+    <div style="border-radius:22px;border:1px dashed var(--color-neutral-400);padding:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;height:151px;gap:8px"><span style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:999px;background:var(--color-accent-200);font:400 19px var(--font-body);color:var(--color-accent-800)">+</span><span style="font:600 10.5px/1.4 var(--font-body);color:var(--color-neutral-700);text-align:center">Nächster Fund<br>wartet im Wald</span></div>
+    <div style="border-radius:22px;background:var(--color-neutral-200);padding:9px;display:flex;align-items:center;justify-content:center;height:151px"><span style="font:500 10px ui-monospace,Menlo,monospace;color:var(--color-neutral-700);text-align:center">57 Plätze<br>frei</span></div>
+  </div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1q"><div class="dv-olabel"><a class="dv-oid" href="#1q">1q</a>Herbariumdetail</div>
+<div data-screen-label="Herbariumdetail" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 22px 8px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:400 15px var(--font-body)">←</span><span style="font:400 16px/1 var(--font-heading)">Fund 18</span><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;background:var(--color-bg);font:700 13px var(--font-body)">⋯</span></div>
+<div style="flex:1;overflow:hidden;padding:0 22px;display:flex;flex-direction:column;gap:12px">
+  <div style="height:186px;border-radius:26px;background:repeating-linear-gradient(135deg,var(--color-accent-2-200) 0 11px,var(--color-accent-2-300) 11px 22px);display:flex;align-items:flex-start;justify-content:flex-end;padding:12px"><span style="display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--color-neutral-100);font:700 10.5px var(--font-body);color:var(--color-accent-2-800)"><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-accent-2-600)"></span>bestätigt</span></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font:400 25px/1.05 var(--font-heading)">Waldmeister</div><div style="font:400 12px var(--font-body);font-style:italic;color:var(--color-neutral-600)">Galium odoratum</div></div><span style="font:600 11.5px var(--font-body);color:var(--color-neutral-700)">18. Mai 2026</span></div>
+  <div style="border-radius:22px;background:var(--color-bg);padding:14px 15px;display:flex;align-items:center;gap:13px">
+    <div style="flex:1"><div style="font:700 10px var(--font-body);letter-spacing:.11em;text-transform:uppercase;color:var(--color-accent-2-700)">Bestimmung</div><div style="font:700 12.5px var(--font-body);margin-top:2px">Zielart stimmt überein</div><div style="font:400 10.5px var(--font-body);color:var(--color-neutral-700)">Ergebnis nachvollziehbar gespeichert</div></div>
+    <span style="font:400 26px/1 var(--font-heading);color:var(--color-accent-2-700)">87 %</span>
+  </div>
+  <div style="border-radius:22px;background:var(--color-accent-2-200);padding:14px 15px;display:flex;align-items:center;gap:12px">
+    <span style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;background:var(--color-accent-2-600);flex:none"><span style="display:block;width:11px;height:11px;border-radius:999px;background:var(--color-neutral-100)"></span></span>
+    <div style="flex:1"><div style="font:700 12px var(--font-body);color:var(--color-accent-2-900)">Ulm · Waldgebiet</div><div style="font:400 10.5px var(--font-body);color:var(--color-accent-2-800)">grobe Position · nur für dich sichtbar</div></div>
+  </div>
+  <div style="border-radius:22px;background:var(--color-bg);padding:14px 15px"><div style="font:700 12px var(--font-body);margin-bottom:4px">Meine Notiz</div><div style="font:400 11.5px/1.5 var(--font-body);color:var(--color-neutral-800)">Unter Buchen am schattigen Wegrand, gleich neben Sauerklee gefunden.</div></div>
+  <div style="border-radius:22px;background:var(--color-bg);padding:4px 15px">
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font:400 11.5px var(--font-body)"><span style="color:var(--color-neutral-700)">Bilder</span><span style="font-weight:700">3 Organe</span></div>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--color-divider);font:400 11.5px var(--font-body)"><span style="color:var(--color-neutral-700)">Level</span><span style="font-weight:700">Wald · Level 1</span></div>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;font:400 11.5px var(--font-body)"><span style="color:var(--color-neutral-700)">Synchronisiert</span><span style="font-weight:700">18. Mai, 14:22</span></div>
+  </div>
+  <div style="margin-top:auto;padding-bottom:14px;display:flex;gap:9px"><span class="btn btn-secondary" style="flex:1;border-radius:999px;padding:12px 16px">Exportieren</span><span class="btn btn-secondary" style="flex:1;border-radius:999px;padding:12px 16px;color:var(--color-accent-700)">Fund löschen</span></div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Profil</span></span>
+</div>
+</div></div>
+
+<div class="dv-opt" id="1r"><div class="dv-olabel"><a class="dv-oid" href="#1r">1r</a>Fortschritt &amp; Erfolge</div>
+<div data-screen-label="Fortschritt" style="width:390px;height:844px;background:var(--color-neutral-100);border-radius:40px;box-shadow:var(--shadow-md);overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font:700 12px/1 var(--font-body)"><span>09:41</span><span style="display:flex;gap:4px;align-items:center"><span style="display:block;width:14px;height:7px;border-radius:999px;background:var(--color-neutral-500)"></span><span style="display:block;width:7px;height:7px;border-radius:999px;background:var(--color-neutral-400)"></span></span></div>
+<div style="flex:1;overflow:hidden;padding:10px 22px 0;display:flex;flex-direction:column;gap:13px">
+  <div><div style="font:700 10px var(--font-body);letter-spacing:.13em;text-transform:uppercase;color:var(--color-accent-2-700)">Dein Stand</div><div style="font:400 27px/1.1 var(--font-heading);margin-top:3px">Forschungsreise</div></div>
+  <div style="border-radius:24px;background:var(--color-accent-2-800);padding:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 11px var(--font-body);color:var(--color-accent-2-300)">Lernserie</span><span style="font:400 19px/1 var(--font-heading);color:var(--color-neutral-100)">7 Tage</span></div>
+    <div style="display:flex;gap:6px;margin-top:12px">
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent-2-500)"></span>
+      <span style="flex:1;height:34px;border-radius:12px;background:var(--color-accent)"></span>
+    </div>
+    <div style="font:400 10.5px var(--font-body);color:var(--color-accent-2-300);margin-top:9px">Heute schon gelernt — morgen hältst du die Serie mit 5 Minuten.</div>
+  </div>
+  <div>
+    <div style="font:400 17px/1 var(--font-heading);margin-bottom:9px">Arten je Ökosystem</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div><div style="display:flex;justify-content:space-between;font:600 11px var(--font-body);margin-bottom:5px"><span>Wald</span><span style="color:var(--color-neutral-700)">12 / 25</span></div><div style="height:9px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:48%;height:100%;background:var(--color-accent-2-600)"></span></div></div>
+      <div><div style="display:flex;justify-content:space-between;font:600 11px var(--font-body);margin-bottom:5px"><span>Wiese</span><span style="color:var(--color-neutral-700)">6 / 25</span></div><div style="height:9px;border-radius:999px;background:var(--color-neutral-300);overflow:hidden"><span style="display:block;width:24%;height:100%;background:var(--color-accent-500)"></span></div></div>
+      <div><div style="display:flex;justify-content:space-between;font:600 11px var(--font-body);margin-bottom:5px"><span>Gewässer</span><span style="color:var(--color-neutral-700)">gesperrt</span></div><div style="height:9px;border-radius:999px;background:var(--color-neutral-300)"></div></div>
+    </div>
+  </div>
+  <div>
+    <div style="font:400 17px/1 var(--font-heading);margin-bottom:9px">Abzeichen</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px">
+      <div style="border-radius:20px;background:var(--color-bg);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-accent-2-600);border:3px solid var(--color-accent-2-300)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">Baumkenner:in</span></div>
+      <div style="border-radius:20px;background:var(--color-bg);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-accent);border:3px solid var(--color-accent-200)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">7 Tage Serie</span></div>
+      <div style="border-radius:20px;background:var(--color-bg);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-accent-2-600);border:3px solid var(--color-accent-2-300)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">Erster Fund</span></div>
+      <div style="border-radius:20px;background:var(--color-neutral-200);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.65"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-neutral-300);border:3px solid var(--color-neutral-400)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">25 Arten</span></div>
+      <div style="border-radius:20px;background:var(--color-neutral-200);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.65"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-neutral-300);border:3px solid var(--color-neutral-400)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">Wiese Level 1</span></div>
+      <div style="border-radius:20px;background:var(--color-neutral-200);padding:11px 8px;display:flex;flex-direction:column;align-items:center;gap:7px;opacity:.65"><span style="display:block;width:36px;height:36px;border-radius:999px;background:var(--color-neutral-300);border:3px solid var(--color-neutral-400)"></span><span style="font:700 9.5px/1.3 var(--font-body);text-align:center">5 Funde</span></div>
+    </div>
+  </div>
+  <div style="border-radius:24px;border:1px dashed var(--color-accent-400);padding:14px 15px;display:flex;align-items:center;gap:12px"><span style="display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:999px;background:var(--color-accent-200);font:400 16px var(--font-heading);color:var(--color-accent-800);flex:none">✦</span><div style="flex:1"><div style="font:700 12px var(--font-body)">Zertifikat „Feldforscher:in Wald“</div><div style="font:400 10.5px var(--font-body);color:var(--color-neutral-700)">verfügbar nach Level 3 · als PDF für die Hochschule</div></div></div>
+</div>
+<div style="display:flex;padding:12px 10px 22px;border-top:1px solid var(--color-divider)">
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Home</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Lernen</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Expedition</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-neutral-300)"></span><span style="font:600 10px var(--font-body);color:var(--color-neutral-600)">Herbarium</span></span>
+  <span style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:block;width:24px;height:8px;border-radius:999px;background:var(--color-accent)"></span><span style="font:700 10px var(--font-body);color:var(--color-accent-700)">Profil</span></span>
+</div>
+</div></div>
+
+</div>
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}"><p class="dv-note">Erfolge bleiben persönlich: Serie, Abzeichen, Sammlungsvollständigkeit und Zertifikat — keine Rangliste, kein öffentlicher Feed. Die leeren Plätze im Herbarium <a class="dv-oid" href="#1p">1p</a> sind absichtlich sichtbar; sie sind der stärkste Zug zur nächsten Expedition.</p></sc-if>
+
+<p class="dv-next">Nächste Schritte: „<a class="dv-oid" href="#1a">1a</a> als Leitrichtung festlegen und die anderen Home-Varianten verwerfen“ · „Gate-Zustände aus <a class="dv-oid" href="#1e">1e</a> in alle Screens ziehen“ · „Onboarding, Login und Downloads/Sync ergänzen“ · „Fehler-, Leer- und Offline-Zustände je Screen zeichnen“</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;learnerName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Alex&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Inhalt&quot;},&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Präsentation&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      learnerName: this.props.learnerName ?? "Alex",
+      showNotes: this.props.showNotes ?? true,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
