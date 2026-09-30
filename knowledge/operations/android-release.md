@@ -20,6 +20,8 @@ flutter build apk --release --target-platform android-arm64,android-arm \
   --dart-define=PLANTINI_OIDC_CLIENT_ID=plantini-mobile-production
 ```
 
+Hinweise: `compileSdk` ist 37 (zwei Plugins verlangen es; AGP 9.1 empfiehlt 36, deshalb `android.suppressUnsupportedCompileSdk=37` in `gradle.properties`); `minSdk` 24 (Android 7), `targetSdk` 36. Bricht der Build mit `package dev.flutter.plugins.integration_test does not exist` ab, liegt eine veraltete, in Debug erzeugte `GeneratedPluginRegistrant.java` im Checkout: Datei löschen, der Build erzeugt sie neu.
+
 Prüfen: `apksigner verify --print-certs`, `aapt2 dump badging` (Paket `eu.plantini.app`, Berechtigungen), Größe. Neue Releases brauchen einen höheren `versionCode` (Teil nach `+` in `pubspec.yaml`).
 
 ## Veröffentlichen
@@ -29,6 +31,10 @@ APK nach `/opt/plantini/downloads/plantini.apk` auf dem Server kopieren (Caddy h
 ## Anmeldung und Keycloak
 
 Die App nutzt wie der Desktop den Loopback-Redirect `http://127.0.0.1:4000/` (`lib/auth/auth_platform_io.dart`) mit PKCE S256. Der Client `plantini-mobile-production` ist dafür freigeschaltet (Redirect genau diese Adresse, öffentlich, keine Direct-Access-Grants); `tools/scripts/build-production-realm.mjs` setzt das ebenfalls. Der Release-Build erlaubt nur HTTPS (`usesCleartextTraffic=false`; Debug-Builds dürfen HTTP für den lokalen Stack).
+
+## Stand der ersten Veröffentlichung
+
+Version 0.4.0 (Code 1), 67 MB (arm64 und armeabi-v7a), signiert mit dem Release-Schlüssel (SHA-256 des Zertifikats `03388f0f…a84ec`), Paket `eu.plantini.app`, Android ≥ 7, nur HTTPS. Veröffentlicht unter `https://plantini.eu/download/plantini.apk`, von dort heruntergeladen und gegen die veröffentlichte Prüfsumme und die Signatur geprüft.
 
 ## Nicht geprüft
 

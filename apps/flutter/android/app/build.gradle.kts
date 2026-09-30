@@ -17,7 +17,9 @@ val keyProperties = Properties().apply {
 
 android {
     namespace = "eu.plantini.app"
-    compileSdk = flutter.compileSdkVersion
+    // Plugins (flutter_secure_storage, permission_handler) require API 37. This only
+    // lets the code use newer APIs; targetSdk/minSdk stay with the Flutter defaults.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
