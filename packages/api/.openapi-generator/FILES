@@ -8,6 +8,8 @@ doc/AdminDashboard.md
 doc/AdminUser.md
 doc/AdminUserPage.md
 doc/AdministrativeJob.md
+doc/Character.md
+doc/CharacterPart.md
 doc/CollectionShare.md
 doc/CollectionStats.md
 doc/CompleteLevelAttemptRequest.md
@@ -82,6 +84,8 @@ lib/src/model/admin_dashboard.dart
 lib/src/model/admin_user.dart
 lib/src/model/admin_user_page.dart
 lib/src/model/administrative_job.dart
+lib/src/model/character.dart
+lib/src/model/character_part.dart
 lib/src/model/collection_share.dart
 lib/src/model/collection_stats.dart
 lib/src/model/complete_level_attempt_request.dart
@@ -140,6 +144,8 @@ test/admin_dashboard_test.dart
 test/admin_user_page_test.dart
 test/admin_user_test.dart
 test/administrative_job_test.dart
+test/character_part_test.dart
+test/character_test.dart
 test/collection_share_test.dart
 test/collection_stats_test.dart
 test/complete_level_attempt_request_test.dart

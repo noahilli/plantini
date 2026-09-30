@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/diagnostics/frame_stats.dart';
 import 'modular_forest_view.dart' show EcosystemWorld;
+import '../../../character/presentation/widgets/character_kit.dart';
 import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
@@ -116,9 +117,9 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<DayPhase>(
-      valueListenable: DayClock.phase,
-      builder: (context, phase, _) => _buildFor(context, phase),
+    return ListenableBuilder(
+      listenable: Listenable.merge([DayClock.phase, PlayerLook.spec]),
+      builder: (context, _) => _buildFor(context, DayClock.phase.value),
     );
   }
 
@@ -253,7 +254,7 @@ final class _MiniWorldPainter extends CustomPainter {
     }
     _retired.clear();
     final key =
-        '$asset|${lighting.phase.name}|${step.value}|${size.width.round()}x${size.height.round()}|'
+        '$asset|${lighting.phase.name}|${PlayerLook.cacheKey}|${step.value}|${size.width.round()}x${size.height.round()}|'
         '${asImage ? 'i${pixelRatio.toStringAsFixed(2)}' : 'p'}';
     var entry = _cache.remove(key); // re-insert below: most recent last
     if (entry == null) {
@@ -317,7 +318,7 @@ void _drawModel(
 ) {
   final fit = _Fit(module, yaw, size);
   final instances = <SceneInstance>[
-    for (final mesh in module.meshes)
+    for (final mesh in PlayerLook.meshesFor(module))
       // Level stations belong to the path view, not to a display piece.
       if (mesh.slot == null)
         SceneInstance(
@@ -373,7 +374,7 @@ final class _BakedCasePainter extends CustomPainter {
     }
     _retired.clear();
     final key =
-        '${world.asset}|${lighting.phase.name}|${yaw.toStringAsFixed(3)}|${size.width.round()}x${size.height.round()}|${pixelRatio.toStringAsFixed(2)}';
+        '${world.asset}|${lighting.phase.name}|${PlayerLook.cacheKey}|${yaw.toStringAsFixed(3)}|${size.width.round()}x${size.height.round()}|${pixelRatio.toStringAsFixed(2)}';
     var image = _images.remove(key);
     if (image == null) {
       if (_images.length >= _maxImages) {

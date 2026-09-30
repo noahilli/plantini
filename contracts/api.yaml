@@ -623,10 +623,34 @@ components:
         locale: {type: string, example: de-DE}
         roles: {type: array, items: {type: string, enum: [lernende, lehrende, inhaltsredaktion, botanisches_review, organisationsadministration, systemadministration]}}
         organisationId: {$ref: '#/components/schemas/Id'}
+        character: {$ref: '#/components/schemas/Character'}
+    CharacterPart:
+      type: object
+      additionalProperties: false
+      required: [style]
+      properties:
+        style: {type: string, maxLength: 20}
+        color: {type: string, pattern: '^#[0-9a-fA-F]{6}$', description: 'Required unless style is none.'}
+    Character:
+      type: object
+      description: The player's avatar as part choices and colours; the app assembles it from its character kit. Visible to the owner only.
+      additionalProperties: false
+      required: [v, gender, skin, top, bottom, shoes]
+      properties:
+        v: {type: integer, enum: [1]}
+        gender: {type: string, enum: [female, male, diverse]}
+        skin: {type: string, pattern: '^#[0-9a-fA-F]{6}$'}
+        hair: {$ref: '#/components/schemas/CharacterPart'}
+        hat: {$ref: '#/components/schemas/CharacterPart'}
+        glasses: {$ref: '#/components/schemas/CharacterPart'}
+        top: {$ref: '#/components/schemas/CharacterPart'}
+        bottom: {$ref: '#/components/schemas/CharacterPart'}
+        shoes: {$ref: '#/components/schemas/CharacterPart'}
+        backpack: {$ref: '#/components/schemas/CharacterPart'}
     UpdateProfileRequest:
       type: object
       additionalProperties: false
-      properties: {displayName: {type: string, minLength: 1, maxLength: 100}, locale: {type: string, maxLength: 35}}
+      properties: {displayName: {type: string, minLength: 1, maxLength: 100}, locale: {type: string, maxLength: 35}, character: {$ref: '#/components/schemas/Character'}}
     ContentManifest:
       type: object
       required: [version, releasedAt, schemaVersion, minimumAppVersion, packages]

@@ -31,5 +31,10 @@ void main() {
     test('to test the property `organisationId`', () async {
       // TODO
     });
+
+    // Character character
+    test('to test the property `character`', () async {
+      // TODO
+    });
   });
 }

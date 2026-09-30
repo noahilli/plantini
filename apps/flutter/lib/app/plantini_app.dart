@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../auth/auth_service.dart';
 import '../core/theme/app_theme.dart';
 import '../features/catalog/presentation/widgets/world_lighting.dart';
 import 'app_dependencies.dart';
@@ -31,13 +32,26 @@ final class _PlantiniAppState extends State<PlantiniApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // The ecosystems follow the time of day; pick it up after a pause.
-    if (state == AppLifecycleState.resumed) DayClock.refresh();
+    if (state == AppLifecycleState.resumed) {
+      DayClock.refresh();
+      if (widget.dependencies.auth.isAuthenticated) {
+        widget.dependencies.character?.sync();
+      }
+    }
   }
 
   void _checkAuthAndSync() {
-    if (widget.dependencies.auth.isAuthenticated && !_hasSynced) {
-      _hasSynced = true;
-      widget.dependencies.contentSync.syncRelease();
+    final character = widget.dependencies.character;
+    if (widget.dependencies.auth.isAuthenticated) {
+      character?.sync();
+      if (!_hasSynced) {
+        _hasSynced = true;
+        widget.dependencies.contentSync.syncRelease();
+      }
+    } else if (widget.dependencies.auth.state == AuthState.unauthenticated) {
+      // Another person may sign in on this device next.
+      character?.reset();
+      _hasSynced = false;
     }
   }
 

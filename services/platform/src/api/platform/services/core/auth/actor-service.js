@@ -49,12 +49,13 @@ class ActorService {
       displayName: profile.displayName,
       locale: profile.locale,
       organisationId: profile.organisationId || organisationId,
+      ...(profile.character ? { character: profile.character } : {}),
       roles,
     };
   }
 
   async updateProfile(actor, patch) {
-    if (!patch.displayName && !patch.locale) {
+    if (!patch.displayName && !patch.locale && !patch.character) {
       return actor;
     }
     const profile = await this.profileRepository.update(actor.id, patch);
@@ -62,6 +63,7 @@ class ActorService {
       ...actor,
       displayName: profile.displayName,
       locale: profile.locale,
+      ...(profile.character ? { character: profile.character } : {}),
     };
   }
 }

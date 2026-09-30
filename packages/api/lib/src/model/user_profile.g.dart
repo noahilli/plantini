@@ -98,6 +98,8 @@ class _$UserProfile extends UserProfile {
   final BuiltList<UserProfileRolesEnum> roles;
   @override
   final String? organisationId;
+  @override
+  final Character? character;
 
   factory _$UserProfile([void Function(UserProfileBuilder)? updates]) =>
       (UserProfileBuilder()..update(updates))._build();
@@ -107,7 +109,8 @@ class _$UserProfile extends UserProfile {
       required this.displayName,
       required this.locale,
       required this.roles,
-      this.organisationId})
+      this.organisationId,
+      this.character})
       : super._();
   @override
   UserProfile rebuild(void Function(UserProfileBuilder) updates) =>
@@ -124,7 +127,8 @@ class _$UserProfile extends UserProfile {
         displayName == other.displayName &&
         locale == other.locale &&
         roles == other.roles &&
-        organisationId == other.organisationId;
+        organisationId == other.organisationId &&
+        character == other.character;
   }
 
   @override
@@ -135,6 +139,7 @@ class _$UserProfile extends UserProfile {
     _$hash = $jc(_$hash, locale.hashCode);
     _$hash = $jc(_$hash, roles.hashCode);
     _$hash = $jc(_$hash, organisationId.hashCode);
+    _$hash = $jc(_$hash, character.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -146,7 +151,8 @@ class _$UserProfile extends UserProfile {
           ..add('displayName', displayName)
           ..add('locale', locale)
           ..add('roles', roles)
-          ..add('organisationId', organisationId))
+          ..add('organisationId', organisationId)
+          ..add('character', character))
         .toString();
   }
 }
@@ -176,6 +182,10 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
   set organisationId(String? organisationId) =>
       _$this._organisationId = organisationId;
 
+  CharacterBuilder? _character;
+  CharacterBuilder get character => _$this._character ??= CharacterBuilder();
+  set character(CharacterBuilder? character) => _$this._character = character;
+
   UserProfileBuilder() {
     UserProfile._defaults(this);
   }
@@ -188,6 +198,7 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
       _locale = $v.locale;
       _roles = $v.roles.toBuilder();
       _organisationId = $v.organisationId;
+      _character = $v.character?.toBuilder();
       _$v = null;
     }
     return this;
@@ -218,12 +229,16 @@ class UserProfileBuilder implements Builder<UserProfile, UserProfileBuilder> {
                 locale, r'UserProfile', 'locale'),
             roles: roles.build(),
             organisationId: organisationId,
+            character: _character?.build(),
           );
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'roles';
         roles.build();
+
+        _$failedField = 'character';
+        _character?.build();
       } catch (e) {
         throw BuiltValueNestedFieldError(
             r'UserProfile', _$failedField, e.toString());

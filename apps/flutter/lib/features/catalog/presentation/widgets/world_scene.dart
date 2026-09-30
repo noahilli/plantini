@@ -22,10 +22,16 @@ final class SceneProjection {
     required this.scale,
     required this.ox,
     required this.oy,
+    this.squash = .7,
+    this.lift = .85,
   }) : cosYaw = math.cos(yaw),
        sinYaw = math.sin(yaw);
 
   final double yaw, focus, scale, ox, oy;
+
+  /// Depth squash and lift per unit of height; the defaults give the level
+  /// path's oblique view, smaller `squash` looks more from the front.
+  final double squash, lift;
   final double cosYaw, sinYaw;
 }
 
@@ -100,8 +106,10 @@ abstract final class SceneBuilder {
         final yy = c[v * 3 + 1] + inst.dy - p.focus;
         final along = x * sin + yy * cos;
         px[v] = p.ox + (x * cos - yy * sin) * p.scale;
-        py[v] = p.oy - (along * .7 + z * .85) * p.scale;
-        pd[v] = along * .85 - z * .7;
+        py[v] = p.oy - (along * p.squash + z * p.lift) * p.scale;
+        // Distance along the view ray: perpendicular to the screen direction
+        // (squash, lift), i.e. .85 / .7 for the level path's oblique view.
+        pd[v] = along * p.lift - z * p.squash;
       }
       final t = mesh.triangles;
       final group = mesh.groundGroup * 65536.0;

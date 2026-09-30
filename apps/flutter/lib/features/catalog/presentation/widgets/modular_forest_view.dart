@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/diagnostics/frame_stats.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
+import '../../../character/presentation/widgets/character_kit.dart';
 import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
@@ -91,6 +92,7 @@ final class _ModularForestViewState extends State<ModularForestView>
     // frames, not on every tick: sway and water are slow, and a replayed
     // picture costs almost nothing.
     DayClock.phase.addListener(_dayChanged);
+    PlayerLook.spec.addListener(_dayChanged);
     _clock.addListener(() {
       final phase = (_clock.value * _phases).floor() % _phases;
       if (phase != _lastPhase) {
@@ -133,6 +135,7 @@ final class _ModularForestViewState extends State<ModularForestView>
   @override
   void dispose() {
     DayClock.phase.removeListener(_dayChanged);
+    PlayerLook.spec.removeListener(_dayChanged);
     _clock.dispose();
     _frames.dispose();
     _cache.dispose();
@@ -432,6 +435,7 @@ final class _ForestPainter extends CustomPainter {
       currentIndex,
       background,
       lighting.phase,
+      PlayerLook.cacheKey,
     );
     final picture = cache.obtain(key, phase, () => _record(size, phase));
     canvas.drawPicture(picture);
@@ -450,7 +454,7 @@ final class _ForestPainter extends CustomPainter {
       m <= math.min((levelCount / 6).ceil() - 1, center + 1);
       m++
     ) {
-      for (final mesh in module.meshes) {
+      for (final mesh in PlayerLook.meshesFor(module)) {
         if (mesh.slot != null && m * 6 + mesh.slot! >= levelCount) continue;
         if (mesh.motion == 'ranger' &&
             (currentIndex < 0 || currentIndex ~/ 6 != m)) {
@@ -474,11 +478,30 @@ final class _ForestPainter extends CustomPainter {
                 : 0,
           ),
         );
-        if (mesh.motion == 'tree' || mesh.motion == 'ranger') {
+        if (mesh.motion == 'tree') {
           final shadow = mesh.shadowFor(lighting);
           if (shadow != null) {
             instances.add(SceneInstance(shadow, dx: dx, dy: dy));
           }
+        }
+      }
+      // The player (or the default ranger) casts one shadow as a whole.
+      if (currentIndex >= 0 && currentIndex ~/ 6 == m) {
+        final player =
+            PlayerLook.shadow(lighting) ??
+            WorldMesh.shadowOf(
+              [
+                for (final mesh in module.meshes)
+                  if (mesh.motion == 'ranger') mesh,
+              ],
+              lighting,
+              'ranger',
+            );
+        final at = module.slots[currentIndex % 6];
+        if (player != null) {
+          instances.add(
+            SceneInstance(player, dx: at[0] + .65, dy: at[1] - .2 + m * 10),
+          );
         }
       }
     }

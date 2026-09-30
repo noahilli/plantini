@@ -13,5 +13,6 @@ Name | Type | Description | Notes
 **locale** | **String** |  |
 **roles** | **BuiltList&lt;String&gt;** |  |
 **organisationId** | **String** |  | [optional]
+**character** | [**Character**](Character.md) |  | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

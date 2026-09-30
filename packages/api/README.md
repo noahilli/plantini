@@ -119,6 +119,8 @@ Class | Method | HTTP request | Description
  - [AdminUser](doc/AdminUser.md)
  - [AdminUserPage](doc/AdminUserPage.md)
  - [AdministrativeJob](doc/AdministrativeJob.md)
+ - [Character](doc/Character.md)
+ - [CharacterPart](doc/CharacterPart.md)
  - [CollectionShare](doc/CollectionShare.md)
  - [CollectionStats](doc/CollectionStats.md)
  - [CompleteLevelAttemptRequest](doc/CompleteLevelAttemptRequest.md)

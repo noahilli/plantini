@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:openapi/src/model/character.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -13,6 +14,7 @@ part 'update_profile_request.g.dart';
 /// Properties:
 /// * [displayName]
 /// * [locale]
+/// * [character]
 @BuiltValue()
 abstract class UpdateProfileRequest
     implements Built<UpdateProfileRequest, UpdateProfileRequestBuilder> {
@@ -21,6 +23,9 @@ abstract class UpdateProfileRequest
 
   @BuiltValueField(wireName: r'locale')
   String? get locale;
+
+  @BuiltValueField(wireName: r'character')
+  Character? get character;
 
   UpdateProfileRequest._();
 
@@ -65,6 +70,13 @@ class _$UpdateProfileRequestSerializer
         specifiedType: const FullType(String),
       );
     }
+    if (object.character != null) {
+      yield r'character';
+      yield serializers.serialize(
+        object.character,
+        specifiedType: const FullType(Character),
+      );
+    }
   }
 
   @override
@@ -105,6 +117,14 @@ class _$UpdateProfileRequestSerializer
           ) as String?;
           if (valueDes == null) continue;
           result.locale = valueDes;
+          break;
+        case r'character':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(Character),
+          ) as Character?;
+          if (valueDes == null) continue;
+          result.character.replace(valueDes);
           break;
         default:
           unhandled.add(key);

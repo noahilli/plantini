@@ -16,5 +16,10 @@ void main() {
     test('to test the property `locale`', () async {
       // TODO
     });
+
+    // Character character
+    test('to test the property `character`', () async {
+      // TODO
+    });
   });
 }

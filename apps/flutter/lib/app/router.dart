@@ -12,6 +12,10 @@ import '../features/catalog/presentation/widgets/ecosystem_vitrine.dart';
 import '../features/catalog/presentation/widgets/world_lighting.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart'
     show EcosystemWorld;
+import '../features/character/application/character_store.dart';
+import '../features/character/presentation/character_creator_screen.dart';
+import '../features/character/presentation/widgets/character_kit.dart';
+import '../features/character/presentation/widgets/character_preview.dart';
 import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -22,7 +26,10 @@ import 'app_dependencies.dart';
 /// Creates the declarative [GoRouter] for Plantini.
 GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
   initialLocation: '/home',
-  refreshListenable: dependencies.auth,
+  refreshListenable: Listenable.merge([
+    dependencies.auth,
+    ?dependencies.character,
+  ]),
   redirect: (context, state) {
     final path = state.matchedLocation;
     if (dependencies.auth.state == AuthState.initializing) {
@@ -30,6 +37,17 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
     }
     if (!dependencies.auth.isAuthenticated) {
       return path == '/login' ? null : '/login';
+    }
+    final character = dependencies.character;
+    if (character != null) {
+      // The character is loaded right after login; the first login has none
+      // yet and starts in the creator.
+      if (character.status != CharacterStatus.ready) {
+        return path == '/boot' ? null : '/boot';
+      }
+      if (character.needsCreation) {
+        return path == '/character' ? null : '/character';
+      }
     }
     if (path == '/boot' || path == '/login') return '/home';
     return null;
@@ -40,6 +58,16 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => LoginScreen(auth: dependencies.auth),
+    ),
+
+    GoRoute(
+      path: '/character',
+      builder: (context, state) => CharacterCreatorScreen(
+        store: dependencies.character!,
+        returnTo: state.uri.queryParameters['from'] == 'profile'
+            ? '/profile'
+            : '/home',
+      ),
     ),
 
     // Main App Shell with Bottom Navigation (Lernen, Feld, Profil)
@@ -144,7 +172,10 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
         ),
         GoRoute(
           path: '/profile',
-          builder: (context, state) => ProfileScreen(auth: dependencies.auth),
+          builder: (context, state) => ProfileScreen(
+            auth: dependencies.auth,
+            character: dependencies.character,
+          ),
         ),
       ],
     ),
@@ -231,9 +262,10 @@ final class AppShell extends StatelessWidget {
 
 /// Placeholder screen for the user profile (Tab "Profil").
 final class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key, required this.auth});
+  const ProfileScreen({super.key, required this.auth, this.character});
 
   final AuthService auth;
+  final CharacterStore? character;
 
   @override
   Widget build(BuildContext context) {
@@ -268,18 +300,32 @@ final class ProfileScreen extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Image.asset(
-                          WorldArt.explorer,
-                          width: 80,
-                          height: 96,
-                          excludeFromSemantics: true,
+                        ListenableBuilder(
+                          listenable: PlayerLook.spec,
+                          builder: (context, _) {
+                            final spec = PlayerLook.spec.value;
+                            return SizedBox(
+                              width: 96,
+                              height: 120,
+                              child: spec == null
+                                  ? Image.asset(
+                                      WorldArt.explorer,
+                                      excludeFromSemantics: true,
+                                    )
+                                  : CharacterPreview(
+                                      spec: spec,
+                                      interactive: false,
+                                      borderRadius: 22,
+                                    ),
+                            );
+                          },
                         ),
                         const SizedBox(width: 14),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Plantini-Forscher:in',
                                 style: TextStyle(
                                   color: AppColors.neutral100,
@@ -287,14 +333,32 @@ final class ProfileScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              SizedBox(height: 3),
-                              Text(
+                              const SizedBox(height: 3),
+                              const Text(
                                 'Deine Funde bleiben privat.',
                                 style: TextStyle(
                                   color: AppColors.sage300,
                                   fontSize: 12,
                                 ),
                               ),
+                              if (character != null) ...[
+                                const SizedBox(height: 8),
+                                OutlinedButton.icon(
+                                  key: const ValueKey('profile-edit-character'),
+                                  onPressed: () =>
+                                      context.go('/character?from=profile'),
+                                  icon: const Icon(
+                                    Icons.face_retouching_natural,
+                                  ),
+                                  label: const Text('Charakter ändern'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.neutral100,
+                                    side: const BorderSide(
+                                      color: AppColors.sage300,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),

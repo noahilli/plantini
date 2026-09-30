@@ -152,40 +152,53 @@ final class WorldMesh {
 
   final _shadows = <DayPhase, WorldMesh?>{};
 
-  /// The silhouette this mesh throws on the ground for [lighting]: the convex
-  /// hull of its vertices projected along the light onto the ground plane, as
-  /// one translucent polygon (null while the sun is too low or the mesh flat).
-  /// Coordinates are local to the mesh; place it with the mesh's own offset.
-  WorldMesh? shadowFor(WorldLighting lighting) =>
-      _shadows.putIfAbsent(lighting.phase, () {
-        // Very low sun would throw endless shadows; cap the stretch.
-        final lz = math.max(lighting.toSun[2], .7);
-        final dx = lighting.toSun[0] / lz, dy = lighting.toSun[1] / lz;
-        final c = coords;
-        final pts = <List<double>>[];
-        for (var v = 0; v < vertexCount; v++) {
-          final z = math.max(c[v * 3 + 2], 0);
-          pts.add([c[v * 3] - z * dx, c[v * 3 + 1] - z * dy]);
-        }
-        final hull = _convexHull(pts);
-        if (hull.length < 3) return null;
-        final alpha = switch (lighting.phase) {
-          DayPhase.night => 0x22,
-          DayPhase.noon => 0x40,
-          _ => 0x3A,
-        };
-        return WorldMesh.synthetic(
-          name: '$name-shadow',
-          vertices: [
-            for (final p in hull) [p[0], p[1], .02],
-          ],
-          faces: [
-            for (var i = 1; i < hull.length - 1; i++) [0, i, i + 1],
-          ],
-          argb: (alpha << 24) | 0x1C2618,
-          motion: 'shadow',
-        );
-      });
+  /// The silhouette this mesh throws on the ground for [lighting], see
+  /// [shadowOf]. Coordinates are local to the mesh; place it with the mesh's
+  /// own offset.
+  WorldMesh? shadowFor(WorldLighting lighting) => _shadows.putIfAbsent(
+    lighting.phase,
+    () => shadowOf([this], lighting, name),
+  );
+
+  /// One translucent polygon: the convex hull of all vertices of [meshes]
+  /// projected along the light onto the ground plane. Null while the hull is
+  /// degenerate. Several meshes (a character) share ONE polygon, so their
+  /// shadows do not pile up into a darker patch.
+  static WorldMesh? shadowOf(
+    List<WorldMesh> meshes,
+    WorldLighting lighting,
+    String name,
+  ) {
+    // Very low sun would throw endless shadows; cap the stretch.
+    final lz = math.max(lighting.toSun[2], .7);
+    final dx = lighting.toSun[0] / lz, dy = lighting.toSun[1] / lz;
+    final pts = <List<double>>[];
+    for (final mesh in meshes) {
+      final c = mesh.coords;
+      for (var v = 0; v < mesh.vertexCount; v++) {
+        final z = math.max(c[v * 3 + 2], 0);
+        pts.add([c[v * 3] - z * dx, c[v * 3 + 1] - z * dy]);
+      }
+    }
+    final hull = _convexHull(pts);
+    if (hull.length < 3) return null;
+    final alpha = switch (lighting.phase) {
+      DayPhase.night => 0x22,
+      DayPhase.noon => 0x40,
+      _ => 0x3A,
+    };
+    return WorldMesh.synthetic(
+      name: '$name-shadow',
+      vertices: [
+        for (final p in hull) [p[0], p[1], .02],
+      ],
+      faces: [
+        for (var i = 1; i < hull.length - 1; i++) [0, i, i + 1],
+      ],
+      argb: (alpha << 24) | 0x1C2618,
+      motion: 'shadow',
+    );
+  }
 
   /// Draw-order group of the broad terrain planes: they go first, then props.
   /// Higher groups are painted earlier (same rule the path view always had).

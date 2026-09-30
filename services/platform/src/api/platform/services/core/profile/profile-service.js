@@ -1,6 +1,7 @@
 'use strict';
 
 const { invalidRequest } = require('../errors');
+const { validateCharacter } = require('./character-schema');
 const { optionalString, rejectUnknownFields, requirePlainObject } = require('../validation');
 
 class ProfileService {
@@ -21,18 +22,20 @@ class ProfileService {
 
 function validateProfilePatch(body) {
   const value = requirePlainObject(body);
-  rejectUnknownFields(value, ['displayName', 'locale']);
+  rejectUnknownFields(value, ['displayName', 'locale', 'character']);
   const displayName = optionalString(value.displayName, 'displayName', { min: 1, max: 100 });
   const locale = optionalString(value.locale, 'locale', { min: 2, max: 35 });
   if (locale && !/^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(locale)) {
     throw invalidRequest({ locale: 'Muss ein BCP-47-Sprachcode wie de-DE sein.' });
   }
-  if (!displayName && !locale) {
-    throw invalidRequest({ body: 'Mindestens displayName oder locale muss gesetzt sein.' });
+  const character = value.character === undefined ? undefined : validateCharacter(value.character);
+  if (!displayName && !locale && !character) {
+    throw invalidRequest({ body: 'Mindestens displayName, locale oder character muss gesetzt sein.' });
   }
   return {
     ...(displayName ? { displayName } : {}),
     ...(locale ? { locale } : {}),
+    ...(character ? { character } : {}),
   };
 }
 
@@ -42,6 +45,7 @@ function mapProfile(actor) {
     displayName: actor.displayName,
     locale: actor.locale,
     roles: actor.roles,
+    ...(actor.character ? { character: actor.character } : {}),
     ...(actor.organisationId ? { organisationId: actor.organisationId } : {}),
   };
 }

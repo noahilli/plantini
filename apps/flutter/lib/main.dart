@@ -15,6 +15,8 @@ import 'core/theme/app_theme.dart';
 import 'core/time/clock.dart';
 import 'features/catalog/presentation/widgets/world_lighting.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
+import 'features/character/application/character_store.dart';
+import 'features/character/infrastructure/http_character_repository.dart';
 import 'features/catalog/infrastructure/cached_catalog_repository.dart';
 import 'features/catalog/infrastructure/content_sync_factory.dart';
 import 'features/catalog/infrastructure/http_catalog_repository.dart';
@@ -125,6 +127,10 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       loadPlant: LoadPublishedPlant(catalog),
       ecosystemJourneys: HttpEcosystemJourneyRepository(api),
       insights: HttpInsightRepository(api),
+      character: CharacterStore(
+        repository: HttpCharacterRepository(api),
+        preferences: preferences,
+      ),
       learningSessions: LearningSessionService(
         repository: learningRepository,
         store: SharedPreferencesLearningSessionStore(preferences),

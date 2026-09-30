@@ -4,6 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:built_collection/built_collection.dart';
+import 'package:openapi/src/model/character.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -17,6 +18,7 @@ part 'user_profile.g.dart';
 /// * [locale]
 /// * [roles]
 /// * [organisationId]
+/// * [character]
 @BuiltValue()
 abstract class UserProfile implements Built<UserProfile, UserProfileBuilder> {
   @BuiltValueField(wireName: r'id')
@@ -34,6 +36,9 @@ abstract class UserProfile implements Built<UserProfile, UserProfileBuilder> {
 
   @BuiltValueField(wireName: r'organisationId')
   String? get organisationId;
+
+  @BuiltValueField(wireName: r'character')
+  Character? get character;
 
   UserProfile._();
 
@@ -84,6 +89,13 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
       yield serializers.serialize(
         object.organisationId,
         specifiedType: const FullType(String),
+      );
+    }
+    if (object.character != null) {
+      yield r'character';
+      yield serializers.serialize(
+        object.character,
+        specifiedType: const FullType(Character),
       );
     }
   }
@@ -147,6 +159,14 @@ class _$UserProfileSerializer implements PrimitiveSerializer<UserProfile> {
           ) as String?;
           if (valueDes == null) continue;
           result.organisationId = valueDes;
+          break;
+        case r'character':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(Character),
+          ) as Character?;
+          if (valueDes == null) continue;
+          result.character.replace(valueDes);
           break;
         default:
           unhandled.add(key);

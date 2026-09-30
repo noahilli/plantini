@@ -20,6 +20,8 @@ import 'package:openapi/src/model/admin_dashboard.dart';
 import 'package:openapi/src/model/admin_user.dart';
 import 'package:openapi/src/model/admin_user_page.dart';
 import 'package:openapi/src/model/administrative_job.dart';
+import 'package:openapi/src/model/character.dart';
+import 'package:openapi/src/model/character_part.dart';
 import 'package:openapi/src/model/collection_share.dart';
 import 'package:openapi/src/model/collection_stats.dart';
 import 'package:openapi/src/model/complete_level_attempt_request.dart';
@@ -79,6 +81,8 @@ part 'serializers.g.dart';
   AdminUser,
   AdminUserPage,
   AdministrativeJob,
+  Character,
+  CharacterPart,
   CollectionShare,
   CollectionStats,
   CompleteLevelAttemptRequest,

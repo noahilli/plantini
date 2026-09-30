@@ -80,6 +80,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/worlds/
+    - assets/characters/
     - assets/fonts/Caprasimo-OFL.txt
     - assets/fonts/Figtree-OFL.txt
 
