@@ -21,6 +21,10 @@ Besonders schützenswert sind Minderjährigenbezug, Identität, private Fotos, g
 
 Standort ist optional; Ablehnung blockiert Herbarium/Fotografie nicht. Genauigkeit kann reduziert werden. Exporte und geteilte Dateien entfernen/vergröbern GPS standardmäßig. Forschung ist von App-Nutzung getrennt und beginnt erst nach passender Rechtsgrundlage/Einwilligung.
 
+### Fundort in der API (seit 30.09.2026, `df8fcf7`)
+
+`GET/POST /observations` liefert der **besitzenden Person** ihren eigenen Fundort zurück (`location`, bereits auf dem Gerät vergröbert), damit die Herbarium-Karte auf jedem Gerät funktioniert. Andere Konten sehen weder Fund noch Ort (404). Vorher lieferte die API nie einen Ort zurück; der Test `field-herbarium.test.js` prüft jetzt `created.observation.location`. Kartenkacheln kommen über `GET /tiles/{z}/{x}/{y}` (Server-Cache, nur angemeldet), damit der Kachelanbieter weder IP noch angesehene Orte erfährt. Gemeinsame Artkarten und Sammelquoten enthalten **keine** Orte; Quoten erscheinen erst ab 20 Konten (Kleingruppenregel).
+
 ## Entwicklungsdaten
 
 Ausschließlich synthetische Konten, Bilder und Orte. Keine Produktionskopien in Dev/Staging. Screenshots und Traces werden vor Commit auf Namen, E-Mails, Tokens, GPS und Cookies geprüft.
