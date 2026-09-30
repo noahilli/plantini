@@ -29,6 +29,15 @@ void main() {
       // TODO
     });
 
+    // Map tile for the herbarium map
+    //
+    // OpenStreetMap tile, fetched and cached by the server so the app never contacts the tile provider. Requires a signed-in user (the endpoint is not an open proxy). Zoom 0-18.
+    //
+    //Future<Uint8List> getMapTile(int z, int x, int y) async
+    test('test getMapTile', () async {
+      // TODO
+    });
+
     // Read one caller-owned observation
     //
     //Future<Observation> getObservation(String observationId) async
@@ -51,6 +60,13 @@ void main() {
     //
     //Future<SpeciesCard> getSpeciesCard(String speciesKey) async
     test('test getSpeciesCard', () async {
+      // TODO
+    });
+
+    // Photo of a species card (server-side cached copy)
+    //
+    //Future<Uint8List> getSpeciesPhoto(String speciesKey, { String photoId }) async
+    test('test getSpeciesPhoto', () async {
       // TODO
     });
 

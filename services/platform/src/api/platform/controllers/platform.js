@@ -5,6 +5,7 @@ const { readFile } = require('fs/promises');
 const { asProblem, invalidRequest, ProblemError } = require('../services/core/errors');
 const { API_VERSION, applyResponseConventions } = require('../services/core/http-conventions');
 const { getPlatformRuntime, resolveActor } = require('../services/core/platform-runtime');
+const { TileProxy } = require('../services/core/content/tile-proxy');
 const { PrivateMediaStore } = require('../services/core/private-media-store');
 const { requireUuid } = require('../services/core/ids');
 const { rejectUnknownQuery } = require('../services/core/validation');
@@ -200,6 +201,47 @@ module.exports = {
       }
       ctx.type = resized ? 'image/jpeg' : (media.contentType || 'application/octet-stream');
       ctx.body = bytes;
+      return undefined;
+    });
+  },
+
+  async getMapTile(ctx) {
+    return withActor(ctx, async (runtime) => {
+      rejectUnknownQuery(ctx.query, []);
+      const tile = TileProxy.parse(ctx.params);
+      if (!tile) throw invalidRequest({ tile: 'Ungültige Kachelkoordinaten.' });
+      let bytes;
+      try {
+        bytes = await runtime.tiles.get(tile);
+      } catch {
+        throw new ProblemError('MAP_TILE_UNAVAILABLE', { status: 502, detail: 'Diese Kartenkachel ist gerade nicht verfügbar.' });
+      }
+      ctx.set('Cache-Control', 'private, max-age=604800');
+      ctx.set('X-Content-Type-Options', 'nosniff');
+      ctx.type = 'image/png';
+      ctx.body = bytes;
+      return undefined;
+    });
+  },
+
+  async getSpeciesPhoto(ctx) {
+    return withActor(ctx, async (runtime) => {
+      rejectUnknownQuery(ctx.query, ['photoId']);
+      const key = String(ctx.params.speciesKey || '');
+      if (!/^[a-z0-9-]{2,120}$/.test(key)) {
+        throw invalidRequest({ speciesKey: 'Ungültiger Artschlüssel.' });
+      }
+      const source = await runtime.species.getPhotoSource(key);
+      let photo;
+      try {
+        photo = await runtime.photoCache.get(source);
+      } catch {
+        throw new ProblemError('PHOTO_UNAVAILABLE', { status: 503, detail: 'Das Foto ist momentan nicht verfügbar.' });
+      }
+      ctx.set('Cache-Control', ctx.query.photoId ? 'private, max-age=31536000, immutable' : 'private, max-age=86400');
+      ctx.set('X-Content-Type-Options', 'nosniff');
+      ctx.type = photo.type;
+      ctx.body = photo.bytes;
       return undefined;
     });
   },

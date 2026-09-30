@@ -88,9 +88,11 @@ Class | Method | HTTP request | Description
 [*HerbariumApi*](doc/HerbariumApi.md) | [**createObservation**](doc/HerbariumApi.md#createobservation) | **POST** /observations | Create an idempotent private observation
 [*HerbariumApi*](doc/HerbariumApi.md) | [**deleteObservation**](doc/HerbariumApi.md#deleteobservation) | **DELETE** /observations/{observationId} | Create an observation tombstone
 [*HerbariumApi*](doc/HerbariumApi.md) | [**getCollectionStats**](doc/HerbariumApi.md#getcollectionstats) | **GET** /stats/collection | Share of accounts that collected each plant or species
+[*HerbariumApi*](doc/HerbariumApi.md) | [**getMapTile**](doc/HerbariumApi.md#getmaptile) | **GET** /tiles/{z}/{x}/{y} | Map tile for the herbarium map
 [*HerbariumApi*](doc/HerbariumApi.md) | [**getObservation**](doc/HerbariumApi.md#getobservation) | **GET** /observations/{observationId} | Read one caller-owned observation
 [*HerbariumApi*](doc/HerbariumApi.md) | [**getPrivateMediaContent**](doc/HerbariumApi.md#getprivatemediacontent) | **GET** /media/{mediaId}/content | Read one of the caller&#39;s own uploaded photos
 [*HerbariumApi*](doc/HerbariumApi.md) | [**getSpeciesCard**](doc/HerbariumApi.md#getspeciescard) | **GET** /species/{speciesKey} | Info card of a species found by users that is not part of any ecosystem
+[*HerbariumApi*](doc/HerbariumApi.md) | [**getSpeciesPhoto**](doc/HerbariumApi.md#getspeciesphoto) | **GET** /species/{speciesKey}/photo | Photo of a species card (server-side cached copy)
 [*HerbariumApi*](doc/HerbariumApi.md) | [**listObservations**](doc/HerbariumApi.md#listobservations) | **GET** /observations | List caller-owned herbarium observations
 [*HerbariumApi*](doc/HerbariumApi.md) | [**updateObservation**](doc/HerbariumApi.md#updateobservation) | **PATCH** /observations/{observationId} | Update an observation with optimistic concurrency
 [*LearningApi*](doc/LearningApi.md) | [**completeLevelAttempt**](doc/LearningApi.md#completelevelattempt) | **POST** /level-attempts/{attemptId}/complete | Complete an attempt with server-side scoring

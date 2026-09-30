@@ -31,11 +31,12 @@ class _AnalysisProgressState extends State<AnalysisProgress>
     'Hinweis: Vorschläge sind keine Garantie. Du entscheidest, was du speicherst.',
   ];
 
-  // Long but finite, so widget tests can settle; ~20 minutes of waiting.
+  // Finite (~2.5 minutes) so widget tests can settle; an identification
+  // normally takes a few seconds.
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2600),
-  )..repeat(count: 460);
+  )..repeat(count: 60);
   Timer? _tipTimer;
   int _tip = 0;
 
@@ -100,18 +101,21 @@ class _AnalysisProgressState extends State<AnalysisProgress>
             ),
           ),
           const SizedBox(height: 18),
-          _Steps(stage: stage),
+          _Steps(stage: stage, spin: _controller),
           const SizedBox(height: 22),
-          SizedBox(
-            height: 44,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 400),
-              child: Text(
-                _tips[_tip],
-                key: ValueKey(_tip),
-                textAlign: TextAlign.center,
-                style: AppTypography.textTheme.bodySmall?.copyWith(
-                  color: AppColors.neutral700,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: SizedBox(
+              height: 44,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: Text(
+                  _tips[_tip],
+                  key: ValueKey(_tip),
+                  textAlign: TextAlign.center,
+                  style: AppTypography.textTheme.bodySmall?.copyWith(
+                    color: AppColors.neutral700,
+                  ),
                 ),
               ),
             ),
@@ -238,9 +242,10 @@ class _RingPainter extends CustomPainter {
 }
 
 class _Steps extends StatelessWidget {
-  const _Steps({required this.stage});
+  const _Steps({required this.stage, required this.spin});
 
   final AnalysisStage stage;
+  final Animation<double> spin;
 
   @override
   Widget build(BuildContext context) {
@@ -268,10 +273,11 @@ class _Steps extends StatelessWidget {
                           color: AppColors.sage600,
                         )
                       : i == current
-                      ? const Padding(
-                          padding: EdgeInsets.all(3),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.4,
+                      ? RotationTransition(
+                          turns: spin,
+                          child: const Icon(
+                            Icons.autorenew_rounded,
+                            size: 20,
                             color: AppColors.terracotta,
                           ),
                         )

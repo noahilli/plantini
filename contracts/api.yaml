@@ -188,6 +188,21 @@ paths:
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '404': {$ref: '#/components/responses/NotFound'}
+  /tiles/{z}/{x}/{y}:
+    get:
+      summary: Map tile for the herbarium map
+      description: OpenStreetMap tile, fetched and cached by the server so the app never contacts the tile provider. Requires a signed-in user (the endpoint is not an open proxy). Zoom 0-18.
+      tags: [Herbarium]
+      operationId: getMapTile
+      parameters:
+        - {name: z, in: path, required: true, schema: {type: integer, minimum: 0, maximum: 18}}
+        - {name: x, in: path, required: true, schema: {type: integer, minimum: 0}}
+        - {name: y, in: path, required: true, schema: {type: integer, minimum: 0}}
+      responses:
+        '200': {description: PNG tile, content: {image/png: {schema: {type: string, format: binary}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '502': {description: The tile provider is unavailable and no cached copy exists, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
   /species/{speciesKey}:
     get:
       summary: Info card of a species found by users that is not part of any ecosystem
@@ -202,6 +217,23 @@ paths:
       responses:
         '200': {description: The species card, content: {application/json: {schema: {$ref: '#/components/schemas/SpeciesCard'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /species/{speciesKey}/photo:
+    get:
+      summary: Photo of a species card (server-side cached copy)
+      tags: [Herbarium]
+      operationId: getSpeciesPhoto
+      parameters:
+        - {name: speciesKey, in: path, required: true, schema: {type: string, pattern: '^[a-z0-9-]{2,120}$'}}
+        - {name: photoId, in: query, required: false, schema: {type: string, maxLength: 64}, description: Identifier from the card; makes the response immutable.}
+      responses:
+        '200':
+          description: The photo
+          content:
+            image/jpeg: {schema: {type: string, format: binary}}
+            image/png: {schema: {type: string, format: binary}}
+            image/webp: {schema: {type: string, format: binary}}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '404': {$ref: '#/components/responses/NotFound'}
   /stats/collection:

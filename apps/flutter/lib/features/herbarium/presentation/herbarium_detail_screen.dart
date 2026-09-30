@@ -5,6 +5,8 @@ import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../domain/herbarium_models.dart';
+import '../domain/insight_repository.dart';
+import 'widgets/find_insights.dart';
 
 final class _ObservationHero extends StatelessWidget {
   const _ObservationHero({required this.entry});
@@ -53,9 +55,11 @@ class HerbariumDetailScreen extends StatefulWidget {
     required this.entry,
     this.onDelete,
     this.onUpdateNote,
+    this.insights,
   });
 
   final HerbariumEntry entry;
+  final InsightRepository? insights;
   final Future<void> Function(HerbariumEntry entry)? onDelete;
   final Future<Result<HerbariumEntry>> Function(
     HerbariumEntry entry,
@@ -252,6 +256,9 @@ class _HerbariumDetailScreenState extends State<HerbariumDetailScreen> {
                     // Sync status banner (existing)
                     _SyncStatusBanner(entry: entry),
                     const SizedBox(height: 20),
+
+                    FindInsights(entry: entry, insights: widget.insights),
+                    if (widget.insights != null) const SizedBox(height: 20),
 
                     // PlantNet KI Result Card
                     if (hasPlantNetResult) ...[

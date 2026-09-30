@@ -46,10 +46,10 @@ final class ImageService {
   Future<Result<Uint8List>> load(String url, {bool authenticated = false}) {
     final hit = _touch(url);
     if (hit != null) return Future.value(Result.success(hit));
-    return _inFlight[url] ??= _fetch(
-      url,
-      authenticated,
-    ).whenComplete(() => _inFlight.remove(url));
+    return _inFlight[url] ??= _fetch(url, authenticated).whenComplete(() {
+      // A block body: returning the removed future would make it wait for itself.
+      _inFlight.remove(url);
+    });
   }
 
   Future<Result<Uint8List>> _fetch(String url, bool authenticated) async {

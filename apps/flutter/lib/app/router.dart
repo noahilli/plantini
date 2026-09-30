@@ -121,7 +121,10 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
                     description: 'Pflanzensteckbrief für ID: $plantId',
                     releaseVersion: '1.0.0',
                   );
-            return PlantDetailScreen(plant: plant);
+            return PlantDetailScreen(
+              plant: plant,
+              insights: dependencies.insights,
+            );
           },
         ),
         GoRoute(

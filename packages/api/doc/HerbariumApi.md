@@ -12,9 +12,11 @@ Method | HTTP request | Description
 [**createObservation**](HerbariumApi.md#createobservation) | **POST** /observations | Create an idempotent private observation
 [**deleteObservation**](HerbariumApi.md#deleteobservation) | **DELETE** /observations/{observationId} | Create an observation tombstone
 [**getCollectionStats**](HerbariumApi.md#getcollectionstats) | **GET** /stats/collection | Share of accounts that collected each plant or species
+[**getMapTile**](HerbariumApi.md#getmaptile) | **GET** /tiles/{z}/{x}/{y} | Map tile for the herbarium map
 [**getObservation**](HerbariumApi.md#getobservation) | **GET** /observations/{observationId} | Read one caller-owned observation
 [**getPrivateMediaContent**](HerbariumApi.md#getprivatemediacontent) | **GET** /media/{mediaId}/content | Read one of the caller&#39;s own uploaded photos
 [**getSpeciesCard**](HerbariumApi.md#getspeciescard) | **GET** /species/{speciesKey} | Info card of a species found by users that is not part of any ecosystem
+[**getSpeciesPhoto**](HerbariumApi.md#getspeciesphoto) | **GET** /species/{speciesKey}/photo | Photo of a species card (server-side cached copy)
 [**listObservations**](HerbariumApi.md#listobservations) | **GET** /observations | List caller-owned herbarium observations
 [**updateObservation**](HerbariumApi.md#updateobservation) | **PATCH** /observations/{observationId} | Update an observation with optimistic concurrency
 
@@ -140,6 +142,53 @@ This endpoint does not need any parameter.
 
  - **Content-Type**: Not defined
  - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getMapTile**
+> Uint8List getMapTile(z, x, y)
+
+Map tile for the herbarium map
+
+OpenStreetMap tile, fetched and cached by the server so the app never contacts the tile provider. Requires a signed-in user (the endpoint is not an open proxy). Zoom 0-18.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getHerbariumApi();
+final int z = 56; // int |
+final int x = 56; // int |
+final int y = 56; // int |
+
+try {
+    final response = api.getMapTile(z, x, y);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling HerbariumApi->getMapTile: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **z** | **int**|  |
+ **x** | **int**|  |
+ **y** | **int**|  |
+
+### Return type
+
+[**Uint8List**](Uint8List.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: image/png, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -269,6 +318,49 @@ Name | Type | Description  | Notes
 
  - **Content-Type**: Not defined
  - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getSpeciesPhoto**
+> Uint8List getSpeciesPhoto(speciesKey, photoId)
+
+Photo of a species card (server-side cached copy)
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getHerbariumApi();
+final String speciesKey = speciesKey_example; // String |
+final String photoId = photoId_example; // String | Identifier from the card; makes the response immutable.
+
+try {
+    final response = api.getSpeciesPhoto(speciesKey, photoId);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling HerbariumApi->getSpeciesPhoto: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **speciesKey** | **String**|  |
+ **photoId** | **String**| Identifier from the card; makes the response immutable. | [optional]
+
+### Return type
+
+[**Uint8List**](Uint8List.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: image/jpeg, image/png, image/webp, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

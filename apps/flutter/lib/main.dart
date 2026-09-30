@@ -25,6 +25,7 @@ import 'features/field/application/sync_queue_service.dart';
 import 'features/field/infrastructure/sync_queue_store_factory.dart';
 import 'features/herbarium/application/herbarium_use_cases.dart';
 import 'features/herbarium/infrastructure/http_herbarium_repository.dart';
+import 'features/herbarium/infrastructure/http_insight_repository.dart';
 import 'features/herbarium/infrastructure/offline_herbarium_repository.dart';
 import 'features/learning/application/learning_session_service.dart';
 import 'features/learning/infrastructure/http_learning_repository.dart';
@@ -109,6 +110,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       loadLevel: LoadPublishedLevel(catalog),
       loadPlant: LoadPublishedPlant(catalog),
       ecosystemJourneys: HttpEcosystemJourneyRepository(api),
+      insights: HttpInsightRepository(api),
       learningSessions: LearningSessionService(
         repository: learningRepository,
         store: SharedPreferencesLearningSessionStore(preferences),

@@ -14,6 +14,7 @@ import '../domain/herbarium_repository.dart';
 import '../infrastructure/local_herbarium_repository.dart';
 import 'herbarium_detail_screen.dart';
 import 'widgets/herbarium_list_view.dart';
+import 'widgets/herbarium_map_view.dart';
 import 'widgets/herbarium_bottle_collection.dart';
 import 'widgets/herbarium_search_filter_bar.dart';
 
@@ -61,6 +62,8 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
   SyncStatus? _selectedStatus;
   String? _entriesError;
   bool _showCollection = true;
+  bool _showMap = false;
+  bool _mapOpened = false;
 
   bool get _hasCatalog =>
       (widget.loadEcosystems ?? widget.dependencies?.loadEcosystems) != null &&
@@ -220,6 +223,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
                 await _handleDeleteEntry(item);
               },
               onUpdateNote: _handleUpdateNote,
+              insights: widget.dependencies?.insights,
             ),
           ),
         )
@@ -357,9 +361,11 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
                       child: ChoiceChip(
                         key: const ValueKey('herbarium-tab-collection'),
                         label: const Text('Sammlung'),
-                        selected: _showCollection,
-                        onSelected: (_) =>
-                            setState(() => _showCollection = true),
+                        selected: _showCollection && !_showMap,
+                        onSelected: (_) => setState(() {
+                          _showCollection = true;
+                          _showMap = false;
+                        }),
                         showCheckmark: false,
                         labelStyle: const TextStyle(
                           fontWeight: FontWeight.w700,
@@ -371,9 +377,27 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
                       child: ChoiceChip(
                         key: const ValueKey('herbarium-tab-observations'),
                         label: const Text('Beobachtungen'),
-                        selected: !_showCollection,
-                        onSelected: (_) =>
-                            setState(() => _showCollection = false),
+                        selected: !_showCollection && !_showMap,
+                        onSelected: (_) => setState(() {
+                          _showCollection = false;
+                          _showMap = false;
+                        }),
+                        showCheckmark: false,
+                        labelStyle: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ChoiceChip(
+                        key: const ValueKey('herbarium-tab-map'),
+                        label: const Text('Karte'),
+                        selected: _showMap,
+                        onSelected: (_) => setState(() {
+                          _showMap = true;
+                          _mapOpened = true;
+                        }),
                         showCheckmark: false,
                         labelStyle: const TextStyle(
                           fontWeight: FontWeight.w700,
@@ -420,7 +444,7 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
             Expanded(
               child: _hasCatalog
                   ? IndexedStack(
-                      index: _showCollection ? 0 : 1,
+                      index: _showMap ? 2 : (_showCollection ? 0 : 1),
                       children: [
                         HerbariumBottleCollection(
                           loadEcosystems:
@@ -443,6 +467,15 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
                           onRefreshEntries: _loadEntries,
                         ),
                         _buildObservations(),
+                        // Built on first use: the map loads tiles.
+                        if (_mapOpened)
+                          HerbariumMapView(
+                            entries: _filteredEntries,
+                            onOpenEntry: _onEntryTap,
+                            insights: widget.dependencies?.insights,
+                          )
+                        else
+                          const SizedBox.shrink(),
                       ],
                     )
                   : _buildObservations(),

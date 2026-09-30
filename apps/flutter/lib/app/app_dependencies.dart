@@ -6,6 +6,7 @@ import '../features/catalog/domain/ecosystem_journey.dart';
 import '../features/field/domain/field_repository.dart';
 import '../features/herbarium/application/herbarium_use_cases.dart';
 import '../features/herbarium/domain/herbarium_repository.dart';
+import '../features/herbarium/domain/insight_repository.dart';
 import '../features/learning/application/learning_session_service.dart';
 import '../features/learning/domain/learning_repository.dart';
 
@@ -28,6 +29,7 @@ final class AppDependencies {
     this.deleteHerbariumEntry,
     this.syncHerbariumEntries,
     this.ecosystemJourneys,
+    this.insights,
   });
 
   final AuthService auth;
@@ -40,6 +42,7 @@ final class AppDependencies {
   final LearningRepository learningRepository;
   final ContentSyncService contentSync;
   final EcosystemJourneyRepository? ecosystemJourneys;
+  final InsightRepository? insights;
   final HerbariumRepository? herbariumRepository;
   final FieldRepository? fieldRepository;
   final ListHerbarium? listHerbarium;

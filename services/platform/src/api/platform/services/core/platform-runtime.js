@@ -6,6 +6,7 @@ const { ContentService } = require('./content/content-service');
 const { WikimediaPhotoSource } = require('./content/wikimedia-photo-source');
 const { SpeciesService } = require('./species/species-service');
 const { StatsService } = require('./species/stats-service');
+const { TileProxy } = require('./content/tile-proxy');
 const { PublicPhotoCache } = require('./content/public-photo-cache');
 const { FieldService } = require('./field/field-service');
 const { HerbariumService } = require('./herbarium/herbarium-service');
@@ -36,16 +37,19 @@ function getPlatformRuntime(strapi) {
     ? undefined : new WikimediaPhotoSource({
       metadataStore: strapi.store({ type: 'core', name: 'plantini-photo-metadata-v1' }),
     });
+  const photoCache = new PublicPhotoCache();
   const runtime = {
+    photoCache,
     repositories,
     validator,
     actorService,
     profile: new ProfileService({ actorService }),
     content: new ContentService({
       repository: repositories.content,
-      photoCache: new PublicPhotoCache(),
+      photoCache,
       photoSource,
     }),
+    tiles: new TileProxy(),
     species: new SpeciesService({ repository: repositories.species, photoSource }),
     stats: new StatsService({ repository: repositories.stats }),
     learning: new LearningService({

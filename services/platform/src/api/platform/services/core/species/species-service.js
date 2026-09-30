@@ -70,6 +70,13 @@ class SpeciesService {
       : this.repository.createSpeciesCard({ speciesKey: key, ...data });
   }
 
+  /** The stored source URL of the card's photo (server side only). */
+  async getPhotoSource(key) {
+    const card = await this.repository.findSpeciesCard(String(key || ''));
+    if (!card?.photo?.url) throw notFound('SPECIES_PHOTO_NOT_FOUND');
+    return card.photo.url;
+  }
+
   async getCard(key) {
     const card = await this.repository.findSpeciesCard(String(key || ''));
     if (!card) throw notFound('SPECIES_NOT_FOUND');
@@ -88,7 +95,8 @@ function mapCard(card) {
       summarySource: card.summarySource,
       summaryLicense: 'CC BY-SA 4.0',
     } : {}),
-    ...(card.photo ? { photo: card.photo } : {}),
+    // The app gets the server's cached copy, never the provider's URL.
+    ...(card.photo ? { photo: { ...card.photo, url: `/api/v1/species/${card.speciesKey}/photo?photoId=${encodeURIComponent(card.photo.id)}` } } : {}),
   };
 }
 

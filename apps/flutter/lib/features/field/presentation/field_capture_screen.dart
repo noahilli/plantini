@@ -344,6 +344,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
         context,
         problem,
         offerRetry: retry != null,
+        onLogin: widget.dependencies?.auth.login,
       );
       _problemDialogOpen = false;
       if (again && mounted && retry != null) {

@@ -180,6 +180,7 @@ Future<bool> showFieldProblemDialog(
   BuildContext context,
   FieldProblem problem, {
   bool offerRetry = true,
+  Future<void> Function()? onLogin,
 }) async {
   final retry = await showDialog<bool>(
     context: context,
@@ -220,6 +221,15 @@ Future<bool> showFieldProblemDialog(
           onPressed: () => Navigator.of(context).pop(false),
           child: const Text('Schließen'),
         ),
+        if (problem.needsLogin && onLogin != null)
+          FilledButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+              onLogin();
+            },
+            icon: const Icon(Icons.login_rounded),
+            label: const Text('Anmelden'),
+          ),
         if (offerRetry && problem.retryable)
           FilledButton.icon(
             onPressed: () => Navigator.of(context).pop(true),

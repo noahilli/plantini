@@ -33,8 +33,13 @@ final class PlatformApiClient {
   final AccessTokenProvider _accessTokenProvider;
 
   /// CMS uploads may be root-relative; resolve against this deployment.
-  String resolveContentUrl(String value) =>
-      Uri.parse(_dio.options.baseUrl).resolve(value).toString();
+  String resolveContentUrl(String value) {
+    final base = _dio.options.baseUrl;
+    // Without the trailing slash a relative reference would replace `v1`.
+    return Uri.parse(base.endsWith('/') ? base : '$base/')
+        .resolve(value)
+        .toString();
+  }
 
   /// Downloads a binary resource (photo). The bearer token is only sent to the
   /// Plantini API origin, never to a third-party host.
@@ -42,47 +47,51 @@ final class PlatformApiClient {
     String url, {
     bool authenticated = false,
   }) async {
-    try {
-      final target = Uri.parse(resolveContentUrl(url));
-      final sameOrigin =
-          target.origin == Uri.parse(_dio.options.baseUrl).origin;
-      final token = authenticated && sameOrigin
-          ? await _accessTokenProvider()
-          : null;
-      if (authenticated && (token == null || token.isEmpty)) {
+    for (var attempt = 1; ; attempt++) {
+      try {
+        final target = Uri.parse(resolveContentUrl(url));
+        final sameOrigin =
+            target.origin == Uri.parse(_dio.options.baseUrl).origin;
+        final token = authenticated && sameOrigin
+            ? await _accessTokenProvider()
+            : null;
+        if (authenticated && (token == null || token.isEmpty)) {
+          return Result.failure(
+            const UnauthorizedFailure(
+              message:
+                  'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+            ),
+          );
+        }
+        final response = await _dio.getUri<List<int>>(
+          target,
+          options: Options(
+            responseType: ResponseType.bytes,
+            headers: {
+              'Accept': 'image/*',
+              if (token != null) 'Authorization': 'Bearer $token',
+            },
+          ),
+        );
+        final data = response.data;
+        if (data == null || data.isEmpty) {
+          return Result.failure(
+            const NotFoundFailure(message: 'Das Bild ist leer oder fehlt.'),
+          );
+        }
+        return Result.success(Uint8List.fromList(data));
+      } on DioException catch (error) {
+        // Same as for JSON: a 401 once means the token just expired.
+        if (error.response?.statusCode == 401 && attempt == 1) continue;
+        return Result.failure(_mapDioFailure(error));
+      } catch (error) {
         return Result.failure(
-          const UnauthorizedFailure(
-            message:
-                'Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.',
+          NetworkFailure(
+            message: 'Das Bild konnte nicht geladen werden.',
+            cause: error,
           ),
         );
       }
-      final response = await _dio.getUri<List<int>>(
-        target,
-        options: Options(
-          responseType: ResponseType.bytes,
-          headers: {
-            'Accept': 'image/*',
-            if (token != null) 'Authorization': 'Bearer $token',
-          },
-        ),
-      );
-      final data = response.data;
-      if (data == null || data.isEmpty) {
-        return Result.failure(
-          const NotFoundFailure(message: 'Das Bild ist leer oder fehlt.'),
-        );
-      }
-      return Result.success(Uint8List.fromList(data));
-    } on DioException catch (error) {
-      return Result.failure(_mapDioFailure(error));
-    } catch (error) {
-      return Result.failure(
-        NetworkFailure(
-          message: 'Das Bild konnte nicht geladen werden.',
-          cause: error,
-        ),
-      );
     }
   }
 
