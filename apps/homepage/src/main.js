@@ -173,7 +173,10 @@ function createLoop(host, stage, frame) {
     raf = 0;
     if (!visible || document.hidden) return;
     if (!lite && last && now - last < 30) { // ~30 fps is plenty for slow vegetation sway
-      raf = requestAnimationFrame(tick);
+      // Wait out the rest of the interval instead of waking up on every display
+      // refresh (144 Hz screens) just to skip the frame. `1` marks "scheduled".
+      raf = 1;
+      setTimeout(() => { raf = requestAnimationFrame(tick); }, Math.max(1, 30 - (now - last)));
       return;
     }
     const dt = last ? now - last : 0;
