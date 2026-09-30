@@ -162,6 +162,57 @@ paths:
         '400': {$ref: '#/components/responses/BadRequest'}
         '404': {$ref: '#/components/responses/NotFound'}
         '503': {description: Image provider or cache temporarily unavailable}
+  /media/{mediaId}/content:
+    get:
+      summary: Read one of the caller's own uploaded photos
+      description: Owner-scoped; another account's media id is indistinguishable from a missing one. The bytes behind an id never change, so the response is immutable and clients cache it for good. `width` returns a resized JPEG (longest side) for thumbnails.
+      tags: [Herbarium]
+      operationId: getPrivateMediaContent
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema: {$ref: '#/components/schemas/Id'}
+        - name: width
+          in: query
+          required: false
+          schema: {type: integer, enum: [320, 720, 1280]}
+      responses:
+        '200':
+          description: The photo (or its resized JPEG variant).
+          content:
+            image/jpeg: {schema: {type: string, format: binary}}
+            image/png: {schema: {type: string, format: binary}}
+            image/webp: {schema: {type: string, format: binary}}
+        '304': {description: Not modified}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /species/{speciesKey}:
+    get:
+      summary: Info card of a species found by users that is not part of any ecosystem
+      description: Built once from public sources and cached for all users. Never listed in ecosystems or levels.
+      tags: [Herbarium]
+      operationId: getSpeciesCard
+      parameters:
+        - name: speciesKey
+          in: path
+          required: true
+          schema: {type: string, pattern: '^[a-z0-9-]{2,120}$'}
+      responses:
+        '200': {description: The species card, content: {application/json: {schema: {$ref: '#/components/schemas/SpeciesCard'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /stats/collection:
+    get:
+      summary: Share of accounts that collected each plant or species
+      description: Aggregated over all accounts. Below a minimum number of accounts no shares are published (`available` is false). Shares are shown in per cent, or in per mille below one per cent.
+      tags: [Herbarium]
+      operationId: getCollectionStats
+      responses:
+        '200': {description: Collection shares, content: {application/json: {schema: {$ref: '#/components/schemas/CollectionStats'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
   /quiz-items:
     get:
       summary: List quiz items for a level and content version
@@ -813,7 +864,38 @@ components:
     Observation:
       type: object
       required: [id, clientObservationId, observedAt, version, syncStatus]
-      properties: {id: {$ref: '#/components/schemas/Id'}, clientObservationId: {$ref: '#/components/schemas/Id'}, observedAt: {type: string, format: date-time}, note: {type: string}, confirmedPlantId: {$ref: '#/components/schemas/Id'}, identification: {$ref: '#/components/schemas/IdentificationJob'}, version: {type: string}, syncStatus: {type: string, enum: [synced, pending, conflict, deleted]}}
+      properties: {id: {$ref: '#/components/schemas/Id'}, clientObservationId: {$ref: '#/components/schemas/Id'}, observedAt: {type: string, format: date-time}, note: {type: string}, confirmedPlantId: {$ref: '#/components/schemas/Id'}, speciesKey: {type: string, description: 'Set when the confirmed species is not in the catalogue; see /species/{speciesKey}.'}, speciesName: {type: string}, mediaId: {$ref: '#/components/schemas/Id'}, mediaUrl: {type: string, description: 'Path of the photo, see /media/{mediaId}/content.'}, location: {$ref: '#/components/schemas/ObservationLocation'}, identification: {$ref: '#/components/schemas/IdentificationJob'}, version: {type: string}, syncStatus: {type: string, enum: [synced, pending, conflict, deleted]}}
+    ObservationLocation:
+      type: object
+      description: The find location as stored (coarsened by the client before upload). Only returned to the owner.
+      required: [latitude, longitude]
+      properties: {latitude: {type: number}, longitude: {type: number}, accuracyMeters: {type: number}}
+    SpeciesCard:
+      type: object
+      required: [key, scientificName]
+      properties:
+        key: {type: string}
+        scientificName: {type: string}
+        commonName: {type: string}
+        summary: {type: string}
+        summaryLanguage: {type: string}
+        summarySource: {type: string, description: 'Article the summary was taken from (Wikipedia).'}
+        summaryLicense: {type: string}
+        photo: {$ref: '#/components/schemas/PublicMedia'}
+        collectedShare: {$ref: '#/components/schemas/CollectionShare'}
+    CollectionShare:
+      type: object
+      required: [share, label]
+      properties: {share: {type: number, minimum: 0, maximum: 1}, label: {type: string, description: 'Formatted, e.g. "12 %" or "3 ‰".'}}
+    CollectionStats:
+      type: object
+      required: [available, generatedAt, plants, species]
+      properties:
+        available: {type: boolean}
+        reason: {type: string}
+        generatedAt: {type: string, format: date-time}
+        plants: {type: object, additionalProperties: {$ref: '#/components/schemas/CollectionShare'}}
+        species: {type: object, additionalProperties: {$ref: '#/components/schemas/CollectionShare'}}
     ObservationPage:
       type: object
       required: [items, page]

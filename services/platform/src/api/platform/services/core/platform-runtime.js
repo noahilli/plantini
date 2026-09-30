@@ -4,6 +4,8 @@ const { ActorService } = require('./auth/actor-service');
 const { KeycloakJwtValidator, authenticationError } = require('./auth/jwt-validator');
 const { ContentService } = require('./content/content-service');
 const { WikimediaPhotoSource } = require('./content/wikimedia-photo-source');
+const { SpeciesService } = require('./species/species-service');
+const { StatsService } = require('./species/stats-service');
 const { PublicPhotoCache } = require('./content/public-photo-cache');
 const { FieldService } = require('./field/field-service');
 const { HerbariumService } = require('./herbarium/herbarium-service');
@@ -30,6 +32,10 @@ function getPlatformRuntime(strapi) {
     roleClaimClientId: process.env.PLATFORM_OIDC_ROLE_CLIENT_ID || undefined,
     organisationClaim: process.env.PLATFORM_ORGANISATION_CLAIM || 'organisation_id',
   });
+  const photoSource = process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS === 'disabled'
+    ? undefined : new WikimediaPhotoSource({
+      metadataStore: strapi.store({ type: 'core', name: 'plantini-photo-metadata-v1' }),
+    });
   const runtime = {
     repositories,
     validator,
@@ -38,11 +44,10 @@ function getPlatformRuntime(strapi) {
     content: new ContentService({
       repository: repositories.content,
       photoCache: new PublicPhotoCache(),
-      photoSource: process.env.PLATFORM_EXTERNAL_PLANT_PHOTOS === 'disabled'
-        ? undefined : new WikimediaPhotoSource({
-          metadataStore: strapi.store({ type: 'core', name: 'plantini-photo-metadata-v1' }),
-        }),
+      photoSource,
     }),
+    species: new SpeciesService({ repository: repositories.species, photoSource }),
+    stats: new StatsService({ repository: repositories.stats }),
     learning: new LearningService({
       repository: repositories.learning,
       herbariumRepository: repositories.herbarium,
@@ -58,6 +63,7 @@ function getPlatformRuntime(strapi) {
   runtime.herbarium = new HerbariumService({
     repository: repositories.herbarium,
     fieldRepository: repositories.field,
+    species: runtime.species,
   });
   runtimes.set(strapi, runtime);
   return runtime;

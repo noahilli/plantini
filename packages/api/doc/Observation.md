@@ -13,6 +13,11 @@ Name | Type | Description | Notes
 **observedAt** | [**DateTime**](DateTime.md) |  |
 **note** | **String** |  | [optional]
 **confirmedPlantId** | **String** |  | [optional]
+**speciesKey** | **String** | Set when the confirmed species is not in the catalogue; see /species/{speciesKey}. | [optional]
+**speciesName** | **String** |  | [optional]
+**mediaId** | **String** |  | [optional]
+**mediaUrl** | **String** | Path of the photo, see /media/{mediaId}/content. | [optional]
+**location** | [**ObservationLocation**](ObservationLocation.md) |  | [optional]
 **identification** | [**IdentificationJob**](IdentificationJob.md) |  | [optional]
 **version** | **String** |  |
 **syncStatus** | **String** |  |

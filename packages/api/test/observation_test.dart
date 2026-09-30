@@ -32,6 +32,33 @@ void main() {
       // TODO
     });
 
+    // Set when the confirmed species is not in the catalogue; see /species/{speciesKey}.
+    // String speciesKey
+    test('to test the property `speciesKey`', () async {
+      // TODO
+    });
+
+    // String speciesName
+    test('to test the property `speciesName`', () async {
+      // TODO
+    });
+
+    // String mediaId
+    test('to test the property `mediaId`', () async {
+      // TODO
+    });
+
+    // Path of the photo, see /media/{mediaId}/content.
+    // String mediaUrl
+    test('to test the property `mediaUrl`', () async {
+      // TODO
+    });
+
+    // ObservationLocation location
+    test('to test the property `location`', () async {
+      // TODO
+    });
+
     // IdentificationJob identification
     test('to test the property `identification`', () async {
       // TODO

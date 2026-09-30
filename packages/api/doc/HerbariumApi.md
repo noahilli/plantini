@@ -11,7 +11,10 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createObservation**](HerbariumApi.md#createobservation) | **POST** /observations | Create an idempotent private observation
 [**deleteObservation**](HerbariumApi.md#deleteobservation) | **DELETE** /observations/{observationId} | Create an observation tombstone
+[**getCollectionStats**](HerbariumApi.md#getcollectionstats) | **GET** /stats/collection | Share of accounts that collected each plant or species
 [**getObservation**](HerbariumApi.md#getobservation) | **GET** /observations/{observationId} | Read one caller-owned observation
+[**getPrivateMediaContent**](HerbariumApi.md#getprivatemediacontent) | **GET** /media/{mediaId}/content | Read one of the caller&#39;s own uploaded photos
+[**getSpeciesCard**](HerbariumApi.md#getspeciescard) | **GET** /species/{speciesKey} | Info card of a species found by users that is not part of any ecosystem
 [**listObservations**](HerbariumApi.md#listobservations) | **GET** /observations | List caller-owned herbarium observations
 [**updateObservation**](HerbariumApi.md#updateobservation) | **PATCH** /observations/{observationId} | Update an observation with optimistic concurrency
 
@@ -101,6 +104,45 @@ void (empty response body)
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getCollectionStats**
+> CollectionStats getCollectionStats()
+
+Share of accounts that collected each plant or species
+
+Aggregated over all accounts. Below a minimum number of accounts no shares are published (`available` is false). Shares are shown in per cent, or in per mille below one per cent.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getHerbariumApi();
+
+try {
+    final response = api.getCollectionStats();
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling HerbariumApi->getCollectionStats: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**CollectionStats**](CollectionStats.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getObservation**
 > Observation getObservation(observationId)
 
@@ -130,6 +172,94 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**Observation**](Observation.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getPrivateMediaContent**
+> Uint8List getPrivateMediaContent(mediaId, width)
+
+Read one of the caller's own uploaded photos
+
+Owner-scoped; another account's media id is indistinguishable from a missing one. The bytes behind an id never change, so the response is immutable and clients cache it for good. `width` returns a resized JPEG (longest side) for thumbnails.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getHerbariumApi();
+final String mediaId = 38400000-8cf0-11bd-b23e-10b96e4ef00d; // String |
+final int width = 56; // int |
+
+try {
+    final response = api.getPrivateMediaContent(mediaId, width);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling HerbariumApi->getPrivateMediaContent: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **mediaId** | **String**|  |
+ **width** | **int**|  | [optional]
+
+### Return type
+
+[**Uint8List**](Uint8List.md)
+
+### Authorization
+
+[bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: image/jpeg, image/png, image/webp, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getSpeciesCard**
+> SpeciesCard getSpeciesCard(speciesKey)
+
+Info card of a species found by users that is not part of any ecosystem
+
+Built once from public sources and cached for all users. Never listed in ecosystems or levels.
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getHerbariumApi();
+final String speciesKey = speciesKey_example; // String |
+
+try {
+    final response = api.getSpeciesCard(speciesKey);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling HerbariumApi->getSpeciesCard: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **speciesKey** | **String**|  |
+
+### Return type
+
+[**SpeciesCard**](SpeciesCard.md)
 
 ### Authorization
 

@@ -210,7 +210,9 @@ test('herbarium enforces ownership, version preconditions, and tombstones', asyn
   assert.equal(created.created, true);
   assert.equal(created.observation.clientObservationId, ids.clientObservation);
   assert.equal(created.observation.confirmedPlantId, ids.plant);
-  assert.equal(Object.hasOwn(created.observation, 'location'), false);
+  // Owner-scoped responses return the (client-coarsened) find location so the
+  // herbarium map works on every device; other accounts get 404 below.
+  assert.deepEqual(created.observation.location, { latitude: 50, longitude: 8, accuracyMeters: 10 });
 
   await assert.rejects(
     () => service.get({ id: ids.other }, created.observation.id),

@@ -86,6 +86,16 @@ class _$Observation extends Observation {
   @override
   final String? confirmedPlantId;
   @override
+  final String? speciesKey;
+  @override
+  final String? speciesName;
+  @override
+  final String? mediaId;
+  @override
+  final String? mediaUrl;
+  @override
+  final ObservationLocation? location;
+  @override
   final IdentificationJob? identification;
   @override
   final String version;
@@ -101,6 +111,11 @@ class _$Observation extends Observation {
       required this.observedAt,
       this.note,
       this.confirmedPlantId,
+      this.speciesKey,
+      this.speciesName,
+      this.mediaId,
+      this.mediaUrl,
+      this.location,
       this.identification,
       required this.version,
       required this.syncStatus})
@@ -121,6 +136,11 @@ class _$Observation extends Observation {
         observedAt == other.observedAt &&
         note == other.note &&
         confirmedPlantId == other.confirmedPlantId &&
+        speciesKey == other.speciesKey &&
+        speciesName == other.speciesName &&
+        mediaId == other.mediaId &&
+        mediaUrl == other.mediaUrl &&
+        location == other.location &&
         identification == other.identification &&
         version == other.version &&
         syncStatus == other.syncStatus;
@@ -134,6 +154,11 @@ class _$Observation extends Observation {
     _$hash = $jc(_$hash, observedAt.hashCode);
     _$hash = $jc(_$hash, note.hashCode);
     _$hash = $jc(_$hash, confirmedPlantId.hashCode);
+    _$hash = $jc(_$hash, speciesKey.hashCode);
+    _$hash = $jc(_$hash, speciesName.hashCode);
+    _$hash = $jc(_$hash, mediaId.hashCode);
+    _$hash = $jc(_$hash, mediaUrl.hashCode);
+    _$hash = $jc(_$hash, location.hashCode);
     _$hash = $jc(_$hash, identification.hashCode);
     _$hash = $jc(_$hash, version.hashCode);
     _$hash = $jc(_$hash, syncStatus.hashCode);
@@ -149,6 +174,11 @@ class _$Observation extends Observation {
           ..add('observedAt', observedAt)
           ..add('note', note)
           ..add('confirmedPlantId', confirmedPlantId)
+          ..add('speciesKey', speciesKey)
+          ..add('speciesName', speciesName)
+          ..add('mediaId', mediaId)
+          ..add('mediaUrl', mediaUrl)
+          ..add('location', location)
           ..add('identification', identification)
           ..add('version', version)
           ..add('syncStatus', syncStatus))
@@ -181,6 +211,28 @@ class ObservationBuilder implements Builder<Observation, ObservationBuilder> {
   set confirmedPlantId(String? confirmedPlantId) =>
       _$this._confirmedPlantId = confirmedPlantId;
 
+  String? _speciesKey;
+  String? get speciesKey => _$this._speciesKey;
+  set speciesKey(String? speciesKey) => _$this._speciesKey = speciesKey;
+
+  String? _speciesName;
+  String? get speciesName => _$this._speciesName;
+  set speciesName(String? speciesName) => _$this._speciesName = speciesName;
+
+  String? _mediaId;
+  String? get mediaId => _$this._mediaId;
+  set mediaId(String? mediaId) => _$this._mediaId = mediaId;
+
+  String? _mediaUrl;
+  String? get mediaUrl => _$this._mediaUrl;
+  set mediaUrl(String? mediaUrl) => _$this._mediaUrl = mediaUrl;
+
+  ObservationLocationBuilder? _location;
+  ObservationLocationBuilder get location =>
+      _$this._location ??= ObservationLocationBuilder();
+  set location(ObservationLocationBuilder? location) =>
+      _$this._location = location;
+
   IdentificationJobBuilder? _identification;
   IdentificationJobBuilder get identification =>
       _$this._identification ??= IdentificationJobBuilder();
@@ -208,6 +260,11 @@ class ObservationBuilder implements Builder<Observation, ObservationBuilder> {
       _observedAt = $v.observedAt;
       _note = $v.note;
       _confirmedPlantId = $v.confirmedPlantId;
+      _speciesKey = $v.speciesKey;
+      _speciesName = $v.speciesName;
+      _mediaId = $v.mediaId;
+      _mediaUrl = $v.mediaUrl;
+      _location = $v.location?.toBuilder();
       _identification = $v.identification?.toBuilder();
       _version = $v.version;
       _syncStatus = $v.syncStatus;
@@ -241,6 +298,11 @@ class ObservationBuilder implements Builder<Observation, ObservationBuilder> {
                 observedAt, r'Observation', 'observedAt'),
             note: note,
             confirmedPlantId: confirmedPlantId,
+            speciesKey: speciesKey,
+            speciesName: speciesName,
+            mediaId: mediaId,
+            mediaUrl: mediaUrl,
+            location: _location?.build(),
             identification: _identification?.build(),
             version: BuiltValueNullFieldError.checkNotNull(
                 version, r'Observation', 'version'),
@@ -250,6 +312,8 @@ class ObservationBuilder implements Builder<Observation, ObservationBuilder> {
     } catch (_) {
       late String _$failedField;
       try {
+        _$failedField = 'location';
+        _location?.build();
         _$failedField = 'identification';
         _identification?.build();
       } catch (e) {

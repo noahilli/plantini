@@ -1,6 +1,7 @@
 'use strict';
 
 const { conflict, invalidRequest, notFound } = require('../errors');
+const { SpeciesService } = require('../species/species-service');
 const { newId, payloadDigest, requireIdempotencyKey, requireUuid, scopedIdempotencyKey } = require('../ids');
 const { optionalString, pageFromQuery, parseIfMatch, requireDate, requirePlainObject, rejectUnknownFields } = require('../validation');
 
@@ -8,6 +9,7 @@ class HerbariumService {
   constructor(options) {
     this.repository = options.repository;
     this.fieldRepository = options.fieldRepository;
+    this.species = options.species;
     this.clock = options.clock || (() => new Date());
   }
 
@@ -63,6 +65,12 @@ class HerbariumService {
       syncStatus: 'synced',
       createdAt: now,
     });
+    // A confirmed species outside the catalogue gets a shared info card (built
+    // once, cached for everyone). Best effort: it must never delay or fail the save.
+    if (this.species && identification && !identification.confirmedPlantId) {
+      const candidate = confirmedCandidate(identification);
+      if (candidate) void this.species.ensureFromCandidate(candidate);
+    }
     return { observation: await this.mapObservation(actor, observation), created: true };
   }
 
@@ -119,9 +127,19 @@ class HerbariumService {
 
   async mapObservation(actor, observation) {
     let identification;
+    let species;
     if (observation.identificationJobId && this.fieldRepository) {
       const job = await this.fieldRepository.findJobByPublicId(actor.id, observation.identificationJobId);
-      if (job) identification = mapIdentification(job);
+      if (job) {
+        identification = mapIdentification(job);
+        const candidate = !observation.confirmedPlantId ? confirmedCandidate(job) : undefined;
+        if (candidate) {
+          species = {
+            speciesKey: SpeciesService.keyFor(candidate.scientificName),
+            speciesName: candidate.commonName || candidate.scientificName,
+          };
+        }
+      }
     }
     return {
       id: observation.publicId,
@@ -129,11 +147,21 @@ class HerbariumService {
       observedAt: observation.timestamp,
       note: observation.notes || '',
       ...(observation.confirmedPlantId ? { confirmedPlantId: observation.confirmedPlantId } : {}),
+      ...(observation.mediaId ? { mediaId: observation.mediaId, mediaUrl: `/api/v1/media/${observation.mediaId}/content` } : {}),
+      ...(observation.latitude != null && observation.longitude != null
+        ? { location: { latitude: observation.latitude, longitude: observation.longitude, accuracyMeters: observation.locationAccuracyMeters ?? 0 } }
+        : {}),
+      ...(species ? species : {}),
       ...(identification ? { identification } : {}),
       version: observation.version,
       syncStatus: observation.syncStatus,
     };
   }
+}
+
+function confirmedCandidate(job) {
+  const candidates = Array.isArray(job?.candidates) ? job.candidates : [];
+  return candidates.find((item) => item && item.candidateId === job.confirmedCandidateId && !item.plantId);
 }
 
 function validateCreateObservation(body) {

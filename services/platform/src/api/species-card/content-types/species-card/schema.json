@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "species_cards",
+  "info": {
+    "singularName": "species-card",
+    "pluralName": "species-cards",
+    "displayName": "Species Card",
+    "description": "Cached info card for a species found by a user that is not part of any ecosystem. Never listed in ecosystems or levels."
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "speciesKey": { "type": "string", "required": true, "unique": true },
+    "scientificName": { "type": "string", "required": true },
+    "commonName": { "type": "string" },
+    "summary": { "type": "text" },
+    "summaryLanguage": { "type": "string" },
+    "summarySource": { "type": "string" },
+    "photo": { "type": "json" },
+    "verifiedAt": { "type": "datetime" }
+  }
+}

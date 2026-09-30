@@ -35,6 +35,8 @@ function createStrapiRepositories(strapi) {
     learning: createLearningRepository(entities),
     field: createFieldRepository(entities),
     herbarium: createHerbariumRepository(entities),
+    species: createSpeciesRepository(entities),
+    stats: createStatsRepository(entities),
   };
 }
 
@@ -191,6 +193,54 @@ function createFieldRepository(entities) {
       sort: { createdAt: 'asc' },
       limit,
     }),
+  };
+}
+
+function createSpeciesRepository(entities) {
+  const uid = 'api::species-card.species-card';
+  return {
+    findSpeciesCard: async (speciesKey) => findOne(entities, uid, { filters: { speciesKey } }),
+    createSpeciesCard: async (data) => entities.create(uid, { data }),
+    updateSpeciesCard: async (recordId, patch) => entities.update(uid, recordId, { data: patch }),
+  };
+}
+
+/** Aggregates over all accounts; nothing here is returned per user. */
+function createStatsRepository(entities) {
+  return {
+    countAccounts: async () => normaliseArray(await entities.findMany('api::profile.profile', {
+      filters: { status: { $ne: 'deletion_requested' } },
+      fields: ['profileId'],
+    })).length,
+    /** One entry per confirmed find: owner plus either a catalogue plant id or the external candidate's name. */
+    listConfirmedFinds: async () => {
+      const observations = normaliseArray(await entities.findMany('api::observation.observation', {
+        filters: { syncStatus: { $ne: 'deleted' } },
+        fields: ['ownerId', 'confirmedPlantId', 'identificationJobId'],
+      }));
+      const external = observations.filter((o) => !o.confirmedPlantId && o.identificationJobId);
+      const names = new Map();
+      if (external.length > 0) {
+        const jobs = normaliseArray(await entities.findMany('api::identification-job.identification-job', {
+          filters: { confirmedCandidateId: { $notNull: true } },
+          fields: ['publicId', 'confirmedCandidateId', 'candidates'],
+        }));
+        for (const job of jobs) {
+          const candidate = (Array.isArray(job.candidates) ? job.candidates : [])
+            .find((item) => item?.candidateId === job.confirmedCandidateId);
+          if (candidate?.scientificName) names.set(job.publicId, candidate.scientificName);
+        }
+      }
+      const finds = [];
+      for (const observation of observations) {
+        if (observation.confirmedPlantId) {
+          finds.push({ ownerId: observation.ownerId, plantId: observation.confirmedPlantId });
+        } else if (names.has(observation.identificationJobId)) {
+          finds.push({ ownerId: observation.ownerId, scientificName: names.get(observation.identificationJobId) });
+        }
+      }
+      return finds;
+    },
   };
 }
 

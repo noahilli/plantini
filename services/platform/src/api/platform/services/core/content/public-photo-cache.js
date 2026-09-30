@@ -6,6 +6,10 @@ const { mkdir, readFile, readdir, rename, writeFile, stat, unlink } = require('n
 const path = require('node:path');
 
 const MAX_BYTES = 2 * 1024 * 1024;
+// Cached photos are re-fetched from the source once a week; up to this many
+// files are kept (the active release has about 300 photos).
+const REFRESH_MS = 7 * 86400000;
+const MAX_FILES = 4096;
 function imageType(bytes) {
   if (bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255) return 'image/jpeg';
   if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) return 'image/png';
@@ -60,27 +64,49 @@ class PublicPhotoCache {
 
   async load(key, url) {
     const target = path.join(this.root, key);
+    let stale;
     try {
       const info = await stat(target);
-      if (info.size <= MAX_BYTES && info.mtimeMs > Date.now() - 7 * 86400000) {
+      if (info.size <= MAX_BYTES) {
         const bytes = await readFile(target);
-        return { bytes, type: imageType(bytes) };
+        if (info.mtimeMs > Date.now() - REFRESH_MS) return { bytes, type: imageType(bytes) };
+        stale = { bytes, type: imageType(bytes) }; // older than a week: refresh, keep as fallback
       }
     } catch { /* Missing or unusable cached image: attempt the provider. */ }
-    const bytes = await download(url);
+    let bytes;
+    try {
+      bytes = await download(url);
+    } catch (error) {
+      // The source is unreachable or throttling us: a week-old copy is better
+      // than no photo. It is retried on the next request after the back-off.
+      if (stale) return stale;
+      throw error;
+    }
     const type = imageType(bytes);
     let temporary;
     try {
       await mkdir(this.root, { recursive: true, mode: 0o700 });
-      // Bound disk use without deleting another subsystem's files.
-      if ((await readdir(this.root)).length < 256) {
-        temporary = path.join(this.root, `${key}.${randomUUID()}.tmp`);
-        await writeFile(temporary, bytes, { flag: 'wx', mode: 0o600 });
-        await rename(temporary, target);
-      }
+      await this.makeRoom();
+      temporary = path.join(this.root, `${key}.${randomUUID()}.tmp`);
+      await writeFile(temporary, bytes, { flag: 'wx', mode: 0o600 });
+      await rename(temporary, target);
     } catch { /* Still serve the valid image when persistence fails. */ }
     finally { if (temporary) await unlink(temporary).catch(() => {}); }
     return { bytes, type };
+  }
+
+  /** Bound disk use: drop the least recently written cached photos when full. */
+  async makeRoom() {
+    const names = (await readdir(this.root)).filter((name) => /^[0-9a-f]{64}$/.test(name));
+    if (names.length < MAX_FILES) return;
+    const dated = await Promise.all(names.map(async (name) => {
+      try { return { name, at: (await stat(path.join(this.root, name))).mtimeMs }; }
+      catch { return { name, at: 0 }; }
+    }));
+    dated.sort((x, y) => x.at - y.at);
+    for (const { name } of dated.slice(0, Math.ceil(MAX_FILES / 20))) {
+      await unlink(path.join(this.root, name)).catch(() => {});
+    }
   }
 }
 

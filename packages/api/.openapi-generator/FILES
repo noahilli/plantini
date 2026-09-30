@@ -8,6 +8,8 @@ doc/AdminDashboard.md
 doc/AdminUser.md
 doc/AdminUserPage.md
 doc/AdministrativeJob.md
+doc/CollectionShare.md
+doc/CollectionStats.md
 doc/CompleteLevelAttemptRequest.md
 doc/CompletionRule.md
 doc/ConfirmIdentificationRequest.md
@@ -39,6 +41,7 @@ doc/LevelCompletion.md
 doc/LevelProgress.md
 doc/MediaUpload.md
 doc/Observation.md
+doc/ObservationLocation.md
 doc/ObservationPage.md
 doc/PageMeta.md
 doc/Plant.md
@@ -52,6 +55,7 @@ doc/QuizAnswer.md
 doc/QuizChoice.md
 doc/QuizItem.md
 doc/QuizItemPage.md
+doc/SpeciesCard.md
 doc/StartLevelAttemptRequest.md
 doc/SyncRequest.md
 doc/SyncResponse.md
@@ -78,6 +82,8 @@ lib/src/model/admin_dashboard.dart
 lib/src/model/admin_user.dart
 lib/src/model/admin_user_page.dart
 lib/src/model/administrative_job.dart
+lib/src/model/collection_share.dart
+lib/src/model/collection_stats.dart
 lib/src/model/complete_level_attempt_request.dart
 lib/src/model/completion_rule.dart
 lib/src/model/confirm_identification_request.dart
@@ -106,6 +112,7 @@ lib/src/model/level_completion.dart
 lib/src/model/level_progress.dart
 lib/src/model/media_upload.dart
 lib/src/model/observation.dart
+lib/src/model/observation_location.dart
 lib/src/model/observation_page.dart
 lib/src/model/page_meta.dart
 lib/src/model/plant.dart
@@ -118,6 +125,7 @@ lib/src/model/quiz_answer.dart
 lib/src/model/quiz_choice.dart
 lib/src/model/quiz_item.dart
 lib/src/model/quiz_item_page.dart
+lib/src/model/species_card.dart
 lib/src/model/start_level_attempt_request.dart
 lib/src/model/sync_request.dart
 lib/src/model/sync_response.dart
@@ -132,6 +140,8 @@ test/admin_dashboard_test.dart
 test/admin_user_page_test.dart
 test/admin_user_test.dart
 test/administrative_job_test.dart
+test/collection_share_test.dart
+test/collection_stats_test.dart
 test/complete_level_attempt_request_test.dart
 test/completion_rule_test.dart
 test/confirm_identification_request_test.dart
@@ -162,6 +172,7 @@ test/level_completion_test.dart
 test/level_progress_test.dart
 test/level_test.dart
 test/media_upload_test.dart
+test/observation_location_test.dart
 test/observation_page_test.dart
 test/observation_test.dart
 test/page_meta_test.dart
@@ -176,6 +187,7 @@ test/quiz_answer_test.dart
 test/quiz_choice_test.dart
 test/quiz_item_page_test.dart
 test/quiz_item_test.dart
+test/species_card_test.dart
 test/start_level_attempt_request_test.dart
 test/sync_request_test.dart
 test/sync_response_test.dart

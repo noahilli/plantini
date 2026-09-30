@@ -78,6 +78,20 @@ class WikimediaPhotoSource {
     const cached = this.galleryCache.get(name);
     if (cached && cached.expires > Date.now()) return cached.photos.slice(0, limit);
 
+    // Persisted like single photos: the provider lists are asked once a week,
+    // and survive a backend restart instead of hitting iNaturalist again.
+    const key = createHash('sha256').update(`gallery:${name}`).digest('hex');
+    if (!cached && this.metadataStore) {
+      try {
+        const stored = await this.metadataStore.get({ key });
+        if (stored?.schemaVersion === 1 && Array.isArray(stored.photos) &&
+            Number.isFinite(stored.verifiedAt) && stored.verifiedAt > Date.now() - 7 * 86400000) {
+          this.remember(name, { photos: stored.photos, expires: stored.verifiedAt + 7 * 86400000 });
+          return stored.photos.slice(0, limit);
+        }
+      } catch { /* Cache failure must not make plant content unavailable. */ }
+    }
+
     const primary = await this.find(name);
     let extra = [];
     let degraded = false;
@@ -89,10 +103,19 @@ class WikimediaPhotoSource {
       seen.add(photo.url);
       return true;
     }).slice(0, Math.max(1, Math.min(10, limit)));
-    if (this.galleryCache.size >= 500) this.galleryCache.delete(this.galleryCache.keys().next().value);
-    // A gallery reduced by a provider failure is retried soon, not for a day.
-    this.galleryCache.set(name, { photos, expires: Date.now() + (degraded ? 300000 : 86400000) });
+    if (degraded && cached?.photos?.length > photos.length) return cached.photos.slice(0, limit);
+    // A gallery reduced by a provider failure is retried soon and not persisted.
+    this.remember(name, { photos, expires: Date.now() + (degraded ? 300000 : 7 * 86400000) });
+    if (!degraded && this.metadataStore && photos.length) {
+      try { await this.metadataStore.set({ key, value: { schemaVersion: 1, photos, verifiedAt: Date.now() } }); }
+      catch { /* In-memory result remains usable without persistence. */ }
+    }
     return photos;
+  }
+
+  remember(name, entry) {
+    if (this.galleryCache.size >= 500) this.galleryCache.delete(this.galleryCache.keys().next().value);
+    this.galleryCache.set(name, entry);
   }
 
   async find(scientificName) {
@@ -148,6 +171,30 @@ class WikimediaPhotoSource {
       if (wikimedia) return wikimedia;
     } catch { /* A throttled/unavailable primary source must not block fallback. */ }
     return this.lookupInaturalist(name);
+  }
+
+  /**
+   * Short Wikipedia summary (German, else English) of a taxon. Same identity
+   * check as the photo lookup: the article's Wikidata item must carry exactly
+   * this taxon name (P225); redirects and fuzzy matches are never trusted.
+   */
+  async lookupSummary(name) {
+    for (const host of ['de.wikipedia.org', 'en.wikipedia.org']) {
+      const data = await query(host, {
+        action: 'query', titles: name, redirects: '1',
+        prop: 'extracts|pageprops|info', exintro: '1', explaintext: '1', exsentences: '4', inprop: 'url',
+      });
+      const page = Object.values(data.query?.pages || {})[0];
+      const taxonId = page?.pageprops?.wikibase_item;
+      if (!page?.extract || !/^Q\d+$/.test(taxonId || '') || !allowedUrl(page.fullurl, host)) continue;
+      const taxon = await query('www.wikidata.org', { action: 'wbgetclaims', entity: taxonId, property: 'P225' });
+      if (!(taxon.claims?.P225 || []).some((claim) =>
+        claim.rank !== 'deprecated' && claim.mainsnak?.datavalue?.value === name)) continue;
+      const text = plain(page.extract).slice(0, 900);
+      if (text.length < 40) continue;
+      return { text, language: host.slice(0, 2), source: page.fullurl };
+    }
+    return null;
   }
 
   async lookupWikimedia(name) {

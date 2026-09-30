@@ -1,6 +1,6 @@
 'use strict';
 
-const { mkdir, rename, rm, writeFile } = require('fs/promises');
+const { mkdir, readFile, rename, rm, writeFile } = require('fs/promises');
 const path = require('path');
 
 const { newId, requireUuid } = require('./ids');
@@ -29,7 +29,38 @@ class PrivateMediaStore {
 
   async remove(key) {
     if (!key) return;
-    await rm(this.resolve(key), { force: true });
+    const target = this.resolve(key);
+    await rm(target, { force: true });
+    for (const width of PrivateMediaStore.VARIANT_WIDTHS) await rm(`${target}.w${width}`, { force: true });
+  }
+
+  async read(key) {
+    return readFile(this.resolve(key));
+  }
+
+  /**
+   * Bytes of a resized JPEG (longest side `width`), cached next to the original.
+   * Phones should not download a 5 MB photo for a 100 px thumbnail. Returns
+   * undefined when the image library is unavailable so callers can fall back
+   * to the original.
+   */
+  async readVariant(key, width) {
+    if (!PrivateMediaStore.VARIANT_WIDTHS.includes(width)) throw new Error('Unsupported private media width.');
+    const target = `${this.resolve(key)}.w${width}`;
+    try {
+      return await readFile(target);
+    } catch { /* not generated yet */ }
+    let sharp;
+    try { sharp = require('sharp'); } catch { return undefined; }
+    const resized = await sharp(await this.read(key), { failOn: 'none' })
+      .rotate()
+      .resize({ width, height: width, fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toBuffer();
+    const temporary = `${target}.tmp`;
+    await writeFile(temporary, resized, { mode: 0o600 });
+    await rename(temporary, target);
+    return resized;
   }
 
   resolve(key) {
@@ -44,5 +75,7 @@ class PrivateMediaStore {
     return target;
   }
 }
+
+PrivateMediaStore.VARIANT_WIDTHS = [320, 720, 1280];
 
 module.exports = { PrivateMediaStore };

@@ -16,6 +16,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(AdminUserStatusEnum.serializer)
       ..add(AdministrativeJob.serializer)
       ..add(AdministrativeJobStatusEnum.serializer)
+      ..add(CollectionShare.serializer)
+      ..add(CollectionStats.serializer)
       ..add(CompleteLevelAttemptRequest.serializer)
       ..add(CompletionRule.serializer)
       ..add(CompletionRuleCollectionScopeEnum.serializer)
@@ -56,6 +58,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(MediaUpload.serializer)
       ..add(MediaUploadStatusEnum.serializer)
       ..add(Observation.serializer)
+      ..add(ObservationLocation.serializer)
       ..add(ObservationPage.serializer)
       ..add(ObservationSyncStatusEnum.serializer)
       ..add(PageMeta.serializer)
@@ -70,6 +73,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(QuizItem.serializer)
       ..add(QuizItemPage.serializer)
       ..add(QuizItemTypeEnum.serializer)
+      ..add(SpeciesCard.serializer)
       ..add(StartLevelAttemptRequest.serializer)
       ..add(SyncRequest.serializer)
       ..add(SyncResponse.serializer)
@@ -158,6 +162,14 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(UserProfileRolesEnum)]),
           () => ListBuilder<UserProfileRolesEnum>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(String), const FullType(CollectionShare)]),
+          () => MapBuilder<String, CollectionShare>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(String), const FullType(CollectionShare)]),
+          () => MapBuilder<String, CollectionShare>())
       ..addBuilderFactory(
           const FullType(
               BuiltMap, const [const FullType(String), const FullType(String)]),

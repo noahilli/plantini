@@ -5,6 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:openapi/src/model/identification_job.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:openapi/src/model/observation_location.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -18,6 +19,11 @@ part 'observation.g.dart';
 /// * [observedAt]
 /// * [note]
 /// * [confirmedPlantId]
+/// * [speciesKey] - Set when the confirmed species is not in the catalogue; see /species/{speciesKey}.
+/// * [speciesName]
+/// * [mediaId]
+/// * [mediaUrl] - Path of the photo, see /media/{mediaId}/content.
+/// * [location]
 /// * [identification]
 /// * [version]
 /// * [syncStatus]
@@ -37,6 +43,23 @@ abstract class Observation implements Built<Observation, ObservationBuilder> {
 
   @BuiltValueField(wireName: r'confirmedPlantId')
   String? get confirmedPlantId;
+
+  /// Set when the confirmed species is not in the catalogue; see /species/{speciesKey}.
+  @BuiltValueField(wireName: r'speciesKey')
+  String? get speciesKey;
+
+  @BuiltValueField(wireName: r'speciesName')
+  String? get speciesName;
+
+  @BuiltValueField(wireName: r'mediaId')
+  String? get mediaId;
+
+  /// Path of the photo, see /media/{mediaId}/content.
+  @BuiltValueField(wireName: r'mediaUrl')
+  String? get mediaUrl;
+
+  @BuiltValueField(wireName: r'location')
+  ObservationLocation? get location;
 
   @BuiltValueField(wireName: r'identification')
   IdentificationJob? get identification;
@@ -98,6 +121,41 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
       yield serializers.serialize(
         object.confirmedPlantId,
         specifiedType: const FullType(String),
+      );
+    }
+    if (object.speciesKey != null) {
+      yield r'speciesKey';
+      yield serializers.serialize(
+        object.speciesKey,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.speciesName != null) {
+      yield r'speciesName';
+      yield serializers.serialize(
+        object.speciesName,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.mediaId != null) {
+      yield r'mediaId';
+      yield serializers.serialize(
+        object.mediaId,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.mediaUrl != null) {
+      yield r'mediaUrl';
+      yield serializers.serialize(
+        object.mediaUrl,
+        specifiedType: const FullType(String),
+      );
+    }
+    if (object.location != null) {
+      yield r'location';
+      yield serializers.serialize(
+        object.location,
+        specifiedType: const FullType(ObservationLocation),
       );
     }
     if (object.identification != null) {
@@ -178,6 +236,46 @@ class _$ObservationSerializer implements PrimitiveSerializer<Observation> {
           ) as String?;
           if (valueDes == null) continue;
           result.confirmedPlantId = valueDes;
+          break;
+        case r'speciesKey':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.speciesKey = valueDes;
+          break;
+        case r'speciesName':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.speciesName = valueDes;
+          break;
+        case r'mediaId':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.mediaId = valueDes;
+          break;
+        case r'mediaUrl':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.mediaUrl = valueDes;
+          break;
+        case r'location':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(ObservationLocation),
+          ) as ObservationLocation?;
+          if (valueDes == null) continue;
+          result.location.replace(valueDes);
           break;
         case r'identification':
           final valueDes = serializers.deserialize(

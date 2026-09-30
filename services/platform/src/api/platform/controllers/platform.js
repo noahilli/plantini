@@ -5,6 +5,8 @@ const { readFile } = require('fs/promises');
 const { asProblem, invalidRequest, ProblemError } = require('../services/core/errors');
 const { API_VERSION, applyResponseConventions } = require('../services/core/http-conventions');
 const { getPlatformRuntime, resolveActor } = require('../services/core/platform-runtime');
+const { PrivateMediaStore } = require('../services/core/private-media-store');
+const { requireUuid } = require('../services/core/ids');
 const { rejectUnknownQuery } = require('../services/core/validation');
 
 module.exports = {
@@ -74,7 +76,9 @@ module.exports = {
         throw new ProblemError('INVALID_QUERY', { status: 400, detail: 'photoId is invalid.' });
       }
       const photo = await runtime.content.getPlantPhoto(ctx.params.plantId, photoId);
-      ctx.set('Cache-Control', 'public, max-age=3600');
+      // A photo id names one source image for good (new photos get new ids), so
+      // clients keep it; the id-less form follows the weekly refresh.
+      ctx.set('Cache-Control', photoId ? 'public, max-age=31536000, immutable' : 'public, max-age=86400');
       ctx.set('X-Content-Type-Options', 'nosniff');
       ctx.type = photo.type;
       ctx.body = photo.bytes;
@@ -167,6 +171,57 @@ module.exports = {
         await runtime.privateMediaStore.remove(storageKey);
         throw error;
       }
+    });
+  },
+
+  async getPrivateMediaContent(ctx) {
+    return withActor(ctx, async (runtime, actor) => {
+      rejectUnknownQuery(ctx.query, ['width']);
+      const mediaId = requireUuid(ctx.params.mediaId, 'mediaId');
+      const width = ctx.query.width === undefined ? undefined : Number(ctx.query.width);
+      if (width !== undefined && !PrivateMediaStore.VARIANT_WIDTHS.includes(width)) {
+        throw invalidRequest({ width: `Erlaubte Breiten: ${PrivateMediaStore.VARIANT_WIDTHS.join(', ')}.` });
+      }
+      // Owner-scoped lookup: another account's media id is indistinguishable
+      // from a missing one.
+      const media = await runtime.repositories.field.findPrivateMediaByPublicId(actor.id, mediaId);
+      if (!media || media.status !== 'uploaded' || !media.storageKey) {
+        throw new ProblemError('MEDIA_NOT_FOUND', { status: 404, detail: 'Dieses Bild wurde nicht gefunden.' });
+      }
+      const resized = width ? await runtime.privateMediaStore.readVariant(media.storageKey, width) : undefined;
+      const bytes = resized || await runtime.privateMediaStore.read(media.storageKey);
+      // A media id is never reused for other bytes, so the response is immutable.
+      ctx.set('Cache-Control', 'private, max-age=31536000, immutable');
+      ctx.set('ETag', `"${media.sha256 || mediaId}${resized ? `-w${width}` : ''}"`);
+      ctx.set('X-Content-Type-Options', 'nosniff');
+      if (ctx.fresh) {
+        ctx.status = 304;
+        return undefined;
+      }
+      ctx.type = resized ? 'image/jpeg' : (media.contentType || 'application/octet-stream');
+      ctx.body = bytes;
+      return undefined;
+    });
+  },
+
+  async getSpeciesCard(ctx) {
+    return withActor(ctx, async (runtime) => {
+      const key = String(ctx.params.speciesKey || '');
+      if (!/^[a-z0-9-]{2,120}$/.test(key)) {
+        throw invalidRequest({ speciesKey: 'Ungültiger Artschlüssel.' });
+      }
+      const card = await runtime.species.getCard(key);
+      const stats = await runtime.stats.collection();
+      const collectedShare = stats.available ? stats.species[key] : undefined;
+      ctx.set('Cache-Control', 'private, max-age=600');
+      return { ...card, ...(collectedShare ? { collectedShare } : {}) };
+    });
+  },
+
+  async getCollectionStats(ctx) {
+    return withActor(ctx, async (runtime) => {
+      ctx.set('Cache-Control', 'private, max-age=600');
+      return runtime.stats.collection();
     });
   },
 

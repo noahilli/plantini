@@ -87,7 +87,10 @@ Class | Method | HTTP request | Description
 [*FieldApi*](doc/FieldApi.md) | [**uploadPrivateMediaContent**](doc/FieldApi.md#uploadprivatemediacontent) | **POST** /media/uploads/{mediaId}/content | Upload bytes to a caller-owned short-lived media reservation
 [*HerbariumApi*](doc/HerbariumApi.md) | [**createObservation**](doc/HerbariumApi.md#createobservation) | **POST** /observations | Create an idempotent private observation
 [*HerbariumApi*](doc/HerbariumApi.md) | [**deleteObservation**](doc/HerbariumApi.md#deleteobservation) | **DELETE** /observations/{observationId} | Create an observation tombstone
+[*HerbariumApi*](doc/HerbariumApi.md) | [**getCollectionStats**](doc/HerbariumApi.md#getcollectionstats) | **GET** /stats/collection | Share of accounts that collected each plant or species
 [*HerbariumApi*](doc/HerbariumApi.md) | [**getObservation**](doc/HerbariumApi.md#getobservation) | **GET** /observations/{observationId} | Read one caller-owned observation
+[*HerbariumApi*](doc/HerbariumApi.md) | [**getPrivateMediaContent**](doc/HerbariumApi.md#getprivatemediacontent) | **GET** /media/{mediaId}/content | Read one of the caller&#39;s own uploaded photos
+[*HerbariumApi*](doc/HerbariumApi.md) | [**getSpeciesCard**](doc/HerbariumApi.md#getspeciescard) | **GET** /species/{speciesKey} | Info card of a species found by users that is not part of any ecosystem
 [*HerbariumApi*](doc/HerbariumApi.md) | [**listObservations**](doc/HerbariumApi.md#listobservations) | **GET** /observations | List caller-owned herbarium observations
 [*HerbariumApi*](doc/HerbariumApi.md) | [**updateObservation**](doc/HerbariumApi.md#updateobservation) | **PATCH** /observations/{observationId} | Update an observation with optimistic concurrency
 [*LearningApi*](doc/LearningApi.md) | [**completeLevelAttempt**](doc/LearningApi.md#completelevelattempt) | **POST** /level-attempts/{attemptId}/complete | Complete an attempt with server-side scoring
@@ -114,6 +117,8 @@ Class | Method | HTTP request | Description
  - [AdminUser](doc/AdminUser.md)
  - [AdminUserPage](doc/AdminUserPage.md)
  - [AdministrativeJob](doc/AdministrativeJob.md)
+ - [CollectionShare](doc/CollectionShare.md)
+ - [CollectionStats](doc/CollectionStats.md)
  - [CompleteLevelAttemptRequest](doc/CompleteLevelAttemptRequest.md)
  - [CompletionRule](doc/CompletionRule.md)
  - [ConfirmIdentificationRequest](doc/ConfirmIdentificationRequest.md)
@@ -141,6 +146,7 @@ Class | Method | HTTP request | Description
  - [LevelProgress](doc/LevelProgress.md)
  - [MediaUpload](doc/MediaUpload.md)
  - [Observation](doc/Observation.md)
+ - [ObservationLocation](doc/ObservationLocation.md)
  - [ObservationPage](doc/ObservationPage.md)
  - [PageMeta](doc/PageMeta.md)
  - [Plant](doc/Plant.md)
@@ -153,6 +159,7 @@ Class | Method | HTTP request | Description
  - [QuizChoice](doc/QuizChoice.md)
  - [QuizItem](doc/QuizItem.md)
  - [QuizItemPage](doc/QuizItemPage.md)
+ - [SpeciesCard](doc/SpeciesCard.md)
  - [StartLevelAttemptRequest](doc/StartLevelAttemptRequest.md)
  - [SyncRequest](doc/SyncRequest.md)
  - [SyncResponse](doc/SyncResponse.md)

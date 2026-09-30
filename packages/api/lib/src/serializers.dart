@@ -20,6 +20,8 @@ import 'package:openapi/src/model/admin_dashboard.dart';
 import 'package:openapi/src/model/admin_user.dart';
 import 'package:openapi/src/model/admin_user_page.dart';
 import 'package:openapi/src/model/administrative_job.dart';
+import 'package:openapi/src/model/collection_share.dart';
+import 'package:openapi/src/model/collection_stats.dart';
 import 'package:openapi/src/model/complete_level_attempt_request.dart';
 import 'package:openapi/src/model/completion_rule.dart';
 import 'package:openapi/src/model/confirm_identification_request.dart';
@@ -47,6 +49,7 @@ import 'package:openapi/src/model/level_completion.dart';
 import 'package:openapi/src/model/level_progress.dart';
 import 'package:openapi/src/model/media_upload.dart';
 import 'package:openapi/src/model/observation.dart';
+import 'package:openapi/src/model/observation_location.dart';
 import 'package:openapi/src/model/observation_page.dart';
 import 'package:openapi/src/model/page_meta.dart';
 import 'package:openapi/src/model/plant.dart';
@@ -59,6 +62,7 @@ import 'package:openapi/src/model/quiz_answer.dart';
 import 'package:openapi/src/model/quiz_choice.dart';
 import 'package:openapi/src/model/quiz_item.dart';
 import 'package:openapi/src/model/quiz_item_page.dart';
+import 'package:openapi/src/model/species_card.dart';
 import 'package:openapi/src/model/start_level_attempt_request.dart';
 import 'package:openapi/src/model/sync_request.dart';
 import 'package:openapi/src/model/sync_response.dart';
@@ -75,6 +79,8 @@ part 'serializers.g.dart';
   AdminUser,
   AdminUserPage,
   AdministrativeJob,
+  CollectionShare,
+  CollectionStats,
   CompleteLevelAttemptRequest,
   CompletionRule,
   ConfirmIdentificationRequest,
@@ -102,6 +108,7 @@ part 'serializers.g.dart';
   LevelProgress,
   MediaUpload,
   Observation,
+  ObservationLocation,
   ObservationPage,
   PageMeta,
   Plant,
@@ -114,6 +121,7 @@ part 'serializers.g.dart';
   QuizChoice,
   QuizItem,
   QuizItemPage,
+  SpeciesCard,
   StartLevelAttemptRequest,
   SyncRequest,
   SyncResponse,
@@ -161,6 +169,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ContentPackage)]),
         () => ListBuilder<ContentPackage>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltMap, [FullType(String), FullType(CollectionShare)]),
+        () => MapBuilder<String, CollectionShare>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(PlantProfileCardsInner)]),
