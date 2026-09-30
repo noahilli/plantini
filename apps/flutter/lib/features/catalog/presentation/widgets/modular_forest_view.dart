@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/diagnostics/frame_stats.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
+import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
 
@@ -89,6 +90,7 @@ final class _ModularForestViewState extends State<ModularForestView>
     // Repaint only when the animation moves to the next of _phases recorded
     // frames, not on every tick: sway and water are slow, and a replayed
     // picture costs almost nothing.
+    DayClock.phase.addListener(_dayChanged);
     _clock.addListener(() {
       final phase = (_clock.value * _phases).floor() % _phases;
       if (phase != _lastPhase) {
@@ -96,6 +98,10 @@ final class _ModularForestViewState extends State<ModularForestView>
         _frames.value++;
       }
     });
+  }
+
+  void _dayChanged() {
+    if (mounted) setState(() {});
   }
 
   List<Level> get _levels =>
@@ -126,6 +132,7 @@ final class _ModularForestViewState extends State<ModularForestView>
 
   @override
   void dispose() {
+    DayClock.phase.removeListener(_dayChanged);
     _clock.dispose();
     _frames.dispose();
     _cache.dispose();
@@ -228,6 +235,7 @@ final class _ModularForestViewState extends State<ModularForestView>
                                   MediaQuery.disableAnimationsOf(context),
                                   _frames,
                                   widget.world.background,
+                                  WorldLighting.of(DayClock.phase.value),
                                   _cache,
                                   levels.indexWhere(
                                     (l) =>
@@ -306,41 +314,56 @@ final class _ModularForestViewState extends State<ModularForestView>
       top: at.dy - 24,
       width: 48,
       height: 48,
-      child: Semantics(
-        label:
-            'Level ${level.sequence}: ${level.title}. ${level.isUnlocked ? 'Spielbar' : 'Gesperrt'}',
-        button: true,
-        enabled: level.isUnlocked,
-        child: Tooltip(
-          message: level.title,
-          child: Material(
-            color: level.status == LevelStatus.completed
-                ? AppColors.accent300
-                : level.isUnlocked
-                ? AppColors.neutral100
-                : AppColors.sage300,
-            elevation: 3,
-            shape: const CircleBorder(),
-            child: InkWell(
-              key: ValueKey('level-card-${level.id}'),
-              customBorder: const CircleBorder(),
-              onTap: level.isUnlocked && widget.onLevelTap != null
-                  ? () => widget.onLevelTap!(level)
-                  : null,
-              child: Center(
-                child: level.isUnlocked
-                    ? Text(
-                        '${level.sequence}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.sage900,
+      child: DecoratedBox(
+        // Station lanterns glow in the evening and at night.
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            if (WorldLighting.of(DayClock.phase.value).lamps &&
+                level.isUnlocked)
+              BoxShadow(
+                color: const Color(0xAAFFC46B),
+                blurRadius: DayClock.phase.value == DayPhase.night ? 22 : 14,
+                spreadRadius: DayClock.phase.value == DayPhase.night ? 4 : 1,
+              ),
+          ],
+        ),
+        child: Semantics(
+          label:
+              'Level ${level.sequence}: ${level.title}. ${level.isUnlocked ? 'Spielbar' : 'Gesperrt'}',
+          button: true,
+          enabled: level.isUnlocked,
+          child: Tooltip(
+            message: level.title,
+            child: Material(
+              color: level.status == LevelStatus.completed
+                  ? AppColors.accent300
+                  : level.isUnlocked
+                  ? AppColors.neutral100
+                  : AppColors.sage300,
+              elevation: 3,
+              shape: const CircleBorder(),
+              child: InkWell(
+                key: ValueKey('level-card-${level.id}'),
+                customBorder: const CircleBorder(),
+                onTap: level.isUnlocked && widget.onLevelTap != null
+                    ? () => widget.onLevelTap!(level)
+                    : null,
+                child: Center(
+                  child: level.isUnlocked
+                      ? Text(
+                          '${level.sequence}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.sage900,
+                          ),
+                        )
+                      : const Icon(
+                          Icons.lock_outline,
+                          size: 18,
+                          color: AppColors.sage800,
                         ),
-                      )
-                    : const Icon(
-                        Icons.lock_outline,
-                        size: 18,
-                        color: AppColors.sage800,
-                      ),
+                ),
               ),
             ),
           ),
@@ -381,6 +404,7 @@ final class _ForestPainter extends CustomPainter {
     this.reduceMotion,
     Listenable frames,
     this.background,
+    this.lighting,
     this.cache,
     this.currentIndex,
   ) : super(repaint: frames);
@@ -391,6 +415,7 @@ final class _ForestPainter extends CustomPainter {
   final bool reduceMotion;
   final int currentIndex;
   final Color background;
+  final WorldLighting lighting;
   final PictureCache cache;
 
   @override
@@ -406,6 +431,7 @@ final class _ForestPainter extends CustomPainter {
       levelCount,
       currentIndex,
       background,
+      lighting.phase,
     );
     final picture = cache.obtain(key, phase, () => _record(size, phase));
     canvas.drawPicture(picture);
@@ -415,7 +441,7 @@ final class _ForestPainter extends CustomPainter {
   ui.Picture _record(Size size, int phaseIndex) {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    canvas.drawColor(background, BlendMode.src);
+    paintSkyBackdrop(canvas, size, lighting, background);
     final phase = reduceMotion ? 0.0 : phaseIndex / _phases * math.pi * 2;
     final center = (view.focus / 10).round();
     final instances = <SceneInstance>[];
@@ -433,19 +459,27 @@ final class _ForestPainter extends CustomPainter {
         final ranger = mesh.motion == 'ranger'
             ? module.slots[currentIndex % 6]
             : null;
+        final dx = ranger == null ? 0.0 : ranger[0] + .65;
+        final dy =
+            (ranger == null ? 0.0 : ranger[1] - .2) +
+            m * 10 +
+            (mesh.motion == 'water' ? math.sin(phase) * .17 : 0);
         instances.add(
           SceneInstance(
             mesh,
-            dx: ranger == null ? 0 : ranger[0] + .65,
-            dy:
-                (ranger == null ? 0 : ranger[1] - .2) +
-                m * 10 +
-                (mesh.motion == 'water' ? math.sin(phase) * .17 : 0),
+            dx: dx,
+            dy: dy,
             sway: mesh.motion == 'tree' || mesh.motion == 'plant'
                 ? math.sin(phase + m) * .022
                 : 0,
           ),
         );
+        if (mesh.motion == 'tree' || mesh.motion == 'ranger') {
+          final shadow = mesh.shadowFor(lighting);
+          if (shadow != null) {
+            instances.add(SceneInstance(shadow, dx: dx, dy: dy));
+          }
+        }
       }
     }
     final vertices = SceneBuilder.build(
@@ -457,6 +491,7 @@ final class _ForestPainter extends CustomPainter {
         ox: size.width / 2,
         oy: size.height / 2,
       ),
+      lighting: lighting,
       cullHeight: size.height,
     );
     if (vertices != null) {
@@ -472,5 +507,6 @@ final class _ForestPainter extends CustomPainter {
       old.module != module ||
       old.levelCount != levelCount ||
       old.background != background ||
+      old.lighting != lighting ||
       old.reduceMotion != reduceMotion;
 }

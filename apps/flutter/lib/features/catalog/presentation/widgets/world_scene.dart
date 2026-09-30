@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'world_lighting.dart';
 import 'world_module.dart';
 
 /// One mesh placed into a scene: shifted by [dx]/[dy] and swaying sideways in
@@ -50,6 +51,9 @@ abstract final class SceneBuilder {
   static Float32List _pos = Float32List(0);
   static Int32List _col = Int32List(0);
 
+  // The vitrine shows colours without the display gamma the path uses, so the
+  // light is lifted a little to keep both views equally bright.
+  static const _viewerGain = 1.22;
   static const _idxRange = 1048576.0; // faces per scene < 2^20
   static const _depthRange = 40.0;
 
@@ -58,8 +62,10 @@ abstract final class SceneBuilder {
     List<SceneInstance> instances,
     SceneProjection p, {
     SceneShading shading = SceneShading.path,
+    WorldLighting? lighting,
     double? cullHeight,
   }) {
+    lighting ??= WorldLighting.of(DayPhase.noon);
     var total = 0, maxVertices = 0;
     for (final i in instances) {
       total += i.mesh.faceCount;
@@ -101,7 +107,7 @@ abstract final class SceneBuilder {
       final group = mesh.groundGroup * 65536.0;
       final normals = mesh.faceNormals;
       final baseR = mesh.color.r, baseG = mesh.color.g, baseB = mesh.color.b;
-      final pathColors = mesh.pathColors;
+      final pathColors = mesh.pathColorsFor(lighting);
       for (var f = 0; f < mesh.faceCount; f++) {
         final a = t[f * 3], b = t[f * 3 + 1], d = t[f * 3 + 2];
         final ya = py[a], yb = py[b], yd = py[d];
@@ -130,12 +136,17 @@ abstract final class SceneBuilder {
           final nx = normals[f * 3],
               ny = normals[f * 3 + 1],
               nz = normals[f * 3 + 2];
+          // The model turns under a light that stays put relative to the viewer.
           final lx = nx * cos - ny * sin, ly = nx * sin + ny * cos;
-          final light =
-              .72 + .32 * (-lx * .3 - ly * .4 + nz * .85).clamp(0.0, 1.0);
-          int ch(double v) => (v * light * 255).clamp(0, 255).round();
-          col[count] =
-              0xFF000000 | (ch(baseR) << 16) | (ch(baseG) << 8) | ch(baseB);
+          col[count] = lighting.shade(
+            baseR * _viewerGain,
+            baseG * _viewerGain,
+            baseB * _viewerGain,
+            lx,
+            ly,
+            nz,
+            gamma: false,
+          );
         }
         count++;
       }

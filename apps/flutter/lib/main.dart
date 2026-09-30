@@ -13,6 +13,7 @@ import 'core/ids/client_id_generator.dart';
 import 'core/images/image_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/time/clock.dart';
+import 'features/catalog/presentation/widgets/world_lighting.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
 import 'features/catalog/infrastructure/cached_catalog_repository.dart';
 import 'features/catalog/infrastructure/content_sync_factory.dart';
@@ -30,6 +31,18 @@ import 'features/herbarium/infrastructure/offline_herbarium_repository.dart';
 import 'features/learning/application/learning_session_service.dart';
 import 'features/learning/infrastructure/http_learning_repository.dart';
 import 'features/learning/infrastructure/shared_preferences_learning_session_store.dart';
+
+/// The remembered time-of-day choice; a build can also pin one with
+/// `--dart-define=PLANTINI_DAYTIME=night` (used to review the lighting).
+void _restoreDayPin(SharedPreferences preferences) {
+  const defined = String.fromEnvironment('PLANTINI_DAYTIME');
+  final name = defined.isNotEmpty
+      ? defined
+      : preferences.getString('daytime_pin');
+  for (final phase in DayPhase.values) {
+    if (phase.name == name) DayClock.pin(phase);
+  }
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,6 +79,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
   Future<AppDependencies> _initialize() async {
     final config = AppConfig.fromDartDefines();
     final preferences = await SharedPreferences.getInstance();
+    _restoreDayPin(preferences);
     final auth = AuthService(config: config);
     await auth.initialize();
     final api = PlatformApiClient(

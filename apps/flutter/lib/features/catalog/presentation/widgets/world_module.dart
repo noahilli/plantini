@@ -4,6 +4,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
+import 'world_lighting.dart';
+
 /// Parsed Blender module (assets/worlds/*_module.json): plain mesh data that
 /// both the level-path renderer and the ecosystem vitrine project themselves.
 final class WorldModule {
@@ -48,6 +50,19 @@ final class WorldMesh {
       ),
       motion = j['motion'] as String,
       slot = j['slot'] as int?;
+
+  /// A flat-coloured mesh made in code (shadows).
+  WorldMesh.synthetic({
+    required this.name,
+    required this.vertices,
+    required this.faces,
+    required int argb,
+    required this.motion,
+  }) : color = Color(argb),
+       slot = null,
+       _fixedArgb = argb;
+
+  int? _fixedArgb;
   final List<List<double>> vertices;
   final String name;
   final List<List<int>> faces;
@@ -108,34 +123,107 @@ final class WorldMesh {
     return out;
   }();
 
-  /// Level-path shading per face as ARGB: fixed sun in world space plus the
-  /// gamma step the path view has always used.
-  late final Int32List pathColors = () {
-    final n = faceNormals;
-    final out = Int32List(faces.length);
-    for (var f = 0; f < faces.length; f++) {
-      final light =
-          .70 +
-          .30 *
-              (-n[f * 3] * .3 - n[f * 3 + 1] * .4 + n[f * 3 + 2] * .85).clamp(
-                0.0,
-                1.0,
-              );
-      int ch(double c) =>
-          (math.pow(c * light, 1 / 2.2) * 255).round().clamp(0, 255);
-      out[f] =
-          0xFF000000 | (ch(color.r) << 16) | (ch(color.g) << 8) | ch(color.b);
-    }
-    return out;
-  }();
+  final _pathColors = <DayPhase, Int32List>{};
+
+  /// Level-path shading per face as ARGB for one time of day (computed once per
+  /// phase): the sun fixed in world space plus the gamma step the path view
+  /// has always used.
+  Int32List pathColorsFor(WorldLighting lighting) =>
+      _pathColors[lighting.phase] ??= () {
+        final fixed = _fixedArgb;
+        if (fixed != null) {
+          return Int32List(faces.length)..fillRange(0, faces.length, fixed);
+        }
+        final n = faceNormals;
+        final out = Int32List(faces.length);
+        for (var f = 0; f < faces.length; f++) {
+          out[f] = lighting.shade(
+            color.r,
+            color.g,
+            color.b,
+            n[f * 3],
+            n[f * 3 + 1],
+            n[f * 3 + 2],
+            gamma: true,
+          );
+        }
+        return out;
+      }();
+
+  final _shadows = <DayPhase, WorldMesh?>{};
+
+  /// The silhouette this mesh throws on the ground for [lighting]: the convex
+  /// hull of its vertices projected along the light onto the ground plane, as
+  /// one translucent polygon (null while the sun is too low or the mesh flat).
+  /// Coordinates are local to the mesh; place it with the mesh's own offset.
+  WorldMesh? shadowFor(WorldLighting lighting) =>
+      _shadows.putIfAbsent(lighting.phase, () {
+        // Very low sun would throw endless shadows; cap the stretch.
+        final lz = math.max(lighting.toSun[2], .7);
+        final dx = lighting.toSun[0] / lz, dy = lighting.toSun[1] / lz;
+        final c = coords;
+        final pts = <List<double>>[];
+        for (var v = 0; v < vertexCount; v++) {
+          final z = math.max(c[v * 3 + 2], 0);
+          pts.add([c[v * 3] - z * dx, c[v * 3 + 1] - z * dy]);
+        }
+        final hull = _convexHull(pts);
+        if (hull.length < 3) return null;
+        final alpha = switch (lighting.phase) {
+          DayPhase.night => 0x22,
+          DayPhase.noon => 0x40,
+          _ => 0x3A,
+        };
+        return WorldMesh.synthetic(
+          name: '$name-shadow',
+          vertices: [
+            for (final p in hull) [p[0], p[1], .02],
+          ],
+          faces: [
+            for (var i = 1; i < hull.length - 1; i++) [0, i, i + 1],
+          ],
+          argb: (alpha << 24) | 0x1C2618,
+          motion: 'shadow',
+        );
+      });
 
   /// Draw-order group of the broad terrain planes: they go first, then props.
   /// Higher groups are painted earlier (same rule the path view always had).
   late final int groundGroup = () {
+    if (motion == 'shadow') return 2;
     if (name == 'earth' || name == 'grass') return 4;
     if (name.startsWith('Sandy stream')) return 3;
     if (name.startsWith('Flowing woodland')) return 2;
     if (name.startsWith('Animated water')) return 1;
     return 0;
   }();
+}
+
+/// Andrew's monotone chain, counter-clockwise, without the closing point.
+List<List<double>> _convexHull(List<List<double>> points) {
+  final p = [
+    ...points,
+  ]..sort((a, b) => a[0] != b[0] ? a[0].compareTo(b[0]) : a[1].compareTo(b[1]));
+  if (p.length < 3) return p;
+  double cross(List<double> o, List<double> a, List<double> b) =>
+      (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  final lower = <List<double>>[];
+  for (final q in p) {
+    while (lower.length >= 2 &&
+        cross(lower[lower.length - 2], lower.last, q) <= 0) {
+      lower.removeLast();
+    }
+    lower.add(q);
+  }
+  final upper = <List<double>>[];
+  for (final q in p.reversed) {
+    while (upper.length >= 2 &&
+        cross(upper[upper.length - 2], upper.last, q) <= 0) {
+      upper.removeLast();
+    }
+    upper.add(q);
+  }
+  lower.removeLast();
+  upper.removeLast();
+  return [...lower, ...upper];
 }

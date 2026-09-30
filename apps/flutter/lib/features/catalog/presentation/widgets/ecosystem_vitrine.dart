@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/diagnostics/frame_stats.dart';
 import 'modular_forest_view.dart' show EcosystemWorld;
+import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
 
@@ -115,6 +116,14 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder<DayPhase>(
+      valueListenable: DayClock.phase,
+      builder: (context, phase, _) => _buildFor(context, phase),
+    );
+  }
+
+  Widget _buildFor(BuildContext context, DayPhase phase) {
+    final lighting = WorldLighting.of(phase);
     final world = widget.world;
     final label =
         widget.semanticLabel ??
@@ -147,6 +156,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                             module,
                             widget.yaw,
                             pixelRatio,
+                            lighting,
                           ),
                         );
                       }
@@ -158,7 +168,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                           CustomPaint(
                             isComplex: true,
                             willChange: false,
-                            painter: _CaseBackPainter(world),
+                            painter: _CaseBackPainter(world, lighting),
                           ),
                           if (module != null)
                             CustomPaint(
@@ -172,6 +182,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                                 _bucket,
                                 pixelRatio: pixelRatio,
                                 asImage: false,
+                                lighting: lighting,
                               ),
                             ),
                           const CustomPaint(
@@ -211,6 +222,7 @@ final class _MiniWorldPainter extends CustomPainter {
     this.bucket, {
     required this.pixelRatio,
     required this.asImage,
+    required this.lighting,
   }) : super(repaint: step);
 
   final WorldModule module;
@@ -218,6 +230,7 @@ final class _MiniWorldPainter extends CustomPainter {
   final ValueNotifier<int> step;
   final double bucket;
   final double pixelRatio;
+  final WorldLighting lighting;
 
   /// Resting vitrines are rasterised once into a GPU texture: scrolling then
   /// costs a textured quad instead of re-drawing ~19k triangles per vitrine
@@ -240,7 +253,7 @@ final class _MiniWorldPainter extends CustomPainter {
     }
     _retired.clear();
     final key =
-        '$asset|${step.value}|${size.width.round()}x${size.height.round()}|'
+        '$asset|${lighting.phase.name}|${step.value}|${size.width.round()}x${size.height.round()}|'
         '${asImage ? 'i${pixelRatio.toStringAsFixed(2)}' : 'p'}';
     var entry = _cache.remove(key); // re-insert below: most recent last
     if (entry == null) {
@@ -281,7 +294,7 @@ final class _MiniWorldPainter extends CustomPainter {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     if (scale != 1) canvas.scale(scale);
-    _drawModel(canvas, module, yaw, size);
+    _drawModel(canvas, module, yaw, size, lighting);
     return recorder.endRecording();
   }
 
@@ -290,11 +303,18 @@ final class _MiniWorldPainter extends CustomPainter {
       old.module != module ||
       old.asset != asset ||
       old.pixelRatio != pixelRatio ||
+      old.lighting != lighting ||
       old.asImage != asImage;
 }
 
 /// Projects and paints the miniature into [canvas] for the given angle.
-void _drawModel(Canvas canvas, WorldModule module, double yaw, Size size) {
+void _drawModel(
+  Canvas canvas,
+  WorldModule module,
+  double yaw,
+  Size size,
+  WorldLighting lighting,
+) {
   final fit = _Fit(module, yaw, size);
   final instances = <SceneInstance>[
     for (final mesh in module.meshes)
@@ -316,6 +336,7 @@ void _drawModel(Canvas canvas, WorldModule module, double yaw, Size size) {
       oy: fit.origin.dy,
     ),
     shading: SceneShading.viewer,
+    lighting: lighting,
   );
   if (vertices != null) {
     canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
@@ -327,11 +348,18 @@ void _drawModel(Canvas canvas, WorldModule module, double yaw, Size size) {
 /// Scrolling a list of them then costs one textured quad each, instead of
 /// replaying gradients, clips and a blurred shadow per vitrine per frame.
 final class _BakedCasePainter extends CustomPainter {
-  const _BakedCasePainter(this.world, this.module, this.yaw, this.pixelRatio);
+  const _BakedCasePainter(
+    this.world,
+    this.module,
+    this.yaw,
+    this.pixelRatio,
+    this.lighting,
+  );
 
   final EcosystemWorld world;
   final WorldModule module;
   final double yaw, pixelRatio;
+  final WorldLighting lighting;
 
   static final _images = <String, ui.Image>{};
   static final _retired = <ui.Image>[];
@@ -345,7 +373,7 @@ final class _BakedCasePainter extends CustomPainter {
     }
     _retired.clear();
     final key =
-        '${world.asset}|${yaw.toStringAsFixed(3)}|${size.width.round()}x${size.height.round()}|${pixelRatio.toStringAsFixed(2)}';
+        '${world.asset}|${lighting.phase.name}|${yaw.toStringAsFixed(3)}|${size.width.round()}x${size.height.round()}|${pixelRatio.toStringAsFixed(2)}';
     var image = _images.remove(key);
     if (image == null) {
       if (_images.length >= _maxImages) {
@@ -354,8 +382,8 @@ final class _BakedCasePainter extends CustomPainter {
       final timer = Stopwatch()..start();
       final recorder = ui.PictureRecorder();
       final rec = Canvas(recorder)..scale(pixelRatio);
-      _CaseBackPainter(world).paint(rec, size);
-      _drawModel(rec, module, yaw, size);
+      _CaseBackPainter(world, lighting).paint(rec, size);
+      _drawModel(rec, module, yaw, size, lighting);
       const _CaseFrontPainter().paint(rec, size);
       final picture = recorder.endRecording();
       image = picture.toImageSync(
@@ -379,6 +407,7 @@ final class _BakedCasePainter extends CustomPainter {
       old.world != world ||
       old.module != module ||
       old.yaw != yaw ||
+      old.lighting != lighting ||
       old.pixelRatio != pixelRatio;
 }
 
@@ -439,8 +468,9 @@ final class _Fit {
 // Case: back wall + plinth behind the model, glass + brass in front of it.
 
 final class _CaseBackPainter extends CustomPainter {
-  const _CaseBackPainter(this.world);
+  const _CaseBackPainter(this.world, this.lighting);
   final EcosystemWorld world;
+  final WorldLighting lighting;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -452,25 +482,34 @@ final class _CaseBackPainter extends CustomPainter {
     canvas.save();
     canvas.clipRRect(clip);
 
-    // Back wall: a soft, slightly tinted gallery light.
+    // Back wall: a soft, slightly tinted gallery light; the sky colour and the
+    // sun or moon glow follow the time of day.
     final tint = world.background;
+    final noon = lighting.phase == DayPhase.noon;
+    final (skyTop, skyBottom) = lighting.backdrop(tint);
     canvas.drawRect(
       Offset.zero & size,
       Paint()
         ..shader = ui.Gradient.linear(Offset.zero, Offset(0, size.height), [
-          Color.lerp(const Color(0xFFFFFCF5), tint, .35)!,
-          Color.lerp(tint, const Color(0xFF9FB289), .35)!,
+          noon ? Color.lerp(const Color(0xFFFFFCF5), tint, .35)! : skyTop,
+          noon ? Color.lerp(tint, const Color(0xFF9FB289), .35)! : skyBottom,
         ]),
+    );
+    final glowAt = Offset(
+      size.width * (.5 + (noon ? 0 : lighting.glowAt.x) * .42),
+      size.height * (noon ? .16 : .5 + lighting.glowAt.y * .36),
     );
     canvas.drawRect(
       Offset.zero & size,
       Paint()
-        ..shader = ui.Gradient.radial(
-          Offset(size.width * .5, size.height * .16),
-          size.width * .75,
-          [const Color(0x99FFFFFF), const Color(0x00FFFFFF)],
-        ),
+        ..shader = ui.Gradient.radial(glowAt, size.width * .75, [
+          noon ? const Color(0x99FFFFFF) : lighting.glow.withValues(alpha: .6),
+          const Color(0x00FFFFFF),
+        ]),
     );
+    if (lighting.stars) {
+      paintStars(canvas, Size(size.width, size.height * .8), 16);
+    }
 
     // Plinth: walnut with a lit top edge and faint grain.
     final top = size.height * .77;
@@ -510,7 +549,8 @@ final class _CaseBackPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _CaseBackPainter old) => old.world != world;
+  bool shouldRepaint(covariant _CaseBackPainter old) =>
+      old.world != world || old.lighting != lighting;
 }
 
 final class _CaseFrontPainter extends CustomPainter {

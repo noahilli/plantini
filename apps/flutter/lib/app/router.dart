@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/auth_service.dart';
 import '../core/theme/app_colors.dart';
@@ -8,6 +9,7 @@ import '../features/catalog/domain/plant_model.dart';
 import '../features/catalog/presentation/catalog_screens.dart';
 import '../features/catalog/presentation/plant_detail_screen.dart';
 import '../features/catalog/presentation/widgets/ecosystem_vitrine.dart';
+import '../features/catalog/presentation/widgets/world_lighting.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart'
     show EcosystemWorld;
 import '../features/field/presentation/field_capture_screen.dart';
@@ -300,6 +302,8 @@ final class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 18),
+                  const _DayTimeCard(),
+                  const SizedBox(height: 18),
                   Card(
                     child: Column(
                       children: [
@@ -343,6 +347,95 @@ final class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Lets the pupil look at the ecosystems at another time of day.
+final class _DayTimeCard extends StatefulWidget {
+  const _DayTimeCard();
+
+  @override
+  State<_DayTimeCard> createState() => _DayTimeCardState();
+}
+
+final class _DayTimeCardState extends State<_DayTimeCard> {
+  static const prefsKey = 'daytime_pin';
+
+  Future<void> _choose(DayPhase? phase) async {
+    DayClock.pin(phase);
+    setState(() {});
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (phase == null) {
+        await prefs.remove(prefsKey);
+      } else {
+        await prefs.setString(prefsKey, phase.name);
+      }
+    } catch (_) {
+      // Only the remembered choice is lost; the view already changed.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const CircleAvatar(
+                backgroundColor: AppColors.sage200,
+                child: Icon(
+                  Icons.wb_twilight_rounded,
+                  color: AppColors.sage800,
+                  size: 19,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Tageszeit der Ökosysteme',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      DayClock.pinned == null
+                          ? 'Folgt der Uhr: jetzt ${DayClock.phase.value.label}'
+                          : 'Fest eingestellt: ${DayClock.pinned!.label}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ChoiceChip(
+                key: const ValueKey('daytime-auto'),
+                label: const Text('Automatisch'),
+                selected: DayClock.pinned == null,
+                onSelected: (_) => _choose(null),
+              ),
+              for (final phase in DayPhase.values)
+                ChoiceChip(
+                  key: ValueKey('daytime-${phase.name}'),
+                  label: Text(phase.label),
+                  selected: DayClock.pinned == phase,
+                  onSelected: (_) => _choose(phase),
+                ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 final class _ProfileTile extends StatelessWidget {
