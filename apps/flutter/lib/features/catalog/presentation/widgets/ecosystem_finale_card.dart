@@ -100,9 +100,20 @@ final class EcosystemFinaleCard extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.w800),
                           ),
                           if (journey?.collectedPlantIds.contains(id) == true)
-                            const Text(
-                              'Gesammelt ✓',
-                              style: TextStyle(color: AppColors.sage700),
+                            const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.check_circle_rounded,
+                                  size: 17,
+                                  color: AppColors.sage700,
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Gesammelt',
+                                  style: TextStyle(color: AppColors.sage700),
+                                ),
+                              ],
                             )
                           else if (plants[id] != null)
                             TextButton(

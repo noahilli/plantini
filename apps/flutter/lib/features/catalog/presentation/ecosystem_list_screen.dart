@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/app_dependencies.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../design_system/async_state_view.dart';
 import '../domain/catalog_models.dart';
 import 'widgets/ecosystem_vitrine.dart';
@@ -275,6 +276,8 @@ final class _EcosystemCard extends StatelessWidget {
                               style: TextStyle(
                                 color: AppColors.bg,
                                 fontFamily: 'Caprasimo',
+                                fontFamilyFallback:
+                                    AppTypography.headingFallback,
                                 fontSize: 14,
                               ),
                             ),

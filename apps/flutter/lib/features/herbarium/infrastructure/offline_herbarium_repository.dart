@@ -332,12 +332,15 @@ final class OfflineHerbariumRepository implements HerbariumRepository {
       );
       if (result.isSuccess) await local.remove(clientId);
     } else if (record.remoteId == null) {
-      final location = record.entry.latitude != null && record.entry.longitude != null
-          ? LocationPrivacy.coarsen(ObservationLocation(
-              latitude: record.entry.latitude!,
-              longitude: record.entry.longitude!,
-              accuracyMeters: record.entry.accuracyMeters,
-            ))
+      final location =
+          record.entry.latitude != null && record.entry.longitude != null
+          ? LocationPrivacy.coarsen(
+              ObservationLocation(
+                latitude: record.entry.latitude!,
+                longitude: record.entry.longitude!,
+                accuracyMeters: record.entry.accuracyMeters,
+              ),
+            )
           : null;
 
       result = await remote.createEntry(

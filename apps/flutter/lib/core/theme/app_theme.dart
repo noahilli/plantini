@@ -56,6 +56,7 @@ abstract final class AppTheme {
           shape: const StadiumBorder(),
           textStyle: const TextStyle(
             fontFamily: AppTypography.headingFamily,
+            fontFamilyFallback: AppTypography.headingFallback,
             fontSize: 14,
           ),
         ),
@@ -69,6 +70,7 @@ abstract final class AppTheme {
           shape: const StadiumBorder(),
           textStyle: const TextStyle(
             fontFamily: AppTypography.headingFamily,
+            fontFamilyFallback: AppTypography.headingFallback,
             fontSize: 14,
           ),
         ),

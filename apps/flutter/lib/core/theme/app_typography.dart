@@ -4,39 +4,51 @@ abstract final class AppTypography {
   static const headingFamily = 'Caprasimo';
   static const bodyFamily = 'Figtree';
 
+  /// Caprasimo lacks e.g. '·' and '→'. Falling back to the bundled Figtree keeps
+  /// those glyphs local; otherwise the web build fetches a fallback font from a
+  /// third-party CDN.
+  static const headingFallback = <String>[bodyFamily];
+
   static const TextTheme textTheme = TextTheme(
     displayLarge: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 42,
       height: 1.12,
     ),
     displayMedium: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 32,
       height: 1.12,
     ),
     displaySmall: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 27,
       height: 1.1,
     ),
     headlineLarge: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 27,
       height: 1.1,
     ),
     headlineMedium: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 25,
       height: 1.12,
     ),
     headlineSmall: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 20,
       height: 1.12,
     ),
     titleLarge: TextStyle(
       fontFamily: headingFamily,
+      fontFamilyFallback: headingFallback,
       fontSize: 19,
       height: 1.15,
     ),
