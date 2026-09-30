@@ -46,6 +46,23 @@ final class CharacterStore extends ChangeNotifier {
     if (_status == CharacterStatus.ready && !_placeholder) return;
     _status = CharacterStatus.loading;
     notifyListeners();
+    try {
+      await _load();
+    } catch (error, stack) {
+      // Whatever goes wrong (kit asset, cache, server), the app must open:
+      // the router holds the player on the boot screen until the status is ready.
+      debugPrint('CharacterStore sync failed: $error\n$stack');
+      if (PlayerLook.spec.value == null) {
+        _placeholder = true;
+        PlayerLook.spec.value = CharacterSpec.starter();
+      }
+    } finally {
+      _status = CharacterStatus.ready;
+      notifyListeners();
+    }
+  }
+
+  Future<void> _load() async {
     await CharacterKit.load();
     final cached = _readCache();
     if (cached != null) PlayerLook.spec.value = cached.spec;
@@ -70,8 +87,6 @@ final class CharacterStore extends ChangeNotifier {
           PlayerLook.spec.value = CharacterSpec.starter();
         }
     }
-    _status = CharacterStatus.ready;
-    notifyListeners();
   }
 
   /// Shows [spec] at once and sends it; a failed send is kept for later.

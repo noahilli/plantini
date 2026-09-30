@@ -43,3 +43,23 @@ test('a provider answer that is not a PNG is rejected', async () => {
   const proxy = new TileProxy({ root, fetchTile: async () => Buffer.from('<html>') });
   await assert.rejects(() => proxy.get({ z: 1, x: 0, y: 0 }), /not a PNG/);
 });
+
+test('a burst of tiles is served, at most six fetches run at once', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'tiles-'));
+  let running = 0;
+  let peak = 0;
+  const proxy = new TileProxy({
+    root,
+    fetchTile: async () => {
+      running += 1;
+      peak = Math.max(peak, running);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      running -= 1;
+      return png;
+    },
+  });
+  const tiles = Array.from({ length: 40 }, (_, i) => ({ z: 6, x: i, y: 1 }));
+  const results = await Promise.all(tiles.map((tile) => proxy.get(tile)));
+  assert.equal(results.length, 40);
+  assert.ok(peak <= 6, `peak ${peak}`);
+});

@@ -64,7 +64,7 @@ final class FieldProblem {
       UnauthorizedFailure() => const FieldProblem(
         title: 'Bitte neu anmelden',
         message: 'Deine Sitzung ist abgelaufen.',
-        hint: 'Melde dich erneut an. Dein Foto geht dabei nicht verloren.',
+        hint: 'Melde dich erneut an und mach das Foto danach noch einmal.',
         icon: Icons.lock_outline_rounded,
         needsLogin: true,
       ),

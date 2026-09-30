@@ -8,14 +8,15 @@ const MAX_BYTES = 256 * 1024;
 const MAX_ZOOM = 18;
 // OpenStreetMap's tile policy asks for caching of at least a week.
 const REFRESH_MS = 14 * 86400000;
-const MAX_PARALLEL = 8;
+const MAX_PARALLEL = 6;
+const { Limiter } = require('./limiter');
 const PNG = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
 function download(z, x, y) {
   return new Promise((resolve, reject) => {
     const request = https.get(`https://tile.openstreetmap.org/${z}/${x}/${y}.png`, {
       family: 4,
-      headers: { 'User-Agent': 'PlantiniBot/0.2 (https://plantini.eu; noah@illmann.net)' },
+      headers: { 'User-Agent': 'PlantiniBot/0.2 (+https://plantini.eu)' },
     }, (response) => {
       // No redirects: the provider cannot send the server elsewhere.
       if (response.statusCode !== 200) { response.resume(); reject(new Error(`Tile unavailable (${response.statusCode})`)); return; }
@@ -46,6 +47,7 @@ class TileProxy {
     this.fetchTile = fetchTile;
     this.clock = clock || (() => Date.now());
     this.pending = new Map();
+    this.limiter = new Limiter(MAX_PARALLEL);
   }
 
   static parse({ z, x, y }) {
@@ -61,8 +63,8 @@ class TileProxy {
   async get(tile) {
     const key = `${tile.z}/${tile.x}/${tile.y}`;
     if (this.pending.has(key)) return this.pending.get(key);
-    if (this.pending.size >= MAX_PARALLEL) throw new Error('Tile proxy busy');
-    const work = this.load(tile, key).finally(() => this.pending.delete(key));
+    // Excess requests wait for a slot: a map opens with dozens of tiles at once.
+    const work = this.limiter.run(() => this.load(tile, key)).finally(() => this.pending.delete(key));
     this.pending.set(key, work);
     return work;
   }

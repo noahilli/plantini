@@ -203,6 +203,8 @@ void main() {
     });
   });
 
+  throwingRepositoryTest();
+
   testWidgets('the creator changes a part and saves it', (tester) async {
     final repository = _FakeRepository();
     final store = await _store(repository);
@@ -241,3 +243,26 @@ void main() {
 }
 
 String _json(CharacterSpec spec) => jsonEncode(spec.toJson());
+
+final class _ThrowingRepository implements CharacterRepository {
+  @override
+  Future<Result<CharacterSpec?>> load() async => throw StateError('boom');
+
+  @override
+  Future<Result<CharacterSpec>> save(CharacterSpec spec) async =>
+      throw StateError('boom');
+}
+
+void throwingRepositoryTest() {
+  test('a failing load still ends ready, so the app never hangs on the boot screen', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = CharacterStore(
+      repository: _ThrowingRepository(),
+      preferences: await SharedPreferences.getInstance(),
+    );
+    await store.sync();
+    expect(store.status, CharacterStatus.ready);
+    expect(store.needsCreation, isFalse);
+    expect(PlayerLook.spec.value, isNotNull);
+  });
+}

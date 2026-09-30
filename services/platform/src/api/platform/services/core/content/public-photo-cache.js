@@ -4,6 +4,7 @@ const https = require('node:https');
 const { createHash, randomUUID } = require('node:crypto');
 const { mkdir, readFile, readdir, rename, writeFile, stat, unlink } = require('node:fs/promises');
 const path = require('node:path');
+const { Limiter } = require('./limiter');
 
 const MAX_BYTES = 2 * 1024 * 1024;
 // Cached photos are re-fetched from the source once a week; up to this many
@@ -43,6 +44,7 @@ class PublicPhotoCache {
     this.root = path.join(process.env.PRIVATE_UPLOAD_DIR || '/opt/plantini-private-media', 'public-plant-photos');
     this.pending = new Map();
     this.retryAt = new Map();
+    this.limiter = new Limiter(4);
   }
 
   async get(value) {
@@ -52,8 +54,7 @@ class PublicPhotoCache {
     const key = createHash('sha256').update(url.toString()).digest('hex');
     if (this.pending.has(key)) return this.pending.get(key);
     if ((this.retryAt.get(key) || 0) > Date.now()) throw new Error('Photo retry pending');
-    if (this.pending.size >= 4) throw new Error('Photo cache busy');
-    const task = this.load(key, url).catch((error) => {
+    const task = this.limiter.run(() => this.load(key, url)).catch((error) => {
       if (this.retryAt.size >= 256) this.retryAt.delete(this.retryAt.keys().next().value);
       this.retryAt.set(key, Date.now() + 60000);
       throw error;
