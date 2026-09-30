@@ -34,6 +34,19 @@ final class TimeoutFailure extends AppFailure {
     : super(code: 'request_timeout');
 }
 
+final class RateLimitedFailure extends AppFailure {
+  const RateLimitedFailure({
+    required super.message,
+    this.retryAfter,
+    super.cause,
+  }) : super(code: 'rate_limited');
+
+  final Duration? retryAfter;
+
+  @override
+  bool get isRetryable => true;
+}
+
 final class ServerFailure extends AppFailure {
   const ServerFailure({
     required super.message,

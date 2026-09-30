@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/images/plantini_image.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/herbarium_models.dart';
@@ -168,7 +169,11 @@ class _HerbariumEntryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Thumbnail image
-                Expanded(child: _HerbariumThumbnail(mediaUrl: entry.mediaUrl)),
+                Expanded(
+                  child: _HerbariumThumbnail(
+                    mediaUrl: entry.photoUrl(width: 320),
+                  ),
+                ),
                 // Text Area
                 Padding(
                   padding: const EdgeInsets.fromLTRB(4, 8, 4, 3),
@@ -244,25 +249,13 @@ class _HerbariumThumbnail extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: mediaUrl != null && mediaUrl!.isNotEmpty
-          ? Image.network(
+          ? PlantiniImage(
               mediaUrl!,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) => const Center(
+              authenticated: true,
+              decodeWidth: 64,
+              errorBuilder: (_, _) => const Center(
                 child: Icon(Icons.eco_rounded, color: AppColors.sage, size: 28),
               ),
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return const Center(
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.forest,
-                    ),
-                  ),
-                );
-              },
             )
           : const Center(
               child: Icon(Icons.eco_rounded, color: AppColors.sage, size: 28),

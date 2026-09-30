@@ -190,10 +190,12 @@ test('FIELD-07: exhausted provider work is dead-lettered and manual retry resets
 test('herbarium enforces ownership, version preconditions, and tombstones', async () => {
   const repositories = createRepositories();
   const fieldRepository = repositories.field;
+  repositories.media.push({ id: 1, publicId: ids.clientMedia, ownerId: ids.owner, status: 'uploaded' });
   repositories.jobs.push({
     id: 1,
     publicId: ids.clientJob,
     ownerId: ids.owner,
+    mediaId: ids.clientMedia,
     status: 'identified',
     confirmedPlantId: ids.plant,
     createdAt: '2026-01-01T00:00:00.000Z',
@@ -210,6 +212,9 @@ test('herbarium enforces ownership, version preconditions, and tombstones', asyn
   assert.equal(created.created, true);
   assert.equal(created.observation.clientObservationId, ids.clientObservation);
   assert.equal(created.observation.confirmedPlantId, ids.plant);
+  // The app only sends the job; the photo comes from the job.
+  assert.equal(created.observation.mediaId, ids.clientMedia);
+  assert.equal(created.observation.mediaUrl, `/api/v1/media/${ids.clientMedia}/content`);
   // Owner-scoped responses return the (client-coarsened) find location so the
   // herbarium map works on every device; other accounts get 404 below.
   assert.deepEqual(created.observation.location, { latitude: 50, longitude: 8, accuracyMeters: 10 });

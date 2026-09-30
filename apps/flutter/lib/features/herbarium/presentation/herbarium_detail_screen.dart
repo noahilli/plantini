@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/images/plantini_image.dart';
 import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -15,12 +16,12 @@ final class _ObservationHero extends StatelessWidget {
     child: SizedBox(
       height: 250,
       child: entry.mediaUrl?.isNotEmpty == true
-          ? Image.network(
-              entry.mediaUrl!,
-              fit: BoxFit.cover,
+          ? PlantiniImage(
+              entry.photoUrl(width: 1280)!,
+              authenticated: true,
               semanticLabel: 'Fundfoto: ${entry.displayTitle}',
-              errorBuilder: (_, _, _) =>
-                  _placeholder('Fundfoto nicht verfügbar'),
+              errorBuilder: (_, _) => _placeholder('Fundfoto nicht verfügbar'),
+              placeholder: (_) => _placeholder('Foto wird geladen …'),
             )
           : _placeholder('Noch kein Fundfoto'),
     ),

@@ -186,6 +186,8 @@ Result<HerbariumEntry> _observation(Map<String, dynamic> body) {
     );
   }
   final candidate = _confirmedCandidate(mappedIdentification);
+  final location = body['location'];
+  final speciesName = _optionalString(body, 'speciesName');
   return Result.success(
     HerbariumEntry(
       id: id,
@@ -195,8 +197,20 @@ Result<HerbariumEntry> _observation(Map<String, dynamic> body) {
       confirmedPlantId: _optionalString(body, 'confirmedPlantId'),
       identificationJobId: mappedIdentification?.id,
       identificationResult: _identificationLabel(candidate),
-      plantName: candidate?.commonName,
+      plantName: candidate?.commonName ?? speciesName,
       scientificName: candidate?.scientificName,
+      mediaId: _optionalString(body, 'mediaId'),
+      mediaUrl: _optionalString(body, 'mediaUrl'),
+      speciesKey: _optionalString(body, 'speciesKey'),
+      latitude: location is Map
+          ? (location['latitude'] as num?)?.toDouble()
+          : null,
+      longitude: location is Map
+          ? (location['longitude'] as num?)?.toDouble()
+          : null,
+      accuracyMeters: location is Map
+          ? (location['accuracyMeters'] as num?)?.toDouble()
+          : null,
       version: version,
       syncStatus: syncStatus,
     ),

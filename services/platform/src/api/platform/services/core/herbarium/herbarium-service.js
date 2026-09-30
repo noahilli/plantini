@@ -47,7 +47,10 @@ class HerbariumService {
     const identification = input.identificationJobId
       ? await this.requireConfirmedIdentification(actor, input.identificationJobId)
       : undefined;
-    if (input.mediaId) await this.requireOwnedMedia(actor, input.mediaId);
+    // The app confirms a photo by its identification job and does not send the
+    // media id again; take it from the job so the find keeps its photo.
+    const mediaId = input.mediaId || identification?.mediaId;
+    if (mediaId) await this.requireOwnedMedia(actor, mediaId);
     const now = this.clock().toISOString();
     const observation = await this.repository.createObservation({
       publicId: newId(),
@@ -57,7 +60,7 @@ class HerbariumService {
       requestDigest,
       timestamp: input.observedAt,
       ...(input.note !== undefined ? { notes: input.note } : {}),
-      ...(input.mediaId ? { mediaId: input.mediaId } : {}),
+      ...(mediaId ? { mediaId } : {}),
       ...(input.identificationJobId ? { identificationJobId: input.identificationJobId } : {}),
       ...(identification?.confirmedPlantId ? { confirmedPlantId: identification.confirmedPlantId } : {}),
       ...(input.location ? { latitude: input.location.latitude, longitude: input.location.longitude, locationAccuracyMeters: input.location.accuracyMeters } : {}),
@@ -128,9 +131,12 @@ class HerbariumService {
   async mapObservation(actor, observation) {
     let identification;
     let species;
+    // Finds saved before the photo was taken from the job have no mediaId of their own.
+    let mediaId = observation.mediaId;
     if (observation.identificationJobId && this.fieldRepository) {
       const job = await this.fieldRepository.findJobByPublicId(actor.id, observation.identificationJobId);
       if (job) {
+        mediaId = mediaId || job.mediaId;
         identification = mapIdentification(job);
         const candidate = !observation.confirmedPlantId ? confirmedCandidate(job) : undefined;
         if (candidate) {
@@ -147,7 +153,7 @@ class HerbariumService {
       observedAt: observation.timestamp,
       note: observation.notes || '',
       ...(observation.confirmedPlantId ? { confirmedPlantId: observation.confirmedPlantId } : {}),
-      ...(observation.mediaId ? { mediaId: observation.mediaId, mediaUrl: `/api/v1/media/${observation.mediaId}/content` } : {}),
+      ...(mediaId ? { mediaId, mediaUrl: `/api/v1/media/${mediaId}/content` } : {}),
       ...(observation.latitude != null && observation.longitude != null
         ? { location: { latitude: observation.latitude, longitude: observation.longitude, accuracyMeters: observation.locationAccuracyMeters ?? 0 } }
         : {}),

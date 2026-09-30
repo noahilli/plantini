@@ -9,7 +9,10 @@ import '../../../core/result.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../herbarium/domain/herbarium_repository.dart';
+import '../../../core/errors/app_failure.dart';
 import '../domain/field_models.dart';
+import 'field_problem.dart';
+import 'widgets/analysis_progress.dart';
 import '../domain/field_repository.dart';
 import '../infrastructure/location_service.dart';
 import '../infrastructure/media_service.dart';
@@ -61,6 +64,8 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
   bool _isWorking = false;
   bool _acceptMismatch = false;
   Timer? _identificationPollTimer;
+  bool _problemDialogOpen = false;
+  String? _explainedJob;
   String? _observationClientId;
   String? _observationIdempotencyKey;
 
@@ -112,7 +117,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _acceptMismatch = false;
         });
       case Failure<ProcessedMedia>(:final failure):
-        _setFailure(failure.message);
+        _setPickFailure(failure);
     }
   }
 
@@ -133,7 +138,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       idempotencyKey: mediaClientId,
     );
     if (reservation case Failure<MediaUpload>(:final failure)) {
-      _setFailure(failure.message);
+      _setFailure(failure, FieldStep.reserve, _startIdentification);
       return;
     }
     final upload = await repository.uploadMediaContent(
@@ -143,7 +148,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       filename: media.filename,
     );
     if (upload case Failure<MediaUpload>(:final failure)) {
-      _setFailure(failure.message);
+      _setFailure(failure, FieldStep.upload, _startIdentification);
       return;
     }
     final jobClientId = _ids.next();
@@ -162,8 +167,9 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _isWorking = false;
         });
         _scheduleIdentificationPoll(value);
+        _explainFailedJob(value);
       case Failure<IdentificationJob>(:final failure):
-        _setFailure(failure.message);
+        _setFailure(failure, FieldStep.submit, _startIdentification);
     }
   }
 
@@ -185,8 +191,9 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _isWorking = false;
         });
         _scheduleIdentificationPoll(value);
+        _explainFailedJob(value);
       case Failure<IdentificationJob>(:final failure):
-        _setFailure(failure.message);
+        _setFailure(failure, FieldStep.poll, _refreshIdentification);
     }
   }
 
@@ -198,6 +205,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       _isWorking = true;
       _workflowError = null;
     });
+    _explainedJob = null;
     final result = await repository.retryIdentification(
       jobId: job.id,
       idempotencyKey: _ids.next(),
@@ -210,8 +218,9 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
           _isWorking = false;
         });
         _scheduleIdentificationPoll(value);
+        _explainFailedJob(value);
       case Failure<IdentificationJob>(:final failure):
-        _setFailure(failure.message);
+        _setFailure(failure, FieldStep.submit, _retryIdentification);
     }
   }
 
@@ -258,7 +267,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       acceptMismatch: _requiresMismatchAcceptance && _acceptMismatch,
     );
     if (confirmed case Failure<IdentificationJob>(:final failure)) {
-      _setFailure(failure.message);
+      _setFailure(failure, FieldStep.confirm, _saveObservation);
       return;
     }
 
@@ -285,7 +294,7 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
       context.go('/herbarium');
       return;
     }
-    _setFailure(created.failureOrNull!.message);
+    _setFailure(created.failureOrNull!, FieldStep.save, _saveObservation);
   }
 
   Future<LocationCoordinates?> _locationForSubmission() async {
@@ -301,12 +310,59 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
     return result.valueOrNull;
   }
 
-  void _setFailure(String message) {
+  void _setPickFailure(AppFailure failure) => _report(
+    FieldProblem(
+      title: 'Foto nicht verfügbar',
+      message: failure.message,
+      hint: 'Prüfe die Berechtigungen für Kamera und Fotos oder wähle ein anderes Bild.',
+      icon: Icons.no_photography_outlined,
+    ),
+  );
+
+  void _setFailure(
+    AppFailure failure,
+    FieldStep step, [
+    Future<void> Function()? retry,
+  ]) => _report(FieldProblem.fromFailure(failure, step), retry);
+
+  /// Shows the problem as inline note and as a pop-up; "Erneut versuchen" runs
+  /// [retry] again for exactly the step that failed.
+  void _report(FieldProblem problem, [Future<void> Function()? retry]) {
     if (!mounted) return;
     setState(() {
       _isWorking = false;
-      _workflowError = message;
+      _workflowError = problem.plainText;
     });
+    if (_problemDialogOpen) return;
+    _problemDialogOpen = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        _problemDialogOpen = false;
+        return;
+      }
+      final again = await showFieldProblemDialog(
+        context,
+        problem,
+        offerRetry: retry != null,
+      );
+      _problemDialogOpen = false;
+      if (again && mounted && retry != null) {
+        setState(() => _workflowError = null);
+        await retry();
+      }
+    });
+  }
+
+  /// A finished job that failed for good is explained once in a pop-up.
+  void _explainFailedJob(IdentificationJob job) {
+    final terminal =
+        job.status == 'failed' &&
+        (job.retryAfter == null || job.deadLetteredAt != null);
+    final marker = '${job.id}/${job.attempts}';
+    if (!terminal || _explainedJob == marker) return;
+    _explainedJob = marker;
+    final problem = FieldProblem.fromJob(job);
+    _report(problem, problem.retryable ? _retryIdentification : null);
   }
 
   @override
@@ -379,48 +435,13 @@ class _FieldCaptureScreenState extends State<FieldCaptureScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 150,
-                        height: 150,
-                        decoration: const BoxDecoration(
-                          color: AppColors.sage200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Container(
-                            width: 106,
-                            height: 106,
-                            decoration: const BoxDecoration(
-                              color: AppColors.sage300,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 62,
-                                height: 62,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.sage600,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Abgleich läuft',
-                        style: AppTypography.textTheme.headlineMedium?.copyWith(
-                          fontSize: 25,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Dein Bild wird mit PlantNet verglichen. Bitte bleib auf dieser Seite, bis das Ergebnis vorliegt.',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.neutral700,
-                        ),
+                      AnalysisProgress(
+                        stage: job == null
+                            ? AnalysisStage.uploading
+                            : job.status == 'processing'
+                            ? AnalysisStage.analysing
+                            : AnalysisStage.queued,
+                        photo: media?.bytes,
                       ),
                     ],
                   ),
@@ -953,7 +974,7 @@ class _IdentificationCard extends StatelessWidget {
             Text(
               job.failureCode == null
                   ? 'Der Auftrag läuft im Hintergrund. Aktualisiere den Status.'
-                  : 'Fehler: ${job.failureCode}',
+                  : FieldProblem.fromJob(job).plainText,
               style: TextStyle(color: AppColors.neutral200),
             ),
           if (!isIdentified) ...[

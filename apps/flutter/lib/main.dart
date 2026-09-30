@@ -10,6 +10,7 @@ import 'auth/auth_service.dart';
 import 'core/diagnostics/frame_stats.dart';
 import 'core/errors/app_failure.dart';
 import 'core/ids/client_id_generator.dart';
+import 'core/images/image_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/time/clock.dart';
 import 'features/catalog/application/catalog_use_cases.dart';
@@ -70,6 +71,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
       config: config,
       accessTokenProvider: auth.getAccessToken,
     );
+    ImageService.shared = ImageService(api: api);
     final remoteCatalog = HttpCatalogRepository(api);
     final cachedCatalog = CachedCatalogRepository(
       remote: remoteCatalog,

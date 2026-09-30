@@ -13,6 +13,8 @@ final class HerbariumEntry {
     required this.version,
     required this.syncStatus,
     this.mediaUrl,
+    this.mediaId,
+    this.speciesKey,
     this.plantName,
     this.scientificName,
     this.identificationResult,
@@ -31,6 +33,12 @@ final class HerbariumEntry {
   final String version;
   final SyncStatus syncStatus;
   final String? mediaUrl;
+
+  /// Server id of the caller's own photo; null while the entry is local only.
+  final String? mediaId;
+
+  /// Set when the confirmed species is not in the catalogue.
+  final String? speciesKey;
   final String? plantName;
   final String? scientificName;
   final String? identificationResult;
@@ -38,6 +46,14 @@ final class HerbariumEntry {
   final double? longitude;
   final double? accuracyMeters;
   final String? syncError;
+
+  /// The photo URL at one of the widths the server pre-scales (320, 720, 1280).
+  /// Local-only entries have no server photo yet.
+  String? photoUrl({int? width}) {
+    final url = mediaUrl;
+    if (url == null || url.isEmpty) return null;
+    return width == null ? url : '$url?width=$width';
+  }
 
   /// Display title for list and detail views.
   String get displayTitle {
@@ -61,6 +77,8 @@ final class HerbariumEntry {
     String? version,
     SyncStatus? syncStatus,
     String? mediaUrl,
+    String? mediaId,
+    String? speciesKey,
     String? plantName,
     String? scientificName,
     String? identificationResult,
@@ -80,6 +98,8 @@ final class HerbariumEntry {
       version: version ?? this.version,
       syncStatus: syncStatus ?? this.syncStatus,
       mediaUrl: mediaUrl ?? this.mediaUrl,
+      mediaId: mediaId ?? this.mediaId,
+      speciesKey: speciesKey ?? this.speciesKey,
       plantName: plantName ?? this.plantName,
       scientificName: scientificName ?? this.scientificName,
       identificationResult: identificationResult ?? this.identificationResult,
