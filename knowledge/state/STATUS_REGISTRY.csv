@@ -139,3 +139,8 @@ OQ-06,open_question,gate,blocked,product-manager;auth-manager;backend-api,FA055-
 OQ-07,open_question,gate,blocked,steering-committee;legal,NFA032;NFA028,NONE,E-OQ-07,B-OQ-07,pre-public-repository,2026-08-25,Approve code and content licence register
 OQ-08,open_question,gate,blocked,auth-manager;release-manager,FA002;FA003;NFA031,NONE,E-OQ-08,B-OQ-08,pre-beta,2026-08-25,Select production providers and redirect domains
 DESIGN-11,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,APP-08,NONE,NONE,alpha,2026-09-30,Accept the vitrine redesign interactively and continue with quiz and field screens
+APP-10,work_item,P1,in_progress,flutter-frontend,FA032,APP-09,NONE,NONE,alpha,2026-09-30,Accept herbarium photos and image cache and loading animation and error pop-ups on a device
+APP-11,work_item,P1,in_progress,flutter-frontend,FA032,APP-10,NONE,NONE,alpha,2026-09-30,Accept herbarium map and species cards and collection shares; privacy review of owner-only find location
+DESIGN-12,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept time-of-day lighting on real phones
+DESIGN-13,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept the character creator and refine the Blender kit
+TEST-01,work_item,P2,planned,qa-playwright,NFA022,NONE,NONE,NONE,alpha,2026-09-30,Repair the 13 Flutter tests that failed before these changes
