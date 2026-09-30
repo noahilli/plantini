@@ -49,8 +49,15 @@ class HerbariumService {
       : undefined;
     // The app confirms a photo by its identification job and does not send the
     // media id again; take it from the job so the find keeps its photo.
-    const mediaId = input.mediaId || identification?.mediaId;
-    if (mediaId) await this.requireOwnedMedia(actor, mediaId);
+    // A missing photo must never block saving a find, so a derived id is only
+    // kept if the photo is still there; a client-sent id stays a hard check.
+    let mediaId = input.mediaId;
+    if (mediaId) {
+      await this.requireOwnedMedia(actor, mediaId);
+    } else if (identification?.mediaId) {
+      const media = await this.fieldRepository?.findPrivateMediaByPublicId(actor.id, identification.mediaId);
+      if (media && media.status === 'uploaded') mediaId = identification.mediaId;
+    }
     const now = this.clock().toISOString();
     const observation = await this.repository.createObservation({
       publicId: newId(),
