@@ -50,8 +50,16 @@ final class _AppBootstrapState extends State<AppBootstrap> {
   @override
   void initState() {
     super.initState();
-    _initialization = _initialize();
+    _initialization = _start();
   }
+
+  /// Startup failures are shown as a recoverable screen; the cause is also
+  /// written to the log, otherwise a broken device setup cannot be diagnosed.
+  Future<AppDependencies> _start() =>
+      _initialize().catchError((Object error, StackTrace stack) {
+        debugPrint('Plantini bootstrap failed: $error\n$stack');
+        throw error;
+      });
 
   Future<AppDependencies> _initialize() async {
     final config = AppConfig.fromDartDefines();
@@ -117,7 +125,7 @@ final class _AppBootstrapState extends State<AppBootstrap> {
 
   void _retry() {
     setState(() {
-      _initialization = _initialize();
+      _initialization = _start();
     });
   }
 
