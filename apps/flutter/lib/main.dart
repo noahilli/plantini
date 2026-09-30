@@ -7,6 +7,7 @@ import 'app/app_config.dart';
 import 'app/app_dependencies.dart';
 import 'app/plantini_app.dart';
 import 'auth/auth_service.dart';
+import 'core/diagnostics/frame_stats.dart';
 import 'core/errors/app_failure.dart';
 import 'core/ids/client_id_generator.dart';
 import 'core/theme/app_theme.dart';
@@ -30,6 +31,7 @@ import 'features/learning/infrastructure/shared_preferences_learning_session_sto
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FrameStats.install();
   runApp(const AppBootstrap());
 }
 

@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/diagnostics/frame_stats.dart';
 import 'modular_forest_view.dart' show EcosystemWorld;
 import 'world_module.dart';
 
@@ -196,7 +197,9 @@ final class _MiniWorldPainter extends CustomPainter {
       if (_pictures.length >= _maxPictures) {
         _pictures.remove(_pictures.keys.first)?.dispose();
       }
+      final timer = Stopwatch()..start();
       picture = _pictures[key] = _record(size, step.value * bucket);
+      FrameStats.note('vitrine-record', timer.elapsed);
     }
     canvas.drawPicture(picture);
   }

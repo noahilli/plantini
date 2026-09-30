@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/diagnostics/frame_stats.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
 import 'world_module.dart';
@@ -388,6 +389,7 @@ final class _ForestPainter extends CustomPainter {
   final Color background;
   @override
   void paint(Canvas canvas, Size size) {
+    final timer = Stopwatch()..start();
     canvas.drawColor(background, BlendMode.src);
     final faces = <_Face>[];
     final center = (view.focus / 10).round();
@@ -476,6 +478,7 @@ final class _ForestPainter extends CustomPainter {
       canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
       vertices.dispose();
     }
+    FrameStats.note('path-paint', timer.elapsed);
   }
 
   // Terrain is a non-intersecting height-layer system. Draw its broad planes
