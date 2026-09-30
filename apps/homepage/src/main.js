@@ -76,6 +76,22 @@ function initStores() {
   }
 }
 
+// Version, size and checksum of the Android test build come from a small JSON
+// next to the APK (written when the APK is published), so the page never
+// shows numbers that do not belong to the file behind the link.
+async function initApk() {
+  const note = $('[data-apk-meta]');
+  if (!note) return;
+  try {
+    const response = await fetch('/download/plantini.json', { cache: 'no-cache' });
+    if (!response.ok) return;
+    const meta = await response.json();
+    const size = meta.bytes ? `${(meta.bytes / 1048576).toFixed(0)} MB` : null;
+    const parts = [`Version ${meta.versionName}`, size, meta.minAndroid ? `ab Android ${meta.minAndroid}` : null].filter(Boolean);
+    note.textContent = `Testversion · ${parts.join(' · ')}. SHA-256: ${meta.sha256.slice(0, 16)}… (vollständig unter /download/plantini.apk.sha256). Zur Installation muss Android die Installation aus dieser Quelle erlauben.`;
+  } catch { /* keep the static text */ }
+}
+
 // ---- three.js helpers -------------------------------------------------------
 // Rendering budget: the scenes are small (< 20k vertices), so cost is dominated by
 // pixels and by how often we draw. We therefore cap the pixel ratio, limit
@@ -431,6 +447,7 @@ function initCards() {
 initNav();
 initReveal();
 initStores();
+initApk();
 initCards();
 renderMosaic($('#mosaic'), ecosystems);
 initHero().catch((error) => { console.error(error); fallback($('#hero-stage')); });

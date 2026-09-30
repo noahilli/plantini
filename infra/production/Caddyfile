@@ -17,7 +17,23 @@
 # Project homepage (static container, see apps/homepage)
 {$PLANTINI_DOMAIN} {
 	import security_headers
-	reverse_proxy 127.0.0.1:{$HOMEPAGE_PORT:8083}
+
+	# Android test builds (APK) and their metadata live outside the repository
+	# and the homepage image, in the read-only /srv/downloads mount.
+	handle /download/* {
+		uri strip_prefix /download
+		root * /srv/downloads
+		@apk path *.apk
+		header @apk Content-Type application/vnd.android.package-archive
+		header @apk Content-Disposition "attachment; filename=plantini.apk"
+		@meta path *.json *.sha256
+		header @meta Cache-Control "no-cache"
+		file_server
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:{$HOMEPAGE_PORT:8083}
+	}
 }
 
 www.{$PLANTINI_DOMAIN} {

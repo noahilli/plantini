@@ -13,6 +13,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ${WEB_ROOT:?set the directory with the Flutter web build}:/srv/web:ro
+      - ${DOWNLOADS_DIR:-/opt/plantini/downloads}:/srv/downloads:ro
       - caddy-data:/data
       - caddy-config:/config
     security_opt: [no-new-privileges:true]
