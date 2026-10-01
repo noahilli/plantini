@@ -226,20 +226,41 @@ void _drawModel(
           dy: mesh.motion == 'ranger' ? module.slots.first[1] - .2 : 0,
         ),
   ];
+  final projection = SceneProjection(
+    yaw: yaw,
+    scale: fit.scale,
+    ox: fit.origin.dx,
+    oy: fit.origin.dy,
+  );
   final vertices = SceneBuilder.build(
     instances,
-    SceneProjection(
-      yaw: yaw,
-      scale: fit.scale,
-      ox: fit.origin.dx,
-      oy: fit.origin.dy,
-    ),
+    projection,
     shading: SceneShading.viewer,
     lighting: lighting,
   );
   if (vertices != null) {
     canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
     vertices.dispose();
+  }
+  paintLightHalos(
+    canvas,
+    size,
+    module.lights,
+    projection.project,
+    fit.scale,
+    lighting,
+  );
+  final fireflies = module.fireflies;
+  if (fireflies != null && lighting.lamps) {
+    // A still picture: a handful of fireflies caught mid-flight.
+    paintFireflies(
+      canvas,
+      fireflies,
+      projection.project,
+      fit.scale,
+      .35,
+      share: lighting.phase == DayPhase.night ? .75 : .3,
+    );
   }
 }
 

@@ -9,9 +9,21 @@ import 'world_lighting.dart';
 /// Parsed Blender module (assets/worlds/*_module.json): plain mesh data that
 /// both the level-path renderer and the ecosystem vitrine project themselves.
 final class WorldModule {
-  WorldModule(this.meshes, this.slots);
+  WorldModule(
+    this.meshes,
+    this.slots, {
+    this.lights = const [],
+    this.fireflies,
+  });
   final List<WorldMesh> meshes;
   final List<List<double>> slots;
+
+  /// Light sources for the evening and night: [x, y, z, radius]. The app draws
+  /// a soft halo around each (huts and lanterns).
+  final List<List<double>> lights;
+
+  /// Where fireflies fly (meadow only), or null.
+  final FireflyField? fireflies;
 
   static final _cache = <String, Future<WorldModule>>{};
 
@@ -32,7 +44,69 @@ final class WorldModule {
     (data['slots'] as List)
         .map((v) => (v as List).map((n) => (n as num).toDouble()).toList())
         .toList(),
+    lights: [
+      for (final l in (data['lights'] as List? ?? const []))
+        [for (final n in l as List) (n as num).toDouble()],
+    ],
+    fireflies: data['fireflies'] == null
+        ? null
+        : FireflyField.fromJson(data['fireflies'] as Map<String, dynamic>),
   );
+}
+
+/// A swarm of fireflies over a rectangle of the module.
+final class FireflyField {
+  const FireflyField({
+    required this.count,
+    required this.x0,
+    required this.x1,
+    required this.y0,
+    required this.y1,
+    required this.z0,
+    required this.z1,
+  });
+
+  factory FireflyField.fromJson(Map<String, dynamic> json) {
+    final area = (json['area'] as List)
+        .map((n) => (n as num).toDouble())
+        .toList();
+    final z = (json['z'] as List).map((n) => (n as num).toDouble()).toList();
+    return FireflyField(
+      count: json['count'] as int,
+      x0: area[0],
+      x1: area[1],
+      y0: area[2],
+      y1: area[3],
+      z0: z[0],
+      z1: z[1],
+    );
+  }
+
+  final int count;
+  final double x0, x1, y0, y1, z0, z1;
+
+  /// Position and glow of firefly [i] at [phase] (0..1 is one 6 s loop, every
+  /// frequency is a whole number so the loop is seamless): x, y, z, brightness.
+  List<double> at(int i, double phase, {int salt = 0}) {
+    double r(int k) {
+      var h = (i * 374761393 + k * 668265263 + salt * 2246822519) & 0x7fffffff;
+      h = ((h ^ (h >> 13)) * 1274126177) & 0x7fffffff;
+      return (h % 10000) / 10000;
+    }
+
+    final t = phase * 2 * math.pi;
+    final x =
+        x0 +
+        r(1) * (x1 - x0) +
+        .35 * math.sin(t * (1 + (r(2) * 2).floor()) + r(3) * 6.28);
+    final y =
+        y0 +
+        r(4) * (y1 - y0) +
+        .35 * math.cos(t * (1 + (r(5) * 2).floor()) + r(6) * 6.28);
+    final z = z0 + r(7) * (z1 - z0) + .12 * math.sin(t * 2 + r(8) * 6.28);
+    final blink = math.sin(t * (2 + (r(9) * 2).floor()) + r(10) * 6.28);
+    return [x, y, z, blink > 0 ? blink * blink : 0.0];
+  }
 }
 
 final class WorldMesh {
@@ -128,27 +202,33 @@ final class WorldMesh {
   /// Level-path shading per face as ARGB for one time of day (computed once per
   /// phase): the sun fixed in world space plus the gamma step the path view
   /// has always used.
-  Int32List pathColorsFor(WorldLighting lighting) =>
-      _pathColors[lighting.phase] ??= () {
-        final fixed = _fixedArgb;
-        if (fixed != null) {
-          return Int32List(faces.length)..fillRange(0, faces.length, fixed);
-        }
-        final n = faceNormals;
-        final out = Int32List(faces.length);
-        for (var f = 0; f < faces.length; f++) {
-          out[f] = lighting.shade(
-            color.r,
-            color.g,
-            color.b,
-            n[f * 3],
-            n[f * 3 + 1],
-            n[f * 3 + 2],
-            gamma: true,
-          );
-        }
-        return out;
-      }();
+  Int32List pathColorsFor(
+    WorldLighting lighting,
+  ) => _pathColors[lighting.phase] ??= () {
+    // Lit windows and lantern glass: warm light in the evening and at night.
+    if (motion == 'glow' && lighting.lamps) {
+      final argb = lighting.phase == DayPhase.night ? 0xFFFFE08A : 0xFFFFC878;
+      return Int32List(faces.length)..fillRange(0, faces.length, argb);
+    }
+    final fixed = _fixedArgb;
+    if (fixed != null) {
+      return Int32List(faces.length)..fillRange(0, faces.length, fixed);
+    }
+    final n = faceNormals;
+    final out = Int32List(faces.length);
+    for (var f = 0; f < faces.length; f++) {
+      out[f] = lighting.shade(
+        color.r,
+        color.g,
+        color.b,
+        n[f * 3],
+        n[f * 3 + 1],
+        n[f * 3 + 2],
+        gamma: true,
+      );
+    }
+    return out;
+  }();
 
   final _shadows = <DayPhase, WorldMesh?>{};
 

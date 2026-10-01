@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plantini_app/features/catalog/presentation/widgets/world_lighting.dart';
 import 'package:plantini_app/features/catalog/presentation/widgets/world_module.dart';
@@ -94,5 +97,79 @@ void main() {
     final xs = [for (final v in shadow.vertices) v[0]];
     expect(xs.reduce((a, b) => a < b ? a : b), lessThan(0));
     expect(shadow.motion, 'shadow');
+  });
+
+  test('lit windows glow warm only in the evening and at night', () {
+    final glass = WorldMesh({
+      'name': 'Lantern glass',
+      'vertices': [
+        [0, 0, 0],
+        [1, 0, 0],
+        [0, 1, 0],
+      ],
+      'faces': [
+        [0, 1, 2],
+      ],
+      'color': [.8, .75, .6],
+      'motion': 'glow',
+    });
+    final day = glass
+        .pathColorsFor(WorldLighting.of(DayPhase.noon))
+        .first
+        .toUnsigned(32);
+    final night = glass
+        .pathColorsFor(WorldLighting.of(DayPhase.night))
+        .first
+        .toUnsigned(32);
+    expect(night, 0xFFFFE08A);
+    expect(day, isNot(night));
+    expect(
+      glass
+          .pathColorsFor(WorldLighting.of(DayPhase.evening))
+          .first
+          .toUnsigned(32),
+      0xFFFFC878,
+    );
+  });
+
+  test('every ecosystem module carries its night lights', () {
+    for (final world in ['forest', 'meadow', 'alpine']) {
+      final module = WorldModule.fromJson(
+        jsonDecode(
+          File('assets/worlds/${world}_module.json').readAsStringSync(),
+        ) as Map<String, dynamic>,
+      );
+      expect(module.lights, isNotEmpty, reason: world);
+      expect(
+        module.meshes.where((m) => m.motion == 'glow'),
+        isNotEmpty,
+        reason: world,
+      );
+      expect(module.fireflies != null, world == 'meadow', reason: world);
+    }
+  });
+
+  test('a firefly flies a seamless loop and blinks within 0..1', () {
+    const field = FireflyField(
+      count: 10,
+      x0: 0,
+      x1: 4,
+      y0: 0,
+      y1: 4,
+      z0: .3,
+      z1: 1.2,
+    );
+    for (var i = 0; i < field.count; i++) {
+      final start = field.at(i, 0);
+      final end = field.at(i, 1);
+      for (var k = 0; k < 4; k++) {
+        expect(end[k], closeTo(start[k], 1e-9), reason: 'firefly $i');
+      }
+      for (var step = 0; step < 20; step++) {
+        final f = field.at(i, step / 20);
+        expect(f[3], inInclusiveRange(0, 1));
+        expect(f[0], inInclusiveRange(-.5, 4.5));
+      }
+    }
   });
 }

@@ -5,14 +5,22 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../features/catalog/domain/catalog_models.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart';
+import '../features/catalog/presentation/widgets/world_lighting.dart';
 
-void main() => runApp(
-  MaterialApp(
-    initialRoute: '/',
-    theme: AppTheme.lightTheme,
-    home: const _Preview(),
-  ),
-);
+void main() {
+  // ?daytime=night|evening|morning|noon pins the time of day for review.
+  final name = Uri.base.queryParameters['daytime'];
+  for (final phase in DayPhase.values) {
+    if (phase.name == name) DayClock.pin(phase);
+  }
+  runApp(
+    MaterialApp(
+      initialRoute: '/',
+      theme: AppTheme.lightTheme,
+      home: const _Preview(),
+    ),
+  );
+}
 
 class _Preview extends StatefulWidget {
   const _Preview();

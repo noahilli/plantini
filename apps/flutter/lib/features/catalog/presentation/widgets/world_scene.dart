@@ -27,6 +27,17 @@ final class SceneProjection {
   }) : cosYaw = math.cos(yaw),
        sinYaw = math.sin(yaw);
 
+  /// Screen position of the scene point ([x], [y], [z]); the same mapping the
+  /// builder applies to every vertex.
+  ui.Offset project(double x, double y, double z) {
+    final yy = y - focus;
+    final along = x * sinYaw + yy * cosYaw;
+    return ui.Offset(
+      ox + (x * cosYaw - yy * sinYaw) * scale,
+      oy - (along * squash + z * lift) * scale,
+    );
+  }
+
   final double yaw, focus, scale, ox, oy;
 
   /// Depth squash and lift per unit of height; the defaults give the level
@@ -146,15 +157,17 @@ abstract final class SceneBuilder {
               nz = normals[f * 3 + 2];
           // The model turns under a light that stays put relative to the viewer.
           final lx = nx * cos - ny * sin, ly = nx * sin + ny * cos;
-          col[count] = lighting.shade(
-            baseR * _viewerGain,
-            baseG * _viewerGain,
-            baseB * _viewerGain,
-            lx,
-            ly,
-            nz,
-            gamma: false,
-          );
+          col[count] = mesh.motion == 'glow' && lighting.lamps
+              ? (lighting.phase == DayPhase.night ? 0xFFFFE08A : 0xFFFFC878)
+              : lighting.shade(
+                  baseR * _viewerGain,
+                  baseG * _viewerGain,
+                  baseB * _viewerGain,
+                  lx,
+                  ly,
+                  nz,
+                  gamma: false,
+                );
         }
         count++;
       }

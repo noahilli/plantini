@@ -1,7 +1,10 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import 'world_module.dart' show FireflyField;
 
 /// Part of the day an ecosystem is shown in.
 enum DayPhase {
@@ -221,5 +224,105 @@ void paintStars(Canvas canvas, Size size, int count) {
     seed = (seed * 1103515245 + 12345) & 0x7fffffff;
     final y = (seed % 1000) / 1000 * size.height * .55;
     canvas.drawCircle(Offset(x, y), i % 5 == 0 ? 1.6 : .9, paint);
+  }
+}
+
+/// Soft halos around the lit windows and lanterns ([lights]: x, y, z, radius)
+/// in the evening and at night: a pool of light on the ground and a glow
+/// around the lamp. [project] maps scene points to the canvas; [dy] shifts a
+/// light into the module at that offset along the path.
+void paintLightHalos(
+  Canvas canvas,
+  Size size,
+  List<List<double>> lights,
+  ui.Offset Function(double x, double y, double z) project,
+  double scale,
+  WorldLighting lighting, {
+  double dy = 0,
+}) {
+  if (!lighting.lamps || lights.isEmpty) return;
+  final strength = lighting.phase == DayPhase.night ? 1.0 : .55;
+  const warm = Color(0xFFFFB552);
+  for (final light in lights) {
+    final radius = light[3] * scale;
+    final lamp = project(light[0], light[1] + dy, light[2]);
+    if (lamp.dx < -radius * 2 ||
+        lamp.dx > size.width + radius * 2 ||
+        lamp.dy < -radius * 2 ||
+        lamp.dy > size.height + radius * 2) {
+      continue;
+    }
+    final ground = project(light[0], light[1] + dy, 0.1);
+    final pool = Rect.fromCenter(
+      center: ground,
+      width: radius * 2.4,
+      height: radius * 1.1,
+    );
+    canvas.drawOval(
+      pool,
+      Paint()
+        ..blendMode = BlendMode.plus
+        ..shader = ui.Gradient.radial(
+          ground,
+          radius * 1.2,
+          [warm.withValues(alpha: .42 * strength), warm.withValues(alpha: 0)],
+          null,
+          TileMode.clamp,
+          Float64List.fromList([
+            1,
+            0,
+            0,
+            0,
+            0,
+            .46,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+          ]),
+        ),
+    );
+    canvas.drawCircle(
+      lamp,
+      radius * .62,
+      Paint()
+        ..blendMode = BlendMode.plus
+        ..shader = ui.Gradient.radial(lamp, radius * .62, [
+          warm.withValues(alpha: .75 * strength),
+          warm.withValues(alpha: 0),
+        ]),
+    );
+  }
+}
+
+/// Fireflies as small blinking dots. [phase] is the position in the 6 s loop,
+/// [share] (0..1) how many of the swarm are out.
+void paintFireflies(
+  Canvas canvas,
+  FireflyField field,
+  ui.Offset Function(double x, double y, double z) project,
+  double scale,
+  double phase, {
+  double dy = 0,
+  double share = 1,
+  int salt = 0,
+}) {
+  final glow = Paint()..blendMode = BlendMode.plus;
+  final active = (field.count * share).round();
+  for (var i = 0; i < active; i++) {
+    final f = field.at(i, phase, salt: salt);
+    final b = f[3];
+    if (b <= .02) continue;
+    final at = project(f[0], f[1] + dy, f[2]);
+    glow.color = const Color(0xFFD6FF5E).withValues(alpha: .28 * b);
+    canvas.drawCircle(at, scale * .12, glow);
+    glow.color = const Color(0xFFF4FFB0).withValues(alpha: .95 * b);
+    canvas.drawCircle(at, scale * .028 + .6, glow);
   }
 }

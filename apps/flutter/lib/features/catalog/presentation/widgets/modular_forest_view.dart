@@ -251,6 +251,27 @@ final class _ModularForestViewState extends State<ModularForestView>
                             ),
                           ),
                         ),
+                        if (module.fireflies != null &&
+                            WorldLighting.of(DayClock.phase.value).lamps)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: RepaintBoundary(
+                                child: CustomPaint(
+                                  painter: _FireflyPainter(
+                                    module.fireflies!,
+                                    view,
+                                    math.max(0, chapter - 1),
+                                    math.min(_count - 1, chapter + 1),
+                                    _clock,
+                                    DayClock.phase.value == DayPhase.night
+                                        ? 1
+                                        : .4,
+                                    MediaQuery.disableAnimationsOf(context),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         for (
                           var m = math.max(0, chapter - 1);
                           m <= math.min(_count - 1, chapter + 1);
@@ -521,6 +542,22 @@ final class _ForestPainter extends CustomPainter {
       canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
       vertices.dispose();
     }
+    // Lit windows and lanterns of every module in view glow in the evening and at night.
+    for (
+      var m = math.max(0, center - 1);
+      m <= math.min((levelCount / 6).ceil() - 1, center + 1);
+      m++
+    ) {
+      paintLightHalos(
+        canvas,
+        size,
+        module.lights,
+        view.project,
+        view.scale,
+        lighting,
+        dy: m * 10.0,
+      );
+    }
     return recorder.endRecording();
   }
 
@@ -532,4 +569,52 @@ final class _ForestPainter extends CustomPainter {
       old.background != background ||
       old.lighting != lighting ||
       old.reduceMotion != reduceMotion;
+}
+
+/// Fireflies over the meadow: a few small blinking dots per visible module,
+/// redrawn every frame (they are far cheaper than the recorded world).
+final class _FireflyPainter extends CustomPainter {
+  _FireflyPainter(
+    this.field,
+    this.view,
+    this.first,
+    this.last,
+    this.clock,
+    this.share,
+    this.still,
+  ) : super(repaint: clock);
+
+  final FireflyField field;
+  final _Projection view;
+  final int first, last;
+  final Animation<double> clock;
+  final double share;
+  final bool still;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final phase = still ? .35 : clock.value;
+    for (var m = first; m <= last; m++) {
+      paintFireflies(
+        canvas,
+        field,
+        view.project,
+        view.scale,
+        phase,
+        dy: m * 10.0,
+        share: share,
+        salt: m,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_FireflyPainter old) =>
+      old.view.focus != view.focus ||
+      old.view.yaw != view.yaw ||
+      old.view.size != view.size ||
+      old.first != first ||
+      old.last != last ||
+      old.share != share ||
+      old.still != still;
 }
