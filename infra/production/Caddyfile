@@ -55,6 +55,12 @@ app.{$PLANTINI_DOMAIN} {
 	file_server
 }
 
+# Separate redaction studio; it has no direct database or Strapi-admin access.
+editor.{$PLANTINI_DOMAIN} {
+	import security_headers
+	reverse_proxy 127.0.0.1:{$EDITOR_PORT:8084}
+}
+
 # Fach-API. Only the public API prefix is reachable: Strapi's /admin and its
 # built-in /api/auth/local/register are deliberately not proxied.
 api.{$PLANTINI_DOMAIN} {

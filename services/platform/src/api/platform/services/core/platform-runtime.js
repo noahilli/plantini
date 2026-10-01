@@ -15,6 +15,8 @@ const { PrivateMediaStore } = require('./private-media-store');
 const { ProfileService } = require('./profile/profile-service');
 const { createStrapiRepositories } = require('./strapi-repositories');
 const { ProblemError } = require('./errors');
+const { EditorService } = require('./editor/editor-service');
+const { KeycloakInvitations } = require('./editor/keycloak-invitations');
 
 const runtimes = new WeakMap();
 
@@ -69,6 +71,8 @@ function getPlatformRuntime(strapi) {
     fieldRepository: repositories.field,
     species: runtime.species,
   });
+  runtime.editor = new EditorService(strapi, runtime);
+  runtime.editorInvitations = new KeycloakInvitations();
   runtimes.set(strapi, runtime);
   return runtime;
 }

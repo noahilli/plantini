@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "editor_changes",
+  "info": {
+    "singularName": "editor-change",
+    "pluralName": "editor-changes",
+    "displayName": "Editorial change"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": {},
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "entityType": { "type": "enumeration", "enum": ["ecosystem", "level", "plant", "quiz"], "required": true },
+    "targetPublicId": { "type": "string", "required": true },
+    "baseUpdatedAt": { "type": "datetime" },
+    "payload": { "type": "json", "required": true },
+    "status": { "type": "enumeration", "enum": ["draft", "pending_review", "rejected", "approved"], "required": true, "default": "draft" },
+    "authorSubject": { "type": "string", "required": true, "private": true },
+    "reviewerSubject": { "type": "string", "private": true },
+    "reviewNote": { "type": "text" },
+    "reviewedAt": { "type": "datetime" },
+    "appliedAt": { "type": "datetime" }
+  }
+}

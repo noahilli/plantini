@@ -748,6 +748,47 @@
       ]
     },
     {
+      "clientId": "plantini-editor-dev",
+      "name": "Plantini Studio (development, IPv4 loopback)",
+      "enabled": true,
+      "redirectUris": ["http://127.0.0.1:8084/"],
+      "webOrigins": ["http://127.0.0.1:8084"],
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://127.0.0.1:8084/"
+      },
+      "fullScopeAllowed": false,
+      "defaultClientScopes": ["roles", "plantini-api-audience"],
+      "optionalClientScopes": ["profile", "email"]
+    },
+    {
+      "clientId": "plantini-editor-production",
+      "name": "Plantini Studio (production)",
+      "enabled": false,
+      "redirectUris": [],
+      "webOrigins": [],
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "fullScopeAllowed": false,
+      "defaultClientScopes": ["roles", "plantini-api-audience"],
+      "optionalClientScopes": ["profile", "email"]
+    },
+    {
       "id": "5844a0be-d460-4672-8fb1-5ef105b823b8",
       "clientId": "plantini-web-dev",
       "name": "Plantini Web (development, IPv4 loopback)",

@@ -118,7 +118,12 @@ services:
       ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?missing STRAPI_ADMIN_JWT_SECRET}
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?missing STRAPI_TRANSFER_TOKEN_SALT}
       JWT_SECRET: ${STRAPI_JWT_SECRET:?missing STRAPI_JWT_SECRET}
-      CORS_ORIGINS: ${WEB_PUBLIC_URL:?missing WEB_PUBLIC_URL}
+      CORS_ORIGINS: ${WEB_PUBLIC_URL:?missing WEB_PUBLIC_URL},${EDITOR_PUBLIC_URL:?missing EDITOR_PUBLIC_URL}
+      PLATFORM_EDITOR_ORIGIN: ${EDITOR_PUBLIC_URL:?missing EDITOR_PUBLIC_URL}
+      PLATFORM_EDITOR_OIDC_CLIENT_ID: plantini-editor-production
+      PLATFORM_KEYCLOAK_ADMIN_BASE_URL: http://keycloak:8080
+      PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID: ${PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID:-}
+      PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET: ${PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET:-}
       PUBLIC_URL: ${API_PUBLIC_URL:?missing API_PUBLIC_URL}
       PLATFORM_OIDC_ISSUER: ${AUTH_PUBLIC_URL:?missing AUTH_PUBLIC_URL}/realms/plantini
       PLATFORM_OIDC_AUDIENCE: plantini-api
@@ -161,6 +166,23 @@ services:
     ports:
       - "127.0.0.1:${HOMEPAGE_LOOPBACK_PORT:-8083}:8080"
     # Only a published port on a normal network: internal networks cannot publish.
+    networks: [edge]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    security_opt: [no-new-privileges:true]
+
+  editor:
+    image: ${EDITOR_IMAGE:?set an immutable Plantini editor image reference}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp, /var/cache/nginx, /var/run]
+    cap_drop: [ALL]
+    ports:
+      - "127.0.0.1:${EDITOR_LOOPBACK_PORT:-8084}:8080"
     networks: [edge]
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]

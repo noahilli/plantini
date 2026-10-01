@@ -15,10 +15,12 @@ const REQUIRED_REALM_ROLES = [
 
 const APP_CLIENTS = [
   'plantini-web-dev',
+  'plantini-editor-dev',
   'plantini-mobile-dev',
   'plantini-web-staging',
   'plantini-mobile-staging',
   'plantini-web-production',
+  'plantini-editor-production',
   'plantini-mobile-production',
 ];
 
@@ -26,6 +28,7 @@ const DISABLED_UNTIL_APPROVED = new Set([
   'plantini-web-staging',
   'plantini-mobile-staging',
   'plantini-web-production',
+  'plantini-editor-production',
   'plantini-mobile-production',
 ]);
 
@@ -119,7 +122,7 @@ export function validateRealmSecurity(realm, { environment = 'development' } = {
       continue;
     }
     validateAppClient(client, failures);
-    if (DISABLED_UNTIL_APPROVED.has(clientId)) {
+    if (environment !== 'production' && DISABLED_UNTIL_APPROVED.has(clientId)) {
       if (client.enabled || client.redirectUris?.length || client.webOrigins?.length) {
         fail(`${clientId}: must remain disabled without an approved exact origin`);
       }
@@ -203,12 +206,12 @@ function validateProductionPromotion(realm, clients, failures) {
   if (realm.smtpServer?.host === 'mailpit' || realm.smtpServer?.from?.endsWith('.local')) {
     failures.push('production promotion requires a production SMTP configuration from secret management');
   }
-  for (const clientId of ['plantini-web-production', 'plantini-mobile-production']) {
+  for (const clientId of ['plantini-web-production', 'plantini-editor-production', 'plantini-mobile-production']) {
     const client = clients.get(clientId);
     if (!client?.enabled || !client.redirectUris?.length) {
       failures.push(`${clientId}: must be enabled only after exact HTTPS/app-link redirects are approved`);
     }
-    if (clientId.includes('web') && client?.redirectUris?.some((uri) => !uri.startsWith('https://'))) {
+    if ((clientId.includes('web') || clientId.includes('editor')) && client?.redirectUris?.some((uri) => !uri.startsWith('https://'))) {
       failures.push(`${clientId}: production web redirects must use HTTPS`);
     }
   }

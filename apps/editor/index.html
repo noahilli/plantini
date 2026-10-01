@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16352d">
+  <title>Plantini Studio · Redaktion</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div id="loading" class="loading-screen"><div class="loading-mark">✳</div><p>Plantini Studio wird geöffnet …</p></div>
+  <div id="shell" class="shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-mark">✳</span><span>plantini<small>STUDIO</small></span></a>
+      <p class="nav-label">ARBEITSPLATZ</p>
+      <nav aria-label="Bereiche">
+        <button class="nav-link active" data-page="dashboard"><span>◫</span> Übersicht</button>
+        <button class="nav-link" data-page="catalog"><span>♧</span> Inhalte</button>
+        <button class="nav-link" data-page="review"><span>◇</span> Review <span id="review-badge" class="badge" hidden>0</span></button>
+        <button class="nav-link" data-page="team"><span>♙</span> Team</button>
+      </nav>
+      <div class="sidebar-note"><span class="tiny-sparkle">✦</span><p>Jede große Entdeckung beginnt mit einer guten Frage.</p></div>
+      <div class="sidebar-foot"><span id="signed-in-as">Redaktion</span><button id="logout" class="text-button">Abmelden</button></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><span class="eyebrow">PLANTINI / REDAKTION</span><h1 id="page-title">Übersicht</h1></div><div class="top-actions"><span class="status-dot"></span><span>Editor verbunden</span></div></header>
+      <div id="notice" class="notice" role="status" hidden></div>
+      <section id="page-dashboard" class="page"></section>
+      <section id="page-catalog" class="page" hidden></section>
+      <section id="page-review" class="page" hidden></section>
+      <section id="page-team" class="page" hidden></section>
+    </main>
+  </div>
+  <div id="drawer-overlay" class="drawer-overlay" hidden></div>
+  <aside id="drawer" class="drawer" aria-label="Inhaltseditor" hidden>
+    <div class="drawer-head"><div><span class="eyebrow" id="drawer-kicker">INHALT BEARBEITEN</span><h2 id="drawer-title">Eintrag</h2></div><button id="drawer-close" class="icon-button" aria-label="Editor schließen">×</button></div>
+    <div id="drawer-body" class="drawer-body"></div>
+    <div id="drawer-actions" class="drawer-actions"></div>
+  </aside>
+</body>
+</html>

@@ -87,6 +87,56 @@ module.exports = {
     });
   },
 
+  async editorDashboard(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.dashboard(actor));
+  },
+
+  async editorCatalog(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.catalog(actor));
+  },
+
+  async editorChanges(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.listChanges(actor));
+  },
+
+  async editorChange(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.change(actor, ctx.params.changeId));
+  },
+
+  async editorItem(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.item(actor, ctx.params.type, ctx.params.itemId));
+  },
+
+  async editorSave(ctx) {
+    return withActor(ctx, async (runtime, actor) => {
+      const change = await runtime.editor.save(actor, ctx.request.body);
+      ctx.status = 201;
+      return change;
+    });
+  },
+
+  async editorUpdate(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.save(actor, {
+      ...ctx.request.body, changeId: ctx.params.changeId,
+    }));
+  },
+
+  async editorSubmit(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.submit(actor, ctx.params.changeId));
+  },
+
+  async editorReject(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.reject(actor, ctx.params.changeId, ctx.request.body?.note));
+  },
+
+  async editorInvite(ctx) {
+    return withActor(ctx, async (runtime, actor) => {
+      const invitation = await runtime.editorInvitations.invite(actor, ctx.request.body);
+      ctx.status = 201;
+      return invitation;
+    });
+  },
+
   async listQuizItems(ctx) {
     return withActor(ctx, (runtime, actor) => {
       rejectUnknownQuery(ctx.query, ['levelId', 'contentVersion']);

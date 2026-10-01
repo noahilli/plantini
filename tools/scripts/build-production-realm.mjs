@@ -39,6 +39,15 @@ web.redirectUris = [`${origin}/`, `${origin}/auth/callback`, `${origin}/auth/log
 web.webOrigins = [origin];
 web.attributes = { ...web.attributes, 'post.logout.redirect.uris': `${origin}/auth/logout-callback` };
 
+const editor = realm.clients.find((client) => client.clientId === 'plantini-editor-production');
+if (!editor) throw new Error('plantini-editor-production is missing in the versioned realm');
+const editorOrigin = new URL(origin);
+editorOrigin.hostname = `editor.${editorOrigin.hostname.replace(/^app\./, '')}`;
+editor.enabled = true;
+editor.redirectUris = [`${editorOrigin.origin}/`];
+editor.webOrigins = [editorOrigin.origin];
+editor.attributes = { ...editor.attributes, 'post.logout.redirect.uris': `${editorOrigin.origin}/` };
+
 // Native app: phones return to the app through the verified App Link
 // `https://plantini.eu/app/login` (fallback page -> `eu.plantini.app://oauth2redirect`), desktops receive the code on a loopback
 // address (RFC 8252, port fixed in apps/flutter/lib/auth/auth_platform_io.dart).
