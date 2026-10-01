@@ -797,6 +797,7 @@
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
         "http://127.0.0.1:4000/",
+        "https://plantini.eu/app/login",
         "eu.plantini.app://oauth2redirect"
       ],
       "webOrigins": [],

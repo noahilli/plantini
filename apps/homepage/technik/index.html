@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Wie Plantini gebaut ist: Architektur, die Wahl der Anbieter und wie sich die Plattform künftig erweitern lässt."><link rel="icon" href="/favicon.svg" type="image/svg+xml"><script type="module" src="/src/legal.js"></script><title>So ist Plantini gebaut – Plantini</title></head>
+<body><header class="nav scrolled"><div class="wrap nav-inner"><a class="brand" href="/"><svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="currentColor"/><path d="M32 50V30M32 30c0-10 7-16 17-17 1 10-5 17-17 17ZM32 38c0-8-6-13-15-14-1 9 4 14 15 14Z" fill="none" stroke="#F7F1E5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Plantini</span></a><a class="btn btn-small" href="/">Zur Startseite</a></div></header>
+<main class="wrap article" id="inhalt">
+<p class="eyebrow">Technik</p>
+<h1>So ist Plantini gebaut</h1>
+<p class="lead">Plantini soll für Schulen und für alle Neugierigen zuverlässig laufen, Kinderdaten schützen und mit der Community wachsen können. Diese Seite erklärt, wie die Plattform aufgebaut ist, warum wir uns für diese Bausteine entschieden haben und wohin sie sich entwickeln kann.</p>
+
+<h2 id="ueberblick">Das Gesamtbild</h2>
+<p>Plantini besteht aus drei Teilen: der <strong>App</strong>, dem <strong>Server</strong> und dem <strong>Anmeldedienst</strong>. Der Server vereint die Fach-API und das Redaktionssystem für Inhalte (beides auf Basis von Strapi). Die App spricht ausschließlich mit der Fach-API und dem Anmeldedienst. Die Verwaltungsoberfläche des Redaktionssystems, die Datenbank und der Bestimmungsdienst sind von außen nicht erreichbar.</p>
+
+<svg class="diagram" viewBox="0 0 820 400" role="img" aria-labelledby="dia-t dia-d">
+  <title id="dia-t">Architektur von Plantini</title>
+  <desc id="dia-d">Die App spricht über Caddy mit der Fach-API und dem Anmeldedienst. Die Fach-API nutzt Redaktionssystem, PostgreSQL, Redis und den externen Bestimmungsdienst Pl@ntNet.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#56633f"/></marker></defs>
+  <rect class="box box-app" x="20" y="150" width="150" height="100" rx="16"/><text x="95" y="196" text-anchor="middle">App</text><text class="sub" x="95" y="216" text-anchor="middle">Flutter · Web, Android, iOS</text>
+  <rect class="box" x="230" y="150" width="130" height="100" rx="16"/><text x="295" y="196" text-anchor="middle">Caddy</text><text class="sub" x="295" y="216" text-anchor="middle">HTTPS · Eingang</text>
+  <rect class="box" x="430" y="40" width="170" height="90" rx="16"/><text x="515" y="82" text-anchor="middle">Fach-API</text><text class="sub" x="515" y="102" text-anchor="middle">Strapi · Node.js</text>
+  <rect class="box" x="430" y="270" width="170" height="90" rx="16"/><text x="515" y="312" text-anchor="middle">Keycloak</text><text class="sub" x="515" y="332" text-anchor="middle">Anmeldung · OpenID Connect</text>
+  <rect class="box" x="660" y="20" width="140" height="64" rx="14"/><text x="730" y="50" text-anchor="middle">PostgreSQL</text><text class="sub" x="730" y="68" text-anchor="middle">Daten</text>
+  <rect class="box" x="660" y="100" width="140" height="64" rx="14"/><text x="730" y="130" text-anchor="middle">Redis</text><text class="sub" x="730" y="148" text-anchor="middle">Warteschlange</text>
+  <rect class="box box-ext" x="660" y="180" width="140" height="64" rx="14"/><text x="730" y="210" text-anchor="middle">Pl@ntNet</text><text class="sub" x="730" y="228" text-anchor="middle">Bestimmung (extern)</text>
+  <rect class="box box-ext" x="660" y="260" width="140" height="64" rx="14"/><text x="730" y="290" text-anchor="middle">Wikipedia · OSM</text><text class="sub" x="730" y="308" text-anchor="middle">Texte, Fotos, Karten</text>
+  <path class="edge" d="M170 200H230"/><path class="edge" d="M360 180 430 100"/><path class="edge" d="M360 220 430 300"/>
+  <path class="edge" d="M600 70H660"/><path class="edge" d="M600 95 660 125"/><path class="edge" d="M600 115 660 200"/><path class="edge" d="M600 125 660 285"/>
+</svg>
+<p class="diagram-note">Durchgezogen: eigene Dienste auf unserem Server. Gestrichelt: externe Quellen. Die Fach-API ruft sie selbst ab; die App spricht nie direkt mit ihnen.</p>
+
+<h3>Vom Foto zur Bestimmung</h3>
+<ol>
+<li>Die App reduziert das Foto auf das Nötige (ohne Metadaten) und lädt es privat auf den Server.</li>
+<li>Die Fach-API legt einen Auftrag in die <strong>Warteschlange</strong> (Redis). Ein Worker fragt Pl@ntNet ab – mit dem Schlüssel, den die App nie sieht.</li>
+<li>Die App zeigt Vorschläge mit Ähnlichkeit. Erst wenn die Person einen Vorschlag <strong>bestätigt</strong>, entsteht der Fund im privaten Herbarium.</li>
+<li>Ohne Netz wird der Fund lokal gespeichert und später mit stabilen IDs übertragen. Doppeltes Senden erzeugt keine doppelten Funde.</li>
+</ol>
+
+<h2 id="warum-gut">Warum diese Architektur gut ist</h2>
+<div class="why">
+<div><h3>Ein Vertrag für alles</h3><p>Die Schnittstelle ist in einer OpenAPI-Datei beschrieben. Daraus entsteht der Client der App automatisch. Server und App können nicht unbemerkt auseinanderlaufen, und Änderungen fallen schon beim Bauen auf.</p></div>
+<div><h3>Der Server entscheidet</h3><p>Levelabschluss, Bestimmung und Berechtigungen prüft der Server, nicht die App. So lassen sich Ergebnisse nicht am Handy fälschen, und Geheimnisse wie der Pl@ntNet-Schlüssel bleiben auf dem Server.</p></div>
+<div><h3>Offline zuerst</h3><p>Lernen und Herbarium funktionieren draußen ohne Empfang. Schreibvorgänge tragen eindeutige IDs und sind wiederholbar; ein abgebrochener Upload richtet nichts an.</p></div>
+<div><h3>Datenschutz im Entwurf</h3><p>Fotos und genaue Fundorte gehören den Lernenden und sind nur für sie sichtbar. Statistiken (zum Beispiel „wie viele haben diese Art gesammelt“) erscheinen erst ab einer Mindestzahl von Konten, damit niemand erkennbar wird. Kartenkacheln laufen über unseren Server, damit der Kartenanbieter weder IP-Adresse noch angesehene Orte erfährt. Diese Website lädt keine Schriften oder Skripte von Dritten.</p></div>
+<div><h3>Geprüfte Inhalte, nachvollziehbar veröffentlicht</h3><p>Pflanzen, Ökosysteme und Quizfragen werden redaktionell gepflegt und als unveränderliche Veröffentlichung (Release) ausgeliefert. Fehlerhafte Inhalte lassen sich zurückrollen, die App lädt nur vollständige, geprüfte Stände.</p></div>
+<div><h3>Eine Codebasis, viele Geräte</h3><p>Dieselbe App läuft im Browser, auf Android, iOS und Linux. Wir pflegen eine Oberfläche statt vier und liefern Fehlerkorrekturen überall gleichzeitig aus.</p></div>
+<div><h3>Schlank und austauschbar</h3><p>Der ganze Betrieb läuft in Containern auf einem einzigen Server und lässt sich auf einem anderen Server in kurzer Zeit neu aufsetzen. Jeder Baustein ist Open Source und durch eine Alternative ersetzbar, ohne dass wir von einem Anbieter abhängen.</p></div>
+<div><h3>3D ohne Spezialtechnik</h3><p>Die 3D-Ökosysteme und Charaktere entstehen in Blender und werden als schlanke Geometrie ausgeliefert. Die App zeichnet sie selbst, ohne Spiele-Engine und ohne Zusatzmodule, und läuft daher auch auf einfachen Geräten.</p></div>
+</div>
+
+<h2 id="anbieter">Warum wir diese Anbieter gewählt haben</h2>
+<p>Unsere Auswahlkriterien waren immer dieselben: <strong>offene Lizenz</strong>, <strong>selbst betreibbar</strong>, <strong>reif und weit verbreitet</strong> (damit es Dokumentation, Updates und Fachleute gibt) und <strong>sparsam mit Daten</strong>. Nur wo es keine freie Alternative gibt, nutzen wir externe Dienste, und dann nur serverseitig.</p>
+<table class="compare">
+<thead><tr><th scope="col">Baustein</th><th scope="col">Warum</th></tr></thead>
+<tbody>
+<tr><th scope="row">Flutter</th><td>Eine App für Web, Android, iOS und Desktop; eigene Zeichenschicht für unsere 3D-Ansichten; gute Offline-Werkzeuge; große Community.</td></tr>
+<tr><th scope="row">Strapi</th><td>Quelloffenes Redaktionssystem mit Rollen und Entwurf/Veröffentlichung. Redakteur*innen pflegen Inhalte ohne Programmierung, wir erweitern es mit eigener Fach-API.</td></tr>
+<tr><th scope="row">Keycloak</th><td>Bewährter, quelloffener Anmeldedienst mit OpenID Connect. Wir müssen keine Passwörter selbst speichern, bekommen E-Mail-Bestätigung, Rollen (auch für Lehrkräfte) und sichere Anmeldeverfahren (PKCE) fertig.</td></tr>
+<tr><th scope="row">PostgreSQL</th><td>Zuverlässige, freie Datenbank mit starken Garantien für Konsistenz; seit Jahrzehnten erprobt.</td></tr>
+<tr><th scope="row">Redis</th><td>Schnelle Warteschlange: Bestimmungen laufen im Hintergrund, begrenzen Anfragen an Pl@ntNet und überstehen Ausfälle durch Wiederholung.</td></tr>
+<tr><th scope="row">Caddy</th><td>Webserver, der HTTPS-Zertifikate automatisch beschafft und erneuert. Wenig Konfiguration heißt weniger Fehlerquellen.</td></tr>
+<tr><th scope="row">Docker</th><td>Gleiche Umgebung auf Entwicklungsrechner und Server; Updates sind ein Austausch von Images und lassen sich zurücknehmen.</td></tr>
+<tr><th scope="row">Pl@ntNet</th><td>Wissenschaftlich getragene Pflanzenbestimmung. Wir nutzen sie nur serverseitig; Bestimmungen sind Vorschläge, keine Garantie.</td></tr>
+<tr><th scope="row">Wikipedia, Wikimedia, iNaturalist</th><td>Freie Texte und Fotos mit klarer Lizenz. Wir zeigen immer Urheber*in und Lizenz, prüfen Zuordnungen und speichern Kopien auf unserem Server, statt die Quellen bei jedem Aufruf zu belasten.</td></tr>
+<tr><th scope="row">OpenStreetMap</th><td>Freie Karte für das Herbarium; wir laden Kacheln einmal und liefern sie aus unserem Zwischenspeicher aus.</td></tr>
+<tr><th scope="row">Blender, three.js, Vite</th><td>Freie Werkzeuge für Modelle, 3D auf der Website und den Bau der Seite; alle ohne Lizenzkosten und mit Dateiformaten, die wir behalten.</td></tr>
+<tr><th scope="row">netcup</th><td>Deutscher Hosting-Anbieter für den Server. Der Betrieb liegt in unserer Hand und ließe sich jederzeit zu einem anderen Anbieter oder in eine öffentliche Infrastruktur umziehen.</td></tr>
+</tbody></table>
+
+<h2 id="erweiterung">Wie sich Plantini künftig erweitern lässt</h2>
+<ul class="plain">
+<li><strong>Offenes Redaktionsportal mit Review.</strong> Alle können Arten und Ökosysteme vorschlagen; Fachleute prüfen, bevor etwas erscheint. Das Rollen- und Release-Modell dafür ist angelegt.</li>
+<li><strong>Viele Sprachen.</strong> Inhalte und Oberfläche mehrsprachig machen, damit Arten und Ökosysteme weltweit verfügbar werden.</li>
+<li><strong>Neue Ökosysteme per Werkzeugkette.</strong> Ein Ökosystem entsteht als Blender-Modul und wird mit einem Skript für die App exportiert. Weitere Landschaften brauchen keinen neuen App-Code.</li>
+<li><strong>Klassen und Lehrkräfte.</strong> Rollen für Lehrkräfte und Organisationen sind im Anmeldedienst vorgesehen; darauf lassen sich Klassenübersichten, Aufgaben und datensparsame Auswertungen aufbauen.</li>
+<li><strong>Eigene Versionen.</strong> Branding, eigene Inhalte und eigener redaktioneller Zugang pro Organisation, wie in der Preisliste beschrieben.</li>
+<li><strong>App Stores.</strong> Veröffentlichung bei Google Play und im App Store; die Android-App gibt es bereits als Direktdownload.</li>
+<li><strong>Mehr Bestimmungsquellen.</strong> Der Bestimmungsdienst steckt hinter einer eigenen Schnittstelle. Weitere Anbieter oder ein eigenes Modell ließen sich anschließen.</li>
+<li><strong>Offline-Karten und Barrierefreiheit.</strong> Karten für den Einsatz im Gelände speichern, Leichte Sprache und weitere Hilfen ausbauen.</li>
+<li><strong>Mehr Ausfallsicherheit.</strong> Automatisierte Sicherungen und Überwachung, mehrere Server hinter dem Eingang, Datenbank-Replikate und ein Zwischenspeicher für Fotos, wenn die Nutzung wächst.</li>
+<li><strong>Öffentliche Trägerschaft.</strong> Unser Ziel ist es, Plantini langfristig kostenlos bereitzustellen. Dafür streben wir eine Kooperation mit der EU und dem deutschen Staat an, einschließlich Betrieb in öffentlicher Infrastruktur.</li>
+</ul>
+
+<h2 id="stand">Ehrlich gesagt: der aktuelle Stand</h2>
+<p>Plantini ist ein früher, aktiv entwickelter Stand. Ein Server trägt derzeit alles, automatisierte Sicherungen und Überwachung fehlen noch, und die Inhalte werden schrittweise fachlich geprüft. Die Architektur ist so gewählt, dass diese Lücken geschlossen werden können, ohne von vorn zu beginnen. Fragen oder Ideen? <a href="mailto:noah@illmann.net?subject=Plantini%20%E2%80%93%20Technik">Schreib uns</a>. Eine Liste der verwendeten Software mit Links findest du auf der <a href="/#software">Startseite</a>.</p>
+</main><footer class="footer"><div class="wrap footer-inner"><nav class="footer-links" aria-label="Rechtliches"><a href="/">Startseite</a><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/bildnachweise/">Bildnachweise</a></nav></div></footer></body></html>

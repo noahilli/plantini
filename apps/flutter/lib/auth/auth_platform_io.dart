@@ -12,14 +12,19 @@ import 'auth_platform_interface.dart';
 /// supported Plantini development and E2E environments.
 final Uri desktopLoopbackRedirectUri = Uri.parse('http://127.0.0.1:4000/');
 
-/// Phones return to the app through a registered URL scheme: the system opens
-/// the app directly, even when it was paused in the background while the
-/// browser showed the login (a loopback server does not survive that, and a
-/// verification mail opened in another browser cannot reach it at all).
-/// Keycloak's `plantini-mobile-*` clients allow exactly this redirect URI.
+/// Phones return to the app through a verified Android App Link
+/// (`https://plantini.eu/app/login`, served by the homepage). Unlike a loopback
+/// server it survives the app being paused behind the browser, and unlike a
+/// bare custom scheme a plain https redirect is never blocked by the browser:
+/// where the system does not open the app by itself, that page forwards code
+/// and state to the custom scheme [mobileSchemeLink] and offers a button.
+/// Keycloak's `plantini-mobile-*` clients allow exactly these redirect URIs.
 final Uri mobileDeepLinkRedirectUri = Uri.parse(
-  'eu.plantini.app://oauth2redirect',
+  'https://plantini.eu/app/login',
 );
+
+/// What the landing page forwards to when the App Link did not open the app.
+final Uri mobileSchemeLink = Uri.parse('eu.plantini.app://oauth2redirect');
 
 /// Builds a PKCE authorization-code flow for desktop clients. Keeping this
 /// outside the widget layer makes the redirect and PKCE invariant testable.
@@ -77,8 +82,13 @@ final class IoAuthPlatformHelper implements AuthPlatformHelper {
   }
 }
 
-Future<void> _launchAuthorizationPage(Uri uri) async {
-  final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+Future<void> _launchAuthorizationPage(Uri uri, {bool inApp = false}) async {
+  // A Custom Tab (in-app browser view) belongs to the app, so Chrome hands the
+  // redirect back to it more readily than from a free-standing browser tab.
+  var launched =
+      inApp && await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+  launched =
+      launched || await launchUrl(uri, mode: LaunchMode.externalApplication);
   if (!launched) {
     throw StateError('Der Browser konnte die Anmeldung nicht öffnen.');
   }
@@ -97,16 +107,20 @@ openid.Flow createMobilePkceFlow(
 
 bool get _isPhone => Platform.isAndroid || Platform.isIOS;
 
+/// Whether [uri] is the browser handing the login result back to the app.
+bool isLoginReturnLink(Uri uri) =>
+    (uri.scheme == mobileDeepLinkRedirectUri.scheme &&
+        uri.host == mobileDeepLinkRedirectUri.host &&
+        uri.path.startsWith(mobileDeepLinkRedirectUri.path)) ||
+    (uri.scheme == mobileSchemeLink.scheme &&
+        uri.host == mobileSchemeLink.host);
+
 /// Opens the login page in the browser and waits for the deep link that
 /// brings the player back to the app.
 Future<openid.Credential?> _loginWithDeepLink(openid.Flow flow) async {
   final links = AppLinks();
-  final returned = links.uriLinkStream.firstWhere(
-    (uri) =>
-        uri.scheme == mobileDeepLinkRedirectUri.scheme &&
-        uri.host == mobileDeepLinkRedirectUri.host,
-  );
-  await _launchAuthorizationPage(flow.authenticationUri);
+  final returned = links.uriLinkStream.firstWhere(isLoginReturnLink);
+  await _launchAuthorizationPage(flow.authenticationUri, inApp: true);
   // A login that is never finished must not hang forever.
   final uri = await returned.timeout(const Duration(minutes: 15));
   if (uri.queryParameters.containsKey('error')) {

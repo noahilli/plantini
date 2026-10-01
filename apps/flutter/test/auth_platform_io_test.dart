@@ -32,8 +32,27 @@ void main() {
     );
   });
 
+  test('only the login return reaches the login flow', () {
+    expect(
+      isLoginReturnLink(
+        Uri.parse('https://plantini.eu/app/login?code=1&state=2'),
+      ),
+      isTrue,
+    );
+    expect(
+      isLoginReturnLink(Uri.parse('eu.plantini.app://oauth2redirect?code=1')),
+      isTrue,
+    );
+    expect(isLoginReturnLink(Uri.parse('https://plantini.eu/')), isFalse);
+    expect(
+      isLoginReturnLink(Uri.parse('https://evil.example/app/login')),
+      isFalse,
+    );
+    expect(isLoginReturnLink(Uri.parse('eu.plantini.app://other')), isFalse);
+  });
+
   test(
-    'phone login returns through the app URL scheme, not a loopback server',
+    'phone login returns through the verified App Link, not a loopback server',
     () {
       final issuer = openid.Issuer(
         openid.OpenIdProviderMetadata.fromJson({
@@ -53,7 +72,7 @@ void main() {
 
       expect(
         flow.authenticationUri.queryParameters['redirect_uri'],
-        'eu.plantini.app://oauth2redirect',
+        'https://plantini.eu/app/login',
       );
       expect(
         flow.authenticationUri.queryParameters['code_challenge_method'],

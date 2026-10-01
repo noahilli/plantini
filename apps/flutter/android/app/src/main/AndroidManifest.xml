@@ -40,7 +40,15 @@
               />
             <!-- The login return link is handled by app_links, not by the router. -->
             <meta-data android:name="flutter_deeplinking_enabled" android:value="false"/>
-            <!-- Login return: Keycloak redirects to eu.plantini.app://oauth2redirect -->
+            <!-- Login return, verified App Link: Keycloak redirects to
+                 https://plantini.eu/app/login (assetlinks.json on the homepage). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" android:host="plantini.eu" android:pathPrefix="/app/login"/>
+            </intent-filter>
+            <!-- Fallback from the landing page: eu.plantini.app://oauth2redirect -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
