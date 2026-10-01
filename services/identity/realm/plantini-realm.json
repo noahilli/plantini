@@ -797,7 +797,7 @@
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
         "http://127.0.0.1:4000/",
-        "app.plantini.dev:/oauth2redirect"
+        "eu.plantini.app://oauth2redirect"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -812,7 +812,7 @@
       "protocol": "openid-connect",
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "app.plantini.dev:/oauth2redirect"
+        "post.logout.redirect.uris": "eu.plantini.app://oauth2redirect"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
