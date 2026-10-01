@@ -13,9 +13,9 @@ import '../features/catalog/presentation/widgets/world_lighting.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart'
     show EcosystemWorld;
 import '../features/character/application/character_store.dart';
-import '../features/character/presentation/character_creator_screen.dart';
-import '../features/character/presentation/widgets/character_kit.dart';
-import '../features/character/presentation/widgets/character_preview.dart';
+import '../features/character/presentation/character_selector_screen.dart';
+import '../features/character/presentation/widgets/explorer_roster.dart';
+import '../features/character/presentation/widgets/explorer_views.dart';
 import '../features/field/presentation/field_capture_screen.dart';
 import '../features/herbarium/presentation/herbarium_screen.dart';
 import '../features/home/presentation/home_screen.dart';
@@ -45,7 +45,7 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
       if (character.status != CharacterStatus.ready) {
         return path == '/boot' ? null : '/boot';
       }
-      if (character.needsCreation) {
+      if (character.needsSelection) {
         return path == '/character' ? null : '/character';
       }
     }
@@ -62,7 +62,7 @@ GoRouter createAppRouter(AppDependencies dependencies) => GoRouter(
 
     GoRoute(
       path: '/character',
-      builder: (context, state) => CharacterCreatorScreen(
+      builder: (context, state) => CharacterSelectorScreen(
         store: dependencies.character!,
         returnTo: state.uri.queryParameters['from'] == 'profile'
             ? '/profile'
@@ -301,20 +301,19 @@ final class ProfileScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         ListenableBuilder(
-                          listenable: PlayerLook.spec,
+                          listenable: PlayerLook.id,
                           builder: (context, _) {
-                            final spec = PlayerLook.spec.value;
+                            final explorer = PlayerLook.explorer;
                             return SizedBox(
                               width: 96,
                               height: 120,
-                              child: spec == null
+                              child: explorer == null
                                   ? Image.asset(
                                       WorldArt.explorer,
                                       excludeFromSemantics: true,
                                     )
-                                  : CharacterPreview(
-                                      spec: spec,
-                                      interactive: false,
+                                  : ExplorerPortrait(
+                                      explorer: explorer,
                                       borderRadius: 22,
                                     ),
                             );
@@ -350,7 +349,7 @@ final class ProfileScreen extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.face_retouching_natural,
                                   ),
-                                  label: const Text('Charakter ändern'),
+                                  label: const Text('Charakter wechseln'),
                                   style: OutlinedButton.styleFrom(
                                     foregroundColor: AppColors.neutral100,
                                     side: const BorderSide(

@@ -144,3 +144,4 @@ APP-11,work_item,P1,in_progress,flutter-frontend,FA032,APP-10,NONE,NONE,alpha,20
 DESIGN-12,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept time-of-day lighting on real phones
 DESIGN-13,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept the character creator and refine the Blender kit
 TEST-01,work_item,P2,planned,qa-playwright,NFA022,NONE,NONE,NONE,alpha,2026-09-30,Repair the 13 Flutter tests that failed before these changes
+PERF-01,work_item,P1,planned,flutter-frontend,NFA016,DESIGN-11,NONE,NONE,alpha,2026-10-01,Measure frame times on real Android devices with the perf walk

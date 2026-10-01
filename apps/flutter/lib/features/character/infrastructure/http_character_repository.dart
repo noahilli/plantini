@@ -2,39 +2,43 @@ import '../../../adapters/http/platform_api_client.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../domain/character_repository.dart';
-import '../domain/character_spec.dart';
 
-/// Reads and writes the character as part of the profile (`/me`).
+/// Reads and writes the chosen explorer as part of the profile (`/me`).
 final class HttpCharacterRepository implements CharacterRepository {
   const HttpCharacterRepository(this._client);
 
   final PlatformApiClient _client;
 
+  static const version = 2;
+
+  static String? _idOf(Object? character) =>
+      character is Map && character['v'] == version && character['id'] is String
+      ? character['id'] as String
+      : null;
+
   @override
-  Future<Result<CharacterSpec?>> load() async {
+  Future<Result<String?>> load() async {
     final response = await _client.getJson('me', requiresAuthentication: true);
     return response.when(
-      success: (value) {
-        final raw = value.body['character'];
-        if (raw == null) return Result.success(null);
-        // A character this app version cannot read is treated as missing, so
-        // the player is asked to make a new one instead of seeing nothing.
-        return Result.success(CharacterSpec.fromJson(raw));
-      },
+      // A record from the old character designer (v1) counts as "none": the
+      // player picks one of the new explorers.
+      success: (value) => Result.success(_idOf(value.body['character'])),
       failure: Result.failure,
     );
   }
 
   @override
-  Future<Result<CharacterSpec>> save(CharacterSpec spec) async {
+  Future<Result<String>> save(String explorerId) async {
     final response = await _client.patchJson(
       'me',
-      body: {'character': spec.toJson()},
+      body: {
+        'character': {'v': version, 'id': explorerId},
+      },
     );
     return response.when(
       success: (value) {
-        final saved = CharacterSpec.fromJson(value.body['character']);
-        if (saved == null) {
+        final id = _idOf(value.body['character']);
+        if (id == null) {
           return Result.failure(
             const ContractFailure(
               message: 'Der Server hat den Charakter nicht bestätigt.',
@@ -42,7 +46,7 @@ final class HttpCharacterRepository implements CharacterRepository {
             ),
           );
         }
-        return Result.success(saved);
+        return Result.success(id);
       },
       failure: Result.failure,
     );

@@ -1,7 +1,7 @@
 'use strict';
 
 const { invalidRequest } = require('../errors');
-const { validateCharacter } = require('./character-schema');
+const { validateCharacter, currentCharacter } = require('./character-schema');
 const { optionalString, rejectUnknownFields, requirePlainObject } = require('../validation');
 
 class ProfileService {
@@ -45,7 +45,7 @@ function mapProfile(actor) {
     displayName: actor.displayName,
     locale: actor.locale,
     roles: actor.roles,
-    ...(actor.character ? { character: actor.character } : {}),
+    ...(currentCharacter(actor.character) ? { character: currentCharacter(actor.character) } : {}),
     ...(actor.organisationId ? { organisationId: actor.organisationId } : {}),
   };
 }

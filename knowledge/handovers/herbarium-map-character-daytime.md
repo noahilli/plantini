@@ -26,16 +26,33 @@ Die App schickte beim Speichern eines Fundes nur `identificationJobId`, nie `med
 
 `world_lighting.dart`: `DayPhase` (05–10 Morgen, 10–16 Mittag, 16–21 Abend, sonst Nacht), `WorldLighting` (Sonnenrichtung, Sonnen-/Umgebungsfarbe, Himmel, Sonnen-/Mondglühen, Sterne, Laternen), `DayClock` (folgt der Uhr, im Profil pinnbar; Startparameter `--dart-define=PLANTINI_DAYTIME=night`). Lichtformel `Basis·(ambient + sun·n·l)` je Farbkanal; Baum- und Figurenschatten als konvexe Hülle entlang des Lichts (eine Fläche je Objekt); Stationen leuchten abends/nachts. Bilder werden je Phase gecacht. Kein Timer: Aktualisierung beim Start und beim Zurückkehren in die App.
 
-## Charakter
+## Charakter (Stand 01.10.2026: festes Set statt Designer)
 
-- Blender: `tools/blender/create_character_parts.py` (`blender -b -P …`; `--no-render` lässt die Vorschau weg, `-- --front` rendert frontal) baut 25 Teile aus Primitiven (Körper, 4 Oberteile, 3 Unterteile, 3 Schuhe, 6 Frisuren, 4 Hüte, 3 Brillen, Rucksack) und exportiert `apps/flutter/assets/characters/parts.json` (102 KB); Kontaktbogen in `artifacts/3d/character-kit/`. **Der Blender-MCP-Socket (127.0.0.1:9876) lief nicht**; gebaut wurde headless mit demselben Skriptansatz wie die Weltmodule.
-- Daten: `Character` im Vertrag (`v`, `gender`, `skin`, je Teil `style` + `color`), im Profil (`PATCH /me`, `profiles.character` als JSON), serverseitige Whitelist in `profile/character-schema.js` (ein Test vergleicht sie mit `parts.json`), Gerätecache mit „dirty“-Markierung für Offline-Änderungen (`character_store.dart`).
-- Ablauf: nach dem Login lädt die App den Charakter (Bootbild währenddessen); hat der Server keinen, öffnet sich `/character` (nur beim ersten Login). Ohne Serverantwort und Cache wird ein Starter gezeigt, niemand wird durch eine tote Verbindung in den Editor gezwungen. Profil: „Charakter ändern“. Der Charakter ersetzt den Ranger auf Lernpfad und in den Vitrinen.
-- Grenzen: nur eine Kopfgröße/Körperhöhe, Geschlecht verändert nur die Körperbreite; Kleidung ist frei kombinierbar; keine Animation der Figur.
+Der Charakter-Designer (frei kombinierbare Teile, `67c55b5`) ist entfernt. Stattdessen gibt es **neun feste Entdecker:innen**, alle im Forscher-Stil (Westen, Fernglas, Notizbuch, Safari-/Ranger-Hut), bewusst unterschiedlich in Hautton, Alter, Haaren, Kopfbedeckung, Statur und Mobilität:
+
+| Gruppe | Figuren |
+|---|---|
+| Frauen | Amara (dunkle Haut, Afro-Puffs, Fernglas), Mei (Bob, Eimerhut, Brille, Notizbuch), Samira (Hijab, langer Mantel, Rucksack) |
+| Männer | Heinrich (älter, grauer Bart, Rangerhut), Mateo (Locken, Kappe, Kamera), Arjun (Turban, Vollbart, Rucksack) |
+| Divers | Robin (Regenmantel, Undercut, runde Brille), Nia (Rollstuhl, Locs, Safarihut), Kai (Bandana, Zopf, Poncho) |
+
+- Blender: `tools/blender/create_explorer_characters.py` (`blender -b -P …`; `-- --front` rendert frontal, `-- --no-render` ohne Vorschau) baut die neun Modelle aus Primitiven (je 1 000–1 800 Dreiecke, Farben fest eingebacken) und exportiert `apps/flutter/assets/characters/explorers.json` (282 KB); Kontaktbogen in `artifacts/3d/explorers/`. **Der Blender-MCP-Socket lief nicht**, gebaut wurde headless. Der Painter-Sortierung zuliebe dürfen Teile keine deckungsgleichen Flächen haben (Taschen/Riemen stehen 5 mm vor der Weste).
+- Daten: `Character` im Vertrag ist nur noch `{v: 2, id}` mit einer von neun IDs (`profiles.character`, `PATCH /me`, Whitelist in `profile/character-schema.js`, ein Test vergleicht sie mit `explorers.json`). Alte Designer-Datensätze (`v: 1`) werden nicht mehr ausgeliefert; die App zeigt dann die Auswahl.
+- App: `lib/features/character/` – `ExplorerRoster`/`PlayerLook` (Modelle, Spielerwahl), `CharacterStore` (Laden nach Login, Gerätecache `explorer_v2` mit „dirty“-Markierung für Offline-Wahl, Standardfigur `kai` ohne Serverantwort), `CharacterSelectorScreen` (große drehbare Vorschau + 3×3-Raster, Porträts als einmal gebackene Texturen), im Profil „Charakter wechseln“. Erste Anmeldung ohne Wahl → `/character`. Die Figur ersetzt den Ranger auf dem Lernpfad und in den Vitrinen.
+- Grenzen: Nia sitzt im Rollstuhl (kein Gehen-Animation, auf dem Pfad steht sie wie die anderen an der Station); keine weiteren Figuren/Teile auswählbar.
+
+## Leistung (Messung 01.10.2026)
+
+Messwerkzeug: `integration_test/perf_walk_test.dart` (`DISPLAY=:0 flutter drive --profile -d linux --driver=test_driver/integration_test.dart --target=integration_test/perf_walk_test.dart`; `--dart-define=ONLY_HOME=1` nur Startseite). Läuft die App mit Fake-Daten über Home, Lernen, Lernpfad (30 Level, vier Tageszeiten), Herbarium, Profil und gibt UI-/Raster-Zeiten je Schritt aus. Web: Chromium mit echter GPU (`--use-angle=gl`) und `Emulation.setCPUThrottlingRate`.
+
+- **Befund:** Beim Scrollen der Startseite lag die Rasterzeit bei p90 35 ms (Spitzen 200 ms), 97 von 172 Bildern waren langsam. Ursache war die animierte Hero-Vitrine: Wand, Sockel mit unscharfem Schatten, Modell und Glas wurden als getrennte Ebenen jedes Bild neu gezeichnet (Modell als 19 000-Dreiecke-Bild oder Textur ändert daran nichts, die Ebenen selbst kosten).
+- **Behebung:** Jede Vitrine – auch die schwingende – ist jetzt immer **eine** gebackene Textur je Winkel (`_BakedCasePainter`); beim Schwingen wechselt sie zwischen etwa sieben Winkeln (Schritt 2,6°, ±8,6°). Danach: Raster p90 0,5 ms, 5 langsame Bilder von 217 (nur die ersten Backvorgänge).
+- Weitere Schritte unauffällig (Linux-Profil, echte GPU): Lernliste, Lernpfad im Ruhezustand/beim Ziehen/bei jedem Tageszeitwechsel, Herbarium, Profil – alle p90 Raster ≤ 1,1 ms. Web mit 4-fach gedrosselter CPU: 60 fps, einzelne UI-Spitzen bis 28 ms durch das Neuaufnehmen der Lernpfad-Bilder (`path-paint`, ca. 10 ms je Aufnahme bei Drossel 4).
+- **Nicht gemessen:** echte Android-Geräte (der Emulator hat keine brauchbare GPU). Die Zahlen gelten für einen Desktop-Rechner; auf Handys ist die UI-Zeit der Lernpfad-Aufnahmen (alle 16 Phasen nach jedem Ziehen/Wechsel der Tageszeit neu) der wahrscheinlichste Engpass.
 
 ## Tests
 
-Neu: `test/core/image_service_test.dart`, `test/features/catalog/world_lighting_test.dart`, `test/features/character/character_test.dart`, Backend `tile-proxy.test.js`, `character-schema.test.js`. Flutter: 127 bestanden, dieselben **13 Fehler wie vor den Änderungen** (Stand `ba6919e`: Level-Gate-, Researcher-Path-, Plant-Detail-, Router- und Herbarium-Detail-Tests sowie ein Kompilierfehler in `game05_herbarium_bottles_test.dart` – Altlasten, nicht angefasst). Backend: 45 Tests, 41 bestanden, 4 übersprungen (Redis).
+Neu: `test/core/image_service_test.dart`, `test/features/catalog/world_lighting_test.dart`, `test/features/character/explorer_test.dart`, Backend `tile-proxy.test.js`, `character-schema.test.js`. Flutter: 123 bestanden, dieselben **13 Fehler wie vor den Änderungen** (Stand `ba6919e`: Level-Gate-, Researcher-Path-, Plant-Detail-, Router- und Herbarium-Detail-Tests sowie ein Kompilierfehler in `game05_herbarium_bottles_test.dart` – Altlasten, nicht angefasst). Backend: 46 Tests, 42 bestanden, 4 übersprungen (Redis).
 
 ## Ausrollen (Reihenfolge, nicht ausgeführt)
 

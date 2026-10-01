@@ -23,7 +23,6 @@ export 'package:openapi/src/model/admin_user.dart';
 export 'package:openapi/src/model/admin_user_page.dart';
 export 'package:openapi/src/model/administrative_job.dart';
 export 'package:openapi/src/model/character.dart';
-export 'package:openapi/src/model/character_part.dart';
 export 'package:openapi/src/model/collection_share.dart';
 export 'package:openapi/src/model/collection_stats.dart';
 export 'package:openapi/src/model/complete_level_attempt_request.dart';

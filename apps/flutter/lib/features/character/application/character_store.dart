@@ -5,22 +5,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/result.dart';
 import '../domain/character_repository.dart';
-import '../domain/character_spec.dart';
-import '../presentation/widgets/character_kit.dart';
+import '../presentation/widgets/explorer_roster.dart';
 
 enum CharacterStatus { idle, loading, ready }
 
-/// The player's character: loaded after login, cached on the device, and
+/// Which explorer the player chose: loaded after login, cached on the device,
 /// written back when it changes. The 3D views read it through [PlayerLook].
 ///
-/// Offline the cached character is used; a change that could not be sent yet
-/// stays marked and is sent at the next sync. Without server answer and cache
-/// a starter character is shown, nobody is forced into the creator by a dead
-/// connection.
+/// Offline the cached choice is used; a change that could not be sent yet is
+/// marked and sent at the next sync. Without server answer and cache a default
+/// explorer is shown, nobody is forced into the selector by a dead connection.
 final class CharacterStore extends ChangeNotifier {
   CharacterStore({required this.repository, required this.preferences});
 
-  static const _prefsKey = 'character_v1';
+  static const _prefsKey = 'explorer_v2';
+  static const fallbackId = 'kai';
 
   final CharacterRepository repository;
   final SharedPreferences preferences;
@@ -30,14 +29,14 @@ final class CharacterStore extends ChangeNotifier {
   Future<void>? _running;
 
   CharacterStatus get status => _status;
-  CharacterSpec? get spec => PlayerLook.spec.value;
+  String? get explorerId => PlayerLook.id.value;
 
-  /// The first login: the server has no character and nothing is cached.
-  bool get needsCreation =>
-      _status == CharacterStatus.ready && spec == null && !_placeholder;
+  /// The first login: the server has none and nothing is cached.
+  bool get needsSelection =>
+      _status == CharacterStatus.ready && explorerId == null && !_placeholder;
 
-  /// Loads the character (once at a time). Safe to call again, e.g. when the
-  /// app returns to the front and the last try failed.
+  /// Loads the choice (once at a time). Safe to call again, e.g. when the app
+  /// returns to the front and the last try failed.
   Future<void> sync() => _running ??= _sync().whenComplete(() {
     _running = null;
   });
@@ -49,12 +48,12 @@ final class CharacterStore extends ChangeNotifier {
     try {
       await _load();
     } catch (error, stack) {
-      // Whatever goes wrong (kit asset, cache, server), the app must open:
-      // the router holds the player on the boot screen until the status is ready.
+      // The router holds the player on the boot screen until the status is
+      // ready, so whatever fails here (asset, cache, server) must not stick.
       debugPrint('CharacterStore sync failed: $error\n$stack');
-      if (PlayerLook.spec.value == null) {
+      if (PlayerLook.id.value == null) {
         _placeholder = true;
-        PlayerLook.spec.value = CharacterSpec.starter();
+        PlayerLook.id.value = fallbackId;
       }
     } finally {
       _status = CharacterStatus.ready;
@@ -63,43 +62,43 @@ final class CharacterStore extends ChangeNotifier {
   }
 
   Future<void> _load() async {
-    await CharacterKit.load();
-    final cached = _readCache();
-    if (cached != null) PlayerLook.spec.value = cached.spec;
+    final roster = await ExplorerRoster.load();
+    final cached = _readCache(roster);
+    if (cached != null) PlayerLook.id.value = cached.id;
 
     final loaded = await repository.load();
     switch (loaded) {
-      case Success<CharacterSpec?>(:final value):
+      case Success<String?>(:final value):
         _placeholder = false;
+        final server = roster.byId(value)?.id;
         if (cached != null && cached.dirty) {
-          // An offline change wins over what the server still has.
-          await _push(cached.spec);
-        } else if (value != null) {
-          _apply(value, dirty: false);
+          await _push(cached.id); // an offline change wins
+        } else if (server != null) {
+          _apply(server, dirty: false);
         } else if (cached != null) {
-          await _push(cached.spec);
+          await _push(cached.id);
         } else {
-          PlayerLook.spec.value = null;
+          PlayerLook.id.value = null;
         }
-      case Failure<CharacterSpec?>():
+      case Failure<String?>():
         if (cached == null) {
           _placeholder = true;
-          PlayerLook.spec.value = CharacterSpec.starter();
+          PlayerLook.id.value = fallbackId;
         }
     }
   }
 
-  /// Shows [spec] at once and sends it; a failed send is kept for later.
-  Future<Result<CharacterSpec>> save(CharacterSpec spec) async {
+  /// Shows [explorerId] at once and sends it; a failed send is kept for later.
+  Future<Result<String>> choose(String explorerId) async {
     _placeholder = false;
-    _apply(spec, dirty: true);
+    _apply(explorerId, dirty: true);
     notifyListeners();
-    return _push(spec);
+    return _push(explorerId);
   }
 
-  Future<Result<CharacterSpec>> _push(CharacterSpec spec) async {
-    final saved = await repository.save(spec);
-    if (saved case Success<CharacterSpec>(:final value)) {
+  Future<Result<String>> _push(String explorerId) async {
+    final saved = await repository.save(explorerId);
+    if (saved case Success<String>(:final value)) {
       _apply(value, dirty: false);
       notifyListeners();
     }
@@ -110,26 +109,23 @@ final class CharacterStore extends ChangeNotifier {
   void reset() {
     _status = CharacterStatus.idle;
     _placeholder = false;
-    PlayerLook.spec.value = null;
+    PlayerLook.id.value = null;
     preferences.remove(_prefsKey);
     notifyListeners();
   }
 
-  void _apply(CharacterSpec spec, {required bool dirty}) {
-    PlayerLook.spec.value = spec;
-    preferences.setString(
-      _prefsKey,
-      jsonEncode({'spec': spec.toJson(), 'dirty': dirty}),
-    );
+  void _apply(String id, {required bool dirty}) {
+    PlayerLook.id.value = id;
+    preferences.setString(_prefsKey, jsonEncode({'id': id, 'dirty': dirty}));
   }
 
-  ({CharacterSpec spec, bool dirty})? _readCache() {
+  ({String id, bool dirty})? _readCache(ExplorerRoster roster) {
     try {
       final raw = preferences.getString(_prefsKey);
       if (raw == null) return null;
       final json = jsonDecode(raw) as Map<String, dynamic>;
-      final spec = CharacterSpec.fromJson(json['spec']);
-      return spec == null ? null : (spec: spec, dirty: json['dirty'] == true);
+      final id = roster.byId(json['id'] as String?)?.id;
+      return id == null ? null : (id: id, dirty: json['dirty'] == true);
     } catch (_) {
       return null;
     }

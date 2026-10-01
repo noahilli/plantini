@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/diagnostics/frame_stats.dart';
 import 'modular_forest_view.dart' show EcosystemWorld;
-import '../../../character/presentation/widgets/character_kit.dart';
+import '../../../character/presentation/widgets/explorer_roster.dart';
 import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
@@ -51,8 +51,8 @@ final class EcosystemVitrine extends StatefulWidget {
 
 final class _EcosystemVitrineState extends State<EcosystemVitrine>
     with SingleTickerProviderStateMixin {
-  static const _swing = .2; // radians either side of [yaw] while animating
-  static const _bucket = .03; // ≈1.7°: angles the picture cache is keyed on
+  static const _swing = .15; // radians either side of [yaw] while animating
+  static const _bucket = .045; // ≈2.6°: angles the cache is keyed on
 
   late Future<WorldModule> _module = WorldModule.load(widget.world.asset);
   late final AnimationController _clock = AnimationController(
@@ -90,6 +90,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
     if (old.world != widget.world) {
       _module = WorldModule.load(widget.world.asset);
     }
+
     _step.value = _stepFor(_clock.value);
     _syncMotion();
   }
@@ -118,7 +119,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([DayClock.phase, PlayerLook.spec]),
+      listenable: Listenable.merge([DayClock.phase, PlayerLook.id]),
       builder: (context, _) => _buildFor(context, DayClock.phase.value),
     );
   }
@@ -146,52 +147,43 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                     future: _module,
                     builder: (context, snapshot) {
                       final module = snapshot.data;
-                      if (!widget.animate && module != null) {
-                        // Resting vitrine: one baked texture (see _BakedCasePainter).
-                        return CustomPaint(
+                      if (module == null) {
+                        // Still loading: just the empty case.
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CustomPaint(
+                              isComplex: true,
+                              willChange: false,
+                              painter: _CaseBackPainter(world, lighting),
+                            ),
+                            const CustomPaint(
+                              isComplex: true,
+                              willChange: false,
+                              painter: _CaseFrontPainter(),
+                            ),
+                          ],
+                        );
+                      }
+                      // The whole vitrine (wall, plinth, model, glass) is baked
+                      // into one texture per angle and replayed as a textured
+                      // quad. While the model sways it steps through a handful
+                      // of such textures; layered painters (a blurred shadow,
+                      // gradients) cost 10-30 ms per frame while scrolling.
+                      return ValueListenableBuilder<int>(
+                        valueListenable: _step,
+                        builder: (context, step, _) => CustomPaint(
                           size: size,
                           isComplex: true,
                           willChange: false,
                           painter: _BakedCasePainter(
                             world,
                             module,
-                            widget.yaw,
+                            widget.animate ? step * _bucket : widget.yaw,
                             pixelRatio,
                             lighting,
                           ),
-                        );
-                      }
-                      // Animated (or still loading): layered case, the model
-                      // stepping through cached angles.
-                      return Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          CustomPaint(
-                            isComplex: true,
-                            willChange: false,
-                            painter: _CaseBackPainter(world, lighting),
-                          ),
-                          if (module != null)
-                            CustomPaint(
-                              size: size,
-                              isComplex: true,
-                              willChange: true,
-                              painter: _MiniWorldPainter(
-                                module,
-                                world.asset,
-                                _step,
-                                _bucket,
-                                pixelRatio: pixelRatio,
-                                asImage: false,
-                                lighting: lighting,
-                              ),
-                            ),
-                          const CustomPaint(
-                            isComplex: true,
-                            willChange: false,
-                            painter: _CaseFrontPainter(),
-                          ),
-                        ],
+                        ),
                       );
                     },
                   ),
@@ -213,100 +205,6 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
 
 // ---------------------------------------------------------------------------
 // Miniature
-
-/// Replays cached pictures; recording only happens on a cache miss.
-final class _MiniWorldPainter extends CustomPainter {
-  _MiniWorldPainter(
-    this.module,
-    this.asset,
-    this.step,
-    this.bucket, {
-    required this.pixelRatio,
-    required this.asImage,
-    required this.lighting,
-  }) : super(repaint: step);
-
-  final WorldModule module;
-  final String asset;
-  final ValueNotifier<int> step;
-  final double bucket;
-  final double pixelRatio;
-  final WorldLighting lighting;
-
-  /// Resting vitrines are rasterised once into a GPU texture: scrolling then
-  /// costs a textured quad instead of re-drawing ~19k triangles per vitrine
-  /// every frame (measured: ~2 ms/frame on a desktop GPU for seven vitrines,
-  /// a multiple of that on phone GPUs). The swaying hero stays a picture: its
-  /// many angles as full-size textures would cost too much memory.
-  final bool asImage;
-
-  // ui.Picture or ui.Image, most recently used last.
-  static final _cache = <String, Object>{};
-  static final _retired = <Object>[];
-  static const _maxEntries = 40;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (size.isEmpty) return;
-    for (final old in _retired) {
-      if (old is ui.Image) old.dispose();
-      if (old is ui.Picture) old.dispose();
-    }
-    _retired.clear();
-    final key =
-        '$asset|${lighting.phase.name}|${PlayerLook.cacheKey}|${step.value}|${size.width.round()}x${size.height.round()}|'
-        '${asImage ? 'i${pixelRatio.toStringAsFixed(2)}' : 'p'}';
-    var entry = _cache.remove(key); // re-insert below: most recent last
-    if (entry == null) {
-      if (_cache.length >= _maxEntries) {
-        _retired.add(_cache.remove(_cache.keys.first)!);
-      }
-      final timer = Stopwatch()..start();
-      final picture = _record(
-        size,
-        step.value * bucket,
-        asImage ? pixelRatio : 1,
-      );
-      if (asImage) {
-        entry = picture.toImageSync(
-          (size.width * pixelRatio).ceil(),
-          (size.height * pixelRatio).ceil(),
-        );
-        picture.dispose();
-      } else {
-        entry = picture;
-      }
-      FrameStats.note('vitrine-record', timer.elapsed);
-    }
-    _cache[key] = entry;
-    if (entry is ui.Image) {
-      canvas.drawImageRect(
-        entry,
-        Rect.fromLTWH(0, 0, entry.width.toDouble(), entry.height.toDouble()),
-        Offset.zero & size,
-        Paint()..filterQuality = FilterQuality.medium,
-      );
-    } else {
-      canvas.drawPicture(entry as ui.Picture);
-    }
-  }
-
-  ui.Picture _record(Size size, double yaw, double scale) {
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-    if (scale != 1) canvas.scale(scale);
-    _drawModel(canvas, module, yaw, size, lighting);
-    return recorder.endRecording();
-  }
-
-  @override
-  bool shouldRepaint(covariant _MiniWorldPainter old) =>
-      old.module != module ||
-      old.asset != asset ||
-      old.pixelRatio != pixelRatio ||
-      old.lighting != lighting ||
-      old.asImage != asImage;
-}
 
 /// Projects and paints the miniature into [canvas] for the given angle.
 void _drawModel(
@@ -364,7 +262,7 @@ final class _BakedCasePainter extends CustomPainter {
 
   static final _images = <String, ui.Image>{};
   static final _retired = <ui.Image>[];
-  static const _maxImages = 24;
+  static const _maxImages = 32;
 
   @override
   void paint(Canvas canvas, Size size) {

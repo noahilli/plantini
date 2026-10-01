@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/diagnostics/frame_stats.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/catalog_models.dart';
-import '../../../character/presentation/widgets/character_kit.dart';
+import '../../../character/presentation/widgets/explorer_roster.dart';
 import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
@@ -92,7 +92,7 @@ final class _ModularForestViewState extends State<ModularForestView>
     // frames, not on every tick: sway and water are slow, and a replayed
     // picture costs almost nothing.
     DayClock.phase.addListener(_dayChanged);
-    PlayerLook.spec.addListener(_dayChanged);
+    PlayerLook.id.addListener(_dayChanged);
     _clock.addListener(() {
       final phase = (_clock.value * _phases).floor() % _phases;
       if (phase != _lastPhase) {
@@ -135,7 +135,7 @@ final class _ModularForestViewState extends State<ModularForestView>
   @override
   void dispose() {
     DayClock.phase.removeListener(_dayChanged);
-    PlayerLook.spec.removeListener(_dayChanged);
+    PlayerLook.id.removeListener(_dayChanged);
     _clock.dispose();
     _frames.dispose();
     _cache.dispose();

@@ -338,7 +338,7 @@ final class WidgetFlowSystemClock implements Clock {
 // Widget-flow dependencies factory
 // ---------------------------------------------------------------------------
 
-AppDependencies createWidgetFlowDependencies() {
+AppDependencies createWidgetFlowDependencies({int extraLevels = 0}) {
   final config = AppConfig(
     apiBaseUri: Uri.parse('http://127.0.0.1:1338/api/v1'),
     oidcIssuerUri: Uri.parse('http://127.0.0.1:8082/realms/plantini'),
@@ -355,6 +355,24 @@ AppDependencies createWidgetFlowDependencies() {
   );
 
   final catalogRepo = WidgetFlowCatalogRepository();
+  // Performance walk only: a long path (many 3D modules) instead of two levels.
+  if (extraLevels > 0) {
+    catalogRepo.levelsByEcosystem['eco-wald'] = [
+      ...catalogRepo.levelsByEcosystem['eco-wald']!,
+      for (var n = 3; n < 3 + extraLevels; n++)
+        Level(
+          id: 'level-wald-$n',
+          ecosystemId: 'eco-wald',
+          sequence: n,
+          title: 'Level $n',
+          learningGoal: 'Mehr Pflanzen kennenlernen.',
+          status: LevelStatus.locked,
+          minimumScore: 0.75,
+          requiredQuizIds: const [],
+          plantIds: const [],
+        ),
+    ];
+  }
   final learningRepo = WidgetFlowLearningRepository();
 
   final initialHerbariumEntries = [

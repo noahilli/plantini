@@ -1,9 +1,9 @@
 import '../../../core/result.dart';
-import 'character_spec.dart';
 
 abstract interface class CharacterRepository {
-  /// The saved character, or success(null) if the player has none yet.
-  Future<Result<CharacterSpec?>> load();
+  /// The id of the saved explorer, or success(null) if none was chosen yet
+  /// (or the saved record is from an older app version).
+  Future<Result<String?>> load();
 
-  Future<Result<CharacterSpec>> save(CharacterSpec spec);
+  Future<Result<String>> save(String explorerId);
 }

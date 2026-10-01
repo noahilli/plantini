@@ -12,48 +12,8 @@ void main() {
       // TODO
     });
 
-    // String gender
-    test('to test the property `gender`', () async {
-      // TODO
-    });
-
-    // String skin
-    test('to test the property `skin`', () async {
-      // TODO
-    });
-
-    // CharacterPart hair
-    test('to test the property `hair`', () async {
-      // TODO
-    });
-
-    // CharacterPart hat
-    test('to test the property `hat`', () async {
-      // TODO
-    });
-
-    // CharacterPart glasses
-    test('to test the property `glasses`', () async {
-      // TODO
-    });
-
-    // CharacterPart top
-    test('to test the property `top`', () async {
-      // TODO
-    });
-
-    // CharacterPart bottom
-    test('to test the property `bottom`', () async {
-      // TODO
-    });
-
-    // CharacterPart shoes
-    test('to test the property `shoes`', () async {
-      // TODO
-    });
-
-    // CharacterPart backpack
-    test('to test the property `backpack`', () async {
+    // String id
+    test('to test the property `id`', () async {
       // TODO
     });
   });
