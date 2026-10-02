@@ -1,0 +1,9 @@
+[Unit]
+Description=Plantini nightly backup
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/plantini/infra/production/backup.sh
+Nice=10
+IOSchedulingClass=idle
