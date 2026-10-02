@@ -75,8 +75,8 @@ Abnahme: Ein echtes Konto sieht nur eigene Daten; fremde, manipulierte, abgelauf
 - [x] **P0 | CONTENT-02:** Stabile fachliche UUIDs/Slugs einführen; numerische Strapi-IDs nicht als langfristige öffentliche Sync-Schlüssel nutzen.
 - [x] **P1 | CONTENT-03:** Nur veröffentlichte Inhalte liefern und Beziehungen serverseitig abbilden; Level nicht über Namensfragmente einem Ökosystem zuordnen.
 - [x] **P1 | CONTENT-04:** Pflanzensteckbrief aus strukturierten Feldern und lizenzierten Medien rendern; Favorit, Galerie, Alt-Texte, Quellen und Sicherheitshinweise persistieren.
-- [x] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen.
-- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten.
+- [ ] **P1 | CONTENT-05:** Echtes Release-Manifest mit immutable Version, SHA-256-Prüfsummen, Größen, URLs, Schema-/Mindest-App-Version und Signatur erzeugen. Stand 02.10.: Der Demo-Seed erzeugt noch `packages: []`; Paket-Endpunkt, unveränderliche Paketdaten und Signaturprüfung fehlen. App-Sync lehnt unvollständige Pakete nun ab, statt den lokalen Content zu leeren.
+- [ ] **P1 | CONTENT-06:** Release atomar herunterladen, Schema/Checksummen prüfen und erst vollständig aktivieren; bei Fehler vorherige Version behalten. Stand 02.10.: Client prüft rohe Paket-Bytes, Größe, SHA-256 und erforderliche nichtleere Paketgruppen vor dem lokalen Datenbanktausch. Schema-, Versions-, Beziehungs- und Signaturprüfung sowie echter Backend-Paket-Download fehlen noch.
 - [ ] **P2 | CONTENT-07:** Suche, Filter, Regionen, Saison und Mehrsprachigkeit datengetrieben ergänzen.
 - [ ] **P2 | CONTENT-08:** Zähllogik 25/50/75 entscheiden und fachlich geprüften MVP-Content mit Quellen- und Medienrechten freigeben.
 

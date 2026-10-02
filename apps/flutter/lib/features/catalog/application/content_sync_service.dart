@@ -206,6 +206,18 @@ final class ContentSyncService {
         );
       }
 
+      if (bytes.length != pkg.bytes) {
+        return Result.failure(
+          ValidationFailure(
+            message: 'Integritätsfehler für Paket "${pkg.id}": Größe ungültig.',
+            fieldErrors: {
+              'expected': '${pkg.bytes}',
+              'actual': '${bytes.length}',
+            },
+          ),
+        );
+      }
+
       // Parse payload
       try {
         final jsonString = utf8.decode(bytes);
@@ -239,6 +251,31 @@ final class ContentSyncService {
           ),
         );
       }
+    }
+
+    const requiredPackages = {'ecosystems', 'levels', 'plants'};
+    final packageIds = manifest.packages.map((pkg) => pkg.id).toList();
+    if (packageIds.length != requiredPackages.length ||
+        packageIds.toSet().length != requiredPackages.length ||
+        !packageIds.toSet().containsAll(requiredPackages)) {
+      return Result.failure(
+        const ContractFailure(
+          message:
+              'Das Inhalts-Manifest enthält nicht alle erforderlichen Pakete.',
+          missingFields: ['ecosystems', 'levels', 'plants'],
+        ),
+      );
+    }
+
+    if (downloadedEcosystems.isEmpty ||
+        downloadedLevels.isEmpty ||
+        downloadedPlants.isEmpty) {
+      return Result.failure(
+        const ContractFailure(
+          message: 'Das Inhaltsrelease ist unvollständig; der bisherige Stand bleibt erhalten.',
+          missingFields: ['content items'],
+        ),
+      );
     }
 
     // 3. Atomically write to database
@@ -320,20 +357,9 @@ final class ContentSyncService {
       return downloader(url);
     }
 
-    final relative = url.startsWith('/api/v1/')
-        ? url.substring('/api/v1/'.length)
-        : url.startsWith('/')
-        ? url.substring(1)
-        : url;
-
-    final response = await apiClient.getJson(relative);
-    return response.when(
-      success: (value) {
-        final jsonString = jsonEncode(value.body);
-        return Result.success(Uint8List.fromList(utf8.encode(jsonString)));
-      },
-      failure: Result.failure,
-    );
+    // Hash the original wire bytes. Re-encoding a parsed JSON response changes
+    // whitespace and key ordering, making a valid immutable package fail SHA-256.
+    return apiClient.getBytes(url, accept: 'application/json');
   }
 
   List<Map<String, dynamic>> _extractItemList(dynamic parsed) {
@@ -343,7 +369,7 @@ final class ContentSyncService {
     if (parsed is Map<String, dynamic> && parsed['items'] is List) {
       return (parsed['items'] as List).cast<Map<String, dynamic>>();
     }
-    return const [];
+    throw const FormatException('Content package needs an items list.');
   }
 
   IsarEcosystem _parseIsarEcosystem(Map<String, dynamic> map, String version) {

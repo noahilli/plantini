@@ -46,6 +46,7 @@ final class PlatformApiClient {
   Future<Result<Uint8List>> getBytes(
     String url, {
     bool authenticated = false,
+    String accept = 'image/*',
   }) async {
     for (var attempt = 1; ; attempt++) {
       try {
@@ -68,7 +69,7 @@ final class PlatformApiClient {
           options: Options(
             responseType: ResponseType.bytes,
             headers: {
-              'Accept': 'image/*',
+              'Accept': accept,
               if (token != null) 'Authorization': 'Bearer $token',
             },
           ),
@@ -76,7 +77,7 @@ final class PlatformApiClient {
         final data = response.data;
         if (data == null || data.isEmpty) {
           return Result.failure(
-            const NotFoundFailure(message: 'Das Bild ist leer oder fehlt.'),
+            const NotFoundFailure(message: 'Die Datei ist leer oder fehlt.'),
           );
         }
         return Result.success(Uint8List.fromList(data));
@@ -87,7 +88,7 @@ final class PlatformApiClient {
       } catch (error) {
         return Result.failure(
           NetworkFailure(
-            message: 'Das Bild konnte nicht geladen werden.',
+            message: 'Die Datei konnte nicht geladen werden.',
             cause: error,
           ),
         );
