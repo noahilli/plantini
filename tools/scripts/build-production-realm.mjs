@@ -42,7 +42,7 @@ web.attributes = { ...web.attributes, 'post.logout.redirect.uris': `${origin}/au
 const editor = realm.clients.find((client) => client.clientId === 'plantini-editor-production');
 if (!editor) throw new Error('plantini-editor-production is missing in the versioned realm');
 const editorOrigin = new URL(origin);
-editorOrigin.hostname = `editor.${editorOrigin.hostname.replace(/^app\./, '')}`;
+editorOrigin.hostname = `studio.${editorOrigin.hostname.replace(/^app\./, '')}`;
 editor.enabled = true;
 editor.redirectUris = [`${editorOrigin.origin}/`];
 editor.webOrigins = [editorOrigin.origin];

@@ -15,7 +15,7 @@ Die Keycloak-Realm-Rollen heißen `inhaltsredaktion`, `botanisches_review` und `
 
 ## Architektur und Deployment
 
-`apps/editor` ist ein statischer Nginx-Container hinter `editor.<domain>`. Er spricht ausschließlich mit `api.<domain>/api/v1/editor/*` und `auth.<domain>`. Der API-Dienst hält Entwürfe und Review-Zustände in PostgreSQL (`editor_changes`); die veröffentlichten Strapi-Inhalte bleiben zunächst unverändert. In der Produktions-Compose-Datei hängt der Editor nur am Edge-Netz. Auf einem bestehenden Keycloak-Realm muss der neue OIDC-Client **live** angelegt werden: ein Realm-Import aktualisiert ihn nicht automatisch. Der Einladungsdienst benötigt einen separat konfigurierten Keycloak-Service-Account und funktionierenden SMTP-Versand. Seed-Inhalte müssen bei echter Redaktion deaktiviert sein (`PLATFORM_SEED_DEMO_CONTENT=false`). Vor Produktionsbetrieb sind Datenbank-Backups nötig.
+`apps/editor` ist ein statischer Nginx-Container hinter `studio.<domain>`. Er spricht ausschließlich mit `api.<domain>/api/v1/editor/*` und `auth.<domain>`. Der API-Dienst hält Entwürfe und Review-Zustände in PostgreSQL (`editor_changes`); die veröffentlichten Strapi-Inhalte bleiben zunächst unverändert. In der Produktions-Compose-Datei hängt der Editor nur am Edge-Netz. Auf einem bestehenden Keycloak-Realm muss der neue OIDC-Client **live** angelegt werden: ein Realm-Import aktualisiert ihn nicht automatisch. Der Einladungsdienst benötigt einen separat konfigurierten Keycloak-Service-Account und funktionierenden SMTP-Versand. Seed-Inhalte müssen bei echter Redaktion deaktiviert sein (`PLATFORM_SEED_DEMO_CONTENT=false`). Vor Produktionsbetrieb sind Datenbank-Backups nötig.
 
 ### Lokal auf IPv4 starten
 

@@ -1,9 +1,9 @@
 import { JsonEditor } from './json-editor.js';
 
 const host = location.hostname;
-const production = host.startsWith('editor.');
-const apiOrigin = production ? `https://${host.replace(/^editor\./, 'api.')}` : 'http://127.0.0.1:1338';
-const authOrigin = production ? `https://${host.replace(/^editor\./, 'auth.')}` : 'http://127.0.0.1:8082';
+const production = host.startsWith('studio.');
+const apiOrigin = production ? `https://${host.replace(/^studio\./, 'api.')}` : 'http://127.0.0.1:1338';
+const authOrigin = production ? `https://${host.replace(/^studio\./, 'auth.')}` : 'http://127.0.0.1:8082';
 const clientId = production ? 'plantini-editor-production' : 'plantini-editor-dev';
 const oidc = `${authOrigin}/realms/plantini/protocol/openid-connect`;
 const redirectUri = `${location.origin}/`;

@@ -56,7 +56,7 @@ app.{$PLANTINI_DOMAIN} {
 }
 
 # Separate redaction studio; it has no direct database or Strapi-admin access.
-editor.{$PLANTINI_DOMAIN} {
+studio.{$PLANTINI_DOMAIN} {
 	import security_headers
 	reverse_proxy 127.0.0.1:{$EDITOR_PORT:8084}
 }
