@@ -8,7 +8,7 @@ const { createHash } = require('crypto');
  * ownership fields exclusively, which prevents the CMS database ID from
  * becoming an API or sync key.
  */
-function createStrapiRepositories(strapi) {
+function createStrapiRepositories(strapi, { contentVersion } = {}) {
   if (!strapi || !strapi.entityService) {
     throw new Error('A Strapi entityService is required.');
   }
@@ -31,8 +31,8 @@ function createStrapiRepositories(strapi) {
         filters: { profileId },
       }),
     },
-    content: createContentRepository(entities),
-    learning: createLearningRepository(entities),
+    content: createContentRepository(entities, contentVersion),
+    learning: createLearningRepository(entities, contentVersion),
     field: createFieldRepository(entities),
     herbarium: createHerbariumRepository(entities),
     species: createSpeciesRepository(entities),
@@ -40,22 +40,17 @@ function createStrapiRepositories(strapi) {
   };
 }
 
-function createContentRepository(entities) {
+function createContentRepository(entities, versionOverride) {
+  const activeRelease = () => findActiveContentRelease(entities);
+  const visibleVersion = async () => versionOverride || (await activeRelease())?.version;
   return {
-    findActiveRelease: async () => findOne(entities, 'api::content-release.content-release', {
-      filters: { active: true },
-      publicationState: 'live',
-      sort: { publishedAt: 'desc' },
-    }),
+    findActiveRelease: activeRelease,
     findReleaseByVersion: async (version) => findOne(entities, 'api::content-release.content-release', {
       filters: { version },
       publicationState: 'live',
     }),
     findChangesSince: async (cursor) => {
-      const release = await findOne(entities, 'api::content-release.content-release', {
-        filters: { active: true },
-        publicationState: 'live',
-      });
+      const release = await activeRelease();
       if (!release) return { cursor: cursor || '', changes: [] };
       return {
         cursor: release.cursor,
@@ -63,12 +58,15 @@ function createContentRepository(entities) {
       };
     },
     listPublishedEcosystems: async ({ page, pageSize }) => {
+      const version = await visibleVersion();
+      if (!version) return { items: [], total: 0 };
       const ecosystems = normaliseArray(await entities.findMany('api::ecosystem.ecosystem', {
+        filters: { releaseVersion: version },
         publicationState: 'live',
         sort: { name: 'asc' },
         populate: {
           levels: {
-            filters: { publishedAt: { $notNull: true } },
+            filters: { publishedAt: { $notNull: true }, releaseVersion: version },
             fields: ['publicId', 'publishedAt', 'sequence'],
             sort: { sequence: 'asc' },
           },
@@ -77,56 +75,79 @@ function createContentRepository(entities) {
       const start = (page - 1) * pageSize;
       return { items: ecosystems.slice(start, start + pageSize), total: ecosystems.length };
     },
-    findPublishedEcosystem: async (publicId) => findOne(entities, 'api::ecosystem.ecosystem', {
-      filters: { publicId },
-      publicationState: 'live',
-      populate: {
-        levels: {
-          filters: { publishedAt: { $notNull: true } },
-          fields: ['publicId', 'publishedAt', 'sequence'],
-          sort: { sequence: 'asc' },
+    findPublishedEcosystem: async (publicId) => {
+      const version = await visibleVersion();
+      if (!version) return null;
+      return findOne(entities, 'api::ecosystem.ecosystem', {
+        filters: { publicId, releaseVersion: version },
+        publicationState: 'live',
+        populate: {
+          levels: {
+            filters: { publishedAt: { $notNull: true }, releaseVersion: version },
+            fields: ['publicId', 'publishedAt', 'sequence'],
+            sort: { sequence: 'asc' },
+          },
         },
-      },
-    }),
-    findPublishedLevel: async (publicId) => findOne(entities, 'api::level.level', {
-      filters: { publicId },
-      publicationState: 'live',
-      populate: {
-        ecosystem: { fields: ['publicId', 'slug', 'releaseVersion', 'publishedAt'] },
-        plants: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
-        quizzes: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
-      },
-    }),
-    findPublishedPlant: async (publicId) => findOne(entities, 'api::plant.plant', {
-      filters: { publicId },
-      publicationState: 'live',
-      populate: {
-        learningCards: true,
-        media: {
-          filters: { publishedAt: { $notNull: true } },
-          populate: { file: { fields: ['url'] } },
+      });
+    },
+    findPublishedLevel: async (publicId) => {
+      const version = await visibleVersion();
+      if (!version) return null;
+      const level = await findOne(entities, 'api::level.level', {
+        filters: { publicId, releaseVersion: version },
+        publicationState: 'live',
+        populate: {
+          ecosystem: { fields: ['publicId', 'slug', 'releaseVersion', 'publishedAt'] },
+          plants: { filters: { publishedAt: { $notNull: true }, releaseVersion: version }, fields: ['publicId', 'publishedAt'] },
+          quizzes: { filters: { publishedAt: { $notNull: true }, releaseVersion: version }, fields: ['publicId', 'publishedAt'] },
         },
-      },
-    }),
-    findPublishedQuizItems: async (levelPublicId) => entities.findMany('api::quiz.quiz', {
-      publicationState: 'live',
-      filters: { level: { publicId: levelPublicId } },
-      sort: { publicId: 'asc' },
-      populate: { level: { fields: ['publicId', 'releaseVersion', 'publishedAt'] } },
-    }),
-    listPublishedLevels: async () => entities.findMany('api::level.level', {
-      publicationState: 'live',
-      sort: { sequence: 'asc' },
-      populate: {
-        ecosystem: { fields: ['publicId', 'publishedAt'] },
-        plants: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
-        quizzes: { filters: { publishedAt: { $notNull: true } }, fields: ['publicId', 'publishedAt'] },
-      },
-    }),
+      });
+      return level?.ecosystem?.releaseVersion === version && level.ecosystem.publishedAt ? level : null;
+    },
+    findPublishedPlant: async (publicId) => {
+      const version = await visibleVersion();
+      if (!version) return null;
+      return findOne(entities, 'api::plant.plant', {
+        filters: { publicId, releaseVersion: version },
+        publicationState: 'live',
+        populate: {
+          learningCards: true,
+          media: {
+            filters: { publishedAt: { $notNull: true } },
+            populate: { file: { fields: ['url'] } },
+          },
+        },
+      });
+    },
+    findPublishedQuizItems: async (levelPublicId) => {
+      const version = await visibleVersion();
+      if (!version) return [];
+      return entities.findMany('api::quiz.quiz', {
+        publicationState: 'live',
+        filters: { level: { publicId: levelPublicId, releaseVersion: version }, releaseVersion: version },
+        sort: { publicId: 'asc' },
+        populate: { level: { fields: ['publicId', 'releaseVersion', 'publishedAt'] } },
+      });
+    },
+    listPublishedLevels: async () => {
+      const version = await visibleVersion();
+      if (!version) return [];
+      const levels = await entities.findMany('api::level.level', {
+        filters: { releaseVersion: version },
+        publicationState: 'live',
+        sort: { sequence: 'asc' },
+        populate: {
+          ecosystem: { fields: ['publicId', 'releaseVersion', 'publishedAt'] },
+          plants: { filters: { publishedAt: { $notNull: true }, releaseVersion: version }, fields: ['publicId', 'publishedAt'] },
+          quizzes: { filters: { publishedAt: { $notNull: true }, releaseVersion: version }, fields: ['publicId', 'publishedAt'] },
+        },
+      });
+      return normaliseArray(levels).filter((level) => level.ecosystem?.releaseVersion === version && level.ecosystem.publishedAt);
+    },
   };
 }
 
-function createLearningRepository(entities) {
+function createLearningRepository(entities, contentVersion) {
   return {
     findAttemptByIdempotencyKey: async (idempotencyKey) => findOne(entities, 'api::level-attempt.level-attempt', {
       filters: { idempotencyKey },
@@ -149,18 +170,26 @@ function createLearningRepository(entities) {
       filters: { idempotencyKey },
     }),
     createEvent: async (draft) => entities.create('api::learning-event.learning-event', { data: draft }),
-    ...createContentRepository(entities),
+    ...createContentRepository(entities, contentVersion),
   };
 }
 
 function createFieldRepository(entities) {
   return {
-    findPublishedPlantByPublicId: async (publicId) => findOne(entities, 'api::plant.plant', {
-      filters: { publicId, publishedAt: { $notNull: true } },
-    }),
-    findPublishedPlantByScientificName: async (scientificName) => findOne(entities, 'api::plant.plant', {
-      filters: { scientificName: { $eqi: scientificName }, publishedAt: { $notNull: true } },
-    }),
+    findPublishedPlantByPublicId: async (publicId) => {
+      const version = (await findActiveContentRelease(entities))?.version;
+      if (!version) return null;
+      return findOne(entities, 'api::plant.plant', {
+        filters: { publicId, releaseVersion: version, publishedAt: { $notNull: true } },
+      });
+    },
+    findPublishedPlantByScientificName: async (scientificName) => {
+      const version = (await findActiveContentRelease(entities))?.version;
+      if (!version) return null;
+      return findOne(entities, 'api::plant.plant', {
+        filters: { scientificName: { $eqi: scientificName }, releaseVersion: version, publishedAt: { $notNull: true } },
+      });
+    },
     findPrivateMediaByIdempotencyKey: async (idempotencyKey) => findOne(entities, 'api::private-media.private-media', {
       filters: { idempotencyKey },
     }),
@@ -278,6 +307,14 @@ function createHerbariumRepository(entities) {
 async function findOne(entities, uid, options) {
   const results = await entities.findMany(uid, { ...options, limit: 1 });
   return normaliseArray(results)[0] || null;
+}
+
+function findActiveContentRelease(entities) {
+  return findOne(entities, 'api::content-release.content-release', {
+    filters: { active: true },
+    publicationState: 'live',
+    sort: { publishedAt: 'desc' },
+  });
 }
 
 function normaliseArray(value) {

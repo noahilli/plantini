@@ -212,7 +212,12 @@ class LearningService {
   async getLevelAccess(actor, level) {
     const progress = await this.getProgress(actor);
     const state = progress.levels.find((item) => item.levelId === level.publicId);
-    if (!state) return { status: 'available', progress: 0 };
+    if (!state) {
+      throw new ProblemError('CONTENT_VERSION_UNAVAILABLE', {
+        status: 409,
+        detail: 'Das Level gehört nicht mehr zum aktiven Inhaltsrelease.',
+      });
+    }
     if (state.status !== 'locked') {
       return { status: state.status, progress: state.percentage };
     }

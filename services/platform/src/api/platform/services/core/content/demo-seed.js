@@ -89,7 +89,9 @@ async function seedDemoContent(strapi) {
 
   changes.push(...await archiveSupersededDemoContent(rawEntities, dataset));
 
-  const repository = createStrapiRepositories(strapi).content;
+  // Build the candidate snapshot before activating it. Public reads stay on
+  // the currently active version throughout this step.
+  const repository = createStrapiRepositories(strapi, { contentVersion: DEMO_RELEASE_VERSION }).content;
   const packageItems = { ecosystems: [], levels: [], plants: [] };
   for (const [index, item] of dataset.ecosystems.entries()) {
     const ecosystem = await repository.findPublishedEcosystem(stableContentId('ecosystem', item.ecosystem.slug));
