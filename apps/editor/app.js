@@ -1,3 +1,5 @@
+import { JsonEditor } from './json-editor.js';
+
 const host = location.hostname;
 const production = host.startsWith('editor.');
 const apiOrigin = production ? `https://${host.replace(/^editor\./, 'api.')}` : 'http://127.0.0.1:1338';
@@ -53,7 +55,12 @@ async function api(path, options = {}) {
   });
   if (response.status === 401) { await login(); throw new Error('Sitzung abgelaufen.'); }
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.detail || body.message || `Anfrage fehlgeschlagen (${response.status}).`);
+  if (!response.ok) {
+    const fields = body.fieldErrors && typeof body.fieldErrors === 'object'
+      ? Object.entries(body.fieldErrors).map(([name, message]) => `${fieldNames[name] || name}: ${message}`).join(' · ')
+      : '';
+    throw new Error(fields || body.detail || body.message || `Anfrage fehlgeschlagen (${response.status}).`);
+  }
   return body;
 }
 function notice(message, error = false) {
@@ -138,27 +145,26 @@ const empty = {
   plant: { slug: '', scientificName: '', commonName: '', family: '', description: '', warning: '', sources: [], features: [], learningCards: Array.from({ length: 3 }, () => ({ heading: '', text: '', question: '', correctAnswer: '', wrongAnswer1: '', wrongAnswer2: '', wrongAnswer3: '' })) },
   quiz: { slug: '', title: '', quizType: 'multiple-choice', data: { prompt: '', choices: [1, 2, 3, 4].map((n) => ({ id: `choice-${n}`, label: '' })), correctChoiceId: 'choice-1' }, levelId: '', plantId: '' },
 };
-const fieldNames = { slug: 'Slug', name: 'Name', description: 'Beschreibung', climateZone: 'Klimazone', region: 'Region', season: 'Jahreszeit', language: 'Sprache', title: 'Titel', sequence: 'Reihenfolge', difficulty: 'Schwierigkeit', learningGoal: 'Lernziel', scientificName: 'Wissenschaftlicher Name', commonName: 'Deutscher Name', family: 'Familie', warning: 'Sicherheitshinweis', sources: 'Quellen (eine HTTPS-URL pro Zeile)', features: 'Merkmale (JSON)', completionRule: 'Abschlussregel (JSON)', quizType: 'Fragetyp', data: 'Frage und Antworten (JSON)' };
-function field(key, value, type) {
+const jsonFields = new Set(['sources', 'features', 'completionRule', 'data', 'learningCards']);
+const fieldNames = { slug: 'Slug', name: 'Name', description: 'Beschreibung', climateZone: 'Klimazone', region: 'Region', season: 'Jahreszeit', language: 'Sprache', title: 'Titel', sequence: 'Reihenfolge', difficulty: 'Schwierigkeit', learningGoal: 'Lernziel', scientificName: 'Wissenschaftlicher Name', commonName: 'Deutscher Name', family: 'Familie', warning: 'Sicherheitshinweis', sources: 'Quellen', features: 'Merkmale', completionRule: 'Abschlussregel', quizType: 'Fragetyp', data: 'Frage und Antworten', learningCards: 'Lernkarten' };
+function field(key, value) {
   const label = fieldNames[key] || key;
+  if (jsonFields.has(key)) return `<div class="field wide"><div class="json-editor-host" data-json-field="${safe(key)}"></div></div>`;
   if (key === 'ecosystemId' || key === 'levelId' || key === 'plantId') {
     const collection = key === 'ecosystemId' ? 'ecosystems' : key === 'levelId' ? 'levels' : 'plants';
     return `<label class="field"><span>${safe(label)}</span><select name="${safe(key)}" required><option value="">Bitte wählen</option>${(state.catalog?.[collection] || []).map((item) => `<option value="${safe(item.id)}" ${item.id === value ? 'selected' : ''}>${safe(item.title)}</option>`).join('')}</select></label>`;
   }
   if (key === 'plantIds') return `<div class="field wide"><span>Pflanzen in diesem Level</span><div class="checkboxes">${(state.catalog?.plants || []).map((plant) => `<label><input type="checkbox" name="plantIds" value="${safe(plant.id)}" ${(value || []).includes(plant.id) ? 'checked' : ''}>${safe(plant.title)}</label>`).join('')}</div></div>`;
-  if (key === 'learningCards') return (value || []).map((card, index) => `<div class="group wide"><h3>Lernkarte ${index + 1}</h3>${Object.entries(card).map(([part, text]) => `<label class="field"><span>${safe({ heading: 'Überschrift', text: 'Steckbrief-Text', question: 'Frage', correctAnswer: 'Richtige Antwort', wrongAnswer1: 'Falsche Antwort 1', wrongAnswer2: 'Falsche Antwort 2', wrongAnswer3: 'Falsche Antwort 3' }[part])}</span>${part === 'text' ? `<textarea name="card-${index}-${part}">${safe(text)}</textarea>` : `<input name="card-${index}-${part}" value="${safe(text)}">`}</label>`).join('')}</div>`).join('');
   if (key === 'quizType') return `<label class="field"><span>${safe(label)}</span><select name="quizType">${['multiple-choice', 'flashcard', 'identification', 'feature-match'].map((choice) => `<option ${value === choice ? 'selected' : ''}>${choice}</option>`).join('')}</select></label>`;
-  const text = Array.isArray(value) && key === 'sources' ? value.join('\n') : typeof value === 'object' && value !== null ? JSON.stringify(value, null, 2) : value ?? '';
-  const multiline = ['description', 'warning', 'learningGoal', 'sources', 'features', 'completionRule', 'data'].includes(key);
-  return `<label class="field ${multiline ? 'wide' : ''}"><span>${safe(label)}</span>${multiline ? `<textarea name="${safe(key)}" rows="${['data', 'completionRule'].includes(key) ? 8 : 4}">${safe(text)}</textarea>` : `<input name="${safe(key)}" value="${safe(text)}" ${key === 'sequence' ? 'type="number" min="1"' : ''}>`}</label>`;
+  const multiline = ['description', 'warning', 'learningGoal'].includes(key);
+  return `<label class="field ${multiline ? 'wide' : ''}"><span>${safe(label)}</span>${multiline ? `<textarea name="${safe(key)}" rows="4">${safe(value ?? '')}</textarea>` : `<input name="${safe(key)}" value="${safe(value ?? '')}" ${key === 'sequence' ? 'type="number" min="1"' : ''}>`}</label>`;
 }
 function values(type, form) {
+  if (!form.reportValidity()) throw new Error('Bitte markierte Formularfelder korrigieren.');
   const data = {}; const input = new FormData(form);
-  for (const [key, original] of Object.entries(empty[type])) {
-    if (key === 'plantIds') data[key] = input.getAll(key);
-    else if (key === 'learningCards') data[key] = Array.from({ length: 3 }, (_, index) => Object.fromEntries(Object.keys(original[0]).map((part) => [part, input.get(`card-${index}-${part}`)])));
-    else if (key === 'sources') data[key] = String(input.get(key)).split('\n').map((line) => line.trim()).filter(Boolean);
-    else if (['features', 'completionRule', 'data'].includes(key)) data[key] = JSON.parse(input.get(key));
+  for (const key of Object.keys(empty[type])) {
+    if (jsonFields.has(key)) data[key] = state.edit.jsonEditors.get(key).getValue();
+    else if (key === 'plantIds') data[key] = input.getAll(key);
     else if (key === 'sequence') data[key] = Number(input.get(key));
     else data[key] = input.get(key);
   }
@@ -177,9 +183,14 @@ async function openChange(id) {
 function drawer(title, data, change) {
   $('drawer-title').textContent = title;
   $('drawer-kicker').textContent = change ? 'ÄNDERUNG PRÜFEN' : 'INHALT BEARBEITEN';
-  $('drawer-body').innerHTML = `${change?.note ? `<p class="warning-text">Review: ${safe(change.note)}</p>` : ''}<form id="content-form" class="form-grid">${Object.entries(data).filter(([key]) => key !== 'media').map(([key, value]) => field(key, value, state.edit.type)).join('')}</form>${data.media?.length ? `<div class="group"><h3>Vorhandene Bilder</h3>${data.media.map((image) => `<p>${safe(image.title || image.altText || image.id)} · ${safe(image.license || 'ohne Lizenzangabe')}</p>`).join('')}<p class="dim">Bildverwaltung folgt in einem eigenen Medien-Dialog.</p></div>` : ''}${change?.reviewEvents?.length ? `<div class="group"><h3>Review-Verlauf</h3>${change.reviewEvents.map((event) => `<p class="dim">${safe(new Date(event.at).toLocaleString('de-DE'))} · ${safe({ submitted: 'Eingereicht', rejected: 'Zurückgewiesen', approved: 'Fachlich freigegeben' }[event.action] || event.action)}${event.note ? `: ${safe(event.note)}` : ''}</p>`).join('')}</div>` : ''}`;
+  $('drawer-body').innerHTML = `${change?.note ? `<p class="warning-text">Review: ${safe(change.note)}</p>` : ''}<form id="content-form" class="form-grid">${Object.entries(data).filter(([key]) => key !== 'media').map(([key, value]) => field(key, value)).join('')}</form>${data.media?.length ? `<div class="group"><h3>Vorhandene Bilder</h3>${data.media.map((image) => `<p>${safe(image.title || image.altText || image.id)} · ${safe(image.license || 'ohne Lizenzangabe')}</p>`).join('')}<p class="dim">Bildverwaltung folgt in einem eigenen Medien-Dialog.</p></div>` : ''}${change?.reviewEvents?.length ? `<div class="group"><h3>Review-Verlauf</h3>${change.reviewEvents.map((event) => `<p class="dim">${safe(new Date(event.at).toLocaleString('de-DE'))} · ${safe({ submitted: 'Eingereicht', rejected: 'Zurückgewiesen', approved: 'Fachlich freigegeben' }[event.action] || event.action)}${event.note ? `: ${safe(event.note)}` : ''}</p>`).join('')}</div>` : ''}`;
   const actions = $('drawer-actions'); actions.replaceChildren();
   const editable = !change || ['draft', 'rejected'].includes(change.status);
+  state.edit.jsonEditors = new Map();
+  for (const key of jsonFields) {
+    const host = $('content-form').querySelector(`[data-json-field="${key}"]`);
+    if (host) state.edit.jsonEditors.set(key, new JsonEditor(host, fieldNames[key], data[key], { readOnly: !editable }));
+  }
   if (editable) {
     actions.append(button('Entwurf speichern', 'quiet', async () => {
       const saved = await api(state.edit.changeId ? `/changes/${state.edit.changeId}` : '/changes', { method: state.edit.changeId ? 'PATCH' : 'POST', body: { type: state.edit.type, targetId: state.edit.targetId, data: values(state.edit.type, $('content-form')) } });

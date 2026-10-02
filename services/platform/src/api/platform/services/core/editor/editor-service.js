@@ -367,7 +367,9 @@ function validatePayload(type, data) {
       output.sources.some((source) => typeof source !== 'string' || !/^https:\/\//.test(source))) {
       throw invalidRequest({ sources: 'Mindestens eine HTTPS-Quelle ist erforderlich.' });
     }
-    if (!Array.isArray(output.features)) output.features = [];
+    if (!Array.isArray(output.features)) {
+      throw invalidRequest({ features: 'Merkmale müssen eine Liste sein.' });
+    }
     try { validateLearningCards(output.learningCards, output.commonName); }
     catch (error) { throw invalidRequest({ learningCards: error.message }); }
   } else if (type === 'quiz') {

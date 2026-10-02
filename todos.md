@@ -132,6 +132,7 @@ Abnahme: Ein Offline-Fund überlebt Neustart, wird genau einmal synchronisiert u
 - [ ] **P1 | CMS-03:** Publish atomar validieren: Quellen, Lösungen, Taxonomie, Lizenz, Urheber, Alt-Text und Beziehungen müssen vollständig sein.
 - [ ] **P1 | CMS-04:** Observation-Fotos von redaktionellen Medien trennen oder Pflichtmetadaten korrekt setzen; aktueller Upload kollidiert mit Media-Lifecycle-Regeln.
 - [ ] **P2 | CMS-05:** Quiz-/Level-Builder mit Vorschau, Regelvalidierung und verständlichen Fehlern bereitstellen.
+  - Stand 02.10.: Verschachtelte JSON-Formulare mit Typwahl, dynamischen Objekt-/Listenfeldern und editierbarer Raw-Ansicht für Quellen, Merkmale, Abschlussregel, Quizdaten und Lernkarten im Studio eingebaut. Vorschau und vollständige fachliche Regelvalidierung fehlen; Aufgabe bleibt offen.
 - [ ] **P2 | CMS-06:** Versionierte Importe/Exporte mit Dry Run, Fehlerbericht und stabilen IDs bauen; Seeds reproduzierbar/lizenzsicher machen.
 - [ ] **P2 | CMS-07:** Medien tatsächlich über S3/MinIO speichern; Plugin, Bucket-Bootstrap, Policies, Derivate und Löschung ergänzen.
 - [ ] **P2 | CMS-08:** Redaktionshandbuch und bestandenen E2E-Publish-Test auf frischer Umgebung liefern.
