@@ -1,7 +1,8 @@
 'use strict';
 
+const { createHash } = require('crypto');
 const { newId, requireUuid } = require('../ids');
-const { ProblemError, invalidRequest, notFound } = require('../errors');
+const { ProblemError, invalidRequest, notFound, conflict } = require('../errors');
 const { validateLearningCards } = require('../content/lesson-cards');
 
 const CHANGE_UID = 'api::editor-change.editor-change';
@@ -49,6 +50,7 @@ class EditorService {
       this.entities.count(TYPES.plant.uid, { filters: { publishedAt: { $notNull: true } } }),
       this.entities.count(TYPES.quiz.uid, { filters: { publishedAt: { $notNull: true } } }),
       this.entities.count(CHANGE_UID, { filters: { status: 'pending_review' } }),
+      this.entities.count(CHANGE_UID, { filters: { status: 'approved', appliedAt: { $null: true } } }),
     ]);
     const [mediaTotal] = await this.strapi.db.connection('private_media')
       .where({ status: 'uploaded' }).sum({ total: 'bytes' });
@@ -64,7 +66,7 @@ class EditorService {
     return {
       users: counts[0], ecosystems: counts[1], levels: counts[2], plants: counts[3],
       quizzes: counts[4], learningElements: counts[2] + counts[4],
-      cards: counts[3] * 3, pendingReview: counts[5],
+      cards: counts[3] * 3, pendingReview: counts[5], approvedPendingRelease: counts[6],
       plantNetToday, storageBytes: Number(mediaTotal?.total || 0),
       storageScope: 'uploaded-private-media',
     };
@@ -128,17 +130,21 @@ class EditorService {
         throw notFound('EDITOR_CHANGE_NOT_EDITABLE');
       }
       if (record.entityType !== type) throw invalidRequest({ type: 'Entwurfstyp darf nicht geändert werden.' });
-      const updated = await this.entities.update(CHANGE_UID, record.id, { data: {
-        payload, status: 'draft', reviewNote: null, reviewerSubject: null, reviewedAt: null,
-      } });
-      return mapChange(updated);
+      const changed = await this.strapi.db.connection('editor_changes')
+        .where({ id: record.id })
+        .whereIn('status', ['draft', 'rejected'])
+        .whereRaw('payload = ?::jsonb', [JSON.stringify(record.payload)])
+        .update({ payload: JSON.stringify(payload), payload_hash: null, status: 'draft',
+          review_note: null, reviewer_subject: null, reviewed_at: null, updated_at: new Date() });
+      if (changed !== 1) throw conflict('EDITOR_CHANGE_STATE_CHANGED', 'Der Entwurf wurde inzwischen geändert. Bitte neu laden.');
+      return mapChange(await this.findChange(record.publicId));
     }
     const targetPublicId = input.targetId ? requireUuid(input.targetId, 'targetId') : newId();
     const target = input.targetId ? await this.findTarget(type, targetPublicId) : null;
     if (input.targetId && !target) throw notFound('EDITOR_ITEM_NOT_FOUND');
     const created = await this.entities.create(CHANGE_UID, { data: {
       publicId: newId(), entityType: type, targetPublicId, baseUpdatedAt: target?.updatedAt || null,
-      payload, status: 'draft', authorSubject: actor.subject,
+      payload, status: 'draft', authorSubject: actor.subject, reviewEvents: [],
     } });
     return mapChange(created);
   }
@@ -149,23 +155,102 @@ class EditorService {
     if (!record || record.authorSubject !== actor.subject || !['draft', 'rejected'].includes(record.status)) {
       throw notFound('EDITOR_CHANGE_NOT_EDITABLE');
     }
-    const updated = await this.entities.update(CHANGE_UID, record.id, { data: {
-      status: 'pending_review', reviewNote: null, reviewerSubject: null,
-    } });
-    return mapChange(updated);
+    await this.validateReferences(record);
+    return this.transition(record, ['draft', 'rejected'], {
+      status: 'pending_review', payload_hash: hashPayload(record.payload), review_note: null, reviewer_subject: null, reviewed_at: null,
+    }, { action: 'submitted', actor: actor.subject });
   }
 
   async reject(actor, publicId, note) {
     requireReviewer(actor);
     const record = await this.findChange(publicId);
     if (!record || record.status !== 'pending_review') throw notFound('EDITOR_CHANGE_NOT_PENDING');
+    this.assertSubmittedPayload(record);
     if (typeof note !== 'string' || note.trim().length < 3 || note.length > 2000) {
       throw invalidRequest({ note: 'Eine Begründung von 3 bis 2000 Zeichen ist erforderlich.' });
     }
-    const updated = await this.entities.update(CHANGE_UID, record.id, { data: {
-      status: 'rejected', reviewerSubject: actor.subject, reviewNote: note.trim(), reviewedAt: new Date().toISOString(),
-    } });
-    return mapChange(updated);
+    return this.transition(record, ['pending_review'], {
+      status: 'rejected', reviewer_subject: actor.subject, review_note: note.trim(), reviewed_at: new Date(),
+    }, { action: 'rejected', actor: actor.subject, note: note.trim() });
+  }
+
+  async approve(actor, publicId, note = '') {
+    requireReviewer(actor);
+    const record = await this.findChange(publicId);
+    if (!record || record.status !== 'pending_review') throw notFound('EDITOR_CHANGE_NOT_PENDING');
+    this.assertSubmittedPayload(record);
+    if (typeof note !== 'string' || note.length > 2000) {
+      throw invalidRequest({ note: 'Der optionale Review-Kommentar darf höchstens 2000 Zeichen lang sein.' });
+    }
+    await this.validateReferences(record);
+    // Approval is an editorial decision only; applying it requires a
+    // separately validated, atomic content release.
+    return this.transition(record, ['pending_review'], {
+      status: 'approved', reviewer_subject: actor.subject, review_note: note.trim(), reviewed_at: new Date(),
+    }, { action: 'approved', actor: actor.subject, note: note.trim() });
+  }
+
+  async transition(record, allowed, patch, event) {
+    const at = new Date();
+    const history = Array.isArray(record.reviewEvents) ? record.reviewEvents : [];
+    const changed = await this.strapi.db.connection('editor_changes')
+      .where({ id: record.id })
+      .whereIn('status', allowed)
+      .whereRaw('payload = ?::jsonb', [JSON.stringify(record.payload)])
+      .update({ ...patch, review_events: JSON.stringify([...history, { ...event, at: at.toISOString() }]), updated_at: at });
+    if (changed !== 1) {
+      throw conflict('EDITOR_CHANGE_STATE_CHANGED', 'Der Änderungsstatus hat sich inzwischen geändert. Bitte neu laden.');
+    }
+    return mapChange(await this.findChange(record.publicId));
+  }
+
+  assertSubmittedPayload(record) {
+    if (!record.payloadHash || record.payloadHash !== hashPayload(record.payload)) {
+      throw conflict('EDITOR_PAYLOAD_CHANGED', 'Der eingereichte Inhalt hat sich geändert. Bitte erneut einreichen.');
+    }
+  }
+
+  async validateReferences(record) {
+    const type = record.entityType;
+    const data = record.payload;
+    const competing = await this.strapi.db.connection('editor_changes')
+      .where({ entity_type: type, status: 'approved' })
+      .whereNull('applied_at')
+      .whereNot('id', record.id)
+      .andWhere((query) => query.where('target_public_id', record.targetPublicId)
+        .orWhereRaw("payload->>'slug' = ?", [data.slug]))
+      .first('id');
+    if (competing) {
+      throw conflict('EDITOR_APPROVED_CONFLICT', 'Für dieses Ziel oder diesen Slug wartet bereits eine freigegebene Änderung auf das Release.');
+    }
+    const target = await this.findTarget(type, record.targetPublicId);
+    if (record.baseUpdatedAt && (!target || new Date(target.updatedAt).getTime() !== new Date(record.baseUpdatedAt).getTime())) {
+      throw conflict('EDITOR_BASE_CHANGED', 'Der veröffentlichte Inhalt hat sich seit dem Entwurf geändert. Bitte neu erstellen.');
+    }
+    if (!record.baseUpdatedAt && target) {
+      throw conflict('EDITOR_TARGET_EXISTS', 'Das neue Inhaltsziel existiert bereits. Bitte neu laden.');
+    }
+    const matches = await this.entities.findMany(typeConfig(type).uid, {
+      publicationState: 'preview', filters: { slug: data.slug }, limit: 2,
+    });
+    if (matches.some((item) => item.publicId !== record.targetPublicId)) {
+      throw conflict('EDITOR_SLUG_EXISTS', 'Dieser Slug wird bereits verwendet.');
+    }
+    const refs = [];
+    if (type === 'level') {
+      refs.push(['ecosystem', data.ecosystemId]);
+      refs.push(...data.plantIds.map((id) => ['plant', id]));
+      refs.push(...data.completionRule.requiredQuizIds.map((id) => ['quiz', id]));
+      refs.push(...data.completionRule.requiredPlantIds.map((id) => ['plant', id]));
+      refs.push(...data.completionRule.requiredLevelIds.map((id) => ['level', id]));
+    } else if (type === 'quiz') {
+      refs.push(['level', data.levelId], ['plant', data.plantId]);
+    }
+    for (const [refType, id] of refs) {
+      if (!await this.findTarget(refType, id)) {
+        throw invalidRequest({ relations: `Referenz ${refType}/${id} ist nicht vorhanden.` });
+      }
+    }
   }
 
   async findChange(publicId) {
@@ -195,11 +280,24 @@ function mapChange(record) {
   return { id: record.publicId, type: record.entityType, targetId: record.targetPublicId,
     data: record.payload, status: record.status, author: record.authorSubject,
     reviewer: record.reviewerSubject || null, note: record.reviewNote || '',
-    updatedAt: record.updatedAt, reviewedAt: record.reviewedAt || null, appliedAt: record.appliedAt || null };
+    updatedAt: record.updatedAt, reviewedAt: record.reviewedAt || null, appliedAt: record.appliedAt || null,
+    reviewEvents: Array.isArray(record.reviewEvents) ? record.reviewEvents : [],
+    payloadHash: record.payloadHash || null };
 }
 
 function canSeeChange(actor, record) {
   return actor.subject === record.authorSubject || actor.roles.some((role) => REVIEW_ROLES.has(role));
+}
+
+function hashPayload(value) {
+  const canonical = (item) => {
+    if (Array.isArray(item)) return item.map(canonical);
+    if (item && typeof item === 'object') {
+      return Object.fromEntries(Object.keys(item).sort().map((key) => [key, canonical(item[key])]));
+    }
+    return item;
+  };
+  return createHash('sha256').update(JSON.stringify(canonical(value))).digest('hex');
 }
 
 function toPayload(type, record) {
@@ -226,7 +324,7 @@ function toPayload(type, record) {
 function validatePayload(type, data) {
   const config = typeConfig(type);
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw invalidRequest({ data: 'Ein Objekt ist erforderlich.' });
-  const unknown = Object.keys(data).filter((field) => !config.fields.includes(field) && field !== 'media');
+  const unknown = Object.keys(data).filter((field) => !config.fields.includes(field));
   if (unknown.length) throw invalidRequest(Object.fromEntries(unknown.map((field) => [field, 'Unbekanntes Feld.'])));
   const output = {};
   for (const field of config.fields) output[field] = data[field];
@@ -278,9 +376,11 @@ function validatePayload(type, data) {
       throw invalidRequest({ quizType: 'Unbekannter Fragetyp.' });
     }
     const quiz = output.data;
-    if (!quiz || typeof quiz !== 'object' || Array.isArray(quiz) || !quiz.prompt?.trim() ||
+    if (!quiz || typeof quiz !== 'object' || Array.isArray(quiz) || typeof quiz.prompt !== 'string' || !quiz.prompt.trim() ||
       !Array.isArray(quiz.choices) || quiz.choices.length !== 4 ||
-      quiz.choices.some((choice) => !choice?.id || !choice?.label?.trim()) ||
+      quiz.choices.some((choice) => typeof choice?.id !== 'string' || !choice.id || typeof choice.label !== 'string' || !choice.label.trim()) ||
+      new Set(quiz.choices.map((choice) => choice.id)).size !== 4 ||
+      new Set(quiz.choices.map((choice) => choice.label.trim().toLocaleLowerCase('de'))).size !== 4 ||
       !quiz.choices.some((choice) => choice.id === quiz.correctChoiceId)) {
       throw invalidRequest({ data: 'Frage, vier Antworten und eine korrekte Antwort sind erforderlich.' });
     }

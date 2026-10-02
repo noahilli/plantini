@@ -33,6 +33,7 @@ module.exports = {
     route('PATCH', '/v1/editor/changes/:changeId', 'editorUpdate'),
     route('POST', '/v1/editor/changes/:changeId/submit', 'editorSubmit'),
     route('POST', '/v1/editor/changes/:changeId/reject', 'editorReject'),
+    route('POST', '/v1/editor/changes/:changeId/approve', 'editorApprove'),
     route('POST', '/v1/editor/invitations', 'editorInvite'),
     route('GET', '/v1/quiz-items', 'listQuizItems'),
     route('POST', '/v1/level-attempts', 'startLevelAttempt'),

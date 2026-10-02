@@ -11,7 +11,7 @@ const safe = (value) => String(value ?? '').replace(/[&<>"']/g, (letter) => ({
 })[letter]);
 const state = { token: null, expires: 0, refresh: null, roles: [], catalog: null, changes: [], page: 'dashboard', edit: null };
 const labels = { ecosystem: 'Ökosystem', level: 'Level', plant: 'Pflanze', quiz: 'Quiz' };
-const statusLabels = { draft: 'Entwurf', pending_review: 'Im Review', rejected: 'Zurückgewiesen', approved: 'Freigegeben' };
+const statusLabels = { draft: 'Entwurf', pending_review: 'Im Review', rejected: 'Zurückgewiesen', approved: 'Fachlich freigegeben · wartet auf Release' };
 
 function base64url(bytes) {
   return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -90,7 +90,7 @@ async function renderDashboard() {
     ['Nutzer', data.users], ['Ökosysteme', data.ecosystems], ['Level', data.levels], ['Pflanzen', data.plants],
     ['Quizze', data.quizzes], ['Lernelemente', data.learningElements], ['Karten', data.cards],
     ['PlantNet heute', data.plantNetToday ?? '—'], ['Private Uploads', data.storageBytes == null ? '—' : `${(data.storageBytes / 1048576).toFixed(1)} MB`],
-    ['Im Review', data.pendingReview],
+    ['Im Review', data.pendingReview], ['Wartet auf Release', data.approvedPendingRelease],
   ];
   $('page-dashboard').innerHTML = `<div class="hero"><div><span class="eyebrow">DEIN REDAKTIONELLER ARBEITSPLATZ</span><h2>Wissen wächst zusammen.</h2><p>Pflege Ökosysteme, Level, Pflanzen und Quizze. Änderungen gehen zuerst durch das botanische Review.</p></div><div class="hero-art">✿</div></div><div class="section-heading"><div><h3>Auf einen Blick</h3><p>Aktueller Stand der veröffentlichten Inhalte</p></div></div><div class="metrics">${values.map(([name, value]) => `<div class="metric"><span class="metric-label">${safe(name)}</span><strong class="metric-value">${safe(value)}</strong></div>`).join('')}</div><div class="section-heading"><h3>Nächste Schritte</h3></div><div class="panel-grid"><div class="panel"><h3>Inhalte pflegen</h3><p>Bearbeite die Beziehungen zwischen Ökosystem, Level, Pflanzen und Fragen.</p><div class="simple-list"><button data-go="catalog">Zum Inhaltsbaum →</button></div></div><div class="panel"><h3>Freigaben</h3><p>${safe(data.pendingReview)} Änderungen warten auf Prüfung. Veröffentlichungen werden erst nach einem konsistenten Content-Release aktiviert.</p><div class="simple-list"><button data-go="review">Zur Review-Liste →</button></div></div></div>`;
   $('page-dashboard').querySelectorAll('[data-go]').forEach((el) => el.addEventListener('click', () => show(el.dataset.go).catch((error) => notice(error.message, true))));
@@ -177,7 +177,7 @@ async function openChange(id) {
 function drawer(title, data, change) {
   $('drawer-title').textContent = title;
   $('drawer-kicker').textContent = change ? 'ÄNDERUNG PRÜFEN' : 'INHALT BEARBEITEN';
-  $('drawer-body').innerHTML = `${change?.note ? `<p class="warning-text">Review: ${safe(change.note)}</p>` : ''}<form id="content-form" class="form-grid">${Object.entries(data).filter(([key]) => key !== 'media').map(([key, value]) => field(key, value, state.edit.type)).join('')}</form>${data.media?.length ? `<div class="group"><h3>Vorhandene Bilder</h3>${data.media.map((image) => `<p>${safe(image.title || image.altText || image.id)} · ${safe(image.license || 'ohne Lizenzangabe')}</p>`).join('')}<p class="dim">Bildverwaltung folgt in einem eigenen Medien-Dialog.</p></div>` : ''}`;
+  $('drawer-body').innerHTML = `${change?.note ? `<p class="warning-text">Review: ${safe(change.note)}</p>` : ''}<form id="content-form" class="form-grid">${Object.entries(data).filter(([key]) => key !== 'media').map(([key, value]) => field(key, value, state.edit.type)).join('')}</form>${data.media?.length ? `<div class="group"><h3>Vorhandene Bilder</h3>${data.media.map((image) => `<p>${safe(image.title || image.altText || image.id)} · ${safe(image.license || 'ohne Lizenzangabe')}</p>`).join('')}<p class="dim">Bildverwaltung folgt in einem eigenen Medien-Dialog.</p></div>` : ''}${change?.reviewEvents?.length ? `<div class="group"><h3>Review-Verlauf</h3>${change.reviewEvents.map((event) => `<p class="dim">${safe(new Date(event.at).toLocaleString('de-DE'))} · ${safe({ submitted: 'Eingereicht', rejected: 'Zurückgewiesen', approved: 'Fachlich freigegeben' }[event.action] || event.action)}${event.note ? `: ${safe(event.note)}` : ''}</p>`).join('')}</div>` : ''}`;
   const actions = $('drawer-actions'); actions.replaceChildren();
   const editable = !change || ['draft', 'rejected'].includes(change.status);
   if (editable) {
@@ -191,14 +191,19 @@ function drawer(title, data, change) {
     }));
   }
   if (change?.status === 'pending_review' && state.roles.some((role) => ['botanisches_review', 'systemadministration'].includes(role))) {
+    actions.append(button('Fachlich freigeben', 'primary', async () => {
+      const note = prompt('Optionaler Review-Kommentar (die Freigabe veröffentlicht noch nichts):');
+      if (note === null) return;
+      await api(`/changes/${change.id}/approve`, { method: 'POST', body: { note } }); closeDrawer(); await load(); notice('Fachlich freigegeben. Veröffentlichung wartet auf ein geprüftes Release.');
+    }));
     actions.append(button('Zurückweisen', 'danger', async () => {
       const note = prompt('Bitte begründe die Zurückweisung (mindestens 3 Zeichen):');
       if (note === null) return;
       await api(`/changes/${change.id}/reject`, { method: 'POST', body: { note } }); closeDrawer(); await load(); notice('Änderung wurde zurückgewiesen.');
     }));
   }
-  if (change?.status === 'pending_review') {
-    const message = document.createElement('span'); message.className = 'dim'; message.textContent = 'Freigabe erst nach sicherem Content-Release verfügbar.'; actions.prepend(message);
+  if (change?.status === 'approved') {
+    const message = document.createElement('span'); message.className = 'dim'; message.textContent = 'Fachlich freigegeben; noch nicht in der App veröffentlicht.'; actions.prepend(message);
   }
   $('drawer-overlay').hidden = false; $('drawer').hidden = false;
 }

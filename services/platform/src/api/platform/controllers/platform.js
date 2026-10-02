@@ -129,6 +129,10 @@ module.exports = {
     return withActor(ctx, (runtime, actor) => runtime.editor.reject(actor, ctx.params.changeId, ctx.request.body?.note));
   },
 
+  async editorApprove(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.editor.approve(actor, ctx.params.changeId, ctx.request.body?.note));
+  },
+
   async editorInvite(ctx) {
     return withActor(ctx, async (runtime, actor) => {
       const invitation = await runtime.editorInvitations.invite(actor, ctx.request.body);

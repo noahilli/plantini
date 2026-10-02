@@ -128,6 +128,7 @@ Abnahme: Ein Offline-Fund überlebt Neustart, wird genau einmal synchronisiert u
 
 - [ ] **P1 | CMS-01:** Content-Modelle um alle Pflichtfelder/Beziehungen ergänzen; strukturierte Komponenten statt unvalidiertem Quiz-JSON nutzen, wo Fachregeln gelten.
 - [ ] **P1 | CMS-02:** Review-Workflow mit getrennten Rollen, Übergängen, Kommentaren und Vier-Augen-Regel implementieren; Lifecycle-Hooks allein reichen nicht.
+  - Stand 02.10.: Studio-Entwurf, Einreichung, begründete Ablehnung und fachliche Reviewer-Freigabe mit Verlauf sind implementiert; der freigegebene Entwurf wird bewusst **nicht** veröffentlicht. Reviewer-Selbstfreigabe ist nach ausdrücklicher Produktvorgabe erlaubt. Atomare Release-Aktivierung, vollständige Fachvalidierung und Schutz gegen Änderungen direkt im Strapi-Admin fehlen noch; Aufgabe bleibt offen.
 - [ ] **P1 | CMS-03:** Publish atomar validieren: Quellen, Lösungen, Taxonomie, Lizenz, Urheber, Alt-Text und Beziehungen müssen vollständig sein.
 - [ ] **P1 | CMS-04:** Observation-Fotos von redaktionellen Medien trennen oder Pflichtmetadaten korrekt setzen; aktueller Upload kollidiert mit Media-Lifecycle-Regeln.
 - [ ] **P2 | CMS-05:** Quiz-/Level-Builder mit Vorschau, Regelvalidierung und verständlichen Fehlern bereitstellen.

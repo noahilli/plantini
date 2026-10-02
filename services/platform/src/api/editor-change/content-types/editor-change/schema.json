@@ -14,10 +14,12 @@
     "targetPublicId": { "type": "string", "required": true },
     "baseUpdatedAt": { "type": "datetime" },
     "payload": { "type": "json", "required": true },
+    "payloadHash": { "type": "string" },
     "status": { "type": "enumeration", "enum": ["draft", "pending_review", "rejected", "approved"], "required": true, "default": "draft" },
     "authorSubject": { "type": "string", "required": true, "private": true },
     "reviewerSubject": { "type": "string", "private": true },
     "reviewNote": { "type": "text" },
+    "reviewEvents": { "type": "json", "default": [] },
     "reviewedAt": { "type": "datetime" },
     "appliedAt": { "type": "datetime" }
   }
