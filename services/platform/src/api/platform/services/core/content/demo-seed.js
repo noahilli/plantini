@@ -4,6 +4,9 @@ const { createHash } = require('crypto');
 const content = require('./demo-content.de.json');
 const { DEMO_RELEASE_VERSION, stableContentId, validateDemoContent } = require('./demo-content');
 const { buildJourney } = require('./demo-journeys');
+const { buildReleasePackages } = require('./release-packages');
+const { mapEcosystem, mapLevel, mapPlant } = require('./content-service');
+const { createStrapiRepositories } = require('../strapi-repositories');
 
 const LEVELS = [
   { slug: 'arten-erkennen', title: 'Arten erkennen', learningGoal: 'Du erkennst zehn typische Pflanzen an mehreren sichtbaren Merkmalen.' },
@@ -86,13 +89,39 @@ async function seedDemoContent(strapi) {
 
   changes.push(...await archiveSupersededDemoContent(rawEntities, dataset));
 
+  const repository = createStrapiRepositories(strapi).content;
+  const packageItems = { ecosystems: [], levels: [], plants: [] };
+  for (const [index, item] of dataset.ecosystems.entries()) {
+    const ecosystem = await repository.findPublishedEcosystem(stableContentId('ecosystem', item.ecosystem.slug));
+    if (ecosystem?.releaseVersion !== DEMO_RELEASE_VERSION) throw new Error('Seed ecosystem has a mismatched release.');
+    const mappedEcosystem = mapEcosystem(ecosystem);
+    const expectedLevelIds = journeys[index].map((level) => level.publicId);
+    if (mappedEcosystem.levelIds.length !== expectedLevelIds.length
+      || expectedLevelIds.some((id, position) => mappedEcosystem.levelIds[position] !== id)) {
+      throw new Error(`Seed ecosystem ${item.ecosystem.slug} has inconsistent levels.`);
+    }
+    packageItems.ecosystems.push(mappedEcosystem);
+    for (const definition of journeys[index]) {
+      const level = await repository.findPublishedLevel(definition.publicId);
+      if (level?.releaseVersion !== DEMO_RELEASE_VERSION) throw new Error('Seed level has a mismatched release.');
+      packageItems.levels.push(mapLevel(level));
+    }
+    for (const source of item.plants) {
+      const plant = await repository.findPublishedPlant(stableContentId('plant', source.slug));
+      if (plant?.releaseVersion !== DEMO_RELEASE_VERSION) throw new Error('Seed plant has a mismatched release.');
+      packageItems.plants.push(mapPlant(plant));
+    }
+  }
+
+  const packages = buildReleasePackages(DEMO_RELEASE_VERSION, packageItems);
+
   const manifest = {
     version: DEMO_RELEASE_VERSION, releasedAt: now, schemaVersion: '1.0',
-    minimumAppVersion: '1.0.0', packages: [],
+    minimumAppVersion: '1.0.0', packages: packages.descriptors,
   };
   const release = await rawEntities.create('api::content-release.content-release', {
     data: {
-      version: DEMO_RELEASE_VERSION, active: true, manifest,
+      version: DEMO_RELEASE_VERSION, active: true, manifest, packageBlobs: packages.blobs,
       cursor: createHash('sha256').update(`${DEMO_RELEASE_VERSION}:${now}`).digest('hex'),
       changes, publishedAt: now,
     },
@@ -118,7 +147,7 @@ function createUpsertingEntityService(entities) {
       });
       if (Array.isArray(matches) && matches.length > 0) {
         if (matches[0].publicId !== data.publicId
-          || ![DEMO_RELEASE_VERSION, '2026.09.07-de.1', '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
+          || ![DEMO_RELEASE_VERSION, '2026.09.22-de.1', '2026.09.07-de.1', '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
           throw new Error(`Refusing to overwrite non-demo content: ${uid}/${data.slug}`);
         }
         return entities.update(uid, matches[0].id, { data });

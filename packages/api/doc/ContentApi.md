@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**getAdminDashboard**](ContentApi.md#getadmindashboard) | **GET** /admin/dashboard | Read privacy-preserving aggregated editorial metrics
 [**getContentChanges**](ContentApi.md#getcontentchanges) | **GET** /content/changes | Read released content changes and deletion tombstones
 [**getContentManifest**](ContentApi.md#getcontentmanifest) | **GET** /content/manifest | Read the active immutable content manifest
+[**getContentPackage**](ContentApi.md#getcontentpackage) | **GET** /content/packages/{version}/{packageId} | Download immutable bytes of a versioned content package
 [**getEcosystem**](ContentApi.md#getecosystem) | **GET** /ecosystems/{ecosystemId} | Read one published ecosystem
 [**getLevel**](ContentApi.md#getlevel) | **GET** /levels/{levelId} | Read an accessible level and its user state
 [**getPlant**](ContentApi.md#getplant) | **GET** /plants/{plantId} | Read one published plant profile
@@ -214,6 +215,49 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**ContentManifest**](ContentManifest.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getContentPackage**
+> ContentPackagePayload getContentPackage(version, packageId)
+
+Download immutable bytes of a versioned content package
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+
+final api = Openapi().getContentApi();
+final String version = version_example; // String |
+final String packageId = packageId_example; // String |
+
+try {
+    final response = api.getContentPackage(version, packageId);
+    print(response);
+} on DioException catch (e) {
+    print('Exception when calling ContentApi->getContentPackage: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **version** | **String**|  |
+ **packageId** | **String**|  |
+
+### Return type
+
+[**ContentPackagePayload**](ContentPackagePayload.md)
 
 ### Authorization
 

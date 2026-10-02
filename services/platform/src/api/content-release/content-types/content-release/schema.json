@@ -11,6 +11,7 @@
     "version": { "type": "string", "required": true, "unique": true },
     "active": { "type": "boolean", "required": true, "default": false },
     "manifest": { "type": "json", "required": true },
+    "packageBlobs": { "type": "json" },
     "cursor": { "type": "string", "required": true, "unique": true },
     "changes": { "type": "json", "default": [] }
   }

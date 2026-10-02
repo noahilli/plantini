@@ -36,3 +36,9 @@ Die API beginnt als klar abgegrenzte Strapi-Erweiterung oder schlanker TypeScrip
 ## Publish-Gate
 
 Ein Release scheitert bei fehlenden Taxon-IDs, Quellen, Bildlizenzen/Alt-Texten, Übersetzungs-Pflichttexten, Quizlösungen, zyklischen Levelregeln oder Pflichtwarnungen. Playwright prüft das Admin-Verhalten; serverseitige Validatoren bleiben die Autorität.
+
+## Release-Pakete: implementierte Grenze (02.10.2026)
+
+Der isolierte Demo-Seed liest nach dem Schreiben die veröffentlichten Ökosysteme, Level und Pflanzen erneut über den Strapi-Repository-Adapter. Aus den öffentlichen DTOs entstehen drei JSON-Bytefolgen (`{ "items": [...] }`); Base64 in `content-release.packageBlobs` konserviert exakt diese Bytes auch bei JSONB-Schlüsselumsortierung. Das Manifest referenziert `GET /api/v1/content/packages/{version}/{packageId}` mit Größe und SHA-256. Der Endpunkt liefert auch ältere veröffentlichte, inaktive Versionen unverändert; beschädigte Bytes werden abgelehnt. Die Version wurde für das neue Format auf `2026.10.02-de.1` erhöht. Lokal wurden über IPv4 3/90/30 Einträge und alle drei Hashes geprüft.
+
+Dies ist **nur ein Demo-Release-Baustein**. Der Seed schreibt CMS-Entitäten vor dem Release-Datensatz und aktiviert/retirert Release-Marker nicht in einer DB-Transaktion. Öffentliche Online-Reads filtern noch nicht auf die aktive Release-Version. Redaktionell freigegebene Änderungen werden nicht angewendet; Offline-Quizpakete und Signaturprüfung fehlen. Ein echtes Publish-Gate muss die gesamte neue Version einschließlich Medien/Rechten validieren und in einer atomaren Transaktion aktivieren, bevor `CONTENT-05/06` als abgeschlossen gelten.

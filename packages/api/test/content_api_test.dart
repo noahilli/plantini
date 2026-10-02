@@ -41,6 +41,13 @@ void main() {
       // TODO
     });
 
+    // Download immutable bytes of a versioned content package
+    //
+    //Future<ContentPackagePayload> getContentPackage(String version, String packageId) async
+    test('test getContentPackage', () async {
+      // TODO
+    });
+
     // Read one published ecosystem
     //
     //Future<Ecosystem> getEcosystem(String ecosystemId) async

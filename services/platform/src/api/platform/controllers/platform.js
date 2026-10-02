@@ -35,6 +35,24 @@ module.exports = {
     });
   },
 
+  async getContentPackage(ctx) {
+    return execute(ctx, async (runtime) => {
+      rejectUnknownQuery(ctx.query, []);
+      const packageData = await runtime.content.getPackage(ctx.params.version, ctx.params.packageId);
+      ctx.set('ETag', `"${packageData.sha256}"`);
+      ctx.set('Cache-Control', 'public, max-age=31536000, immutable');
+      ctx.set('X-Content-Type-Options', 'nosniff');
+      if (ctx.get('if-none-match').split(',').some((tag) =>
+        tag.trim().replace(/^W\//, '') === `"${packageData.sha256}"`)) {
+        ctx.status = 304;
+        return undefined;
+      }
+      ctx.type = 'application/json';
+      ctx.body = packageData.bytes;
+      return undefined;
+    });
+  },
+
   async getContentChanges(ctx) {
     return execute(ctx, async (runtime) => {
       rejectUnknownQuery(ctx.query, ['since']);

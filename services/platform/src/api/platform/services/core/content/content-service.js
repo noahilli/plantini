@@ -3,6 +3,7 @@
 const { ProblemError, notFound } = require('../errors');
 const { requireUuid } = require('../ids');
 const { pageFromQuery } = require('../validation');
+const { readReleasePackage } = require('./release-packages');
 
 class ContentService {
   constructor(options) {
@@ -27,6 +28,17 @@ class ContentService {
       etag,
       manifest: release.manifest,
     };
+  }
+
+  async getPackage(version, packageId) {
+    if (typeof version !== 'string' || !/^[a-zA-Z0-9._-]{1,80}$/.test(version)) {
+      throw notFound('CONTENT_PACKAGE_NOT_FOUND');
+    }
+    const release = await this.repository.findReleaseByVersion(version);
+    if (!release || release.manifest?.version !== version) {
+      throw notFound('CONTENT_PACKAGE_NOT_FOUND');
+    }
+    return readReleasePackage(release, packageId);
   }
 
   async listEcosystems(query) {

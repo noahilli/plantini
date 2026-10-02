@@ -10,6 +10,7 @@ import 'package:openapi/src/auth/basic_auth.dart';
 import 'package:openapi/src/auth/bearer_auth.dart';
 import 'package:openapi/src/auth/oauth.dart';
 import 'package:openapi/src/api/content_api.dart';
+import 'package:openapi/src/api/editor_api.dart';
 import 'package:openapi/src/api/field_api.dart';
 import 'package:openapi/src/api/herbarium_api.dart';
 import 'package:openapi/src/api/learning_api.dart';
@@ -139,6 +140,12 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   ContentApi getContentApi() {
     return ContentApi(dio, serializers);
+  }
+
+  /// Get EditorApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  EditorApi getEditorApi() {
+    return EditorApi(dio, serializers);
   }
 
   /// Get FieldApi instance, base route and serializer can be overridden by a given but be careful,

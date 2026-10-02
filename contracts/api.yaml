@@ -27,6 +27,8 @@ tags:
     description: Authenticated person and preferences.
   - name: Content
     description: Published, versioned botanical content.
+  - name: Editor
+    description: Role-scoped editorial drafts and botanical review; approval does not publish.
   - name: Learning
     description: Server-authoritative learning attempts and progress.
   - name: Field
@@ -65,6 +67,29 @@ paths:
         '200': {description: Immutable active content release, content: {application/json: {schema: {$ref: '#/components/schemas/ContentManifest'}}}}
         '304': {description: Previously downloaded release is current}
         '400': {$ref: '#/components/responses/BadRequest'}
+  /content/packages/{version}/{packageId}:
+    get:
+      summary: Download immutable bytes of a versioned content package
+      tags: [Content]
+      operationId: getContentPackage
+      security: []
+      parameters:
+        - name: version
+          in: path
+          required: true
+          schema: {type: string, pattern: '^[a-zA-Z0-9._-]{1,80}$'}
+        - name: packageId
+          in: path
+          required: true
+          schema: {type: string, enum: [ecosystems, levels, plants]}
+      responses:
+        '200':
+          description: Package bytes matching the manifest SHA-256 and size
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ContentPackagePayload'}
+        '304': {description: Package bytes are already cached}
+        '404': {$ref: '#/components/responses/NotFound'}
   /content/changes:
     get:
       summary: Read released content changes and deletion tombstones
@@ -79,6 +104,107 @@ paths:
       responses:
         '200': {description: Incremental release changes, content: {application/json: {schema: {$ref: '#/components/schemas/ContentChangePage'}}}}
         '400': {$ref: '#/components/responses/BadRequest'}
+  /editor/dashboard:
+    get:
+      summary: Read role-scoped editorial counters
+      tags: [Editor]
+      operationId: getEditorDashboard
+      responses:
+        '200': {description: Editorial counters, content: {application/json: {schema: {$ref: '#/components/schemas/EditorDashboard'}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /editor/catalog:
+    get:
+      summary: Read the editorial relationship tree (currently at most 1000 records per kind)
+      tags: [Editor]
+      operationId: getEditorCatalog
+      responses:
+        '200': {description: Editable content summaries, content: {application/json: {schema: {$ref: '#/components/schemas/EditorCatalog'}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /editor/changes:
+    get:
+      summary: List own drafts and reviews, or all changes for reviewers
+      tags: [Editor]
+      operationId: listEditorChanges
+      responses:
+        '200': {description: Visible editorial changes, content: {application/json: {schema: {type: array, items: {$ref: '#/components/schemas/EditorChange'}}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      summary: Create a role-scoped editorial draft; does not publish
+      tags: [Editor]
+      operationId: createEditorChange
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/EditorSaveRequest'}}}}
+      responses:
+        '201': {description: Saved draft, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /editor/changes/{changeId}:
+    parameters:
+      - {name: changeId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    get:
+      summary: Read an editorial change visible to the caller
+      tags: [Editor]
+      operationId: getEditorChange
+      responses:
+        '200': {description: Editorial change, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+    patch:
+      summary: Update own draft or rejected change; does not publish
+      tags: [Editor]
+      operationId: updateEditorChange
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/EditorSaveRequest'}}}}
+      responses:
+        '200': {description: Saved draft, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /editor/changes/{changeId}/submit:
+    post:
+      summary: Submit own draft for botanical review
+      tags: [Editor]
+      operationId: submitEditorChange
+      parameters: [{name: changeId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}]
+      responses:
+        '200': {description: Pending review, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /editor/changes/{changeId}/reject:
+    post:
+      summary: Reject a pending change with a reason (reviewer role)
+      tags: [Editor]
+      operationId: rejectEditorChange
+      parameters: [{name: changeId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/EditorReviewRequest'}}}}
+      responses:
+        '200': {description: Rejected change, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /editor/changes/{changeId}/approve:
+    post:
+      summary: Approve a pending change editorially; release remains separate (reviewer role)
+      tags: [Editor]
+      operationId: approveEditorChange
+      parameters: [{name: changeId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}]
+      requestBody: {required: false, content: {application/json: {schema: {$ref: '#/components/schemas/EditorReviewRequest'}}}}
+      responses:
+        '200': {description: Editorially approved change, content: {application/json: {schema: {$ref: '#/components/schemas/EditorChange'}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /editor/items/{type}/{itemId}:
+    get:
+      summary: Read a published or draft CMS item as an editable payload
+      tags: [Editor]
+      operationId: getEditorItem
+      parameters:
+        - {name: type, in: path, required: true, schema: {type: string, enum: [ecosystem, level, plant, quiz]}}
+        - {name: itemId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+      responses:
+        '200': {description: Editable item, content: {application/json: {schema: {$ref: '#/components/schemas/EditorItem'}}}}
+        '404': {$ref: '#/components/responses/NotFound'}
+  /editor/invitations:
+    post:
+      summary: Invite an editor; only system administrators may invite reviewers
+      tags: [Editor]
+      operationId: createEditorInvitation
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/EditorInvitationRequest'}}}}
+      responses:
+        '201': {description: Invitation accepted, content: {application/json: {schema: {$ref: '#/components/schemas/EditorInvitation'}}}}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /ecosystems:
     get:
       summary: List published ecosystems
@@ -651,9 +777,103 @@ components:
       required: [id, url, sha256, bytes]
       properties:
         id: {type: string}
-        url: {type: string, format: uri}
+        url: {type: string, format: uri-reference}
         sha256: {type: string, pattern: '^[a-fA-F0-9]{64}$'}
         bytes: {type: integer, minimum: 0}
+    ContentPackagePayload:
+      type: object
+      required: [items]
+      properties:
+        items: {type: array, items: {type: object}}
+    EditorDashboard:
+      type: object
+      required: [users, ecosystems, levels, plants, quizzes, learningElements, cards, pendingReview, approvedPendingRelease, storageBytes, storageScope]
+      properties:
+        users: {type: integer, minimum: 0}
+        ecosystems: {type: integer, minimum: 0}
+        levels: {type: integer, minimum: 0}
+        plants: {type: integer, minimum: 0}
+        quizzes: {type: integer, minimum: 0}
+        learningElements: {type: integer, minimum: 0}
+        cards: {type: integer, minimum: 0}
+        pendingReview: {type: integer, minimum: 0}
+        approvedPendingRelease: {type: integer, minimum: 0}
+        plantNetToday: {type: [integer, 'null'], minimum: 0}
+        storageBytes: {type: integer, minimum: 0}
+        storageScope: {type: string, enum: [uploaded-private-media]}
+    EditorItemSummary:
+      type: object
+      required: [id, type, title, slug, published]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        type: {type: string, enum: [ecosystem, level, plant, quiz]}
+        title: {type: string}
+        slug: {type: string}
+        published: {type: boolean}
+        reviewStatus: {type: [string, 'null']}
+        ecosystemId: {$ref: '#/components/schemas/Id'}
+        plantIds: {type: array, items: {$ref: '#/components/schemas/Id'}}
+        levelId: {$ref: '#/components/schemas/Id'}
+        plantId: {$ref: '#/components/schemas/Id'}
+        sequence: {type: integer}
+    EditorCatalog:
+      type: object
+      required: [ecosystems, levels, plants, quizzes]
+      properties:
+        ecosystems: {type: array, items: {$ref: '#/components/schemas/EditorItemSummary'}}
+        levels: {type: array, items: {$ref: '#/components/schemas/EditorItemSummary'}}
+        plants: {type: array, items: {$ref: '#/components/schemas/EditorItemSummary'}}
+        quizzes: {type: array, items: {$ref: '#/components/schemas/EditorItemSummary'}}
+    EditorItem:
+      type: object
+      required: [type, id, updatedAt, published, data]
+      properties:
+        type: {type: string, enum: [ecosystem, level, plant, quiz]}
+        id: {$ref: '#/components/schemas/Id'}
+        updatedAt: {type: string, format: date-time}
+        published: {type: boolean}
+        data: {type: object}
+    EditorSaveRequest:
+      type: object
+      required: [type, data]
+      properties:
+        type: {type: string, enum: [ecosystem, level, plant, quiz]}
+        targetId: {$ref: '#/components/schemas/Id'}
+        data: {type: object}
+    EditorReviewRequest:
+      type: object
+      properties:
+        note: {type: string, maxLength: 2000}
+    EditorChange:
+      type: object
+      required: [id, type, targetId, data, status, author, updatedAt, reviewEvents]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        type: {type: string, enum: [ecosystem, level, plant, quiz]}
+        targetId: {$ref: '#/components/schemas/Id'}
+        data: {type: object}
+        status: {type: string, enum: [draft, pending_review, rejected, approved]}
+        author: {type: string}
+        reviewer: {type: [string, 'null']}
+        note: {type: string}
+        updatedAt: {type: string, format: date-time}
+        reviewedAt: {type: [string, 'null'], format: date-time}
+        appliedAt: {type: [string, 'null'], format: date-time}
+        reviewEvents: {type: array, items: {type: object}}
+        payloadHash: {type: [string, 'null']}
+    EditorInvitationRequest:
+      type: object
+      required: [email]
+      properties:
+        email: {type: string, format: email}
+        role: {type: string, enum: [inhaltsredaktion, botanisches_review], default: inhaltsredaktion}
+    EditorInvitation:
+      type: object
+      required: [email, role, status]
+      properties:
+        email: {type: string, format: email}
+        role: {type: string, enum: [inhaltsredaktion, botanisches_review]}
+        status: {type: string, enum: [invited]}
     ContentChangePage:
       type: object
       required: [cursor, changes]

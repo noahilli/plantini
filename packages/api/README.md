@@ -74,11 +74,23 @@ Class | Method | HTTP request | Description
 [*ContentApi*](doc/ContentApi.md) | [**getAdminDashboard**](doc/ContentApi.md#getadmindashboard) | **GET** /admin/dashboard | Read privacy-preserving aggregated editorial metrics
 [*ContentApi*](doc/ContentApi.md) | [**getContentChanges**](doc/ContentApi.md#getcontentchanges) | **GET** /content/changes | Read released content changes and deletion tombstones
 [*ContentApi*](doc/ContentApi.md) | [**getContentManifest**](doc/ContentApi.md#getcontentmanifest) | **GET** /content/manifest | Read the active immutable content manifest
+[*ContentApi*](doc/ContentApi.md) | [**getContentPackage**](doc/ContentApi.md#getcontentpackage) | **GET** /content/packages/{version}/{packageId} | Download immutable bytes of a versioned content package
 [*ContentApi*](doc/ContentApi.md) | [**getEcosystem**](doc/ContentApi.md#getecosystem) | **GET** /ecosystems/{ecosystemId} | Read one published ecosystem
 [*ContentApi*](doc/ContentApi.md) | [**getLevel**](doc/ContentApi.md#getlevel) | **GET** /levels/{levelId} | Read an accessible level and its user state
 [*ContentApi*](doc/ContentApi.md) | [**getPlant**](doc/ContentApi.md#getplant) | **GET** /plants/{plantId} | Read one published plant profile
 [*ContentApi*](doc/ContentApi.md) | [**getPlantPhoto**](doc/ContentApi.md#getplantphoto) | **GET** /plants/{plantId}/photo | Read an attributed supplemental photo for a published plant
 [*ContentApi*](doc/ContentApi.md) | [**listEcosystems**](doc/ContentApi.md#listecosystems) | **GET** /ecosystems | List published ecosystems
+[*EditorApi*](doc/EditorApi.md) | [**approveEditorChange**](doc/EditorApi.md#approveeditorchange) | **POST** /editor/changes/{changeId}/approve | Approve a pending change editorially; release remains separate (reviewer role)
+[*EditorApi*](doc/EditorApi.md) | [**createEditorChange**](doc/EditorApi.md#createeditorchange) | **POST** /editor/changes | Create a role-scoped editorial draft; does not publish
+[*EditorApi*](doc/EditorApi.md) | [**createEditorInvitation**](doc/EditorApi.md#createeditorinvitation) | **POST** /editor/invitations | Invite an editor; only system administrators may invite reviewers
+[*EditorApi*](doc/EditorApi.md) | [**getEditorCatalog**](doc/EditorApi.md#geteditorcatalog) | **GET** /editor/catalog | Read the editorial relationship tree (currently at most 1000 records per kind)
+[*EditorApi*](doc/EditorApi.md) | [**getEditorChange**](doc/EditorApi.md#geteditorchange) | **GET** /editor/changes/{changeId} | Read an editorial change visible to the caller
+[*EditorApi*](doc/EditorApi.md) | [**getEditorDashboard**](doc/EditorApi.md#geteditordashboard) | **GET** /editor/dashboard | Read role-scoped editorial counters
+[*EditorApi*](doc/EditorApi.md) | [**getEditorItem**](doc/EditorApi.md#geteditoritem) | **GET** /editor/items/{type}/{itemId} | Read a published or draft CMS item as an editable payload
+[*EditorApi*](doc/EditorApi.md) | [**listEditorChanges**](doc/EditorApi.md#listeditorchanges) | **GET** /editor/changes | List own drafts and reviews, or all changes for reviewers
+[*EditorApi*](doc/EditorApi.md) | [**rejectEditorChange**](doc/EditorApi.md#rejecteditorchange) | **POST** /editor/changes/{changeId}/reject | Reject a pending change with a reason (reviewer role)
+[*EditorApi*](doc/EditorApi.md) | [**submitEditorChange**](doc/EditorApi.md#submiteditorchange) | **POST** /editor/changes/{changeId}/submit | Submit own draft for botanical review
+[*EditorApi*](doc/EditorApi.md) | [**updateEditorChange**](doc/EditorApi.md#updateeditorchange) | **PATCH** /editor/changes/{changeId} | Update own draft or rejected change; does not publish
 [*FieldApi*](doc/FieldApi.md) | [**confirmIdentification**](doc/FieldApi.md#confirmidentification) | **POST** /identifications/{jobId}/confirm | Confirm one candidate before it can enter the private herbarium
 [*FieldApi*](doc/FieldApi.md) | [**createIdentification**](doc/FieldApi.md#createidentification) | **POST** /identifications | Create an asynchronous identification job
 [*FieldApi*](doc/FieldApi.md) | [**createMediaUpload**](doc/FieldApi.md#createmediaupload) | **POST** /media/uploads | Reserve a private media upload
@@ -129,6 +141,7 @@ Class | Method | HTTP request | Description
  - [ContentChangePage](doc/ContentChangePage.md)
  - [ContentManifest](doc/ContentManifest.md)
  - [ContentPackage](doc/ContentPackage.md)
+ - [ContentPackagePayload](doc/ContentPackagePayload.md)
  - [CreateContentReleaseRequest](doc/CreateContentReleaseRequest.md)
  - [CreateIdentificationRequest](doc/CreateIdentificationRequest.md)
  - [CreateImportRequest](doc/CreateImportRequest.md)
@@ -137,6 +150,15 @@ Class | Method | HTTP request | Description
  - [Ecosystem](doc/Ecosystem.md)
  - [EcosystemPage](doc/EcosystemPage.md)
  - [EcosystemProgress](doc/EcosystemProgress.md)
+ - [EditorCatalog](doc/EditorCatalog.md)
+ - [EditorChange](doc/EditorChange.md)
+ - [EditorDashboard](doc/EditorDashboard.md)
+ - [EditorInvitation](doc/EditorInvitation.md)
+ - [EditorInvitationRequest](doc/EditorInvitationRequest.md)
+ - [EditorItem](doc/EditorItem.md)
+ - [EditorItemSummary](doc/EditorItemSummary.md)
+ - [EditorReviewRequest](doc/EditorReviewRequest.md)
+ - [EditorSaveRequest](doc/EditorSaveRequest.md)
  - [EventBatchAck](doc/EventBatchAck.md)
  - [IdentificationCandidate](doc/IdentificationCandidate.md)
  - [IdentificationJob](doc/IdentificationJob.md)

@@ -30,6 +30,7 @@ import 'package:openapi/src/model/content_change.dart';
 import 'package:openapi/src/model/content_change_page.dart';
 import 'package:openapi/src/model/content_manifest.dart';
 import 'package:openapi/src/model/content_package.dart';
+import 'package:openapi/src/model/content_package_payload.dart';
 import 'package:openapi/src/model/create_content_release_request.dart';
 import 'package:openapi/src/model/create_identification_request.dart';
 import 'package:openapi/src/model/create_import_request.dart';
@@ -38,6 +39,15 @@ import 'package:openapi/src/model/create_upload_request.dart';
 import 'package:openapi/src/model/ecosystem.dart';
 import 'package:openapi/src/model/ecosystem_page.dart';
 import 'package:openapi/src/model/ecosystem_progress.dart';
+import 'package:openapi/src/model/editor_catalog.dart';
+import 'package:openapi/src/model/editor_change.dart';
+import 'package:openapi/src/model/editor_dashboard.dart';
+import 'package:openapi/src/model/editor_invitation.dart';
+import 'package:openapi/src/model/editor_invitation_request.dart';
+import 'package:openapi/src/model/editor_item.dart';
+import 'package:openapi/src/model/editor_item_summary.dart';
+import 'package:openapi/src/model/editor_review_request.dart';
+import 'package:openapi/src/model/editor_save_request.dart';
 import 'package:openapi/src/model/event_batch_ack.dart';
 import 'package:openapi/src/model/identification_candidate.dart';
 import 'package:openapi/src/model/identification_job.dart';
@@ -90,6 +100,7 @@ part 'serializers.g.dart';
   ContentChangePage,
   ContentManifest,
   ContentPackage,
+  ContentPackagePayload,
   CreateContentReleaseRequest,
   CreateIdentificationRequest,
   CreateImportRequest,
@@ -98,6 +109,15 @@ part 'serializers.g.dart';
   Ecosystem,
   EcosystemPage,
   EcosystemProgress,
+  EditorCatalog,
+  EditorChange,
+  EditorDashboard,
+  EditorInvitation,
+  EditorInvitationRequest,
+  EditorItem,
+  EditorItemSummary,
+  EditorReviewRequest,
+  EditorSaveRequest,
   EventBatchAck,
   IdentificationCandidate,
   IdentificationJob,
@@ -153,12 +173,20 @@ Serializers serializers = (_$serializers.toBuilder()
         () => ListBuilder<ContentChange>(),
       )
       ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(JsonObject)]),
+        () => ListBuilder<JsonObject>(),
+      )
+      ..addBuilderFactory(
         const FullType(BuiltList, [FullType(Ecosystem)]),
         () => ListBuilder<Ecosystem>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltMap, [FullType(String), FullType(num)]),
         () => MapBuilder<String, num>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(EditorChange)]),
+        () => ListBuilder<EditorChange>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(AdminUser)]),
@@ -187,6 +215,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(PublicMedia)]),
         () => ListBuilder<PublicMedia>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(EditorItemSummary)]),
+        () => ListBuilder<EditorItemSummary>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(QuizChoice)]),

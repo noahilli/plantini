@@ -47,6 +47,10 @@ function createContentRepository(entities) {
       publicationState: 'live',
       sort: { publishedAt: 'desc' },
     }),
+    findReleaseByVersion: async (version) => findOne(entities, 'api::content-release.content-release', {
+      filters: { version },
+      publicationState: 'live',
+    }),
     findChangesSince: async (cursor) => {
       const release = await findOne(entities, 'api::content-release.content-release', {
         filters: { active: true },

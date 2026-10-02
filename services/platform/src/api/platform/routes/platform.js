@@ -17,6 +17,7 @@ module.exports = {
     route('GET', '/v1/me', 'getMe'),
     route('PATCH', '/v1/me', 'updateMe'),
     route('GET', '/v1/content/manifest', 'getManifest'),
+    route('GET', '/v1/content/packages/:version/:packageId', 'getContentPackage'),
     route('GET', '/v1/content/changes', 'getContentChanges'),
     route('GET', '/v1/ecosystems', 'listEcosystems'),
     route('GET', '/v1/ecosystems/:ecosystemId', 'getEcosystem'),

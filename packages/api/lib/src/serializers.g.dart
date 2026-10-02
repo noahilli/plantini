@@ -31,6 +31,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(ContentChangePage.serializer)
       ..add(ContentManifest.serializer)
       ..add(ContentPackage.serializer)
+      ..add(ContentPackagePayload.serializer)
       ..add(CreateContentReleaseRequest.serializer)
       ..add(CreateIdentificationRequest.serializer)
       ..add(CreateImportRequest.serializer)
@@ -42,6 +43,24 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(EcosystemPage.serializer)
       ..add(EcosystemProgress.serializer)
       ..add(EcosystemProgressStatusEnum.serializer)
+      ..add(EditorCatalog.serializer)
+      ..add(EditorChange.serializer)
+      ..add(EditorChangeStatusEnum.serializer)
+      ..add(EditorChangeTypeEnum.serializer)
+      ..add(EditorDashboard.serializer)
+      ..add(EditorDashboardStorageScopeEnum.serializer)
+      ..add(EditorInvitation.serializer)
+      ..add(EditorInvitationRequest.serializer)
+      ..add(EditorInvitationRequestRoleEnum.serializer)
+      ..add(EditorInvitationRoleEnum.serializer)
+      ..add(EditorInvitationStatusEnum.serializer)
+      ..add(EditorItem.serializer)
+      ..add(EditorItemSummary.serializer)
+      ..add(EditorItemSummaryTypeEnum.serializer)
+      ..add(EditorItemTypeEnum.serializer)
+      ..add(EditorReviewRequest.serializer)
+      ..add(EditorSaveRequest.serializer)
+      ..add(EditorSaveRequestTypeEnum.serializer)
       ..add(EventBatchAck.serializer)
       ..add(IdentificationCandidate.serializer)
       ..add(IdentificationJob.serializer)
@@ -100,9 +119,27 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(Ecosystem)]),
           () => ListBuilder<Ecosystem>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(EditorItemSummary)]),
+          () => ListBuilder<EditorItemSummary>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(EditorItemSummary)]),
+          () => ListBuilder<EditorItemSummary>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(EditorItemSummary)]),
+          () => ListBuilder<EditorItemSummary>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(EditorItemSummary)]),
+          () => ListBuilder<EditorItemSummary>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(IdentificationCandidate)]),
           () => ListBuilder<IdentificationCandidate>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(JsonObject)]),
+          () => ListBuilder<JsonObject>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(JsonObject)]),
+          () => ListBuilder<JsonObject>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(LearningEvent)]),
           () => ListBuilder<LearningEvent>())
@@ -124,6 +161,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(QuizItem)]),
           () => ListBuilder<QuizItem>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
