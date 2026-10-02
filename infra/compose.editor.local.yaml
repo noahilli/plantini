@@ -1,0 +1,21 @@
+# Optional local authoring layer on top of compose.e2e.yaml and
+# compose.authoring.local.yaml. It preserves the existing named volumes.
+services:
+  platform:
+    environment:
+      CORS_ORIGINS: http://127.0.0.1:3000,http://127.0.0.1:8084
+      PLATFORM_EDITOR_ORIGIN: http://127.0.0.1:8084
+      PLATFORM_EDITOR_OIDC_CLIENT_ID: plantini-editor-dev
+      PLATFORM_SEED_DEMO_CONTENT: 'false'
+
+  editor:
+    image: plantini/editor:local
+    build:
+      context: ../apps/editor
+    ports:
+      - "127.0.0.1:8084:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 12

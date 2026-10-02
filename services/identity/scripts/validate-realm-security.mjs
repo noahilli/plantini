@@ -146,6 +146,13 @@ export function validateRealmSecurity(realm, { environment = 'development' } = {
   if (audienceMapper?.config?.['included.client.audience'] !== 'plantini-api') {
     fail('app tokens must carry the plantini-api audience for /api/v1');
   }
+  for (const editorId of ['plantini-editor-dev', 'plantini-editor-production']) {
+    const mapping = (realm.scopeMappings ?? []).find((item) => item.client === editorId);
+    if (!['inhaltsredaktion', 'botanisches_review', 'systemadministration']
+      .every((role) => mapping?.roles?.includes(role))) {
+      fail(`${editorId}: editor roles must be visible in access tokens`);
+    }
+  }
 
   validatePrivilegedMfa(realm, failures);
 

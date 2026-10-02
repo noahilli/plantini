@@ -525,6 +525,14 @@
       "roles": [
         "offline_access"
       ]
+    },
+    {
+      "client": "plantini-editor-dev",
+      "roles": ["inhaltsredaktion", "botanisches_review", "systemadministration"]
+    },
+    {
+      "client": "plantini-editor-production",
+      "roles": ["inhaltsredaktion", "botanisches_review", "systemadministration"]
     }
   ],
   "clientScopeMappings": {
