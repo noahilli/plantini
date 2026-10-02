@@ -119,7 +119,7 @@ async function seedDemoContent(strapi) {
 
   const manifest = {
     version: DEMO_RELEASE_VERSION, releasedAt: now, schemaVersion: '1.0',
-    minimumAppVersion: '1.0.0', packages: packages.descriptors,
+    minimumAppVersion: '0.6.3', packages: packages.descriptors,
   };
   const release = await rawEntities.create('api::content-release.content-release', {
     data: {
@@ -149,7 +149,7 @@ function createUpsertingEntityService(entities) {
       });
       if (Array.isArray(matches) && matches.length > 0) {
         if (matches[0].publicId !== data.publicId
-          || ![DEMO_RELEASE_VERSION, '2026.09.22-de.1', '2026.09.07-de.1', '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
+          || ![DEMO_RELEASE_VERSION, '2026.10.02-de.1', '2026.09.22-de.1', '2026.09.07-de.1', '2026.08.28-de.1'].includes(matches[0].releaseVersion)) {
           throw new Error(`Refusing to overwrite non-demo content: ${uid}/${data.slug}`);
         }
         return entities.update(uid, matches[0].id, { data });

@@ -3,7 +3,7 @@
 const { createHash } = require('crypto');
 const { validateLearningCards } = require('./lesson-cards');
 
-const DEMO_RELEASE_VERSION = '2026.10.02-de.1';
+const DEMO_RELEASE_VERSION = '2026.10.02-de.2';
 
 function stableContentId(kind, slug) {
   const hex = createHash('sha256')

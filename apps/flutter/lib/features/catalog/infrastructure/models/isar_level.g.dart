@@ -34,6 +34,7 @@ final IsarLevelSchema = IsarGeneratedSchema(
       IsarPropertySchema(name: 'requiredQuizIds', type: IsarType.stringList),
       IsarPropertySchema(name: 'plantIds', type: IsarType.stringList),
       IsarPropertySchema(name: 'requiredPlantIds', type: IsarType.stringList),
+      IsarPropertySchema(name: 'requiredLevelIds', type: IsarType.stringList),
       IsarPropertySchema(name: 'learningGoal', type: IsarType.string),
       IsarPropertySchema(name: 'progress', type: IsarType.double),
       IsarPropertySchema(name: 'blockedReason', type: IsarType.string),
@@ -95,23 +96,31 @@ int serializeIsarLevel(IsarWriter writer, IsarLevel object) {
     IsarCore.endList(writer, listWriter);
   }
   {
+    final list = object.requiredLevelIds;
+    final listWriter = IsarCore.beginList(writer, 10, list.length);
+    for (var i = 0; i < list.length; i++) {
+      IsarCore.writeString(listWriter, i, list[i]);
+    }
+    IsarCore.endList(writer, listWriter);
+  }
+  {
     final value = object.learningGoal;
     if (value == null) {
-      IsarCore.writeNull(writer, 10);
+      IsarCore.writeNull(writer, 11);
     } else {
-      IsarCore.writeString(writer, 10, value);
+      IsarCore.writeString(writer, 11, value);
     }
   }
-  IsarCore.writeDouble(writer, 11, object.progress ?? double.nan);
+  IsarCore.writeDouble(writer, 12, object.progress ?? double.nan);
   {
     final value = object.blockedReason;
     if (value == null) {
-      IsarCore.writeNull(writer, 12);
+      IsarCore.writeNull(writer, 13);
     } else {
-      IsarCore.writeString(writer, 12, value);
+      IsarCore.writeString(writer, 13, value);
     }
   }
-  IsarCore.writeString(writer, 13, object.contentVersion);
+  IsarCore.writeString(writer, 14, object.contentVersion);
   return object.id;
 }
 
@@ -181,17 +190,33 @@ IsarLevel deserializeIsarLevel(IsarReader reader) {
       }
     }
   }
-  object.learningGoal = IsarCore.readString(reader, 10);
   {
-    final value = IsarCore.readDouble(reader, 11);
+    final length = IsarCore.readList(reader, 10, IsarCore.readerPtrPtr);
+    {
+      final reader = IsarCore.readerPtr;
+      if (reader.isNull) {
+        object.requiredLevelIds = const <String>[];
+      } else {
+        final list = List<String>.filled(length, '', growable: true);
+        for (var i = 0; i < length; i++) {
+          list[i] = IsarCore.readString(reader, i) ?? '';
+        }
+        IsarCore.freeReader(reader);
+        object.requiredLevelIds = list;
+      }
+    }
+  }
+  object.learningGoal = IsarCore.readString(reader, 11);
+  {
+    final value = IsarCore.readDouble(reader, 12);
     if (value.isNaN) {
       object.progress = null;
     } else {
       object.progress = value;
     }
   }
-  object.blockedReason = IsarCore.readString(reader, 12);
-  object.contentVersion = IsarCore.readString(reader, 13) ?? '';
+  object.blockedReason = IsarCore.readString(reader, 13);
+  object.contentVersion = IsarCore.readString(reader, 14) ?? '';
   return object;
 }
 
@@ -271,20 +296,37 @@ dynamic deserializeIsarLevelProp(IsarReader reader, int property) {
         }
       }
     case 10:
-      return IsarCore.readString(reader, 10);
-    case 11:
       {
-        final value = IsarCore.readDouble(reader, 11);
+        final length = IsarCore.readList(reader, 10, IsarCore.readerPtrPtr);
+        {
+          final reader = IsarCore.readerPtr;
+          if (reader.isNull) {
+            return const <String>[];
+          } else {
+            final list = List<String>.filled(length, '', growable: true);
+            for (var i = 0; i < length; i++) {
+              list[i] = IsarCore.readString(reader, i) ?? '';
+            }
+            IsarCore.freeReader(reader);
+            return list;
+          }
+        }
+      }
+    case 11:
+      return IsarCore.readString(reader, 11);
+    case 12:
+      {
+        final value = IsarCore.readDouble(reader, 12);
         if (value.isNaN) {
           return null;
         } else {
           return value;
         }
       }
-    case 12:
-      return IsarCore.readString(reader, 12);
     case 13:
-      return IsarCore.readString(reader, 13) ?? '';
+      return IsarCore.readString(reader, 13);
+    case 14:
+      return IsarCore.readString(reader, 14) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -334,10 +376,10 @@ class _IsarLevelUpdateImpl implements _IsarLevelUpdate {
             if (sequence != ignore) 4: sequence as int?,
             if (status != ignore) 5: status as IsarLevelStatus?,
             if (minimumScore != ignore) 6: minimumScore as double?,
-            if (learningGoal != ignore) 10: learningGoal as String?,
-            if (progress != ignore) 11: progress as double?,
-            if (blockedReason != ignore) 12: blockedReason as String?,
-            if (contentVersion != ignore) 13: contentVersion as String?,
+            if (learningGoal != ignore) 11: learningGoal as String?,
+            if (progress != ignore) 12: progress as double?,
+            if (blockedReason != ignore) 13: blockedReason as String?,
+            if (contentVersion != ignore) 14: contentVersion as String?,
           },
         ) >
         0;
@@ -386,10 +428,10 @@ class _IsarLevelUpdateAllImpl implements _IsarLevelUpdateAll {
       if (sequence != ignore) 4: sequence as int?,
       if (status != ignore) 5: status as IsarLevelStatus?,
       if (minimumScore != ignore) 6: minimumScore as double?,
-      if (learningGoal != ignore) 10: learningGoal as String?,
-      if (progress != ignore) 11: progress as double?,
-      if (blockedReason != ignore) 12: blockedReason as String?,
-      if (contentVersion != ignore) 13: contentVersion as String?,
+      if (learningGoal != ignore) 11: learningGoal as String?,
+      if (progress != ignore) 12: progress as double?,
+      if (blockedReason != ignore) 13: blockedReason as String?,
+      if (contentVersion != ignore) 14: contentVersion as String?,
     });
   }
 }
@@ -441,10 +483,10 @@ class _IsarLevelQueryUpdateImpl implements _IsarLevelQueryUpdate {
       if (sequence != ignore) 4: sequence as int?,
       if (status != ignore) 5: status as IsarLevelStatus?,
       if (minimumScore != ignore) 6: minimumScore as double?,
-      if (learningGoal != ignore) 10: learningGoal as String?,
-      if (progress != ignore) 11: progress as double?,
-      if (blockedReason != ignore) 12: blockedReason as String?,
-      if (contentVersion != ignore) 13: contentVersion as String?,
+      if (learningGoal != ignore) 11: learningGoal as String?,
+      if (progress != ignore) 12: progress as double?,
+      if (blockedReason != ignore) 13: blockedReason as String?,
+      if (contentVersion != ignore) 14: contentVersion as String?,
     });
   }
 }
@@ -484,10 +526,10 @@ class _IsarLevelQueryBuilderUpdateImpl implements _IsarLevelQueryUpdate {
         if (sequence != ignore) 4: sequence as int?,
         if (status != ignore) 5: status as IsarLevelStatus?,
         if (minimumScore != ignore) 6: minimumScore as double?,
-        if (learningGoal != ignore) 10: learningGoal as String?,
-        if (progress != ignore) 11: progress as double?,
-        if (blockedReason != ignore) 12: blockedReason as String?,
-        if (contentVersion != ignore) 13: contentVersion as String?,
+        if (learningGoal != ignore) 11: learningGoal as String?,
+        if (progress != ignore) 12: progress as double?,
+        if (blockedReason != ignore) 13: blockedReason as String?,
+        if (contentVersion != ignore) 14: contentVersion as String?,
       });
     } finally {
       q.close();
@@ -1719,23 +1761,7 @@ extension IsarLevelQueryFilter
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
-  learningGoalIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 10));
-    });
-  }
-
-  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
-  learningGoalIsNotNull() {
-    return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 10));
-    });
-  }
-
-  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition> learningGoalEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  requiredLevelIdsElementEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
@@ -1748,7 +1774,10 @@ extension IsarLevelQueryFilter
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
-  learningGoalGreaterThan(String? value, {bool caseSensitive = true}) {
+  requiredLevelIdsElementGreaterThan(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
@@ -1761,7 +1790,10 @@ extension IsarLevelQueryFilter
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
-  learningGoalGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+  requiredLevelIdsElementGreaterThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
@@ -1774,10 +1806,192 @@ extension IsarLevelQueryFilter
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
-  learningGoalLessThan(String? value, {bool caseSensitive = true}) {
+  requiredLevelIdsElementLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(property: 10, value: value, caseSensitive: caseSensitive),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementLessThanOrEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementBetween(
+    String lower,
+    String upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 10,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 10,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(property: 10, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(property: 10, value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsIsEmpty() {
+    return not().requiredLevelIdsIsNotEmpty();
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  requiredLevelIdsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterOrEqualCondition(property: 10, value: null),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  learningGoalIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 11));
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  learningGoalIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 11));
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition> learningGoalEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  learningGoalGreaterThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  learningGoalGreaterThanOrEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
+  learningGoalLessThan(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(property: 11, value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -1787,7 +2001,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 10,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1803,7 +2017,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 10,
+          property: 11,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1817,7 +2031,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 10,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1830,7 +2044,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 10,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1843,7 +2057,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 10,
+          property: 11,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1858,7 +2072,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 10,
+          property: 11,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1870,7 +2084,7 @@ extension IsarLevelQueryFilter
   learningGoalIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const EqualCondition(property: 10, value: ''),
+        const EqualCondition(property: 11, value: ''),
       );
     });
   }
@@ -1879,21 +2093,21 @@ extension IsarLevelQueryFilter
   learningGoalIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const GreaterCondition(property: 10, value: ''),
+        const GreaterCondition(property: 11, value: ''),
       );
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition> progressIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 11));
+      return query.addFilterCondition(const IsNullCondition(property: 12));
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
   progressIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 11));
+      return query.addFilterCondition(const IsNullCondition(property: 12));
     });
   }
 
@@ -1903,7 +2117,7 @@ extension IsarLevelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        EqualCondition(property: 11, value: value, epsilon: epsilon),
+        EqualCondition(property: 12, value: value, epsilon: epsilon),
       );
     });
   }
@@ -1914,7 +2128,7 @@ extension IsarLevelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        GreaterCondition(property: 11, value: value, epsilon: epsilon),
+        GreaterCondition(property: 12, value: value, epsilon: epsilon),
       );
     });
   }
@@ -1926,7 +2140,7 @@ extension IsarLevelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        GreaterOrEqualCondition(property: 11, value: value, epsilon: epsilon),
+        GreaterOrEqualCondition(property: 12, value: value, epsilon: epsilon),
       );
     });
   }
@@ -1937,7 +2151,7 @@ extension IsarLevelQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        LessCondition(property: 11, value: value, epsilon: epsilon),
+        LessCondition(property: 12, value: value, epsilon: epsilon),
       );
     });
   }
@@ -1946,7 +2160,7 @@ extension IsarLevelQueryFilter
   progressLessThanOrEqualTo(double? value, {double epsilon = Filter.epsilon}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        LessOrEqualCondition(property: 11, value: value, epsilon: epsilon),
+        LessOrEqualCondition(property: 12, value: value, epsilon: epsilon),
       );
     });
   }
@@ -1959,7 +2173,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 11,
+          property: 12,
           lower: lower,
           upper: upper,
 
@@ -1972,14 +2186,14 @@ extension IsarLevelQueryFilter
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
   blockedReasonIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 12));
+      return query.addFilterCondition(const IsNullCondition(property: 13));
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterFilterCondition>
   blockedReasonIsNotNull() {
     return QueryBuilder.apply(not(), (query) {
-      return query.addFilterCondition(const IsNullCondition(property: 12));
+      return query.addFilterCondition(const IsNullCondition(property: 13));
     });
   }
 
@@ -1988,7 +2202,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2001,7 +2215,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2017,7 +2231,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2029,7 +2243,7 @@ extension IsarLevelQueryFilter
   blockedReasonLessThan(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        LessCondition(property: 12, value: value, caseSensitive: caseSensitive),
+        LessCondition(property: 13, value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -2039,7 +2253,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2056,7 +2270,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 12,
+          property: 13,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -2070,7 +2284,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2083,7 +2297,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2096,7 +2310,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 12,
+          property: 13,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2109,7 +2323,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 12,
+          property: 13,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -2121,7 +2335,7 @@ extension IsarLevelQueryFilter
   blockedReasonIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const EqualCondition(property: 12, value: ''),
+        const EqualCondition(property: 13, value: ''),
       );
     });
   }
@@ -2130,7 +2344,7 @@ extension IsarLevelQueryFilter
   blockedReasonIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const GreaterCondition(property: 12, value: ''),
+        const GreaterCondition(property: 13, value: ''),
       );
     });
   }
@@ -2140,7 +2354,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2153,7 +2367,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2169,7 +2383,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2181,7 +2395,7 @@ extension IsarLevelQueryFilter
   contentVersionLessThan(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        LessCondition(property: 13, value: value, caseSensitive: caseSensitive),
+        LessCondition(property: 14, value: value, caseSensitive: caseSensitive),
       );
     });
   }
@@ -2191,7 +2405,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2208,7 +2422,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 13,
+          property: 14,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -2222,7 +2436,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2235,7 +2449,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2248,7 +2462,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 13,
+          property: 14,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -2261,7 +2475,7 @@ extension IsarLevelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 13,
+          property: 14,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -2273,7 +2487,7 @@ extension IsarLevelQueryFilter
   contentVersionIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const EqualCondition(property: 13, value: ''),
+        const EqualCondition(property: 14, value: ''),
       );
     });
   }
@@ -2282,7 +2496,7 @@ extension IsarLevelQueryFilter
   contentVersionIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
-        const GreaterCondition(property: 13, value: ''),
+        const GreaterCondition(property: 14, value: ''),
       );
     });
   }
@@ -2392,7 +2606,7 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, caseSensitive: caseSensitive);
+      return query.addSortBy(11, caseSensitive: caseSensitive);
     });
   }
 
@@ -2400,19 +2614,19 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterSortBy> sortByProgress() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11);
+      return query.addSortBy(12);
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterSortBy> sortByProgressDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, sort: Sort.desc);
+      return query.addSortBy(12, sort: Sort.desc);
     });
   }
 
@@ -2420,7 +2634,7 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(12, caseSensitive: caseSensitive);
+      return query.addSortBy(13, caseSensitive: caseSensitive);
     });
   }
 
@@ -2428,7 +2642,7 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(12, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(13, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
@@ -2436,7 +2650,7 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(13, caseSensitive: caseSensitive);
+      return query.addSortBy(14, caseSensitive: caseSensitive);
     });
   }
 
@@ -2444,7 +2658,7 @@ extension IsarLevelQuerySortBy on QueryBuilder<IsarLevel, IsarLevel, QSortBy> {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(13, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(14, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2551,7 +2765,7 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, caseSensitive: caseSensitive);
+      return query.addSortBy(11, caseSensitive: caseSensitive);
     });
   }
 
@@ -2559,19 +2773,19 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterSortBy> thenByProgress() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11);
+      return query.addSortBy(12);
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterSortBy> thenByProgressDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(11, sort: Sort.desc);
+      return query.addSortBy(12, sort: Sort.desc);
     });
   }
 
@@ -2579,7 +2793,7 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(12, caseSensitive: caseSensitive);
+      return query.addSortBy(13, caseSensitive: caseSensitive);
     });
   }
 
@@ -2587,7 +2801,7 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(12, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(13, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
@@ -2595,7 +2809,7 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(13, caseSensitive: caseSensitive);
+      return query.addSortBy(14, caseSensitive: caseSensitive);
     });
   }
 
@@ -2603,7 +2817,7 @@ extension IsarLevelQuerySortThenBy
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(13, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(14, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2672,17 +2886,24 @@ extension IsarLevelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<IsarLevel, IsarLevel, QAfterDistinct>
+  distinctByRequiredLevelIds() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(10);
+    });
+  }
+
   QueryBuilder<IsarLevel, IsarLevel, QAfterDistinct> distinctByLearningGoal({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(10, caseSensitive: caseSensitive);
+      return query.addDistinctBy(11, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<IsarLevel, IsarLevel, QAfterDistinct> distinctByProgress() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(11);
+      return query.addDistinctBy(12);
     });
   }
 
@@ -2690,7 +2911,7 @@ extension IsarLevelQueryWhereDistinct
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(12, caseSensitive: caseSensitive);
+      return query.addDistinctBy(13, caseSensitive: caseSensitive);
     });
   }
 
@@ -2698,7 +2919,7 @@ extension IsarLevelQueryWhereDistinct
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(13, caseSensitive: caseSensitive);
+      return query.addDistinctBy(14, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2767,27 +2988,34 @@ extension IsarLevelQueryProperty1
     });
   }
 
-  QueryBuilder<IsarLevel, String?, QAfterProperty> learningGoalProperty() {
+  QueryBuilder<IsarLevel, List<String>, QAfterProperty>
+  requiredLevelIdsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
   }
 
-  QueryBuilder<IsarLevel, double?, QAfterProperty> progressProperty() {
+  QueryBuilder<IsarLevel, String?, QAfterProperty> learningGoalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(11);
     });
   }
 
-  QueryBuilder<IsarLevel, String?, QAfterProperty> blockedReasonProperty() {
+  QueryBuilder<IsarLevel, double?, QAfterProperty> progressProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(12);
     });
   }
 
-  QueryBuilder<IsarLevel, String, QAfterProperty> contentVersionProperty() {
+  QueryBuilder<IsarLevel, String?, QAfterProperty> blockedReasonProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(13);
+    });
+  }
+
+  QueryBuilder<IsarLevel, String, QAfterProperty> contentVersionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(14);
     });
   }
 }
@@ -2858,29 +3086,36 @@ extension IsarLevelQueryProperty2<R>
     });
   }
 
-  QueryBuilder<IsarLevel, (R, String?), QAfterProperty> learningGoalProperty() {
+  QueryBuilder<IsarLevel, (R, List<String>), QAfterProperty>
+  requiredLevelIdsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
   }
 
-  QueryBuilder<IsarLevel, (R, double?), QAfterProperty> progressProperty() {
+  QueryBuilder<IsarLevel, (R, String?), QAfterProperty> learningGoalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<IsarLevel, (R, double?), QAfterProperty> progressProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
     });
   }
 
   QueryBuilder<IsarLevel, (R, String?), QAfterProperty>
   blockedReasonProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(12);
+      return query.addProperty(13);
     });
   }
 
   QueryBuilder<IsarLevel, (R, String), QAfterProperty>
   contentVersionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(13);
+      return query.addProperty(14);
     });
   }
 }
@@ -2952,30 +3187,37 @@ extension IsarLevelQueryProperty3<R1, R2>
     });
   }
 
-  QueryBuilder<IsarLevel, (R1, R2, String?), QOperations>
-  learningGoalProperty() {
+  QueryBuilder<IsarLevel, (R1, R2, List<String>), QOperations>
+  requiredLevelIdsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
     });
   }
 
-  QueryBuilder<IsarLevel, (R1, R2, double?), QOperations> progressProperty() {
+  QueryBuilder<IsarLevel, (R1, R2, String?), QOperations>
+  learningGoalProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<IsarLevel, (R1, R2, double?), QOperations> progressProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
     });
   }
 
   QueryBuilder<IsarLevel, (R1, R2, String?), QOperations>
   blockedReasonProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(12);
+      return query.addProperty(13);
     });
   }
 
   QueryBuilder<IsarLevel, (R1, R2, String), QOperations>
   contentVersionProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(13);
+      return query.addProperty(14);
     });
   }
 }

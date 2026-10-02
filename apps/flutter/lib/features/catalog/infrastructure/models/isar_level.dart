@@ -22,6 +22,7 @@ class IsarLevel {
   late List<String> requiredQuizIds;
   late List<String> plantIds;
   List<String> requiredPlantIds = [];
+  List<String> requiredLevelIds = [];
   String? learningGoal;
   double? progress;
   String? blockedReason;

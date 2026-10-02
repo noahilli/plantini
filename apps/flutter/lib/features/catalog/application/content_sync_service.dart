@@ -30,11 +30,23 @@ final class ContentPackageDescriptor {
     final id = json['id'] as String?;
     final url = json['url'] as String?;
     final sha256 = json['sha256'] as String?;
-    final bytes = json['bytes'] as int? ?? 0;
+    final bytes = json['bytes'] as int?;
 
-    if (id == null || url == null || sha256 == null) {
+    final uri = url == null ? null : Uri.tryParse(url);
+    if (id == null ||
+        id.isEmpty ||
+        url == null ||
+        uri == null ||
+        uri.hasScheme ||
+        uri.hasAuthority ||
+        uri.hasFragment ||
+        uri.pathSegments.contains('..') ||
+        sha256 == null ||
+        !RegExp(r'^[a-fA-F0-9]{64}$').hasMatch(sha256) ||
+        bytes == null ||
+        bytes <= 0) {
       throw const FormatException(
-        'ContentPackage contains missing required fields.',
+        'ContentPackage contains invalid required fields.',
       );
     }
 
@@ -67,14 +79,23 @@ final class ContentReleaseManifest {
 
   factory ContentReleaseManifest.fromJson(Map<String, dynamic> json) {
     final version = json['version'] as String?;
-    final releasedAt = json['releasedAt'] as String? ?? '';
-    final schemaVersion = json['schemaVersion'] as String? ?? '1.0';
-    final minimumAppVersion = json['minimumAppVersion'] as String? ?? '0.1.0';
+    final releasedAt = json['releasedAt'] as String?;
+    final schemaVersion = json['schemaVersion'] as String?;
+    final minimumAppVersion = json['minimumAppVersion'] as String?;
     final rawPackages = json['packages'] as List<dynamic>? ?? const [];
     final signature = json['signature'] as String?;
 
-    if (version == null) {
-      throw const FormatException('ContentManifest missing version field.');
+    if (version == null ||
+        version.isEmpty ||
+        releasedAt == null ||
+        DateTime.tryParse(releasedAt) == null ||
+        schemaVersion == null ||
+        schemaVersion != '1.0' ||
+        minimumAppVersion == null ||
+        !RegExp(r'^\d+\.\d+\.\d+$').hasMatch(minimumAppVersion)) {
+      throw const FormatException(
+        'ContentManifest has invalid release metadata.',
+      );
     }
 
     final packages = rawPackages
@@ -278,6 +299,23 @@ final class ContentSyncService {
       );
     }
 
+    try {
+      _validateRelationships(
+        downloadedEcosystems,
+        downloadedLevels,
+        downloadedPlants,
+        manifest.version,
+      );
+    } catch (error) {
+      return Result.failure(
+        ContractFailure(
+          message: 'Das Inhaltsrelease enthält ungültige Beziehungen; der bisherige Stand bleibt erhalten.',
+          cause: error,
+          missingFields: const ['content relationships'],
+        ),
+      );
+    }
+
     // 3. Atomically write to database
     final localDb = localDatabase;
     if (localDb != null && localDb.isar.isOpen) {
@@ -372,6 +410,84 @@ final class ContentSyncService {
     throw const FormatException('Content package needs an items list.');
   }
 
+  void _validateRelationships(
+    List<IsarEcosystem> ecosystems,
+    List<IsarLevel> levels,
+    List<IsarPlant> plants,
+    String version,
+  ) {
+    final ecosystemById = {for (final item in ecosystems) item.publicId: item};
+    final levelById = {for (final item in levels) item.publicId: item};
+    final plantById = {for (final item in plants) item.publicId: item};
+    if (ecosystemById.length != ecosystems.length ||
+        levelById.length != levels.length ||
+        plantById.length != plants.length) {
+      throw const FormatException('Duplicate content IDs.');
+    }
+    for (final plant in plants) {
+      if (plant.publicId.isEmpty ||
+          plant.slug.isEmpty ||
+          plant.scientificName.isEmpty ||
+          plant.commonName.isEmpty ||
+          plant.releaseVersion != version) {
+        throw const FormatException('Invalid plant identity or version.');
+      }
+    }
+    final plantsByEcosystem = <String, Set<String>>{};
+    for (final ecosystem in ecosystems) {
+      if (ecosystem.publicId.isEmpty ||
+          ecosystem.slug.isEmpty ||
+          ecosystem.title.isEmpty ||
+          ecosystem.releaseVersion != version ||
+          ecosystem.levelIds.isEmpty ||
+          ecosystem.levelIds.toSet().length != ecosystem.levelIds.length) {
+        throw const FormatException('Invalid ecosystem identity or levels.');
+      }
+      final scopedPlants = <String>{};
+      for (final id in ecosystem.levelIds) {
+        final level = levelById[id];
+        if (level == null || level.ecosystemId != ecosystem.publicId) {
+          throw const FormatException('Ecosystem references a missing level.');
+        }
+        scopedPlants.addAll(level.plantIds);
+      }
+      plantsByEcosystem[ecosystem.publicId] = scopedPlants;
+    }
+    final sequences = <String, Set<int>>{};
+    for (final level in levels) {
+      final ecosystem = ecosystemById[level.ecosystemId];
+      if (level.publicId.isEmpty ||
+          ecosystem == null ||
+          !ecosystem.levelIds.contains(level.publicId) ||
+          level.title.isEmpty ||
+          level.sequence < 1 ||
+          !level.minimumScore.isFinite ||
+          level.minimumScore < 0 ||
+          level.minimumScore > 1 ||
+          level.contentVersion != version ||
+          level.plantIds.isEmpty ||
+          level.plantIds.toSet().length != level.plantIds.length ||
+          level.plantIds.any((id) => !plantById.containsKey(id)) ||
+          level.requiredQuizIds.isEmpty ||
+          level.requiredQuizIds.any((id) => id.isEmpty) ||
+          level.requiredQuizIds.toSet().length !=
+              level.requiredQuizIds.length ||
+          level.requiredPlantIds.any(
+            (id) => !plantsByEcosystem[level.ecosystemId]!.contains(id),
+          ) ||
+          level.requiredLevelIds.any(
+            (id) =>
+                levelById[id]?.ecosystemId != level.ecosystemId ||
+                (levelById[id]?.sequence ?? 0) >= level.sequence,
+          ) ||
+          !(sequences
+              .putIfAbsent(level.ecosystemId, () => <int>{})
+              .add(level.sequence))) {
+        throw const FormatException('Invalid level rules or references.');
+      }
+    }
+  }
+
   IsarEcosystem _parseIsarEcosystem(Map<String, dynamic> map, String version) {
     return IsarEcosystem()
       ..publicId = map['id'] as String? ?? ''
@@ -397,6 +513,9 @@ final class ContentSyncService {
       ..plantIds = (map['plantIds'] as List<dynamic>?)?.cast<String>() ?? []
       ..requiredPlantIds =
           (completion?['requiredPlantIds'] as List<dynamic>?)?.cast<String>() ??
+          []
+      ..requiredLevelIds =
+          (completion?['requiredLevelIds'] as List<dynamic>?)?.cast<String>() ??
           []
       ..learningGoal = map['learningGoal'] as String?
       ..contentVersion = version;
