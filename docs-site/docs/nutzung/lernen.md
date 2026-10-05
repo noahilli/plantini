@@ -59,7 +59,7 @@ Technisch erklärt das [Tageszeit und Licht](../3d/tageszeit-licht.md).
 
 ## 4. Ökosystem und Lernpfad
 
-Unter **Lernen** wählst du ein Ökosystem – etwa den Alpenraum. Der **Lernpfad** ist eine 3D-Landkarte mit nummerierten Stationen; gesperrte Level zeigen ein Schloss, das aktuelle Level ist hervorgehoben. Du kannst die Welt ziehen und erkunden. Über „Alle Pflanzenarten: endlos lernen“ kommst du zu einem freien Übungsmodus.
+Unter **Lernen** wählst du ein Ökosystem – etwa den Alpenraum. Der **Lernpfad** ist eine 3D-Landkarte mit nummerierten Stationen; gesperrte Level zeigen ein Schloss, das aktuelle Level ist hervorgehoben. Du kannst die Welt ziehen und erkunden. Über „Alle Pflanzenkarten · endlos lernen“ kommst du zu einem freien Übungsmodus.
 
 <div class="pl-gallery" markdown>
 

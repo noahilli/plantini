@@ -180,7 +180,7 @@ Details zum Betrieb: [Betrieb](../betrieb/index.md).
 
 | Ich will … | Ändere … | Danach |
 |---|---|---|
-| einen API-Endpunkt hinzufügen | `contracts/api.yaml`, `services/platform/src/api/platform/routes/platform.js`, `controllers/platform.js`, Service unter `services/core/<bereich>/` | `tools/scripts/generate-api-client.sh`, `node tools/scripts/validate-api-contract.mjs`, Tests, Doku. Siehe [Neuer Endpunkt](../backend/neuer-endpunkt.md) |
+| einen API-Endpunkt hinzufügen | `contracts/api.yaml`, `services/platform/src/api/platform/routes/platform.js`, `controllers/platform.js`, Service unter `services/platform/src/api/platform/services/core/<bereich>/` | `tools/scripts/generate-api-client.sh`, `node tools/scripts/validate-api-contract.mjs`, Tests, Doku. Siehe [Neuer Endpunkt](../backend/neuer-endpunkt.md) |
 | eine Fehlermeldung des Backends anpassen | `services/platform/src/api/platform/services/core/errors.js` | `npm test` in `services/platform` |
 | ein Strapi-Feld ergänzen | `services/platform/src/api/<typ>/content-types/<typ>/schema.json` | Vertrag und Mapper (`content-service.js`) prüfen; Migration beachten |
 | Veröffentlichungsregeln ändern | `…/content-types/<typ>/lifecycles.js` | Demo-Seed und Tests prüfen |

@@ -29,7 +29,7 @@ services/platform/
 ├── src/
 │   ├── index.js                # register / bootstrap / destroy (Queue, Worker, Seed)
 │   ├── api/
-│   │   ├── platform/           # DIE Fach-API: routes, controllers, services/core/**
+│   │   ├── platform/           # DIE Fach-API: routes, controllers, services/platform/src/api/platform/services/core/**
 │   │   ├── ecosystem|level|plant|quiz|media/   # CMS-Content-Types (+ Core-Router)
 │   │   ├── content-release|journey-blueprint|editor-change/
 │   │   ├── profile|level-attempt|learning-event/
@@ -40,7 +40,7 @@ services/platform/
 └── types/generated/            # von Strapi erzeugte Typen
 ```
 
-Jeder Ordner unter `src/api/<name>` ist eine Strapi-"API". Für die CMS-Typen enthält er `content-types/<name>/schema.json` (das Datenmodell) und teilweise `lifecycles.js` (Validierung beim Speichern/Veröffentlichen). `src/api/platform` hat dagegen **keinen** Content-Type: Er besteht nur aus Routen, einem Controller und den Diensten unter `services/core/`.
+Jeder Ordner unter `src/api/<name>` ist eine Strapi-"API". Für die CMS-Typen enthält er `content-types/<name>/schema.json` (das Datenmodell) und teilweise `lifecycles.js` (Validierung beim Speichern/Veröffentlichen). `src/api/platform` hat dagegen **keinen** Content-Type: Er besteht nur aus Routen, einem Controller und den Diensten unter `services/platform/src/api/platform/services/core/`.
 
 ## Wie Strapi und die Fach-API zusammenhängen
 
@@ -58,7 +58,7 @@ flowchart LR
     MW[Koa-Middlewares<br/>config/middlewares.js]
     RT["Routen /api/v1/*<br/>api/platform/routes/platform.js"]
     CT[Controller<br/>withActor / execute]
-    SV[Dienste<br/>services/core/**]
+    SV[Dienste<br/>services/platform/src/api/platform/services/core/**]
     RP[Repositories<br/>strapi-repositories.js]
     ES[(entityService / db)]
     ADMIN[Admin-UI + Content Manager]

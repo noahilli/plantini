@@ -12,7 +12,7 @@ Unter **Expedition** verbindest du das Gelernte mit der Natur: Du fotografierst 
 1. **Foto aufnehmen oder wählen.** „Kamera öffnen“ nimmt ein neues Foto auf, „Aus Galerie wählen“ nimmt ein vorhandenes. Der Schalter **Foto-Standort entfernen** ist standardmäßig an: GPS-Angaben im Bild werden vor dem Upload gelöscht.
 2. **Pflanze bestimmen.** Die App verkleinert das Bild, lädt es zur Plattform und startet die Bestimmung. Du siehst eine Ladeanimation; je nach Last dauert es einige Sekunden.
 3. **Vorschlag wählen.** Die Plattform liefert mehrere Kandidaten mit Ähnlichkeit in Prozent. Wähle den passenden aus – oder keinen, wenn nichts stimmt.
-4. **Fundort privat speichern.** Ist der Schalter an, speichert die App den Standort mit dem Fund („Sichtbarkeit bleibt privat“). Ist er aus, bleibt nur eine grobe Position („nie öffentlich, jederzeit löschbar“). Verweigerst du die Standortfreigabe, wird ohne Standort gespeichert.
+4. **Fundort privat speichern.** Der Schalter ist standardmäßig **aus**; dann wird **kein** Standort gespeichert. Schaltest du ihn an, fragt die App nach der Standortfreigabe und speichert die Position des Fundes. Zum Server geht nur eine vergröberte Position (zwei Nachkommastellen, etwa 1 km). Verweigerst du die Freigabe oder ist der Standort zu ungenau (schlechter als 100 m), wird ohne Standort gespeichert.
 5. **Ergebnis speichern.** Der Fund wird lokal angelegt und zum Server synchronisiert.
 
 <div class="pl-gallery" markdown>
@@ -39,7 +39,7 @@ Unter **Expedition** verbindest du das Gelernte mit der Natur: Du fotografierst 
 Das Bild geht an die Plattform und von dort an den Bestimmungsdienst **Pl@ntNet** (Frankreich). Das ist der einzige Fall, in dem Bilder das eigene System verlassen. Alle anderen Daten bleiben bei Plantini. Mehr dazu: [Sicherheit und Datenschutz](../architektur/sicherheit-datenschutz.md).
 
 !!! info "Privat ist der Standard"
-    Fotos und Fundorte sieht nur das eigene Konto. Genaue Fundorte sind privat; auch Lehrende sehen im Portal weder Fotos noch Orte, sondern nur den Lernfortschritt.
+    Fotos und Fundorte sieht nur das eigene Konto. Der Server kennt höchstens die vergröberte Position; auch Lehrende sehen im Portal weder Fotos noch Orte, sondern nur den Lernfortschritt.
 
 ## Wenn etwas nicht klappt
 
@@ -54,3 +54,6 @@ Das Bild geht an die Plattform und von dort an den Bestimmungsdienst **Pl@ntNet*
     Ein Foto pro Organ (Blatt, Blüte, Frucht, Rinde) liefert deutlich bessere Treffer als eine Gesamtansicht aus der Ferne. Der Hintergrund sollte ruhig sein.
 
 Der technische Ablauf (Upload, Auftrag, Abfrage, Bestätigung, Idempotenz) steht in [Bilder, Cache und Karte](../app/bilder-karte.md#feldablauf-von-der-kamera-zum-fund).
+
+!!! bug "Bekannte Unstimmigkeit in der App"
+    Ist der Schalter **aus**, zeigt die App darunter den Text „nur grobe Position · nie öffentlich · jederzeit löschbar“. Im Code (`_locationForSubmission` in `field_capture_screen.dart`) wird in diesem Fall aber überhaupt keine Position gesendet. Der Hilfetext verspricht also mehr, als passiert; er sollte angepasst werden.

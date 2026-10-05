@@ -1,0 +1,15 @@
+# Nur die Eingaben des Handbuchs in den Build-Kontext (keine .env-Dateien, keine node_modules).
+*
+!contracts/api.yaml
+!infra/compose*.yaml
+!infra/production.env.example
+!infra/production/Caddyfile
+!services/platform/src
+!services/platform/config
+!apps/flutter/lib
+!docs-site
+docs-site/.venv
+docs-site/site
+**/node_modules
+**/.env*
+**/__pycache__

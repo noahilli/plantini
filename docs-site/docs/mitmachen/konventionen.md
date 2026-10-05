@@ -147,7 +147,7 @@ flowchart LR
 ```
 
 1. `contracts/api.yaml` ändern (jede Operation braucht eine eindeutige `operationId`).
-2. Route in `services/platform/src/api/platform/routes/platform.js`, Handler in `controllers/platform.js`, Logik in `services/core/<bereich>/`.
+2. Route in `services/platform/src/api/platform/routes/platform.js`, Handler in `controllers/platform.js`, Logik in `services/platform/src/api/platform/services/core/<bereich>/`.
 3. **Client neu erzeugen** mit `tools/scripts/generate-api-client.sh`. Das Skript startet das gepinnte Docker-Image `openapitools/openapi-generator-cli:v7.25.0@sha256:…`, ersetzt `packages/api` mit `rsync --delete`, führt `dart pub get`, `dart run build_runner build`, `dart format lib test` aus und schreibt die Digest-Dateien mit `node tools/scripts/validate-api-contract.mjs --write-digests`.
 4. Tests ergänzen (Backend: `services/platform/test/*.test.js`; App: `apps/flutter/test/`; E2E bei Bedarf).
 5. `node tools/scripts/validate-api-contract.mjs` und `npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml` laufen lassen.

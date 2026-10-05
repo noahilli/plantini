@@ -50,7 +50,7 @@ flowchart LR
   M & BL --> R[(content-release V)]
 ```
 
-`buildReleasePackages(version, collections)` in `content/release-packages.js` baut genau drei Pakete (`PACKAGE_IDS = ['ecosystems', 'levels', 'plants']`). Jedes Paket ist ein JSON `{"items":[...]}`; Größe und SHA-256 stehen im Manifest, die Bytes liegen als **Base64-String** in `packageBlobs`:
+`buildReleasePackages(version, collections)` in `services/platform/src/api/platform/services/core/content/release-packages.js` baut genau drei Pakete (`PACKAGE_IDS = ['ecosystems', 'levels', 'plants']`). Jedes Paket ist ein JSON `{"items":[...]}`; Größe und SHA-256 stehen im Manifest, die Bytes liegen als **Base64-String** in `packageBlobs`:
 
 ```js title="services/platform/src/api/platform/services/core/content/release-packages.js"
 const bytes = Buffer.from(JSON.stringify({ items }), 'utf8');
@@ -195,7 +195,7 @@ Eigenschaften, die aus dem Code und den Tests folgen:
 - **Test.** `test/game-journeys.test.js` deckt Migration (alte Demo-IDs werden still gelegt, Nutzerdaten bleiben), Wiederholung und unterbrochene Läufe ab.
 
 !!! warning "Stolperfalle: JSON ändern ohne `DEMO_RELEASE_VERSION` zu erhöhen bewirkt nichts"
-    Existiert ein Release mit `DEMO_RELEASE_VERSION` bereits, kehrt `seedDemoContent` sofort zurück (`seeded: false`). Änderst du `demo-content.de.json`, aber nicht die Konstante in `content/demo-content.js` (aktuell `2026.10.02-de.2`), passiert beim nächsten Start **nichts**. Die Pakete behalten ihre alten Bytes.
+    Existiert ein Release mit `DEMO_RELEASE_VERSION` bereits, kehrt `seedDemoContent` sofort zurück (`seeded: false`). Änderst du `demo-content.de.json`, aber nicht die Konstante in `services/platform/src/api/platform/services/core/content/demo-content.js` (aktuell `2026.10.02-de.2`), passiert beim nächsten Start **nichts**. Die Pakete behalten ihre alten Bytes.
 
 !!! warning "Stolperfalle: Versionserhöhung allein bricht den Seed"
     Erhöhst du `DEMO_RELEASE_VERSION` (z. B. auf `2026.10.03-de.1`), findet der Upsert Zeilen mit `releaseVersion: '2026.10.02-de.2'`. Diese Version steht **nicht** in der Positivliste in `createUpsertingEntityService` (`[DEMO_RELEASE_VERSION, '2026.10.02-de.1', '2026.09.22-de.1', '2026.09.07-de.1', '2026.08.28-de.1']`); der Seed wirft dann `Refusing to overwrite non-demo content: api::plant.plant/rotbuche`. Nachgestellt mit dem In-Memory-Fixture (erst Seed mit `.2`, dann die Konstante im Modul-Cache auf `.3` gesetzt). Die vorherige Version muss also in die Liste aufgenommen werden. Weil `seedDemoContent` im `bootstrap` ohne `try/catch` aufgerufen wird, verhindert der Fehler bei aktivem Seed-Flag den Serverstart.

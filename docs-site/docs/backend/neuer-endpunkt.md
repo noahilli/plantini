@@ -11,7 +11,7 @@ Diese Seite führt Schritt für Schritt durch einen neuen, kleinen Endpunkt – 
 flowchart LR
   V["1 · Vertrag<br/>contracts/api.yaml"] --> R["2 · Route<br/>routes/platform.js"]
   R --> C["3 · Controller<br/>controllers/platform.js"]
-  C --> S["4 · Dienst<br/>services/core/…"]
+  C --> S["4 · Dienst<br/>services/platform/src/api/platform/services/core/…"]
   S --> P["5 · Repository<br/>strapi-repositories.js"]
   P --> T["6 · Test<br/>services/platform/test"]
   T --> G["7 · Client + Gates<br/>generate-api-client.sh<br/>validate-api-contract.mjs<br/>redocly"]

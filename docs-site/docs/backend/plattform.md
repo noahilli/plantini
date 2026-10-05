@@ -1,6 +1,6 @@
 # Die Fach-API-Schicht im Detail
 
-Die Fach-API (`services/platform/src/api/platform`) besteht aus vier Teilen: einer Routentabelle, **einem** Controller, einer Laufzeit-Verdrahtung (`platform-runtime.js`) und den Diensten unter `services/core/`. Diese Seite folgt einem Request von der Route bis zur Datenbank und zeigt die echten Auszüge.
+Die Fach-API (`services/platform/src/api/platform`) besteht aus vier Teilen: einer Routentabelle, **einem** Controller, einer Laufzeit-Verdrahtung (`platform-runtime.js`) und den Diensten unter `services/platform/src/api/platform/services/core/`. Diese Seite folgt einem Request von der Route bis zur Datenbank und zeigt die echten Auszüge.
 
 ## Dateien der Schicht
 
@@ -10,12 +10,12 @@ Alle Pfade relativ zu `services/platform/src/api/platform/`:
 |---|---|
 | `routes/platform.js` | Tabelle `METHOD /v1/pfad → Controller-Methode` (53 Routen) |
 | `controllers/platform.js` | dünne Adapter: `execute`, `withActor`, Statuscodes, Header, Binärantworten |
-| `services/core/platform-runtime.js` | baut Repositories und Dienste einmal pro Strapi-Instanz; `resolveActor` |
-| `services/core/strapi-repositories.js` | einziger Ort mit `strapi.entityService`-Aufrufen für die Fachdaten |
-| `services/core/auth/jwt-validator.js` | Keycloak-JWT prüfen (JWKS, RS256) |
-| `services/core/auth/actor-service.js` | Token-Claims → `actor` (Profil, Rollen, Organisation) |
-| `services/core/validation.js`, `ids.js` | Eingabeprüfung, UUIDs, Idempotenz-Hilfen |
-| `services/core/errors.js`, `http-conventions.js` | `ProblemError`, Problem-JSON, Header `X-Correlation-Id` / `X-API-Version` |
+| `services/platform/src/api/platform/services/core/platform-runtime.js` | baut Repositories und Dienste einmal pro Strapi-Instanz; `resolveActor` |
+| `services/platform/src/api/platform/services/core/strapi-repositories.js` | einziger Ort mit `strapi.entityService`-Aufrufen für die Fachdaten |
+| `services/platform/src/api/platform/services/core/auth/jwt-validator.js` | Keycloak-JWT prüfen (JWKS, RS256) |
+| `services/platform/src/api/platform/services/core/auth/actor-service.js` | Token-Claims → `actor` (Profil, Rollen, Organisation) |
+| `services/platform/src/api/platform/services/core/validation.js`, `ids.js` | Eingabeprüfung, UUIDs, Idempotenz-Hilfen |
+| `services/platform/src/api/platform/services/core/errors.js`, `http-conventions.js` | `ProblemError`, Problem-JSON, Header `X-Correlation-Id` / `X-API-Version` |
 
 ## Routen
 
@@ -241,7 +241,7 @@ Das ist der Mechanismus, mit dem das Lehrendenportal Schülerkonten **sofort** s
 
 ### `KeycloakJwtValidator`
 
-Datei `services/core/auth/jwt-validator.js`. Die Prüfreihenfolge in `validate(token)`:
+Datei `services/platform/src/api/platform/services/core/auth/jwt-validator.js`. Die Prüfreihenfolge in `validate(token)`:
 
 1. Länge 1…16 384 Zeichen, genau drei Teile, Header und Payload sind JSON-Objekte.
 2. `header.alg` muss in `allowedAlgorithms` liegen (Standard nur `RS256`; `RS384`/`RS512` wären unterstützt) und `header.kid` muss gesetzt sein.

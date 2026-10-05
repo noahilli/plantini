@@ -39,7 +39,7 @@ flowchart TB
 
 ## Content
 
-**Zweck.** Liefert die veröffentlichten, versionsgebundenen Inhalte: Manifest, Pakete, Ökosysteme, Level, Pflanzen, Quizfragen. Datei: `content/content-service.js`.
+**Zweck.** Liefert die veröffentlichten, versionsgebundenen Inhalte: Manifest, Pakete, Ökosysteme, Level, Pflanzen, Quizfragen. Datei: `services/platform/src/api/platform/services/core/content/content-service.js`.
 
 **Öffentliche Methoden.**
 

@@ -27,7 +27,7 @@ Das Herbarium ist deine persönliche Sammlung. Es ist **offline lesbar**: Funde 
 | --- | --- |
 | **Sammlung** | Ein „kleines Naturmuseum“: je Ökosystem ein Regal mit Glasflaschen für jede Art. Gefundene Arten sind gefüllt, fehlende zeigen „Noch zu entdecken“. Der Balken zeigt, wie viele Arten du hast. |
 | **Beobachtungen** | Alle Funde als Karten mit Foto, Name und Datum; mit Suche und Filtern (zum Beispiel „Synchronisiert“, „Ausstehend“, „Konflikt“). |
-| **Karte** | Deine Fundorte auf einer Karte. Funde ohne gespeicherten Ort erscheinen hier nicht. Nur du siehst die Karte. |
+| **Karte** | Deine Fundorte auf einer Karte. Funde ohne gespeicherten Ort (Schalter beim Speichern aus, das ist der Standard) erscheinen hier nicht. Nur du siehst die Karte. |
 
 ## Ein Fund im Detail
 
