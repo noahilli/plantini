@@ -20,29 +20,35 @@ final class PlantLessonView extends StatelessWidget {
   final String startLabel;
 
   @override
-  Widget build(BuildContext context) => ListView(
-    padding: const EdgeInsets.fromLTRB(18, 18, 18, 28),
-    children: [
-      _MissionHeader(level: level),
-      const SizedBox(height: 20),
-      for (final plant in plants) ...[
-        PlantIndexCard(plant: plant),
-        const SizedBox(height: 18),
-      ],
-      FilledButton.icon(
-        key: const ValueKey('learning-start-quiz'),
-        onPressed: onStart,
-        icon: const Icon(Icons.play_arrow_rounded),
-        label: Text(startLabel),
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment.topCenter,
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 1040),
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 28),
+        children: [
+          _MissionHeader(level: level),
+          const SizedBox(height: 20),
+          for (final plant in plants) ...[
+            PlantIndexCard(plant: plant),
+            const SizedBox(height: 18),
+          ],
+          FilledButton.icon(
+            key: const ValueKey('learning-start-quiz'),
+            onPressed: onStart,
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: Text(startLabel),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Lies in deinem Tempo – es gibt kein Zeitlimit.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(color: AppColors.neutral700),
+          ),
+        ],
       ),
-      const SizedBox(height: 10),
-      Text(
-        'Lies in deinem Tempo – es gibt kein Zeitlimit.',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodySmall
-            ?.copyWith(color: AppColors.neutral700),
-      ),
-    ],
+    ),
   );
 }
 

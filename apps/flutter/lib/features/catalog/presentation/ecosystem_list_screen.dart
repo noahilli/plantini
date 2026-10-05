@@ -50,87 +50,119 @@ final class _EcosystemListScreenState extends State<EcosystemListScreen> {
           }
           return RefreshIndicator(
             onRefresh: () async => _reload(),
-            child: ListView(
-              key: const ValueKey('ecosystem-list-ready'),
-              padding: const EdgeInsets.fromLTRB(22, 18, 22, 28),
-              children: [
-                Row(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final contentWidth = (constraints.maxWidth - 44).clamp(
+                  0.0,
+                  1200.0,
+                );
+                final minimumCardWidth = MediaQuery.textScalerOf(context)
+                    .scale(320)
+                    .clamp(320.0, 640.0);
+                final columns = (contentWidth / minimumCardWidth).floor().clamp(
+                  1,
+                  3,
+                );
+                final cardWidth = (contentWidth - (columns - 1) * 16) / columns;
+                return ListView(
+                  key: const ValueKey('ecosystem-list-ready'),
+                  padding: EdgeInsets.fromLTRB(
+                    (constraints.maxWidth - contentWidth) / 2,
+                    18,
+                    (constraints.maxWidth - contentWidth) / 2,
+                    28,
+                  ),
                   children: [
-                    Container(
-                      width: 26,
-                      height: 26,
-                      decoration: const BoxDecoration(
-                        color: AppColors.sage700,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                          bottomLeft: Radius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 9),
-                    Text(
-                      'plantini',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Ökosysteme',
-                  style: Theme.of(context).textTheme.labelSmall
-                      ?.copyWith(color: AppColors.sage700),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  'Wo willst du forschen?',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-                const SizedBox(height: 10),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Chip(label: Text('Alle veröffentlichten Ökosysteme')),
-                ),
-                const SizedBox(height: 14),
-                for (var index = 0; index < ecosystems.length; index++) ...[
-                  _EcosystemCard(
-                    ecosystem: ecosystems[index],
-                    featured: index == 0,
-                    onTap: () =>
-                        context.go('/ecosystems/${ecosystems[index].id}'),
-                  ),
-                  const SizedBox(height: 12),
-                ],
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.neutral400,
-                      style: BorderStyle.solid,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: const Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 5,
-                        backgroundColor: AppColors.sage500,
-                      ),
-                      SizedBox(width: 11),
-                      Expanded(
-                        child: Text(
-                          'Neue Ökosysteme kommen aus dem Content-Release – ohne App-Update.',
-                          style: TextStyle(
-                            color: AppColors.neutral700,
-                            fontSize: 12,
+                    Row(
+                      children: [
+                        Container(
+                          width: 26,
+                          height: 26,
+                          decoration: const BoxDecoration(
+                            color: AppColors.sage700,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
+                              bottomLeft: Radius.circular(4),
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 9),
+                        Text(
+                          'plantini',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Ökosysteme',
+                      style: Theme.of(context).textTheme.labelSmall
+                          ?.copyWith(color: AppColors.sage700),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'Wo willst du forschen?',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    const SizedBox(height: 10),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Chip(
+                        label: Text('Alle veröffentlichten Ökosysteme'),
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                    const SizedBox(height: 14),
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      children: [
+                        for (var index = 0; index < ecosystems.length; index++)
+                          SizedBox(
+                            width: cardWidth,
+                            child: _EcosystemCard(
+                              ecosystem: ecosystems[index],
+                              featured: index == 0,
+                              onTap: () => context.go(
+                                '/ecosystems/${ecosystems[index].id}',
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.neutral400,
+                          style: BorderStyle.solid,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: const Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 5,
+                            backgroundColor: AppColors.sage500,
+                          ),
+                          SizedBox(width: 11),
+                          Expanded(
+                            child: Text(
+                              'Neue Ökosysteme kommen aus dem Content-Release – ohne App-Update.',
+                              style: TextStyle(
+                                color: AppColors.neutral700,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           );
         },
@@ -254,14 +286,16 @@ final class _EcosystemCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 14),
-                      Row(
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 10,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           _MetaChip(
                             icon: Icons.route_outlined,
                             label: '${ecosystem.levelIds.length} Level',
                             dark: featured,
                           ),
-                          const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,

@@ -58,95 +58,26 @@ class _CharacterSelectorScreenState extends State<CharacterSelectorScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 12, 22, 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'DEIN CHARAKTER',
-                      style: AppTypography.textTheme.labelSmall?.copyWith(
-                        color: AppColors.sage700,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                    Text(
-                      'Wer erkundet mit dir?',
-                      style: AppTypography.textTheme.headlineMedium,
-                    ),
-                  ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final textScale = MediaQuery.textScalerOf(context).scale(16) / 16;
+            final desktop = constraints.maxWidth >= 900 && textScale <= 1.3;
+            final preview = Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  height: desktop
+                      ? (constraints.maxHeight * .48).clamp(240.0, 380.0)
+                      : (constraints.maxHeight * .32).clamp(180.0, 300.0),
+                  child: ExplorerStage(
+                    key: ValueKey(current.id),
+                    explorer: current,
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SizedBox.expand(
-                        child: ExplorerStage(
-                          key: ValueKey(current.id),
-                          explorer: current,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _NameTag(explorer: current),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              flex: 5,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(22, 0, 22, 8),
-                children: [
-                  for (final group in ExplorerGroup.values) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6, bottom: 6),
-                      child: Text(
-                        group.label,
-                        style: AppTypography.textTheme.titleSmall?.copyWith(
-                          color: AppColors.sage800,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        for (final explorer in _roster.inGroup(group))
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              child: _Card(
-                                explorer: explorer,
-                                selected: explorer.id == _selected,
-                                onTap: () =>
-                                    setState(() => _selected = explorer.id),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 4, 22, 14),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
+                const SizedBox(height: 12),
+                _NameTag(explorer: current),
+                const SizedBox(height: 16),
+                FilledButton.icon(
                   key: const ValueKey('character-done'),
                   onPressed: _saving ? null : _done,
                   icon: _saving
@@ -158,9 +89,101 @@ class _CharacterSelectorScreenState extends State<CharacterSelectorScreen> {
                       : const Icon(Icons.check_rounded),
                   label: Text('Ich bin ${current.name}'),
                 ),
+              ],
+            );
+            final roster = LayoutBuilder(
+              builder: (context, rosterConstraints) {
+                final columns = desktop
+                    ? 3
+                    : (rosterConstraints.maxWidth / (110 * textScale))
+                          .floor()
+                          .clamp(1, 3);
+                final cardWidth =
+                    (rosterConstraints.maxWidth - (columns - 1) * 12) / columns;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final group in ExplorerGroup.values) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                        child: Text(
+                          group.label,
+                          style: AppTypography.textTheme.titleSmall?.copyWith(
+                            color: AppColors.sage800,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          for (final explorer in _roster.inGroup(group))
+                            SizedBox(
+                              width: cardWidth,
+                              child: _Card(
+                                explorer: explorer,
+                                selected: explorer.id == _selected,
+                                onTap: () =>
+                                    setState(() => _selected = explorer.id),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ],
+                );
+              },
+            );
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1100),
+                  child: FocusTraversalGroup(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'DEIN CHARAKTER',
+                          style: AppTypography.textTheme.labelSmall?.copyWith(
+                            color: AppColors.sage700,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Wer erkundet mit dir?',
+                          style: AppTypography.textTheme.headlineMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Wähle deine Begleitung für die nächste Entdeckung. '
+                          'Du kannst deinen Charakter später im Profil ändern.',
+                        ),
+                        const SizedBox(height: 24),
+                        if (desktop)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 4, child: preview),
+                              const SizedBox(width: 32),
+                              Expanded(flex: 6, child: roster),
+                            ],
+                          )
+                        else ...[
+                          preview,
+                          const SizedBox(height: 16),
+                          roster,
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -179,7 +202,8 @@ class _NameTag extends StatelessWidget {
       color: AppColors.sage800.withValues(alpha: .86),
       borderRadius: BorderRadius.circular(16),
     ),
-    child: Row(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           explorer.name,
@@ -187,12 +211,13 @@ class _NameTag extends StatelessWidget {
             color: AppColors.neutral100,
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            explorer.blurb,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.sage200, fontSize: 12),
+        const SizedBox(height: 6),
+        Text(
+          explorer.blurb,
+          style: const TextStyle(
+            color: AppColors.neutral100,
+            fontSize: 14,
+            height: 1.5,
           ),
         ),
       ],
@@ -215,34 +240,58 @@ class _Card extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
+    onTap: onTap,
+    excludeSemantics: true,
     label: '${explorer.name}, ${explorer.blurb}',
-    child: GestureDetector(
+    child: Material(
       key: ValueKey('explorer-${explorer.id}'),
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(
-            color: selected ? AppColors.terracotta : Colors.transparent,
-            width: 3,
-          ),
+      color: selected ? AppColors.sage200 : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(
+          color: selected ? AppColors.sage800 : AppColors.sage200,
+          width: selected ? 2 : 1,
         ),
-        child: Column(
-          children: [
-            AspectRatio(
-              aspectRatio: .9,
-              child: ExplorerPortrait(explorer: explorer, borderRadius: 18),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              explorer.name,
-              style: TextStyle(
-                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        excludeFromSemantics: true,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 104,
+                width: double.infinity,
+                child: ExplorerPortrait(explorer: explorer, borderRadius: 12),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (selected) ...[
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      size: 16,
+                      color: AppColors.sage800,
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  Flexible(
+                    child: Text(
+                      explorer.name,
+                      style: TextStyle(
+                        fontWeight: selected
+                            ? FontWeight.w800
+                            : FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     ),

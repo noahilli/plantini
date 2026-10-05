@@ -11,10 +11,10 @@ import 'world_module.dart';
 import 'world_scene.dart';
 
 /// A small display case ("Vitrine") holding a miniature of an ecosystem: the
-/// same Blender module as the level path, on a wooden plinth under glass.
+/// same Blender module as the level path, on a gallery plinth under glass.
 ///
 /// Cost model: the miniature is projected and lit once per (world, angle,
-/// size) and then replayed as a cached [ui.Picture]. Static vitrines therefore
+/// size) and then replayed as a bounded cached texture. Static vitrines therefore
 /// never repaint. With [animate] the model sways a few degrees for two slow
 /// swings (stepping through a handful of cached angles) and then rests; it
 /// does not move at all under reduced motion or while the widget is not
@@ -134,68 +134,79 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
       label: label,
       image: true,
       child: RepaintBoundary(
-        child: AspectRatio(
-          aspectRatio: widget.aspectRatio,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final size = constraints.biggest;
-              final pixelRatio = MediaQuery.devicePixelRatioOf(context);
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  FutureBuilder<WorldModule>(
-                    future: _module,
-                    builder: (context, snapshot) {
-                      final module = snapshot.data;
-                      if (module == null) {
-                        // Still loading: just the empty case.
-                        return Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            CustomPaint(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: AspectRatio(
+              aspectRatio: widget.aspectRatio,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final size = constraints.biggest;
+                  final pixelRatio = math.min(
+                    MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.0),
+                    1024 / size.longestSide,
+                  );
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      FutureBuilder<WorldModule>(
+                        future: _module,
+                        builder: (context, snapshot) {
+                          final module = snapshot.data;
+                          if (module == null) {
+                            // Still loading: just the empty case.
+                            return Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CustomPaint(
+                                  isComplex: true,
+                                  willChange: false,
+                                  painter: _CaseBackPainter(world, lighting),
+                                ),
+                                const CustomPaint(
+                                  isComplex: true,
+                                  willChange: false,
+                                  painter: _CaseFrontPainter(),
+                                ),
+                              ],
+                            );
+                          }
+                          // The whole vitrine (wall, plinth, model, glass) is baked
+                          // into one texture per angle and replayed as a textured
+                          // quad. While the model sways it steps through a handful
+                          // of such textures; layered painters (a blurred shadow,
+                          // gradients) cost 10-30 ms per frame while scrolling.
+                          return ValueListenableBuilder<int>(
+                            valueListenable: _step,
+                            builder: (context, step, _) => CustomPaint(
+                              size: size,
                               isComplex: true,
                               willChange: false,
-                              painter: _CaseBackPainter(world, lighting),
+                              painter: _BakedCasePainter(
+                                world,
+                                module,
+                                widget.animate ? step * _bucket : widget.yaw,
+                                pixelRatio,
+                                lighting,
+                              ),
                             ),
-                            const CustomPaint(
-                              isComplex: true,
-                              willChange: false,
-                              painter: _CaseFrontPainter(),
-                            ),
-                          ],
-                        );
-                      }
-                      // The whole vitrine (wall, plinth, model, glass) is baked
-                      // into one texture per angle and replayed as a textured
-                      // quad. While the model sways it steps through a handful
-                      // of such textures; layered painters (a blurred shadow,
-                      // gradients) cost 10-30 ms per frame while scrolling.
-                      return ValueListenableBuilder<int>(
-                        valueListenable: _step,
-                        builder: (context, step, _) => CustomPaint(
-                          size: size,
-                          isComplex: true,
-                          willChange: false,
-                          painter: _BakedCasePainter(
-                            world,
-                            module,
-                            widget.animate ? step * _bucket : widget.yaw,
-                            pixelRatio,
-                            lighting,
+                          );
+                        },
+                      ),
+                      if (widget.title != null)
+                        Align(
+                          alignment: const Alignment(0, .93),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: _Plaque(widget.title!),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  if (widget.title != null)
-                    Align(
-                      alignment: const Alignment(0, .93),
-                      child: _Plaque(widget.title!),
-                    ),
-                  if (widget.child != null) widget.child!,
-                ],
-              );
-            },
+                      if (widget.child != null) widget.child!,
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
@@ -283,7 +294,8 @@ final class _BakedCasePainter extends CustomPainter {
 
   static final _images = <String, ui.Image>{};
   static final _retired = <ui.Image>[];
-  static const _maxImages = 32;
+  // At most twelve 1024px textures, rather than desktop-sized GPU surfaces.
+  static const _maxImages = 12;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -362,10 +374,10 @@ final class _Fit {
     }
     // Free area inside the glass: margins left/right/top, plinth below.
     final area = Rect.fromLTWH(
-      size.width * .05,
-      size.height * .07,
-      size.width * .90,
-      size.height * .69,
+      size.width * .09,
+      size.height * .10,
+      size.width * .82,
+      size.height * .64,
     );
     scale = math.min(area.width / (sx1 - sx0), area.height / (sy1 - sy0));
     origin = Offset(
@@ -431,27 +443,32 @@ final class _CaseBackPainter extends CustomPainter {
       paintStars(canvas, Size(size.width, size.height * .8), 16);
     }
 
-    // Plinth: walnut with a lit top edge and faint grain.
+    // Gallery plinth: satin green with a brass lip and subtle panel lines.
     final top = size.height * .77;
-    final plinth = Rect.fromLTRB(0, top, size.width, size.height);
+    final plinth = Rect.fromLTRB(
+      size.width * .06,
+      top,
+      size.width * .94,
+      size.height * .98,
+    );
     canvas.drawRect(
       plinth,
       Paint()
         ..shader = ui.Gradient.linear(plinth.topCenter, plinth.bottomCenter, [
-          const Color(0xFF7A5539),
-          const Color(0xFF4B3325),
+          const Color(0xFF647266),
+          const Color(0xFF263C35),
         ]),
     );
     canvas.drawRect(
-      Rect.fromLTWH(0, top, size.width, 2.5),
-      Paint()..color = const Color(0xFFB08560),
+      Rect.fromLTWH(plinth.left, top, plinth.width, 2.5),
+      Paint()..color = const Color(0xFFD9B878),
     );
     final grain = Paint()
       ..color = const Color(0x14000000)
       ..strokeWidth = 1;
     for (var i = 1; i < 5; i++) {
       final y = top + (size.height - top) * i / 5;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y + 2), grain);
+      canvas.drawLine(Offset(plinth.left, y), Offset(plinth.right, y), grain);
     }
 
     // Contact shadow on the plinth under the model.
@@ -508,14 +525,32 @@ final class _CaseFrontPainter extends CustomPainter {
 
     // Brass lid: a thin rail along the top edge.
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, 6),
+      Rect.fromLTWH(size.width * .06, size.height * .04, size.width * .88, 3),
       Paint()
-        ..shader = ui.Gradient.linear(Offset.zero, const Offset(0, 6), [
-          const Color(0xFFD9B878),
-          const Color(0xFF8E6B34),
-        ]),
+        ..shader = ui.Gradient.linear(
+          Offset(0, size.height * .04),
+          Offset(0, size.height * .04 + 3),
+          [const Color(0xFFD9B878), const Color(0xFF8E6B34)],
+        ),
     );
     canvas.restore();
+
+    final glass = RRect.fromRectAndRadius(
+      Rect.fromLTRB(
+        size.width * .06,
+        size.height * .04,
+        size.width * .94,
+        size.height * .77,
+      ),
+      const Radius.circular(16),
+    );
+    canvas.drawRRect(
+      glass,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..color = const Color(0x88FFFFFF),
+    );
 
     // Rim: lit on the upper left, in shade on the lower right.
     canvas.drawRRect(

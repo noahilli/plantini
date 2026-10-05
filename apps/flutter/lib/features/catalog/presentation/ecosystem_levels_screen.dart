@@ -151,75 +151,81 @@ final class _EcosystemLevelsScreenState extends State<EcosystemLevelsScreen> {
             if (mounted) _reload();
           },
         );
-        return Column(
-          children: [
-            _ExpeditionHeader(
-              ecosystem: path.ecosystem,
-              stars: stars,
-              totalLevels: path.levels.length,
-              collectionLabel: collected == null
-                  ? 'Sammelziel'
-                  : '$collected / ${path.targets.length}',
-              onOpenCollection: () => showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                builder: (sheetContext) => DraggableScrollableSheet(
-                  expand: false,
-                  initialChildSize: .8,
-                  maxChildSize: .95,
-                  minChildSize: .4,
-                  builder: (_, scroll) => SingleChildScrollView(
-                    controller: scroll,
-                    padding: const EdgeInsets.all(20),
-                    child: EcosystemFinaleCard(
-                      ecosystem: path.ecosystem,
-                      levels: path.levels,
-                      targets: path.targets,
-                      plants: path.plants,
-                      journey: path.journey,
-                      progressError: path.progressError,
-                      onRefresh: () {
-                        Navigator.pop(sheetContext);
-                        _reload();
-                      },
-                      onCollect: (plant) {
-                        Navigator.pop(sheetContext);
-                        context.go(
-                          Uri(
-                            path: '/field',
-                            queryParameters: {
-                              'expectedPlantId': plant.id,
-                              'expectedPlantName': plant.commonName,
-                            },
-                          ).toString(),
-                        );
-                      },
+        return Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 960),
+            child: Column(
+              children: [
+                _ExpeditionHeader(
+                  ecosystem: path.ecosystem,
+                  stars: stars,
+                  totalLevels: path.levels.length,
+                  collectionLabel: collected == null
+                      ? 'Sammelziel'
+                      : '$collected / ${path.targets.length}',
+                  onOpenCollection: () => showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    builder: (sheetContext) => DraggableScrollableSheet(
+                      expand: false,
+                      initialChildSize: .8,
+                      maxChildSize: .95,
+                      minChildSize: .4,
+                      builder: (_, scroll) => SingleChildScrollView(
+                        controller: scroll,
+                        padding: const EdgeInsets.all(20),
+                        child: EcosystemFinaleCard(
+                          ecosystem: path.ecosystem,
+                          levels: path.levels,
+                          targets: path.targets,
+                          plants: path.plants,
+                          journey: path.journey,
+                          progressError: path.progressError,
+                          onRefresh: () {
+                            Navigator.pop(sheetContext);
+                            _reload();
+                          },
+                          onCollect: (plant) {
+                            Navigator.pop(sheetContext);
+                            context.go(
+                              Uri(
+                                path: '/field',
+                                queryParameters: {
+                                  'expectedPlantId': plant.id,
+                                  'expectedPlantName': plant.commonName,
+                                },
+                              ).toString(),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: OutlinedButton.icon(
-                onPressed: () => context.push(
-                  '/ecosystems/${Uri.encodeComponent(widget.ecosystemId)}/practice',
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push(
+                      '/ecosystems/${Uri.encodeComponent(widget.ecosystemId)}/practice',
+                    ),
+                    icon: const Icon(Icons.style_outlined),
+                    label: const Text('Alle Pflanzenkarten · endlos lernen'),
+                  ),
                 ),
-                icon: const Icon(Icons.style_outlined),
-                label: const Text('Alle Pflanzenkarten · endlos lernen'),
-              ),
+                Expanded(
+                  child: ResearcherPathView(
+                    key: ValueKey(path.ecosystem.id),
+                    ecosystem: path.ecosystem,
+                    levels: path.levels,
+                    onLevelTap: _openLevel,
+                    finale: finale(),
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: ResearcherPathView(
-                key: ValueKey(path.ecosystem.id),
-                ecosystem: path.ecosystem,
-                levels: path.levels,
-                onLevelTap: _openLevel,
-                finale: finale(),
-              ),
-            ),
-          ],
+          ),
         );
       },
     ),

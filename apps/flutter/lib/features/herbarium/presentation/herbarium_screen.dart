@@ -254,233 +254,243 @@ class _HerbariumScreenState extends State<HerbariumScreen> {
     return Scaffold(
       backgroundColor: AppColors.neutral100,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(22, 12, 22, 14),
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(18, 16, 10, 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(28),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [AppColors.sage800, AppColors.sage700],
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x263D472B),
-                      blurRadius: 18,
-                      offset: Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: AppColors.sage300.withOpacity(.18),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppColors.sage300.withOpacity(.38),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1164),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(22, 12, 22, 14),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(18, 16, 10, 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [AppColors.sage800, AppColors.sage700],
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x263D472B),
+                          blurRadius: 18,
+                          offset: Offset(0, 8),
                         ),
-                      ),
-                      child: const Icon(
-                        Icons.local_florist_rounded,
-                        color: AppColors.sage100,
-                        size: 25,
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: 13),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'PERSÖNLICHE SAMMLUNG',
-                            style: AppTypography.textTheme.labelSmall?.copyWith(
-                              color: AppColors.sage200,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.1,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: AppColors.sage300.withOpacity(.18),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.sage300.withOpacity(.38),
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          RichText(
-                            text: TextSpan(
-                              style: AppTypography.textTheme.titleMedium
-                                  ?.copyWith(color: AppColors.neutral100),
-                              children: [
-                                TextSpan(
-                                  text: '${_allEntries.length} ',
-                                  style: AppTypography.textTheme.headlineMedium
-                                      ?.copyWith(
-                                        color: AppColors.neutral100,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                          child: const Icon(
+                            Icons.local_florist_rounded,
+                            color: AppColors.sage100,
+                            size: 25,
+                          ),
+                        ),
+                        const SizedBox(width: 13),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'PERSÖNLICHE SAMMLUNG',
+                                style: AppTypography.textTheme.labelSmall
+                                    ?.copyWith(
+                                      color: AppColors.sage200,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 1.1,
+                                    ),
+                              ),
+                              const SizedBox(height: 2),
+                              RichText(
+                                text: TextSpan(
+                                  style: AppTypography.textTheme.titleMedium
+                                      ?.copyWith(color: AppColors.neutral100),
+                                  children: [
+                                    TextSpan(
+                                      text: '${_allEntries.length} ',
+                                      style: AppTypography
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            color: AppColors.neutral100,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const TextSpan(text: 'Funde bewahrt'),
+                                  ],
                                 ),
-                                const TextSpan(text: 'Funde bewahrt'),
-                              ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          key: const ValueKey('herbarium-sync-button'),
+                          tooltip: 'Synchronisieren',
+                          style: IconButton.styleFrom(
+                            backgroundColor: AppColors.neutral100.withOpacity(
+                              .12,
                             ),
+                            foregroundColor: AppColors.neutral100,
+                          ),
+                          onPressed: _isSyncing ? null : _handleSync,
+                          icon: _isSyncing
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.neutral100,
+                                  ),
+                                )
+                              : const Icon(Icons.sync_rounded, size: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                if (_hasCatalog)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ChoiceChip(
+                            key: const ValueKey('herbarium-tab-collection'),
+                            label: const Text('Sammlung'),
+                            selected: _showCollection && !_showMap,
+                            onSelected: (_) => setState(() {
+                              _showCollection = true;
+                              _showMap = false;
+                            }),
+                            showCheckmark: false,
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ChoiceChip(
+                            key: const ValueKey('herbarium-tab-observations'),
+                            label: const Text('Beobachtungen'),
+                            selected: !_showCollection && !_showMap,
+                            onSelected: (_) => setState(() {
+                              _showCollection = false;
+                              _showMap = false;
+                            }),
+                            showCheckmark: false,
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ChoiceChip(
+                            key: const ValueKey('herbarium-tab-map'),
+                            label: const Text('Karte'),
+                            selected: _showMap,
+                            onSelected: (_) => setState(() {
+                              _showMap = true;
+                              _mapOpened = true;
+                            }),
+                            showCheckmark: false,
+                            labelStyle: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Search & Filter UI
+                HerbariumSearchFilterBar(
+                  searchQuery: _searchQuery,
+                  selectedStatus: _selectedStatus,
+                  searchController: _searchController,
+                  onSearchChanged: (query) {
+                    setState(() => _searchQuery = query);
+                  },
+                  onStatusFilterChanged: (status) {
+                    setState(() => _selectedStatus = status);
+                  },
+                ),
+
+                if (_entriesError != null)
+                  Flexible(
+                    flex: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(_entriesError!)),
+                          IconButton(
+                            key: const ValueKey('herbarium-entries-retry'),
+                            tooltip: 'Funde erneut laden',
+                            onPressed: _loadEntries,
+                            icon: const Icon(Icons.refresh),
                           ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      key: const ValueKey('herbarium-sync-button'),
-                      tooltip: 'Synchronisieren',
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.neutral100.withOpacity(.12),
-                        foregroundColor: AppColors.neutral100,
-                      ),
-                      onPressed: _isSyncing ? null : _handleSync,
-                      icon: _isSyncing
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.neutral100,
-                              ),
-                            )
-                          : const Icon(Icons.sync_rounded, size: 20),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            if (_hasCatalog)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ChoiceChip(
-                        key: const ValueKey('herbarium-tab-collection'),
-                        label: const Text('Sammlung'),
-                        selected: _showCollection && !_showMap,
-                        onSelected: (_) => setState(() {
-                          _showCollection = true;
-                          _showMap = false;
-                        }),
-                        showCheckmark: false,
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ChoiceChip(
-                        key: const ValueKey('herbarium-tab-observations'),
-                        label: const Text('Beobachtungen'),
-                        selected: !_showCollection && !_showMap,
-                        onSelected: (_) => setState(() {
-                          _showCollection = false;
-                          _showMap = false;
-                        }),
-                        showCheckmark: false,
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ChoiceChip(
-                        key: const ValueKey('herbarium-tab-map'),
-                        label: const Text('Karte'),
-                        selected: _showMap,
-                        onSelected: (_) => setState(() {
-                          _showMap = true;
-                          _mapOpened = true;
-                        }),
-                        showCheckmark: false,
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Search & Filter UI
-            HerbariumSearchFilterBar(
-              searchQuery: _searchQuery,
-              selectedStatus: _selectedStatus,
-              searchController: _searchController,
-              onSearchChanged: (query) {
-                setState(() => _searchQuery = query);
-              },
-              onStatusFilterChanged: (status) {
-                setState(() => _selectedStatus = status);
-              },
-            ),
-
-            if (_entriesError != null)
-              Flexible(
-                flex: 0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(_entriesError!)),
-                      IconButton(
-                        key: const ValueKey('herbarium-entries-retry'),
-                        tooltip: 'Funde erneut laden',
-                        onPressed: _loadEntries,
-                        icon: const Icon(Icons.refresh),
-                      ),
-                    ],
                   ),
-                ),
-              ),
 
-            // Keep the catalog mounted while browsing personal observations.
-            Expanded(
-              child: _hasCatalog
-                  ? IndexedStack(
-                      index: _showMap ? 2 : (_showCollection ? 0 : 1),
-                      children: [
-                        HerbariumBottleCollection(
-                          loadEcosystems:
-                              (widget.loadEcosystems ??
-                              widget.dependencies?.loadEcosystems)!,
-                          loadLevels:
-                              (widget.loadLevels ??
-                              widget.dependencies?.loadLevels)!,
-                          loadPlant:
-                              (widget.loadPlant ??
-                              widget.dependencies?.loadPlant)!,
-                          entries: _allEntries,
-                          entriesAvailable:
-                              !_isLoading && _entriesError == null,
-                          searchQuery: _searchQuery,
-                          selectedStatus: _selectedStatus,
-                          onEntryTap: _onEntryTap,
-                          onStartField: _startField,
-                          onDiscoverPlant: _discoverPlant,
-                          onRefreshEntries: _loadEntries,
-                        ),
-                        _buildObservations(),
-                        // Built on first use: the map loads tiles.
-                        if (_mapOpened)
-                          HerbariumMapView(
-                            entries: _filteredEntries,
-                            onOpenEntry: _onEntryTap,
-                            insights: widget.dependencies?.insights,
-                          )
-                        else
-                          const SizedBox.shrink(),
-                      ],
-                    )
-                  : _buildObservations(),
+                // Keep the catalog mounted while browsing personal observations.
+                Expanded(
+                  child: _hasCatalog
+                      ? IndexedStack(
+                          index: _showMap ? 2 : (_showCollection ? 0 : 1),
+                          children: [
+                            HerbariumBottleCollection(
+                              loadEcosystems:
+                                  (widget.loadEcosystems ??
+                                  widget.dependencies?.loadEcosystems)!,
+                              loadLevels:
+                                  (widget.loadLevels ??
+                                  widget.dependencies?.loadLevels)!,
+                              loadPlant:
+                                  (widget.loadPlant ??
+                                  widget.dependencies?.loadPlant)!,
+                              entries: _allEntries,
+                              entriesAvailable:
+                                  !_isLoading && _entriesError == null,
+                              searchQuery: _searchQuery,
+                              selectedStatus: _selectedStatus,
+                              onEntryTap: _onEntryTap,
+                              onStartField: _startField,
+                              onDiscoverPlant: _discoverPlant,
+                              onRefreshEntries: _loadEntries,
+                            ),
+                            _buildObservations(),
+                            // Built on first use: the map loads tiles.
+                            if (_mapOpened)
+                              HerbariumMapView(
+                                entries: _filteredEntries,
+                                onOpenEntry: _onEntryTap,
+                                insights: widget.dependencies?.insights,
+                              )
+                            else
+                              const SizedBox.shrink(),
+                          ],
+                        )
+                      : _buildObservations(),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

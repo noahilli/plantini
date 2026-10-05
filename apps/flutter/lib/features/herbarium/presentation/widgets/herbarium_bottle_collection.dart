@@ -162,119 +162,142 @@ class _HerbariumBottleCollectionState extends State<HerbariumBottleCollection> {
       onRefresh: () async {
         await Future.wait([_loadCatalog(), widget.onRefreshEntries()]);
       },
-      child: ListView(
-        key: const ValueKey('herbarium-bottle-collection'),
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(22, 8, 22, 100),
-        children: [
-          Text(
-            'Dein kleines Naturmuseum',
-            style: Theme.of(context).textTheme.headlineSmall
-                ?.copyWith(color: AppColors.forest),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Jede Art hat ihr eigenes Glas. Bestätige einen Fund und lass deine Sammlung wachsen.',
-          ),
-          const SizedBox(height: 8),
-          if (widget.entriesAvailable && !_loading && _error == null)
-            Text(
-              '$collected von $total Arten gesammelt',
-              style: const TextStyle(
-                color: AppColors.forest,
-                fontWeight: FontWeight.w600,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1120),
+          child: ListView(
+            key: const ValueKey('herbarium-bottle-collection'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(22, 8, 22, 100),
+            children: [
+              Text(
+                'Dein kleines Naturmuseum',
+                style: Theme.of(context).textTheme.headlineSmall
+                    ?.copyWith(color: AppColors.forest),
               ),
-            ),
-          if (widget.entries.any(
-            (e) =>
-                e.confirmedPlantId != null &&
-                (e.syncStatus == SyncStatus.pending ||
-                    e.syncStatus == SyncStatus.conflict),
-          ))
-            const Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: Text(
-                'Lokale Funde sind vorläufig. Nach dem Abgleich zählen sie auch für dein Ökosystem-Finale.',
-                style: TextStyle(color: AppColors.bark),
+              const SizedBox(height: 8),
+              const Text(
+                'Jede Art hat ihr eigenes Glas. Bestätige einen Fund und lass deine Sammlung wachsen.',
               ),
-            ),
-          if (_loading)
-            const Padding(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 12),
-                  Text('Pflanzenkatalog wird geladen …'),
-                ],
-              ),
-            ),
-          if (_error != null) ...[
-            const SizedBox(height: 16),
-            Text(
-              'Katalog unvollständig. $_error Deine Funde bleiben unter „Beobachtungen“ erreichbar.',
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                key: const ValueKey('herbarium-catalog-retry'),
-                onPressed: _loading ? null : _loadCatalog,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Katalog erneut laden'),
-              ),
-            ),
-          ],
-          if (!_loading && _error == null && filtered.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 28),
-              child: Text(
-                total == 0
-                    ? 'Noch keine Pflanzen im veröffentlichten Katalog.'
-                    : 'Keine Arten für diese Suche oder Filterung.',
-              ),
-            ),
-          for (final group in filtered.entries) ...[
-            _ShelfHeader(
-              title: group.key,
-              collected: (_groups[group.key] ?? group.value)
-                  .where((plant) => entriesByPlant.containsKey(plant.id))
-                  .length,
-              total: (_groups[group.key] ?? group.value).length,
-              showProgress: widget.entriesAvailable,
-            ),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final textScale = MediaQuery.textScalerOf(context).scale(1);
-                final columns = math.max(
-                  1,
-                  (constraints.maxWidth / (155 * math.max(1, textScale * .8)))
-                      .floor(),
-                );
-                final width =
-                    (constraints.maxWidth - (columns - 1) * 12) / columns;
-                return Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    for (final plant in group.value)
-                      SizedBox(
-                        width: width,
-                        child: _SpecimenCard(
-                          plant: plant,
-                          entries: entriesByPlant[plant.id] ?? const [],
-                          entriesAvailable: widget.entriesAvailable,
-                          onEntryTap: widget.onEntryTap,
-                          onStartField: () => widget.onDiscoverPlant != null
-                              ? widget.onDiscoverPlant!(plant)
-                              : widget.onStartField(),
-                        ),
+              const SizedBox(height: 8),
+              if (widget.entriesAvailable && !_loading && _error == null)
+                Text(
+                  '$collected von $total Arten gesammelt',
+                  style: const TextStyle(
+                    color: AppColors.forest,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              if (widget.entries.any(
+                (e) =>
+                    e.confirmedPlantId != null &&
+                    (e.syncStatus == SyncStatus.pending ||
+                        e.syncStatus == SyncStatus.conflict),
+              ))
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Lokale Funde sind vorläufig. Nach dem Abgleich zählen sie auch für dein Ökosystem-Finale.',
+                    style: TextStyle(color: AppColors.bark),
+                  ),
+                ),
+              if (_loading)
+                const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 12),
+                      Text('Pflanzenkatalog wird geladen …'),
+                    ],
+                  ),
+                ),
+              if (_error != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  'Katalog unvollständig. $_error Deine Funde bleiben unter „Beobachtungen“ erreichbar.',
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    key: const ValueKey('herbarium-catalog-retry'),
+                    onPressed: _loading ? null : _loadCatalog,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Katalog erneut laden'),
+                  ),
+                ),
+              ],
+              if (!_loading && _error == null && filtered.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 28),
+                  child: Text(
+                    total == 0
+                        ? 'Noch keine Pflanzen im veröffentlichten Katalog.'
+                        : 'Keine Arten für diese Suche oder Filterung.',
+                  ),
+                ),
+              for (final group in filtered.entries) ...[
+                _ShelfHeader(
+                  title: group.key,
+                  collected: (_groups[group.key] ?? group.value)
+                      .where((plant) => entriesByPlant.containsKey(plant.id))
+                      .length,
+                  total: (_groups[group.key] ?? group.value).length,
+                  showProgress: widget.entriesAvailable,
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final textScale = MediaQuery.textScalerOf(context).scale(1);
+                    final minTileWidth = constraints.maxWidth < 600 ? 155 : 190;
+                    final columns = math.min(
+                      5,
+                      math.max(
+                        1,
+                        (constraints.maxWidth /
+                                (minTileWidth * math.max(1, textScale * .8)))
+                            .floor(),
                       ),
-                  ],
-                );
-              },
-            ),
-          ],
-        ],
+                    );
+                    final width =
+                        (constraints.maxWidth - (columns - 1) * 12) / columns;
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xFFF6F1E7), Color(0xFFE7EBDD)],
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: AppColors.sage200),
+                      ),
+                      child: Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          for (final plant in group.value)
+                            SizedBox(
+                              width: width,
+                              child: _SpecimenCard(
+                                plant: plant,
+                                entries: entriesByPlant[plant.id] ?? const [],
+                                entriesAvailable: widget.entriesAvailable,
+                                onEntryTap: widget.onEntryTap,
+                                onStartField: () =>
+                                    widget.onDiscoverPlant != null
+                                    ? widget.onDiscoverPlant!(plant)
+                                    : widget.onStartField(),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

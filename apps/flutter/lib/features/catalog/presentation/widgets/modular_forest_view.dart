@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/diagnostics/frame_stats.dart';
@@ -151,177 +152,205 @@ final class _ModularForestViewState extends State<ModularForestView>
     if (levels.isEmpty) return const Center(child: Text('Noch keine Level.'));
     final position = _position.clamp(0, _count - 1).toDouble();
     final chapter = position.round();
-    return Column(
-      children: [
-        Row(
-          key: const ValueKey('level-list-ready'),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 920, maxHeight: 760),
+        child: Column(
           children: [
-            IconButton(
-              key: const ValueKey('map-previous-chapter'),
-              tooltip: 'Vorheriger Abschnitt',
-              onPressed: chapter > 0 ? () => _move(chapter - 1.0) : null,
-              icon: const Icon(Icons.chevron_left),
+            Row(
+              key: const ValueKey('level-list-ready'),
+              children: [
+                IconButton(
+                  key: const ValueKey('map-previous-chapter'),
+                  tooltip: 'Vorheriger Abschnitt',
+                  onPressed: chapter > 0 ? () => _move(chapter - 1.0) : null,
+                  icon: const Icon(Icons.chevron_left),
+                ),
+                Expanded(
+                  child: Text(
+                    '${widget.world.title} ${chapter + 1} / $_count · ${levels.length} Level',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                IconButton(
+                  key: const ValueKey('map-next-chapter'),
+                  tooltip: 'Nächster Abschnitt',
+                  onPressed: chapter < _count - 1
+                      ? () => _move(chapter + 1.0)
+                      : null,
+                  icon: const Icon(Icons.chevron_right),
+                ),
+                IconButton(
+                  tooltip: _paused
+                      ? 'Bewegung einschalten'
+                      : 'Bewegung anhalten',
+                  onPressed: () {
+                    setState(() => _paused = !_paused);
+                    _updateMotion();
+                  },
+                  icon: Icon(_paused ? Icons.play_arrow : Icons.pause),
+                ),
+              ],
             ),
             Expanded(
-              child: Text(
-                '${widget.world.title} ${chapter + 1} / $_count · ${levels.length} Level',
-                textAlign: TextAlign.center,
+              child: FutureBuilder<WorldModule>(
+                key: ValueKey(widget.world),
+                future: _module,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text(
+                        'Die 3D-Welt konnte nicht geladen werden. Bitte öffne den Lernpfad erneut.',
+                      ),
+                    );
+                  }
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final module = snapshot.data!;
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final size = Size(
+                        constraints.maxWidth,
+                        constraints.maxHeight,
+                      );
+                      final view = _Projection(size, position * 10, _yaw);
+                      return ClipRect(
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Positioned.fill(
+                              child: Listener(
+                                onPointerSignal: (event) {
+                                  if (event is PointerScrollEvent) {
+                                    GestureBinding
+                                        .instance
+                                        .pointerSignalResolver
+                                        .register(event, (event) {
+                                          final scroll =
+                                              event as PointerScrollEvent;
+                                          _move(
+                                            position +
+                                                scroll.scrollDelta.dy / 600,
+                                          );
+                                        });
+                                  }
+                                },
+                                child: GestureDetector(
+                                  onPanUpdate: (d) {
+                                    setState(() {
+                                      _position =
+                                          (position +
+                                                  d.delta.dy / (view.scale * 7))
+                                              .clamp(0, _count - 1)
+                                              .toDouble();
+                                      _yaw = (_yaw + d.delta.dx * .003).clamp(
+                                        -.35,
+                                        .35,
+                                      );
+                                    });
+                                  },
+                                  child: RepaintBoundary(
+                                    child: CustomPaint(
+                                      key: ValueKey(
+                                        '${widget.world.asset}-3d-world',
+                                      ),
+                                      painter: _ForestPainter(
+                                        module,
+                                        view,
+                                        levels.length,
+                                        _clock,
+                                        MediaQuery.disableAnimationsOf(context),
+                                        _frames,
+                                        widget.world.background,
+                                        WorldLighting.of(DayClock.phase.value),
+                                        _cache,
+                                        levels.indexWhere(
+                                          (l) =>
+                                              l.isUnlocked &&
+                                              l.status != LevelStatus.completed,
+                                        ),
+                                      ),
+                                      child: const SizedBox.expand(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (module.fireflies != null &&
+                                WorldLighting.of(DayClock.phase.value).lamps)
+                              Positioned.fill(
+                                child: IgnorePointer(
+                                  child: RepaintBoundary(
+                                    child: CustomPaint(
+                                      painter: _FireflyPainter(
+                                        module.fireflies!,
+                                        view,
+                                        math.max(0, chapter - 1),
+                                        math.min(_count - 1, chapter + 1),
+                                        _clock,
+                                        DayClock.phase.value == DayPhase.night
+                                            ? 1
+                                            : .4,
+                                        MediaQuery.disableAnimationsOf(context),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            for (
+                              var m = math.max(0, chapter - 1);
+                              m <= math.min(_count - 1, chapter + 1);
+                              m++
+                            )
+                              for (
+                                var slot = 0;
+                                slot < 6 && m * 6 + slot < levels.length;
+                                slot++
+                              )
+                                _station(
+                                  levels[m * 6 + slot],
+                                  view.project(
+                                    module.slots[slot][0],
+                                    module.slots[slot][1] + m * 10,
+                                    .40,
+                                  ),
+                                  size,
+                                ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
-            IconButton(
-              key: const ValueKey('map-next-chapter'),
-              tooltip: 'Nächster Abschnitt',
-              onPressed: chapter < _count - 1
-                  ? () => _move(chapter + 1.0)
-                  : null,
-              icon: const Icon(Icons.chevron_right),
-            ),
-            IconButton(
-              tooltip: _paused ? 'Bewegung einschalten' : 'Bewegung anhalten',
-              onPressed: () {
-                setState(() => _paused = !_paused);
-                _updateMotion();
-              },
-              icon: Icon(_paused ? Icons.play_arrow : Icons.pause),
+            if (_count > 1)
+              Slider(
+                label: 'Abschnitt ${chapter + 1}',
+                semanticFormatterCallback: (v) =>
+                    'Abschnitt ${v.round() + 1} von $_count',
+                min: 0,
+                max: (_count - 1).toDouble(),
+                value: position,
+                onChanged: _move,
+              ),
+            if (chapter == _count - 1 && widget.finale != null)
+              SizedBox(
+                height: 150,
+                child: SingleChildScrollView(child: widget.finale!),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Ziehen: die Welt erkunden · Level antippen',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
           ],
         ),
-        Expanded(
-          child: FutureBuilder<WorldModule>(
-            key: ValueKey(widget.world),
-            future: _module,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Center(
-                  child: Text(
-                    'Die 3D-Welt konnte nicht geladen werden. Bitte öffne den Lernpfad erneut.',
-                  ),
-                );
-              }
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final module = snapshot.data!;
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final size = Size(
-                    constraints.maxWidth,
-                    constraints.maxHeight,
-                  );
-                  final view = _Projection(size, position * 10, _yaw);
-                  return ClipRect(
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned.fill(
-                          child: GestureDetector(
-                            onPanUpdate: (d) {
-                              setState(() {
-                                _position =
-                                    (position + d.delta.dy / (view.scale * 7))
-                                        .clamp(0, _count - 1)
-                                        .toDouble();
-                                _yaw = (_yaw + d.delta.dx * .003).clamp(
-                                  -.35,
-                                  .35,
-                                );
-                              });
-                            },
-                            child: RepaintBoundary(
-                              child: CustomPaint(
-                                key: ValueKey('${widget.world.asset}-3d-world'),
-                                painter: _ForestPainter(
-                                  module,
-                                  view,
-                                  levels.length,
-                                  _clock,
-                                  MediaQuery.disableAnimationsOf(context),
-                                  _frames,
-                                  widget.world.background,
-                                  WorldLighting.of(DayClock.phase.value),
-                                  _cache,
-                                  levels.indexWhere(
-                                    (l) =>
-                                        l.isUnlocked &&
-                                        l.status != LevelStatus.completed,
-                                  ),
-                                ),
-                                child: const SizedBox.expand(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (module.fireflies != null &&
-                            WorldLighting.of(DayClock.phase.value).lamps)
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: RepaintBoundary(
-                                child: CustomPaint(
-                                  painter: _FireflyPainter(
-                                    module.fireflies!,
-                                    view,
-                                    math.max(0, chapter - 1),
-                                    math.min(_count - 1, chapter + 1),
-                                    _clock,
-                                    DayClock.phase.value == DayPhase.night
-                                        ? 1
-                                        : .4,
-                                    MediaQuery.disableAnimationsOf(context),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        for (
-                          var m = math.max(0, chapter - 1);
-                          m <= math.min(_count - 1, chapter + 1);
-                          m++
-                        )
-                          for (
-                            var slot = 0;
-                            slot < 6 && m * 6 + slot < levels.length;
-                            slot++
-                          )
-                            _station(
-                              levels[m * 6 + slot],
-                              view.project(
-                                module.slots[slot][0],
-                                module.slots[slot][1] + m * 10,
-                                .40,
-                              ),
-                              size,
-                            ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        if (_count > 1)
-          Slider(
-            label: 'Abschnitt ${chapter + 1}',
-            semanticFormatterCallback: (v) =>
-                'Abschnitt ${v.round() + 1} von $_count',
-            min: 0,
-            max: (_count - 1).toDouble(),
-            value: position,
-            onChanged: _move,
-          ),
-        if (chapter == _count - 1 && widget.finale != null)
-          SizedBox(
-            height: 150,
-            child: SingleChildScrollView(child: widget.finale!),
-          ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Text(
-            'Ziehen: die Welt erkunden · Level antippen',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-      ],
+      ),
     );
   }
 

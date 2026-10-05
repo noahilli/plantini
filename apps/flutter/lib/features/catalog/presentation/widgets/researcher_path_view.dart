@@ -58,12 +58,18 @@ final class _ResearcherPathViewState extends State<ResearcherPathView> {
     if (sorted.isEmpty) return const Center(child: Text('Noch keine Level.'));
     final world = EcosystemWorld.forSlug(widget.ecosystem.slug);
     if (world != null) {
-      return ModularForestView(
-        key: ValueKey(widget.ecosystem.id),
-        world: world,
-        levels: sorted,
-        onLevelTap: widget.onLevelTap,
-        finale: widget.finale,
+      return Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 920),
+          child: ModularForestView(
+            key: ValueKey(widget.ecosystem.id),
+            world: world,
+            levels: sorted,
+            onLevelTap: widget.onLevelTap,
+            finale: widget.finale,
+          ),
+        ),
       );
     }
     final chapters = (sorted.length / 10).ceil();
