@@ -431,6 +431,7 @@ module.exports = {
 };
 
 async function withActor(ctx, action) {
+  ctx.set('Cache-Control', 'no-store');
   return execute(ctx, async (runtime, traceId) => {
     const actor = await resolveActor(ctx, runtime);
     return action(runtime, actor, traceId);

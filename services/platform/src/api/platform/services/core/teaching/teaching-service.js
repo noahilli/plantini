@@ -109,6 +109,9 @@ class TeachingService {
         student = await this.entities.update(STUDENT, student.id, { data: { enabled: true } });
         await this.runtime.repositories.profiles.update(student.profileId, { status: 'active' });
       } catch (error) {
+        // A database write can commit and still report a lost response. Restore
+        // the API block before attempting cleanup at the external provider.
+        await this.runtime.repositories.profiles.update(student.profileId, { status: 'suspended', tokensValidAfter: new Date().toISOString() }).catch(() => {});
         await this.identity.setEnabled(account.subject, false).catch(() => {});
         await this.entities.update(STUDENT, student.id, { data: { enabled: false } }).catch(() => {});
         throw error;
