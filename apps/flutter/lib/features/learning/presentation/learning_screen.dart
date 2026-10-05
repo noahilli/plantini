@@ -38,6 +38,7 @@ final class _LearningScreenState extends State<LearningScreen> {
   bool _busy = true;
   List<Plant> _plants = const [];
   bool _showIntroduction = true;
+  String? _draftChoiceId;
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ final class _LearningScreenState extends State<LearningScreen> {
     if (oldWidget.levelId != widget.levelId ||
         oldWidget.contentVersion != widget.contentVersion) {
       _session = null;
+      _draftChoiceId = null;
       _completion = null;
       _level = null;
       _nextLevel = null;
@@ -138,32 +140,49 @@ final class _LearningScreenState extends State<LearningScreen> {
     );
   }
 
-  Future<void> _answer(QuizItem item, QuizChoice choice) async {
+  void _answer(QuizItem item, QuizChoice choice) {
     final session = _session;
-    if (session == null || _busy || session.answers.containsKey(item.id)) {
+    if (session == null ||
+        _busy ||
+        session.completionPending ||
+        session.currentQuestion?.id != item.id) {
       return;
     }
-    setState(() => _busy = true);
+    // A tap is a reversible draft, not a submitted or scored answer.
+    setState(() {
+      _draftChoiceId = choice.id;
+      _failure = null;
+    });
+  }
+
+  Future<LearningSession?> _confirmSelection() async {
+    final session = _session;
+    final item = session?.currentQuestion;
+    if (session == null || item == null) return null;
+    if (session.completionPending) return session;
+    final choiceId = _draftChoiceId ?? session.answers[item.id]?.choiceId;
+    if (choiceId == null) return null;
     final result = await widget.dependencies.learningSessions.recordAnswer(
       session: session,
       quizItemId: item.id,
-      choiceId: choice.id,
+      choiceId: choiceId,
       holdForFeedback: true,
+      allowRevision: true,
     );
-    if (!mounted) return;
+    if (!mounted) return null;
     switch (result) {
       case Success<LearningSession>(:final value):
         setState(() {
           _session = value;
           _failure = null;
         });
-        // Keep UI mutations serialized until this snapshot is acknowledged.
-        await _sync(value);
+        return value;
       case Failure<LearningSession>(:final failure):
         setState(() {
           _failure = failure;
           _busy = false;
         });
+        return null;
     }
   }
 
@@ -187,8 +206,14 @@ final class _LearningScreenState extends State<LearningScreen> {
   Future<void> _next() async {
     if (_busy || _session == null) return;
     setState(() => _busy = true);
+    final confirmed = await _confirmSelection();
+    if (!mounted) return;
+    if (confirmed == null) {
+      setState(() => _busy = false);
+      return;
+    }
     final result = await widget.dependencies.learningSessions.advanceQuestion(
-      _session!,
+      confirmed,
     );
     if (!mounted) return;
     setState(() {
@@ -196,11 +221,13 @@ final class _LearningScreenState extends State<LearningScreen> {
       switch (result) {
         case Success<LearningSession>(:final value):
           _session = value;
+          _draftChoiceId = null;
           _failure = null;
         case Failure<LearningSession>(:final failure):
           _failure = failure;
       }
     });
+    if (result case Success<LearningSession>(:final value)) await _sync(value);
   }
 
   Future<void> _retry() async {
@@ -222,6 +249,7 @@ final class _LearningScreenState extends State<LearningScreen> {
           _completion = null;
           _nextLevel = null;
           _showIntroduction = true;
+          _draftChoiceId = null;
         case Failure<LearningSession>(:final failure):
           _failure = failure;
       }
@@ -229,12 +257,17 @@ final class _LearningScreenState extends State<LearningScreen> {
   }
 
   Future<void> _complete() async {
-    final session = _session;
-    if (session == null || _busy) return;
+    if (_session == null || _busy) return;
     setState(() {
       _busy = true;
       _failure = null;
     });
+    final session = await _confirmSelection();
+    if (!mounted) return;
+    if (session == null) {
+      setState(() => _busy = false);
+      return;
+    }
     final result = await widget.dependencies.learningSessions.complete(session);
     if (!mounted) return;
     switch (result) {
@@ -343,6 +376,7 @@ final class _LearningScreenState extends State<LearningScreen> {
       session: session,
       question: question,
       busy: _busy,
+      selectedChoiceId: _draftChoiceId,
       onAnswer: _answer,
       onComplete: _complete,
       onOpenNotebook: _level == null ? null : _openNotebook,

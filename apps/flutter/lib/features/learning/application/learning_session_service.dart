@@ -84,6 +84,7 @@ final class LearningSessionService {
     required String quizItemId,
     required String choiceId,
     bool holdForFeedback = false,
+    bool allowRevision = false,
   }) async {
     QuizItem? item;
     for (final candidate in session.quizItems) {
@@ -99,6 +100,16 @@ final class LearningSessionService {
         ),
       );
     }
+    if (session.completionPending ||
+        (allowRevision && session.currentQuestion?.id != quizItemId)) {
+      return const Result.failure(
+        ConflictFailure(message: 'Diese Antwort ist bereits bestätigt.'),
+      );
+    }
+    final previous = session.answers[quizItemId];
+    if (previous != null && (!allowRevision || previous.choiceId == choiceId)) {
+      return Result.success(session);
+    }
     final answers = Map<String, QuizAnswer>.from(session.answers)
       ..[quizItemId] = QuizAnswer(quizItemId: quizItemId, choiceId: choiceId);
     final event = LearningEvent(
@@ -112,10 +123,6 @@ final class LearningSessionService {
         'choiceId': choiceId,
       },
     );
-    // Repeated taps must never create another event or change an answer.
-    if (session.answers.containsKey(quizItemId)) {
-      return Result.success(session);
-    }
     final nextIndex =
         !holdForFeedback &&
             session.currentQuestionIndex < session.quizItems.length - 1
@@ -123,7 +130,14 @@ final class LearningSessionService {
         : session.currentQuestionIndex;
     final updated = session.copyWith(
       answers: answers,
-      pendingEvents: [...session.pendingEvents, event],
+      pendingEvents: [
+        // Only the confirmed selection is sent, not discarded draft choices.
+        for (final pending in session.pendingEvents)
+          if (!(pending.type == 'quiz_answered' &&
+              pending.payload['quizItemId'] == quizItemId))
+            pending,
+        event,
+      ],
       currentQuestionIndex: nextIndex,
       updatedAt: _clock.now(),
     );
