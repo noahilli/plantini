@@ -28,7 +28,9 @@ async function login() {
   const challenge = base64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
   sessionStorage.setItem(authKey, JSON.stringify({ verifier, state, createdAt: Date.now() }));
   const url = new URL(`${config.issuer}/protocol/openid-connect/auth`);
-  url.search = new URLSearchParams({ client_id: config.clientId, redirect_uri: redirectUri, response_type: 'code', scope: 'openid profile email', state, code_challenge: challenge, code_challenge_method: 'S256' });
+  // A pupil may already have an SSO session on a shared classroom computer.
+  // Let an explicit login switch accounts instead of looping on a 403 callback.
+  url.search = new URLSearchParams({ client_id: config.clientId, redirect_uri: redirectUri, response_type: 'code', scope: 'openid profile email', prompt: 'login', state, code_challenge: challenge, code_challenge_method: 'S256' });
   location.replace(url);
 }
 async function exchange(body) {
