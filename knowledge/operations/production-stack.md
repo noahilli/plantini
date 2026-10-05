@@ -93,3 +93,25 @@ Anmeldung; ihre Pflanzenbestimmung verwendet weiterhin den Mock-Anbieter.
 Dies ist kein Nachweis echter PlantNet-Antworten oder vollständiger
 Produktionsreife. Atomic Publishing im Studio, signierte Content-Manifeste und
 die weiteren offenen CMS-/Content-Abnahmebedingungen bleiben separate Aufgaben.
+
+### Angemeldete produktive Portalabnahme
+
+Mit exakt markierten synthetischen Konten wurden HTTPS/PKCE, Klassenanlage,
+Schüleranlage ohne E-Mail und erzwungene erste Passwortänderung geprüft.
+Ein Schüler konnte einen Rotbuche-Level serverseitig bestehen; die Lehrperson
+sah anschließend genau einen Abschluss von 90 sowie den Aktivitätseintrag.
+Passwort-Reset machte den alten Schüler-Access-Token sofort ungültig (401);
+Sperren/Aktivieren funktionierte bei unverändertem Lernfortschritt. Schüler
+erhielten auf die Lehrenden-API 403. Fremde Klassen und erhöhte Zielrollen wurden
+zusätzlich in der lokalen Browserabnahme geprüft, nicht mit echten Lehrenden.
+
+SMTP ist im produktiven Realm konfiguriert. Eine E-Mail-Zustellprüfung wurde
+nicht vorgenommen; es wurden keine Einladungen an echte Personen versendet.
+`tools/scripts/verify-teacher-production.mjs` erzeugt und entfernt ausschließlich
+exakt validierte synthetische Keycloak-Konten; Produktions-Zugangsdaten bleiben
+auf dem Server. Die beiden Testkonten wurden entfernt und ihre Abwesenheit
+bestätigt. Passwörter wurden aus beiden geschützten Smoke-Manifesten entfernt.
+Synthetische Klassen-/Schüler-/Profil-/Lernversuchs-/Audit-Datenbankzeilen bleiben
+zu Nachweiszwecken bestehen, gehören gelöschten Testidentitäten und sind für
+echte Lehrende nicht sichtbar. Bestehende Nutzer oder ihre Daten wurden nicht
+gelöscht. Die vorherige Produktionssicherung ist weiterhin vorhanden.

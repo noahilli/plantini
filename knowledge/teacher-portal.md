@@ -79,4 +79,7 @@ docker compose --env-file tools/e2e/.runtime/e2e.env -p plantini-e2e \
   up -d --build --wait platform teacher
 ```
 
-Live-Abnahme und Deployment-Versionen werden im Produktions-Runbook ergänzt.
+Live-Abnahme erfolgreich am 05.10.2026: produktiver PKCE-Login, Schüleranlage
+ohne E-Mail mit Passwortänderung, bestandener Level mit Fortschritt 1/90,
+Dashboard-Aktivität, Reset mit sofortiger Token-Sperre und Kontosperre/-aktivierung.
+Deployment-Versionen und genaue Beweisgrenzen stehen im Produktions-Runbook.
