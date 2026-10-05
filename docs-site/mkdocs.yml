@@ -1,0 +1,159 @@
+site_name: Plantini Handbuch
+site_description: Das Entwickler-, Betriebs- und Redaktionshandbuch der Lernplattform Plantini.
+site_author: Noah Illmann
+docs_dir: docs
+site_dir: site
+strict: true
+use_directory_urls: true
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: de
+  # Fonts are self-hosted (Caprasimo + Figtree, SIL OFL), see assets/stylesheets/plantini.css.
+  font: false
+  logo: assets/img/logo.svg
+  favicon: assets/img/favicon.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: plantini
+      toggle:
+        icon: material/weather-night
+        name: Dunkles Design
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Helles Design
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+
+extra_css:
+  - assets/stylesheets/plantini.css
+extra_javascript:
+  - assets/javascripts/mermaid.min.js
+
+extra:
+  generator: false
+
+plugins:
+  - search:
+      lang: de
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      zoomable: true
+      draggable: false
+  - privacy:
+      enabled: false
+hooks:
+  - hooks/generate_reference.py
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.keys
+  - pymdownx.mark
+
+nav:
+  - Start:
+      - index.md
+      - start/status.md
+      - start/lesepfade.md
+  - Mitmachen:
+      - mitmachen/index.md
+      - mitmachen/setup.md
+      - mitmachen/repo-karte.md
+      - mitmachen/konventionen.md
+      - mitmachen/tests-ci.md
+  - Architektur:
+      - architektur/index.md
+      - architektur/datenfluesse.md
+      - architektur/datenmodell.md
+      - architektur/sicherheit-datenschutz.md
+      - architektur/entscheidungen.md
+  - Backend & API:
+      - backend/index.md
+      - backend/plattform.md
+      - backend/services.md
+      - backend/idempotenz-fehler.md
+      - backend/neuer-endpunkt.md
+      - backend/inhalte-releases.md
+      - backend/api-vertrag.md
+      - backend/api-referenz.md
+  - App:
+      - app/index.md
+      - app/auth.md
+      - app/offline.md
+      - app/bilder-karte.md
+      - app/bauen-release.md
+  - 3D & Blender:
+      - 3d/index.md
+      - 3d/blender-pipeline.md
+      - 3d/tageszeit-licht.md
+      - 3d/charaktere.md
+      - 3d/performance.md
+  - Studio & Portal:
+      - studio/index.md
+      - studio/studio-technik.md
+      - studio/portal-technik.md
+  - Betrieb:
+      - betrieb/index.md
+      - betrieb/compose.md
+      - betrieb/deployment.md
+      - betrieb/identity-keycloak.md
+      - betrieb/backup-monitoring.md
+      - betrieb/android-release.md
+      - betrieb/homepage.md
+      - betrieb/konfiguration.md
+  - Moderation:
+      - moderation/index.md
+      - moderation/studio-handbuch.md
+      - moderation/review.md
+      - moderation/qualitaet-lizenzen.md
+  - Nutzung:
+      - nutzung/index.md
+      - nutzung/lernen.md
+      - nutzung/entdecken.md
+      - nutzung/herbarium.md
+      - nutzung/lehrende.md
+  - Referenz:
+      - referenz/glossar.md
+      - referenz/stolperfallen.md
+      - referenz/ports-dienste.md

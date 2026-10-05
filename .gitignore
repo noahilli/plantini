@@ -69,3 +69,7 @@ docs/plantnet-credentials
 **/android/key.properties
 *.jks
 *.keystore
+
+# Documentation site (docs-site)
+docs-site/.venv/
+docs-site/site/
