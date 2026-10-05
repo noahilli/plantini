@@ -1,0 +1,13 @@
+{
+  "kind": "collectionType",
+  "collectionName": "teaching_audit",
+  "info": { "singularName": "teaching-audit", "pluralName": "teaching-audits", "displayName": "Teaching Audit" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "actorSubject": { "type": "string", "required": true, "private": true },
+    "targetId": { "type": "string", "required": true },
+    "action": { "type": "enumeration", "enum": ["class_created", "student_created", "password_reset", "student_enabled", "student_disabled"], "required": true },
+    "result": { "type": "enumeration", "enum": ["started", "succeeded", "failed"], "required": true }
+  }
+}

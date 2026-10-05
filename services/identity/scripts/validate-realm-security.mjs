@@ -16,11 +16,13 @@ const REQUIRED_REALM_ROLES = [
 const APP_CLIENTS = [
   'plantini-web-dev',
   'plantini-editor-dev',
+  'plantini-teacher-dev',
   'plantini-mobile-dev',
   'plantini-web-staging',
   'plantini-mobile-staging',
   'plantini-web-production',
   'plantini-editor-production',
+  'plantini-teacher-production',
   'plantini-mobile-production',
 ];
 
@@ -29,6 +31,7 @@ const DISABLED_UNTIL_APPROVED = new Set([
   'plantini-mobile-staging',
   'plantini-web-production',
   'plantini-editor-production',
+  'plantini-teacher-production',
   'plantini-mobile-production',
 ]);
 
@@ -66,8 +69,8 @@ export function validateRealmSecurity(realm, { environment = 'development' } = {
     }
   }
 
-  if (!realm.registrationAllowed || !realm.verifyEmail || !realm.resetPasswordAllowed) {
-    fail('registration, email verification, and password reset must be enabled together');
+  if (realm.registrationAllowed !== false || !realm.verifyEmail || !realm.resetPasswordAllowed) {
+    fail('self-registration must be disabled; email verification and password reset remain enabled');
   }
   const verifyEmail = (realm.requiredActions ?? []).find(
     (action) => action.alias === 'VERIFY_EMAIL',
@@ -153,6 +156,12 @@ export function validateRealmSecurity(realm, { environment = 'development' } = {
       fail(`${editorId}: editor roles must be visible in access tokens`);
     }
   }
+  for (const teacherId of ['plantini-teacher-dev', 'plantini-teacher-production']) {
+    const mapping = (realm.scopeMappings ?? []).find((item) => item.client === teacherId);
+    if (!['lehrende', 'systemadministration'].every((role) => mapping?.roles?.includes(role))) {
+      fail(`${teacherId}: teacher roles must be visible in access tokens`);
+    }
+  }
 
   validatePrivilegedMfa(realm, failures);
 
@@ -213,12 +222,12 @@ function validateProductionPromotion(realm, clients, failures) {
   if (realm.smtpServer?.host === 'mailpit' || realm.smtpServer?.from?.endsWith('.local')) {
     failures.push('production promotion requires a production SMTP configuration from secret management');
   }
-  for (const clientId of ['plantini-web-production', 'plantini-editor-production', 'plantini-mobile-production']) {
+  for (const clientId of ['plantini-web-production', 'plantini-editor-production', 'plantini-teacher-production', 'plantini-mobile-production']) {
     const client = clients.get(clientId);
     if (!client?.enabled || !client.redirectUris?.length) {
       failures.push(`${clientId}: must be enabled only after exact HTTPS/app-link redirects are approved`);
     }
-    if ((clientId.includes('web') || clientId.includes('editor')) && client?.redirectUris?.some((uri) => !uri.startsWith('https://'))) {
+    if ((clientId.includes('web') || clientId.includes('editor') || clientId.includes('teacher')) && client?.redirectUris?.some((uri) => !uri.startsWith('https://'))) {
       failures.push(`${clientId}: production web redirects must use HTTPS`);
     }
   }

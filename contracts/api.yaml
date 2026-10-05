@@ -8,7 +8,8 @@ info:
   description: |
     Kanonischer Vertrag zwischen Plantini-App und Fach-API. Die App kommuniziert
     niemals direkt mit Strapi oder einem Identifikationsprovider. Alle schreibenden
-    Aufrufe sind über Idempotency-Key oder clientEventId wiederholbar.
+    Aufrufe mit dokumentiertem Idempotency-Key oder clientEventId sind wiederholbar.
+    Teaching-Kontoverwaltung unterstützt diese Wiederholbarkeit derzeit nicht.
 servers:
   - url: http://127.0.0.1:1338/api/v1
     description: IPv4 development default; generated clients override this per environment
@@ -23,6 +24,8 @@ x-plantini-api-conventions:
   timestamps: RFC3339 UTC on output; timezone required on input
   idempotency: Idempotency-Key is required on retryable command operations
 tags:
+  - name: Teaching
+    description: Server requires lehrende or systemadministration; classes and students are scoped to the caller's ownership. Student account commands require configured identity administration. Commands do not accept Idempotency-Key and must not be retried blindly.
   - name: Profile
     description: Authenticated person and preferences.
   - name: Content
@@ -36,6 +39,111 @@ tags:
   - name: Herbarium
     description: Caller-owned private observations.
 paths:
+  /teaching/session:
+    get:
+      summary: Read the authenticated teaching session
+      tags: [Teaching]
+      operationId: getTeachingSession
+      x-plantini-implementation-status: implemented
+      responses:
+        '200': {description: Read the authenticated teaching session, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingSession'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+  /teaching/dashboard:
+    get:
+      summary: Read progress across owned classes
+      tags: [Teaching]
+      operationId: getTeachingDashboard
+      x-plantini-implementation-status: implemented
+      responses:
+        '200': {description: Read progress across owned classes, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingDashboard'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+  /teaching/classes:
+    get:
+      summary: List owned classes
+      tags: [Teaching]
+      operationId: listTeachingClasses
+      x-plantini-implementation-status: implemented
+      responses:
+        '200': {description: List owned classes, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingClassList'}}}}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+    post:
+      summary: Create an owned class
+      tags: [Teaching]
+      operationId: createTeachingClass
+      x-plantini-implementation-status: implemented
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingCreateClassRequest'}}}}
+      responses:
+        '201': {description: Create an owned class, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingClass'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+        '409': {$ref: '#/components/responses/TeachingConflict'}
+  /teaching/classes/{classId}:
+    parameters:
+      - {name: classId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    get:
+      summary: Read an owned class and student progress
+      tags: [Teaching]
+      operationId: getTeachingClass
+      x-plantini-implementation-status: implemented
+      responses:
+        '200': {description: Read an owned class and student progress, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingClassDetail'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+        '404': {$ref: '#/components/responses/TeachingNotFound'}
+  /teaching/classes/{classId}/students:
+    parameters:
+      - {name: classId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    post:
+      summary: Create a managed learner in an owned class
+      tags: [Teaching]
+      operationId: createTeachingStudent
+      x-plantini-implementation-status: implemented
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingCreateStudentRequest'}}}}
+      responses:
+        '201': {description: Create a managed learner in an owned class, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingCreateStudentResponse'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+        '404': {$ref: '#/components/responses/TeachingNotFound'}
+        '409': {$ref: '#/components/responses/TeachingConflict'}
+        '503': {$ref: '#/components/responses/TeachingIdentityUnavailable'}
+  /teaching/students/{studentId}/reset-password:
+    parameters:
+      - {name: studentId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    post:
+      summary: Reset a managed learner password
+      description: No request body is needed. An empty JSON object is accepted for compatibility; any fields or non-object bodies are rejected with 400.
+      tags: [Teaching]
+      operationId: resetTeachingStudentPassword
+      x-plantini-implementation-status: implemented
+      responses:
+        '200': {description: Reset a managed learner password, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingResetPasswordResponse'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+        '404': {$ref: '#/components/responses/TeachingNotFound'}
+        '503': {$ref: '#/components/responses/TeachingIdentityUnavailable'}
+  /teaching/students/{studentId}:
+    parameters:
+      - {name: studentId, in: path, required: true, schema: {$ref: '#/components/schemas/Id'}}
+    patch:
+      summary: Enable or disable an owned managed learner
+      tags: [Teaching]
+      operationId: updateTeachingStudent
+      x-plantini-implementation-status: implemented
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingUpdateStudentRequest'}}}}
+      responses:
+        '200': {description: Enable or disable an owned managed learner, content: {application/json: {schema: {$ref: '#/components/schemas/TeachingUpdateStudentResponse'}}}}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/TeachingForbidden'}
+        '404': {$ref: '#/components/responses/TeachingNotFound'}
+        '503': {$ref: '#/components/responses/TeachingIdentityUnavailable'}
   /me:
     get:
       summary: Read the authenticated profile
@@ -722,12 +830,164 @@ components:
     CorrelationId: {description: Stable request trace identifier, schema: {type: string, minLength: 8, maxLength: 128, pattern: '^[A-Za-z0-9._-]+$'}}
     ApiVersion: {description: Served major API boundary, schema: {type: string, enum: [v1]}}
   responses:
+    TeachingForbidden: {description: 'TEACHING_FORBIDDEN for callers without lehrende or systemadministration (including learners); TEACHING_ACCOUNT_PROTECTED for accounts that are not managed unprivileged learners.', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    TeachingNotFound: {description: 'TEACHING_CLASS_NOT_FOUND or TEACHING_STUDENT_NOT_FOUND; foreign-owned resources also return 404.', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    TeachingConflict: {description: 'TEACHING_USERNAME_EXISTS for duplicate username or email; TEACHING_LIMIT_REACHED at 100 classes per teacher or 500 students per class.', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
+    TeachingIdentityUnavailable: {description: 'TEACHING_IDENTITY_UNAVAILABLE when identity administration is unconfigured or the provider cannot complete the operation.', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
     BadRequest: {description: Request violates a documented input invariant, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
     Unauthorized: {description: 'Missing, expired or invalid bearer token', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
     NotFound: {description: Resource is unavailable to this caller, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
     Conflict: {description: 'Version, idempotency or state conflict', headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
     Forbidden: {description: Caller does not have the required role or scope, headers: {X-Correlation-Id: {$ref: '#/components/headers/CorrelationId'}, X-API-Version: {$ref: '#/components/headers/ApiVersion'}}, content: {application/problem+json: {schema: {$ref: '#/components/schemas/Problem'}}}}
   schemas:
+    TeachingActor:
+      type: object
+      additionalProperties: false
+      required: [id, displayName, roles]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        displayName: {type: string}
+        roles: {type: array, items: {type: string}}
+    TeachingCapabilities:
+      type: object
+      additionalProperties: false
+      description: Whether identity administration credentials are configured; does not guarantee provider availability.
+      required: [manageStudents]
+      properties:
+        manageStudents: {type: boolean}
+    TeachingSession:
+      type: object
+      additionalProperties: false
+      required: [actor, capabilities]
+      properties:
+        actor: {$ref: '#/components/schemas/TeachingActor'}
+        capabilities: {$ref: '#/components/schemas/TeachingCapabilities'}
+    TeachingClass:
+      type: object
+      additionalProperties: false
+      description: studentCount reflects populated student relations; creation and detail responses currently return zero.
+      required: [id, name, description, studentCount, createdAt]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        name: {type: string}
+        description: {type: string}
+        studentCount: {type: integer, minimum: 0}
+        createdAt: {type: string, format: date-time}
+    TeachingClassList:
+      type: object
+      additionalProperties: false
+      required: [classes]
+      properties:
+        classes: {type: array, items: {$ref: '#/components/schemas/TeachingClass'}}
+    TeachingStudent:
+      type: object
+      additionalProperties: false
+      required: [id, username, displayName, enabled]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        username: {type: string}
+        displayName: {type: string}
+        email: {type: string, format: email}
+        enabled: {type: boolean}
+    TeachingEcosystemProgress:
+      type: object
+      additionalProperties: false
+      required: [id, name, completedLevels, totalLevels, progress]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        name: {type: string}
+        completedLevels: {type: integer, minimum: 0}
+        totalLevels: {type: integer, minimum: 0}
+        progress: {type: number, minimum: 0, maximum: 1}
+    TeachingStudentProgress:
+      type: object
+      additionalProperties: false
+      required: [id, username, displayName, enabled, completedLevels, totalLevels, progress, lastActivityAt, ecosystems]
+      properties:
+        id: {$ref: '#/components/schemas/Id'}
+        username: {type: string}
+        displayName: {type: string}
+        email: {type: string, format: email}
+        enabled: {type: boolean}
+        completedLevels: {type: integer, minimum: 0}
+        totalLevels: {type: integer, minimum: 0}
+        progress: {type: number, minimum: 0, maximum: 1}
+        lastActivityAt: {type: [string, 'null'], format: date-time}
+        ecosystems: {type: array, items: {$ref: '#/components/schemas/TeachingEcosystemProgress'}}
+    TeachingClassDetail:
+      type: object
+      additionalProperties: false
+      required: [class, students]
+      properties:
+        class: {$ref: '#/components/schemas/TeachingClass'}
+        students: {type: array, items: {$ref: '#/components/schemas/TeachingStudentProgress'}}
+    TeachingRecentActivity:
+      type: object
+      additionalProperties: false
+      required: [studentId, displayName, className, completedAt, levelTitle]
+      properties:
+        studentId: {$ref: '#/components/schemas/Id'}
+        displayName: {type: string}
+        className: {type: string}
+        completedAt: {type: string, format: date-time}
+        levelTitle: {type: string}
+    TeachingDashboard:
+      type: object
+      additionalProperties: false
+      required: [classes, students, activeStudents, completedLevels, totalLevels, averageProgress, ecosystems, recentActivity]
+      properties:
+        classes: {type: integer, minimum: 0}
+        students: {type: integer, minimum: 0}
+        activeStudents: {type: integer, minimum: 0}
+        completedLevels: {type: integer, minimum: 0}
+        totalLevels: {type: integer, minimum: 0}
+        averageProgress: {type: number, minimum: 0, maximum: 1}
+        ecosystems: {type: array, items: {$ref: '#/components/schemas/TeachingEcosystemProgress'}}
+        recentActivity: {type: array, maxItems: 8, items: {$ref: '#/components/schemas/TeachingRecentActivity'}}
+    TeachingCreateClassRequest:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        description: {type: [string, 'null'], maxLength: 1000}
+    TeachingCreateStudentRequest:
+      type: object
+      additionalProperties: false
+      required: [username, displayName]
+      properties:
+        username: {type: string, minLength: 3, maxLength: 64, pattern: '^[a-zA-Z0-9][a-zA-Z0-9._-]+$', description: Normalized to lowercase by the server.}
+        displayName: {type: string, minLength: 1, maxLength: 100}
+        email: {type: [string, 'null'], maxLength: 254, description: 'Optional email; null or an empty string is treated as omitted. Nonempty values must be valid email addresses and are normalized to lowercase.'}
+    TeachingUpdateStudentRequest:
+      type: object
+      additionalProperties: false
+      required: [enabled]
+      properties:
+        enabled: {type: boolean}
+    TeachingTemporaryPassword:
+      type: string
+      readOnly: true
+      description: Sensitive temporary password returned only by this creation or reset response. Display once for secure handoff; never log or persist it. The learner must change it at next login.
+    TeachingCreateStudentResponse:
+      type: object
+      additionalProperties: false
+      required: [student, temporaryPassword]
+      properties:
+        student: {$ref: '#/components/schemas/TeachingStudent'}
+        temporaryPassword: {$ref: '#/components/schemas/TeachingTemporaryPassword'}
+    TeachingResetPasswordResponse:
+      type: object
+      additionalProperties: false
+      required: [temporaryPassword]
+      properties:
+        temporaryPassword: {$ref: '#/components/schemas/TeachingTemporaryPassword'}
+    TeachingUpdateStudentResponse:
+      type: object
+      additionalProperties: false
+      required: [student]
+      properties:
+        student: {$ref: '#/components/schemas/TeachingStudent'}
     Id: {type: string, format: uuid}
     Problem:
       type: object

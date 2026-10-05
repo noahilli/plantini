@@ -99,6 +99,23 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(StartLevelAttemptRequest.serializer)
       ..add(SyncRequest.serializer)
       ..add(SyncResponse.serializer)
+      ..add(TeachingActor.serializer)
+      ..add(TeachingCapabilities.serializer)
+      ..add(TeachingClass.serializer)
+      ..add(TeachingClassDetail.serializer)
+      ..add(TeachingClassList.serializer)
+      ..add(TeachingCreateClassRequest.serializer)
+      ..add(TeachingCreateStudentRequest.serializer)
+      ..add(TeachingCreateStudentResponse.serializer)
+      ..add(TeachingDashboard.serializer)
+      ..add(TeachingEcosystemProgress.serializer)
+      ..add(TeachingRecentActivity.serializer)
+      ..add(TeachingResetPasswordResponse.serializer)
+      ..add(TeachingSession.serializer)
+      ..add(TeachingStudent.serializer)
+      ..add(TeachingStudentProgress.serializer)
+      ..add(TeachingUpdateStudentRequest.serializer)
+      ..add(TeachingUpdateStudentResponse.serializer)
       ..add(UpdateObservationRequest.serializer)
       ..add(UpdateProfileRequest.serializer)
       ..add(UserProfile.serializer)
@@ -180,6 +197,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(String)]),
           () => ListBuilder<String>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(String)]),
+          () => ListBuilder<String>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PlantProfileCardsInner)]),
           () => ListBuilder<PlantProfileCardsInner>())
@@ -201,6 +221,25 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltSet, const [const FullType(String)]),
           () => SetBuilder<String>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(TeachingClass)]),
+          () => ListBuilder<TeachingClass>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(TeachingEcosystemProgress)]),
+          () => ListBuilder<TeachingEcosystemProgress>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(TeachingEcosystemProgress)]),
+          () => ListBuilder<TeachingEcosystemProgress>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(TeachingRecentActivity)]),
+          () => ListBuilder<TeachingRecentActivity>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(TeachingStudentProgress)]),
+          () => ListBuilder<TeachingStudentProgress>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(UserProfileRolesEnum)]),

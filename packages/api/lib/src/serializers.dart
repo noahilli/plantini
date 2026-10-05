@@ -77,6 +77,23 @@ import 'package:openapi/src/model/species_card.dart';
 import 'package:openapi/src/model/start_level_attempt_request.dart';
 import 'package:openapi/src/model/sync_request.dart';
 import 'package:openapi/src/model/sync_response.dart';
+import 'package:openapi/src/model/teaching_actor.dart';
+import 'package:openapi/src/model/teaching_capabilities.dart';
+import 'package:openapi/src/model/teaching_class.dart';
+import 'package:openapi/src/model/teaching_class_detail.dart';
+import 'package:openapi/src/model/teaching_class_list.dart';
+import 'package:openapi/src/model/teaching_create_class_request.dart';
+import 'package:openapi/src/model/teaching_create_student_request.dart';
+import 'package:openapi/src/model/teaching_create_student_response.dart';
+import 'package:openapi/src/model/teaching_dashboard.dart';
+import 'package:openapi/src/model/teaching_ecosystem_progress.dart';
+import 'package:openapi/src/model/teaching_recent_activity.dart';
+import 'package:openapi/src/model/teaching_reset_password_response.dart';
+import 'package:openapi/src/model/teaching_session.dart';
+import 'package:openapi/src/model/teaching_student.dart';
+import 'package:openapi/src/model/teaching_student_progress.dart';
+import 'package:openapi/src/model/teaching_update_student_request.dart';
+import 'package:openapi/src/model/teaching_update_student_response.dart';
 import 'package:openapi/src/model/update_observation_request.dart';
 import 'package:openapi/src/model/update_profile_request.dart';
 import 'package:openapi/src/model/user_profile.dart';
@@ -147,6 +164,23 @@ part 'serializers.g.dart';
   StartLevelAttemptRequest,
   SyncRequest,
   SyncResponse,
+  TeachingActor,
+  TeachingCapabilities,
+  TeachingClass,
+  TeachingClassDetail,
+  TeachingClassList,
+  TeachingCreateClassRequest,
+  TeachingCreateStudentRequest,
+  TeachingCreateStudentResponse,
+  TeachingDashboard,
+  TeachingEcosystemProgress,
+  TeachingRecentActivity,
+  TeachingResetPasswordResponse,
+  TeachingSession,
+  TeachingStudent,
+  TeachingStudentProgress,
+  TeachingUpdateStudentRequest,
+  TeachingUpdateStudentResponse,
   UpdateObservationRequest,
   UpdateProfileRequest,
   UserProfile,
@@ -157,24 +191,12 @@ Serializers serializers = (_$serializers.toBuilder()
         () => MapBuilder<String, String>(),
       )
       ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(LevelProgress)]),
-        () => ListBuilder<LevelProgress>(),
-      )
-      ..addBuilderFactory(
-        const FullType(BuiltSet, [FullType(String)]),
-        () => SetBuilder<String>(),
+        const FullType(BuiltList, [FullType(TeachingRecentActivity)]),
+        () => ListBuilder<TeachingRecentActivity>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(IdentificationCandidate)]),
         () => ListBuilder<IdentificationCandidate>(),
-      )
-      ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(ContentChange)]),
-        () => ListBuilder<ContentChange>(),
-      )
-      ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(JsonObject)]),
-        () => ListBuilder<JsonObject>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(Ecosystem)]),
@@ -193,28 +215,12 @@ Serializers serializers = (_$serializers.toBuilder()
         () => ListBuilder<AdminUser>(),
       )
       ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(QuizAnswer)]),
-        () => ListBuilder<QuizAnswer>(),
-      )
-      ..addBuilderFactory(
         const FullType(BuiltList, [FullType(ContentPackage)]),
         () => ListBuilder<ContentPackage>(),
       )
       ..addBuilderFactory(
-        const FullType(BuiltMap, [FullType(String), FullType(CollectionShare)]),
-        () => MapBuilder<String, CollectionShare>(),
-      )
-      ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(PlantProfileCardsInner)]),
-        () => ListBuilder<PlantProfileCardsInner>(),
-      )
-      ..addBuilderFactory(
         const FullType(BuiltList, [FullType(Observation)]),
         () => ListBuilder<Observation>(),
-      )
-      ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(PublicMedia)]),
-        () => ListBuilder<PublicMedia>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(EditorItemSummary)]),
@@ -229,12 +235,52 @@ Serializers serializers = (_$serializers.toBuilder()
         () => ListBuilder<LearningEvent>(),
       )
       ..addBuilderFactory(
-        const FullType(BuiltList, [FullType(Achievement)]),
-        () => ListBuilder<Achievement>(),
-      )
-      ..addBuilderFactory(
         const FullType(BuiltList, [FullType(Problem)]),
         () => ListBuilder<Problem>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(TeachingStudentProgress)]),
+        () => ListBuilder<TeachingStudentProgress>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(LevelProgress)]),
+        () => ListBuilder<LevelProgress>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltSet, [FullType(String)]),
+        () => SetBuilder<String>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(ContentChange)]),
+        () => ListBuilder<ContentChange>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(JsonObject)]),
+        () => ListBuilder<JsonObject>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(QuizAnswer)]),
+        () => ListBuilder<QuizAnswer>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltMap, [FullType(String), FullType(CollectionShare)]),
+        () => MapBuilder<String, CollectionShare>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PlantProfileCardsInner)]),
+        () => ListBuilder<PlantProfileCardsInner>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(PublicMedia)]),
+        () => ListBuilder<PublicMedia>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(TeachingEcosystemProgress)]),
+        () => ListBuilder<TeachingEcosystemProgress>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(Achievement)]),
+        () => ListBuilder<Achievement>(),
       )
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(String)]),
@@ -243,6 +289,10 @@ Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
         const FullType(BuiltList, [FullType(QuizItem)]),
         () => ListBuilder<QuizItem>(),
+      )
+      ..addBuilderFactory(
+        const FullType(BuiltList, [FullType(TeachingClass)]),
+        () => ListBuilder<TeachingClass>(),
       )
       ..add(const OneOfSerializer())
       ..add(const AnyOfSerializer())

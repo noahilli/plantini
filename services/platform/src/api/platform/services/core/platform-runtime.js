@@ -17,6 +17,7 @@ const { createStrapiRepositories } = require('./strapi-repositories');
 const { ProblemError } = require('./errors');
 const { EditorService } = require('./editor/editor-service');
 const { KeycloakInvitations } = require('./editor/keycloak-invitations');
+const { TeachingService } = require('./teaching/teaching-service');
 
 const runtimes = new WeakMap();
 
@@ -73,6 +74,7 @@ function getPlatformRuntime(strapi) {
   });
   runtime.editor = new EditorService(strapi, runtime);
   runtime.editorInvitations = new KeycloakInvitations();
+  runtime.teaching = new TeachingService(strapi, runtime);
   runtimes.set(strapi, runtime);
   return runtime;
 }
@@ -98,6 +100,9 @@ async function resolveActor(ctx, runtime) {
       status: 403,
       detail: 'Dieses Konto ist gesperrt.',
     });
+  }
+  if (profile?.tokensValidAfter && (!Number.isFinite(claims.iat) || claims.iat <= Math.floor(Date.parse(profile.tokensValidAfter) / 1000))) {
+    throw authenticationError('AUTH_SESSION_REVOKED', 'Die Sitzung wurde beendet. Bitte erneut anmelden.');
   }
   return actor;
 }

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#183e32">
+  <title>Plantini · Lehrendenportal</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#content">Zum Inhalt springen</a>
+  <section id="welcome" class="welcome" aria-labelledby="welcome-title">
+    <div class="welcome-card"><span class="brand-mark" aria-hidden="true">❧</span><p class="eyebrow">PLANTINI · LEHRENDENPORTAL</p><h1 id="welcome-title">Gemeinsam Wissen<br>wachsen lassen.</h1><p id="welcome-message" role="status">Das Portal wird vorbereitet …</p><button id="login" hidden>Anmelden</button></div>
+  </section>
+  <div id="shell" class="shell" hidden>
+    <aside class="sidebar" aria-label="Portalnavigation">
+      <a class="brand" href="#" id="brand"><span class="brand-mark" aria-hidden="true">❧</span><span>plantini<small>Lehrendenportal</small></span></a>
+      <p class="nav-label">LERNEN BEGLEITEN</p>
+      <nav><button data-page="dashboard">Übersicht <span aria-hidden="true">↗</span></button><button data-page="classes">Meine Klassen <span aria-hidden="true">→</span></button></nav>
+      <div class="sidebar-note"><span aria-hidden="true">❧</span><p>Neugier säen.<br>Wissen wachsen lassen.</p></div>
+      <div class="account"><span id="actor"></span><small>Angemeldetes Konto</small><button id="logout" class="quiet">Abmelden</button></div>
+    </aside>
+    <div class="workspace"><header class="topbar"><span>Schule trifft Natur.</span><span class="portal-label">Plantini für Lehrende</span></header><main id="content" tabindex="-1"></main><footer>Plantini · Gemeinsam die Pflanzenwelt entdecken</footer></div>
+  </div>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+  <dialog id="dialog" aria-labelledby="dialog-title"></dialog>
+</body>
+</html>

@@ -14,6 +14,7 @@ module.exports = {
 
   async bootstrap({ strapi }) {
     const runtime = getPlatformRuntime(strapi);
+    await runtime.teaching.ensureIndexes();
     if (process.env.PLATFORM_SEED_DEMO_CONTENT === 'true') {
       await seedDemoContent(strapi);
       strapi.log.warn('Synthetic E2E content is enabled; never use this flag in staging or production.');

@@ -1,0 +1,16 @@
+{
+  "kind": "collectionType",
+  "collectionName": "teaching_students",
+  "info": { "singularName": "teaching-student", "pluralName": "teaching-students", "displayName": "Managed Student" },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "publicId": { "type": "string", "required": true, "unique": true },
+    "keycloakSubject": { "type": "string", "required": true, "unique": true, "private": true },
+    "profileId": { "type": "string", "required": true, "unique": true, "private": true },
+    "username": { "type": "string", "required": true, "unique": true },
+    "displayName": { "type": "string", "required": true },
+    "email": { "type": "email" },
+    "enabled": { "type": "boolean", "required": true, "default": false },
+    "classroom": { "type": "relation", "relation": "manyToOne", "target": "api::teaching-class.teaching-class", "inversedBy": "students", "required": true }
+  }
+}

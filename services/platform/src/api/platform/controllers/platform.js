@@ -170,6 +170,39 @@ module.exports = {
     });
   },
 
+  async teachingSession(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.session(actor));
+  },
+  async teachingDashboard(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.dashboard(actor));
+  },
+  async teachingClasses(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.classes(actor));
+  },
+  async teachingCreateClass(ctx) {
+    return withActor(ctx, async (runtime, actor) => {
+      const result = await runtime.teaching.createClass(actor, ctx.request.body);
+      ctx.status = 201;
+      return result;
+    });
+  },
+  async teachingClass(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.classroom(actor, ctx.params.classId));
+  },
+  async teachingCreateStudent(ctx) {
+    return withActor(ctx, async (runtime, actor) => {
+      const result = await runtime.teaching.createStudent(actor, ctx.params.classId, ctx.request.body);
+      ctx.status = 201;
+      return result;
+    });
+  },
+  async teachingResetPassword(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.resetPassword(actor, ctx.params.studentId, ctx.request.body));
+  },
+  async teachingUpdateStudent(ctx) {
+    return withActor(ctx, (runtime, actor) => runtime.teaching.updateStudent(actor, ctx.params.studentId, ctx.request.body));
+  },
+
   async startLevelAttempt(ctx) {
     return withActor(ctx, async (runtime, actor) => {
       const result = await runtime.learning.startAttempt(actor, ctx.request.body, ctx.get('idempotency-key'));

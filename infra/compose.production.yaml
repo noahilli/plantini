@@ -118,7 +118,7 @@ services:
       ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?missing STRAPI_ADMIN_JWT_SECRET}
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?missing STRAPI_TRANSFER_TOKEN_SALT}
       JWT_SECRET: ${STRAPI_JWT_SECRET:?missing STRAPI_JWT_SECRET}
-      CORS_ORIGINS: ${WEB_PUBLIC_URL:?missing WEB_PUBLIC_URL},${EDITOR_PUBLIC_URL:?missing EDITOR_PUBLIC_URL}
+      CORS_ORIGINS: ${WEB_PUBLIC_URL:?missing WEB_PUBLIC_URL},${EDITOR_PUBLIC_URL:?missing EDITOR_PUBLIC_URL},${TEACHER_PUBLIC_URL:?missing TEACHER_PUBLIC_URL}
       PLATFORM_EDITOR_ORIGIN: ${EDITOR_PUBLIC_URL:?missing EDITOR_PUBLIC_URL}
       PLATFORM_EDITOR_OIDC_CLIENT_ID: plantini-editor-production
       PLATFORM_KEYCLOAK_ADMIN_BASE_URL: http://keycloak:8080
@@ -170,6 +170,27 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
       interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    security_opt: [no-new-privileges:true]
+
+  teacher:
+    image: ${TEACHER_IMAGE:?set the plantini/teacher image built from apps/teacher}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp, /var/cache/nginx, /var/run]
+    cap_drop: [ALL]
+    environment:
+      PLANTINI_API_BASE_URL: ${API_PUBLIC_URL:?missing API_PUBLIC_URL}/api/v1
+      PLANTINI_OIDC_ISSUER_URL: ${AUTH_PUBLIC_URL:?missing AUTH_PUBLIC_URL}/realms/plantini
+      PLANTINI_OIDC_CLIENT_ID: plantini-teacher-production
+    ports:
+      - "127.0.0.1:${TEACHER_LOOPBACK_PORT:-8085}:8080"
+    networks: [edge]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 10s
       timeout: 5s
       retries: 6
       start_period: 5s

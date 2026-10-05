@@ -15,9 +15,8 @@ const source = new URL('../../services/identity/realm/plantini-realm.json', impo
 const realm = JSON.parse(await readFile(source, 'utf8'));
 
 realm.sslRequired = 'all';
-// Self-registration stays open; the validator requires it together with
-// e-mail verification and password reset.
-realm.registrationAllowed = true;
+// Learner accounts are provisioned by teachers through the portal.
+realm.registrationAllowed = false;
 realm.verifyEmail = true;
 realm.resetPasswordAllowed = true;
 realm.smtpServer = {
@@ -47,6 +46,15 @@ editor.enabled = true;
 editor.redirectUris = [`${editorOrigin.origin}/`];
 editor.webOrigins = [editorOrigin.origin];
 editor.attributes = { ...editor.attributes, 'post.logout.redirect.uris': `${editorOrigin.origin}/` };
+
+const teacher = realm.clients.find((client) => client.clientId === 'plantini-teacher-production');
+if (!teacher) throw new Error('plantini-teacher-production is missing in the versioned realm');
+const teacherOrigin = new URL(origin);
+teacherOrigin.hostname = `portal.${teacherOrigin.hostname.replace(/^app\./, '')}`;
+teacher.enabled = true;
+teacher.redirectUris = [`${teacherOrigin.origin}/`];
+teacher.webOrigins = [teacherOrigin.origin];
+teacher.attributes = { ...teacher.attributes, 'post.logout.redirect.uris': `${teacherOrigin.origin}/` };
 
 // Native app: phones return to the app through the verified App Link
 // `https://plantini.eu/app/login` (fallback page -> `eu.plantini.app://oauth2redirect`), desktops receive the code on a loopback

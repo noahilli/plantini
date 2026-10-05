@@ -1,0 +1,29 @@
+# Add to the isolated E2E stack without resetting any of its named volumes.
+services:
+  platform:
+    environment:
+      CORS_ORIGINS: http://127.0.0.1:3000,http://127.0.0.1:8084,http://127.0.0.1:8085
+      PLATFORM_KEYCLOAK_ADMIN_BASE_URL: http://keycloak:8080
+      PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID: ${PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID:?run configure-managed-accounts.mjs}
+      PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET: ${PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET:?run configure-managed-accounts.mjs}
+      PLATFORM_EDITOR_ORIGIN: http://127.0.0.1:8084
+      PLATFORM_EDITOR_OIDC_CLIENT_ID: plantini-editor-dev
+
+  teacher:
+    image: plantini/teacher:local
+    build:
+      context: ../apps/teacher
+    read_only: true
+    tmpfs: [/tmp, /var/cache/nginx, /var/run]
+    cap_drop: [ALL]
+    environment:
+      PLANTINI_API_BASE_URL: http://127.0.0.1:1338/api/v1
+      PLANTINI_OIDC_ISSUER_URL: http://127.0.0.1:8082/realms/plantini
+      PLANTINI_OIDC_CLIENT_ID: plantini-teacher-dev
+    ports:
+      - "127.0.0.1:8085:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 12

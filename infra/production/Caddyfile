@@ -61,6 +61,12 @@ studio.{$PLANTINI_DOMAIN} {
 	reverse_proxy 127.0.0.1:{$EDITOR_PORT:8084}
 }
 
+# Class and pupil administration has its own PKCE client and UI container.
+portal.{$PLANTINI_DOMAIN} {
+	import security_headers
+	reverse_proxy 127.0.0.1:{$TEACHER_PORT:8085}
+}
+
 # Fach-API. Only the public API prefix is reachable: Strapi's /admin and its
 # built-in /api/auth/local/register are deliberately not proxied.
 api.{$PLANTINI_DOMAIN} {

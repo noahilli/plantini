@@ -27,7 +27,7 @@
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": true,
+  "registrationAllowed": false,
   "registrationEmailAsUsername": true,
   "rememberMe": false,
   "verifyEmail": true,
@@ -533,6 +533,14 @@
     {
       "client": "plantini-editor-production",
       "roles": ["inhaltsredaktion", "botanisches_review", "systemadministration"]
+    },
+    {
+      "client": "plantini-teacher-dev",
+      "roles": ["lehrende", "systemadministration"]
+    },
+    {
+      "client": "plantini-teacher-production",
+      "roles": ["lehrende", "systemadministration"]
     }
   ],
   "clientScopeMappings": {
@@ -547,6 +555,42 @@
     ]
   },
   "clients": [
+    {
+      "clientId": "plantini-teacher-dev",
+      "name": "Plantini Lehrendenportal (development, IPv4)",
+      "enabled": true,
+      "redirectUris": ["http://127.0.0.1:8085/"],
+      "webOrigins": ["http://127.0.0.1:8085"],
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": false,
+      "attributes": { "pkce.code.challenge.method": "S256", "post.logout.redirect.uris": "http://127.0.0.1:8085/" },
+      "defaultClientScopes": ["roles", "plantini-api-audience"],
+      "optionalClientScopes": ["profile", "email"]
+    },
+    {
+      "clientId": "plantini-teacher-production",
+      "name": "Plantini Lehrendenportal (production)",
+      "enabled": false,
+      "redirectUris": [],
+      "webOrigins": [],
+      "publicClient": true,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": false,
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "defaultClientScopes": ["roles", "plantini-api-audience"],
+      "optionalClientScopes": ["profile", "email"]
+    },
     {
       "id": "0996d755-27a2-46e6-b00a-651492a96b9a",
       "clientId": "account",

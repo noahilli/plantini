@@ -15,6 +15,7 @@ import 'package:openapi/src/api/field_api.dart';
 import 'package:openapi/src/api/herbarium_api.dart';
 import 'package:openapi/src/api/learning_api.dart';
 import 'package:openapi/src/api/profile_api.dart';
+import 'package:openapi/src/api/teaching_api.dart';
 
 class Openapi {
   static const String basePath = r'http://127.0.0.1:1338/api/v1';
@@ -170,5 +171,11 @@ class Openapi {
   /// by doing that all interceptors will not be executed
   ProfileApi getProfileApi() {
     return ProfileApi(dio, serializers);
+  }
+
+  /// Get TeachingApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  TeachingApi getTeachingApi() {
+    return TeachingApi(dio, serializers);
   }
 }

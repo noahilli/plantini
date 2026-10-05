@@ -61,7 +61,7 @@ Abnahme: Alle Features verwenden dieselben Konfigurations-, Navigations-, Fehler
 - [x] **P0 | AUTH-03:** Objekt- und organisationsbezogene Autorisierung für alle privaten Endpunkte implementieren, besonders Beobachtung, Upload und Export; BOLA-Negativtests ergänzen.
 - [x] **P0 | AUTH-04:** Keycloak-Client härten: konkrete Redirect-URIs/Web-Origins, PKCE, keine Wildcards/Direct Access Grants und getrennte Clients je Umgebung.
 - [x] **P1 | AUTH-05:** Tokens plattformsicher persistieren, Refresh/Ablauf behandeln sowie lokale und globale Abmeldung/Widerruf umsetzen.
-- [ ] **P1 | AUTH-06:** Registrierung, E-Mail-Verifikation, Passwort-Reset, Sperrung und verständliche Fehlerzustände E2E umsetzen.
+- [ ] **P1 | AUTH-06:** Verwaltete Kontoanlage, erster Login, E-Mail-Verifikation, Passwort-Reset, Sperrung und verständliche Fehlerzustände E2E umsetzen. Nutzerauftrag 05.10.: Selbstregistrierung entfällt; Lernendenkonten werden über das Lehrendenportal angelegt.
 - [ ] **P1 | AUTH-07:** Rollenmatrix für Lernende, Lehrende, Redaktion, Review, Organisations- und Systemadministration in Keycloak und API konsistent erzwingen.
 - [ ] **P2 | AUTH-08:** Administrative Einladung statt freier Backend-Selbstregistrierung implementieren und auditieren.
 - [ ] **P2 | AUTH-09:** Google, Apple und einen Test-Hochschul-IdP anbinden; sichere Kontoverknüpfung testen.
@@ -231,6 +231,11 @@ E2E-Freigabe. Details, Buildnachweise und bekannte WIP-Punkte:
 [`knowledge/handovers/game-development.md`](knowledge/handovers/game-development.md).
 
 ## Nächste Umsetzungsschnitte
+
+### Lehrendenportal und ausstehende Ausrollung (05. Oktober 2026)
+
+- [ ] **P1 | TEACH-01:** Eigenen Container für Lehrendenportal ausrollen: Klassen und Schülerkonten anlegen, individuelle/aggregierte serverbestätigte Lernfortschritte, Passwort-Reset und Sperrung über Keycloak, Klassenbesitz serverseitig erzwingen. Implementierung und Container vorhanden; integrierte Browserabnahme und Deployment laufen. Selbstregistrierung wird deaktiviert, bestehende Konten bleiben erhalten. Konzept und Kennzahldefinitionen: `knowledge/teacher-portal.md`.
+- [ ] **P1 | RELEASE-10:** Seit Studio-Release `5ec1895` ausstehende Backend-/App-Änderungen einschließlich Content-Paketen und Offline-Validierung deployen, App 0.6.4+8 und Studio-Einladungsdienst aktivieren. Vorher Backup, danach HTTPS/Version/Paketprüfsummen und angemeldete Kernreise prüfen. Kein Vollabschluss von CONTENT-05/06 oder CMS-02/03 ohne die dort genannten zusätzlichen Nachweise.
 
 ### Neubewertung: Spielmissionen, Steckbriefe und Redaktion (22. September 2026)
 

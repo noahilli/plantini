@@ -1,0 +1,16 @@
+services:
+  teacher:
+    build: .
+    ports:
+      - "127.0.0.1:${TEACHER_HTTP_PORT:-8085}:${TEACHER_LISTEN_PORT:-8080}"
+    environment:
+      PLANTINI_API_BASE_URL: ${PLANTINI_API_BASE_URL:-https://api.plantini.eu/api/v1}
+      PLANTINI_OIDC_ISSUER_URL: ${PLANTINI_OIDC_ISSUER_URL:-https://auth.plantini.eu/realms/plantini}
+      PLANTINI_OIDC_CLIENT_ID: ${PLANTINI_OIDC_CLIENT_ID:-plantini-teacher-production}
+      TEACHER_LISTEN_PORT: ${TEACHER_LISTEN_PORT:-8080}
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    restart: unless-stopped

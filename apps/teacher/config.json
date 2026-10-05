@@ -1,0 +1,5 @@
+{
+  "apiBase": "https://api.plantini.eu/api/v1",
+  "issuer": "https://auth.plantini.eu/realms/plantini",
+  "clientId": "plantini-teacher-production"
+}
