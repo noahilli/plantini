@@ -66,7 +66,10 @@ Compose-/Caddy-Konfiguration, Webdateien und Android-Downloads bleiben unter
 ihrer Änderung separat gesichert.
 
 Aktiv sind `plantini/platform:059ac98`, `plantini/editor:059ac98` und
-`plantini/teacher:059ac98`. Die kleinen Source-Overlays wurden auf den zuvor
+`plantini/teacher:9a4b4d9`. Das Portal-Folgeupdate erzwingt bei expliziter
+Anmeldung einen erneuten Kontologin, damit gemeinsam genutzte Rechner nicht
+mit einer vorhandenen Schüler-SSO-Sitzung in einer 403-Schleife landen.
+Die kleinen Source-Overlays wurden auf den zuvor
 inspizierten lokalen Image-IDs gebaut; Backend-Lint, Check und 45 Tests bestanden
 im Build (vier optionale Redis-Tests übersprungen). Homepage und Keycloak-Image
 blieben unverändert. Der bestehende Realm wurde deklarativ um Portalclient und
