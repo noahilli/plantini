@@ -12,6 +12,7 @@ void main() {
       // TODO
     });
 
+    // Invited role; botanisches_review and lehrende require a systemadministration caller. Teacher invitations target the configured teacher portal.
     // String role
     test('to test the property `role`', () async {
       // TODO

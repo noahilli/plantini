@@ -126,6 +126,16 @@ export async function signInAsE2ELearner(
   );
 
   await enableFlutterWebSemantics(page);
+  const characterPrompt = page.getByText('Wer erkundet mit dir?', { exact: true });
+  const entry = await Promise.any([
+    characterPrompt.waitFor({ state: 'visible' }).then(() => 'character' as const),
+    appUi.learningNavigation(page).waitFor({ state: 'visible' }).then(() => 'home' as const),
+  ]);
+  if (entry === 'character') {
+    await page.getByRole('button', { name: /^Ich bin / }).click();
+  }
+  await expect(appUi.learningNavigation(page)).toBeVisible();
+  await appUi.learningNavigation(page).click();
   await expect(appUi.ecosystemsTitle(page)).toBeVisible();
 }
 

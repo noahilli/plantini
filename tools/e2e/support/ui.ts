@@ -41,7 +41,7 @@ export const ui = {
     save: 'Ergebnis speichern',
   },
   herbarium: {
-    title: 'MEIN HERBARIUM',
+    title: 'PERSÖNLICHE SAMMLUNG',
     addObservation: 'Neuen Fund bestimmen',
   },
 } as const;
@@ -53,20 +53,12 @@ export const ui = {
  */
 export const seededJourney = {
   ecosystem: 'Mitteleuropäischer Laubwald',
-  levelCard: 'Deine nächste Aufgabe 1. Arten erkennen',
-  levelTitle: 'Arten erkennen',
-  collectionTargets: ['Rotbuche', 'Stiel-Eiche', 'Hainbuche'],
+  levelCard: 'Entdeckerpfad: Rotbuche',
+  levelTitle: 'Entdeckerpfad: Rotbuche',
   quiz: [
     ['Welches Rindenmerkmal passt besonders gut zur Rotbuche?', 'Glatt und weißgrau'],
-    ['Welches Blattmerkmal spricht eher für die Stiel-Eiche als für die Trauben-Eiche?', 'Sehr kurzer Blattstiel und oft geöhrter Grund'],
-    ['Zu welcher Familie gehört die Hainbuche trotz ihres Namens?', 'Birkengewächse'],
-    ['Wie sind die Blätter des Berg-Ahorns am Zweig angeordnet?', 'Gegenständig'],
-    ['Welche Knospenfarbe ist für die Gewöhnliche Esche besonders charakteristisch?', 'Mattschwarz'],
-    ['Welches Blattmerkmal ist typisch für die Winter-Linde?', 'Herzförmige Spreite'],
-    ['Welche Wuchsform zeigt die Gewöhnliche Hasel meistens?', 'Mehrstämmiger Strauch'],
-    ['Wann blüht das Busch-Windröschen typischerweise?', 'Von März bis Mai'],
-    ['Welche Blütenform passt zum Bär-Lauch?', 'Weiße sternförmige Blüten in einer Scheindolde'],
-    ['Wie stehen die Wedel des Gewöhnlichen Wurmfarns typischerweise?', 'Trichterförmig aus einem Stock'],
+    ['Wie sehen die Winterknospen der Rotbuche typischerweise aus?', 'Lang, schmal und spitz'],
+    ['Welche Fruchtform gehört zur Rotbuche?', 'Dreikantige Nuss im Fruchtbecher'],
   ],
 } as const;
 
@@ -112,29 +104,30 @@ export const appUi = {
     name: new RegExp(`^(?:Ökosystem )?${escapeRegex(seededJourney.ecosystem)}`),
   }),
   levelsTitle: (page: Page): Locator => exactText(page, ui.catalog.levels),
+  pauseLearningMapButton: (page: Page): Locator => namedButton(page, 'Bewegung anhalten'),
+  resumeLearningMapButton: (page: Page): Locator => namedButton(page, 'Bewegung einschalten'),
   levelCard: (page: Page): Locator => page.getByRole('button', {
-    name: seededJourney.levelCard,
-    exact: true,
+    name: new RegExp(`^${escapeRegex(seededJourney.levelCard)} Level 1:`),
   }),
   learningUnitTitle: (page: Page): Locator => exactText(page, ui.catalog.learningUnit),
-  levelTitle: (page: Page): Locator => exactText(page, seededJourney.levelTitle),
-  startQuizButton: (page: Page): Locator => namedButton(page, ui.catalog.startQuiz),
+  // The overview merges its title and mission into one semantics label.
+  levelTitle: (page: Page): Locator => page.getByText(seededJourney.levelTitle),
+  startQuizButton: (page: Page): Locator => namedButton(page, 'Level spielen'),
+  startQuestionsButton: (page: Page): Locator => namedButton(page, 'Jetzt 3 Fragen beantworten'),
   startExpeditionButton: (page: Page): Locator =>
     page.getByRole('button', { name: / sammeln$/, exact: true }),
 
   quizTitle: (page: Page): Locator => exactText(page, ui.learning.quiz),
   quizQuestion: (page: Page, question: string): Locator =>
-    exactText(page, `Quizfrage ${question}`),
+    exactText(page, question),
   quizAnswer: (page: Page, answer: string): Locator =>
-    page.getByRole('button', { name: `Antwort ${answer}`, exact: true }),
+    page.getByRole('button', { name: new RegExp(`^[A-D] ${escapeRegex(answer)}$`) }),
+  nextQuizQuestionButton: (page: Page): Locator => namedButton(page, 'Weiter'),
   completeLevelButton: (page: Page): Locator => namedButton(page, ui.learning.complete),
   completedLevel: (page: Page): Locator =>
-    page.getByRole('group', {
-      name: `Level abgeschlossen: ${seededJourney.levelTitle}`,
-      exact: true,
-    }),
+    exactText(page, 'Ein Levelstern verdient Dein Levelstern'),
 
-  fieldTitle: (page: Page): Locator => exactText(page, ui.field.title),
+  fieldTitle: (page: Page): Locator => page.getByText(/Finde und bestimme\s+eine Pflanze/),
   chooseFromGalleryButton: (page: Page): Locator => namedButton(page, ui.field.gallery),
   emptyPhotoState: (page: Page): Locator => exactText(page, ui.field.emptyPhotoState),
   identifyPlantButton: (page: Page): Locator => namedButton(page, ui.field.identify),
@@ -148,6 +141,8 @@ export const appUi = {
   saveObservationButton: (page: Page): Locator => namedButton(page, ui.field.save),
 
   herbariumTitle: (page: Page): Locator => exactText(page, ui.herbarium.title),
+  herbariumObservationsView: (page: Page): Locator =>
+    page.getByRole('checkbox', { name: 'Beobachtungen', exact: true }),
   addObservationButton: (page: Page): Locator => namedButton(page, ui.herbarium.addObservation),
   herbariumEntry: (page: Page, name: string): Locator =>
     page.getByRole('button', { name: new RegExp(`^${escapeRegex(name)}\\b`) }).first(),

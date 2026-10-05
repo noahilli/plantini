@@ -12,6 +12,7 @@ void main() {
       // TODO
     });
 
+    // Only systemadministration may invite botanisches_review or lehrende. Teacher invitations redirect to the configured teacher portal.
     // String role (default value: 'inhaltsredaktion')
     test('to test the property `role`', () async {
       // TODO
