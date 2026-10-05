@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../adapters/http/platform_api_client.dart';
+import '../../../app/app_version.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/result.dart';
 import '../../../core/storage/local_database.dart';
@@ -142,6 +143,7 @@ final class ContentSyncService {
     this.preferences,
     this.packageDownloader,
     this.localReleaseExists,
+    this.appVersion,
   });
 
   final PlatformApiClient apiClient;
@@ -149,6 +151,9 @@ final class ContentSyncService {
   final SharedPreferences? preferences;
   final PackageDownloader? packageDownloader;
   final LocalReleaseProbe? localReleaseExists;
+
+  /// Optional injection; production defaults to the bundled pubspec/define.
+  final String? appVersion;
 
   static const String activeContentVersionKey =
       'plantini.content.active_version';
@@ -178,6 +183,40 @@ final class ContentSyncService {
           missingFields: const ['manifest structure'],
         ),
       );
+    }
+
+    // Enforce compatibility before any package download or cache mutation,
+    // including forced syncs and releases already present locally.
+    final String currentVersion;
+    final List<int> current;
+    final List<int> minimum;
+    try {
+      currentVersion = appVersion ?? await AppVersion.read();
+      current = AppVersion.components(currentVersion);
+      minimum = AppVersion.components(manifest.minimumAppVersion);
+    } catch (error) {
+      return Result.failure(
+        ConfigurationFailure(
+          message:
+              'Die App-Version konnte nicht sicher ermittelt werden. '
+              'Der bisherige Inhaltsstand bleibt erhalten.',
+          cause: error,
+        ),
+      );
+    }
+    for (var index = 0; index < minimum.length; index++) {
+      if (current[index] > minimum[index]) break;
+      if (current[index] < minimum[index]) {
+        return Result.failure(
+          AppUpdateRequiredFailure(
+            message:
+                'App-Update erforderlich: Diese Inhalte benötigen mindestens '
+                'Plantini ${manifest.minimumAppVersion} '
+                '(installiert: $currentVersion). Bitte aktualisiere die App. '
+                'Der bisherige Inhaltsstand bleibt erhalten.',
+          ),
+        );
+      }
     }
 
     // Skip if already on this version and not forcing

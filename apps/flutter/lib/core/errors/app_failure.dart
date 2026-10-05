@@ -24,6 +24,11 @@ final class ConfigurationFailure extends AppFailure {
     : super(code: 'configuration_invalid');
 }
 
+final class AppUpdateRequiredFailure extends AppFailure {
+  const AppUpdateRequiredFailure({required super.message})
+    : super(code: 'app_update_required');
+}
+
 final class NetworkFailure extends AppFailure {
   const NetworkFailure({required super.message, super.cause})
     : super(code: 'network_unavailable');
