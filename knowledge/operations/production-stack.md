@@ -55,3 +55,38 @@ erfolglosen Jobversuchen bleibt der Auftrag mit `deadLetteredAt` persistent und
 kann in der App bewusst neu gestartet werden. Die Werte müssen zur tatsächlich
 gebuchten Providerquote passen und sind kein Ersatz für FIELD-09-Vertrags- und
 Datenschutzfreigaben.
+
+## Ausrollung 05.10.2026: Lehrendenportal und nachgeholtes App-Release
+
+Die bestehenden PostgreSQL-/Redis-/Keycloak-Volumes wurden weiterverwendet;
+kein `down`, Realm-Neuimport oder Zurücksetzen bestehender Nutzer. Vorher wurde
+das Produktionsbackup `20261005T105241Z` erfolgreich erstellt. Die vorherige
+Compose-/Caddy-Konfiguration, Webdateien und Android-Downloads bleiben unter
+`/opt/plantini/releases/3f00d12/` erhalten; die geschützte Env-Datei wurde vor
+ihrer Änderung separat gesichert.
+
+Aktiv sind `plantini/platform:059ac98`, `plantini/editor:059ac98` und
+`plantini/teacher:059ac98`. Die kleinen Source-Overlays wurden auf den zuvor
+inspizierten lokalen Image-IDs gebaut; Backend-Lint, Check und 45 Tests bestanden
+im Build (vier optionale Redis-Tests übersprungen). Homepage und Keycloak-Image
+blieben unverändert. Der bestehende Realm wurde deklarativ um Portalclient und
+beschränktes Kontoverwaltungs-Servicekonto ergänzt. Selbstregistrierung ist aus.
+
+- Lehrendenportal: https://portal.plantini.eu; Einrichtung und Rechte siehe
+  `knowledge/teacher-portal.md`. Bestehende Systemadmins können im Studio unter
+  Team Lehrende einladen; E-Mail-Zustellung benötigt funktionierendes SMTP.
+- Web-App: https://app.plantini.eu, Version **0.6.4+8**.
+- Signiertes Android-Paket: https://plantini.eu/download/plantini.apk;
+  Metadaten unter `/download/plantini.json`, SHA-256 unter
+  `/download/plantini.apk.sha256`. Lokale und ausgerollte APK-Prüfsummen stimmen.
+- Aktiver Katalog: `2026.10.02-de.2`, drei Ökosysteme, 90 Level, 30 Pflanzen.
+  Alle drei ausgelieferten Content-Pakete wurden auf Bytezahl und SHA-256
+  geprüft. Die Mindest-App-Version `0.6.3` wird jetzt durch die App erzwungen.
+
+HTTPS für Portal, Studio und App sowie API-Health und Container-Health wurden
+live geprüft. Die unangemeldete Lehrenden-API liefert 401. Die bestehende lokale
+E2E-Kernreise bestand zweimal, einschließlich Herbarium, Reload und erneuter
+Anmeldung; ihre Pflanzenbestimmung verwendet weiterhin den Mock-Anbieter.
+Dies ist kein Nachweis echter PlantNet-Antworten oder vollständiger
+Produktionsreife. Atomic Publishing im Studio, signierte Content-Manifeste und
+die weiteren offenen CMS-/Content-Abnahmebedingungen bleiben separate Aufgaben.
