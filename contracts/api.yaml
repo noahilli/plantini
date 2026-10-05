@@ -306,7 +306,8 @@ paths:
         '404': {$ref: '#/components/responses/NotFound'}
   /editor/invitations:
     post:
-      summary: Invite an editor; only system administrators may invite reviewers
+      summary: Invite an editor, reviewer or teacher
+      description: Only systemadministration may invite botanisches_review or lehrende; this restriction is checked by the server. Invitations for lehrende use the configured teacher portal origin and OIDC client for the target redirect.
       tags: [Editor]
       operationId: createEditorInvitation
       requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/EditorInvitationRequest'}}}}
@@ -1126,13 +1127,13 @@ components:
       required: [email]
       properties:
         email: {type: string, format: email}
-        role: {type: string, enum: [inhaltsredaktion, botanisches_review], default: inhaltsredaktion}
+        role: {type: string, enum: [inhaltsredaktion, botanisches_review, lehrende], default: inhaltsredaktion, description: 'Only systemadministration may invite botanisches_review or lehrende. Teacher invitations redirect to the configured teacher portal.'}
     EditorInvitation:
       type: object
       required: [email, role, status]
       properties:
         email: {type: string, format: email}
-        role: {type: string, enum: [inhaltsredaktion, botanisches_review]}
+        role: {type: string, enum: [inhaltsredaktion, botanisches_review, lehrende], description: 'Invited role; botanisches_review and lehrende require a systemadministration caller. Teacher invitations target the configured teacher portal.'}
         status: {type: string, enum: [invited]}
     ContentChangePage:
       type: object

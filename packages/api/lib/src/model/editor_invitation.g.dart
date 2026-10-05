@@ -10,6 +10,8 @@ const EditorInvitationRoleEnum _$editorInvitationRoleEnum_inhaltsredaktion =
     const EditorInvitationRoleEnum._('inhaltsredaktion');
 const EditorInvitationRoleEnum _$editorInvitationRoleEnum_botanischesReview =
     const EditorInvitationRoleEnum._('botanischesReview');
+const EditorInvitationRoleEnum _$editorInvitationRoleEnum_lehrende =
+    const EditorInvitationRoleEnum._('lehrende');
 
 EditorInvitationRoleEnum _$editorInvitationRoleEnumValueOf(String name) {
   switch (name) {
@@ -17,6 +19,8 @@ EditorInvitationRoleEnum _$editorInvitationRoleEnumValueOf(String name) {
       return _$editorInvitationRoleEnum_inhaltsredaktion;
     case 'botanischesReview':
       return _$editorInvitationRoleEnum_botanischesReview;
+    case 'lehrende':
+      return _$editorInvitationRoleEnum_lehrende;
     default:
       throw ArgumentError(name);
   }
@@ -26,6 +30,7 @@ final BuiltSet<EditorInvitationRoleEnum> _$editorInvitationRoleEnumValues =
     BuiltSet<EditorInvitationRoleEnum>(const <EditorInvitationRoleEnum>[
   _$editorInvitationRoleEnum_inhaltsredaktion,
   _$editorInvitationRoleEnum_botanischesReview,
+  _$editorInvitationRoleEnum_lehrende,
 ]);
 
 const EditorInvitationStatusEnum _$editorInvitationStatusEnum_invited =
@@ -55,10 +60,12 @@ class _$EditorInvitationRoleEnumSerializer
   static const Map<String, Object> _toWire = const <String, Object>{
     'inhaltsredaktion': 'inhaltsredaktion',
     'botanischesReview': 'botanisches_review',
+    'lehrende': 'lehrende',
   };
   static const Map<Object, String> _fromWire = const <Object, String>{
     'inhaltsredaktion': 'inhaltsredaktion',
     'botanisches_review': 'botanischesReview',
+    'lehrende': 'lehrende',
   };
 
   @override

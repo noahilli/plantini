@@ -1,0 +1,7 @@
+# A small, verified source-only update on an already transferred release image.
+# BASE_IMAGE must be the locally inspected immutable image ID. Dependencies and
+# content models must match that base; use the normal Dockerfile otherwise.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY --chown=plantini:plantini src/ /opt/plantini/src/
+RUN npm run lint && npm run check && npm test

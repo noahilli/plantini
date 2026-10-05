@@ -237,8 +237,8 @@ class EditorApi {
     );
   }
 
-  /// Invite an editor; only system administrators may invite reviewers
-  ///
+  /// Invite an editor, reviewer or teacher
+  /// Only systemadministration may invite botanisches_review or lehrende; this restriction is checked by the server. Invitations for lehrende use the configured teacher portal origin and OIDC client for the target redirect.
   ///
   /// Parameters:
   /// * [editorInvitationRequest]

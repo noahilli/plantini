@@ -8,6 +8,8 @@ services:
       PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET: ${PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET:?run configure-managed-accounts.mjs}
       PLATFORM_EDITOR_ORIGIN: http://127.0.0.1:8084
       PLATFORM_EDITOR_OIDC_CLIENT_ID: plantini-editor-dev
+      PLATFORM_TEACHER_ORIGIN: http://127.0.0.1:8085
+      PLATFORM_TEACHER_OIDC_CLIENT_ID: plantini-teacher-dev
 
   teacher:
     image: plantini/teacher:local

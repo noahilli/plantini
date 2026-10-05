@@ -13,7 +13,7 @@ part 'editor_invitation.g.dart';
 ///
 /// Properties:
 /// * [email]
-/// * [role]
+/// * [role] - Invited role; botanisches_review and lehrende require a systemadministration caller. Teacher invitations target the configured teacher portal.
 /// * [status]
 @BuiltValue()
 abstract class EditorInvitation
@@ -21,9 +21,10 @@ abstract class EditorInvitation
   @BuiltValueField(wireName: r'email')
   String get email;
 
+  /// Invited role; botanisches_review and lehrende require a systemadministration caller. Teacher invitations target the configured teacher portal.
   @BuiltValueField(wireName: r'role')
   EditorInvitationRoleEnum get role;
-  // enum roleEnum {  inhaltsredaktion,  botanisches_review,  };
+  // enum roleEnum {  inhaltsredaktion,  botanisches_review,  lehrende,  };
 
   @BuiltValueField(wireName: r'status')
   EditorInvitationStatusEnum get status;
@@ -145,6 +146,7 @@ class _$EditorInvitationSerializer
   }
 }
 
+/// Invited role; botanisches_review and lehrende require a systemadministration caller. Teacher invitations target the configured teacher portal.
 class EditorInvitationRoleEnum extends EnumClass {
   @BuiltValueEnumConst(wireName: r'inhaltsredaktion')
   static const EditorInvitationRoleEnum inhaltsredaktion =
@@ -152,6 +154,9 @@ class EditorInvitationRoleEnum extends EnumClass {
   @BuiltValueEnumConst(wireName: r'botanisches_review')
   static const EditorInvitationRoleEnum botanischesReview =
       _$editorInvitationRoleEnum_botanischesReview;
+  @BuiltValueEnumConst(wireName: r'lehrende')
+  static const EditorInvitationRoleEnum lehrende =
+      _$editorInvitationRoleEnum_lehrende;
 
   static Serializer<EditorInvitationRoleEnum> get serializer =>
       _$editorInvitationRoleEnumSerializer;

@@ -10,6 +10,8 @@ class KeycloakInvitations {
     this.clientSecret = options.clientSecret || process.env.PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET;
     this.editorOrigin = options.editorOrigin || process.env.PLATFORM_EDITOR_ORIGIN;
     this.editorClientId = options.editorClientId || process.env.PLATFORM_EDITOR_OIDC_CLIENT_ID || 'plantini-editor-production';
+    this.teacherOrigin = options.teacherOrigin || process.env.PLATFORM_TEACHER_ORIGIN;
+    this.teacherClientId = options.teacherClientId || process.env.PLATFORM_TEACHER_OIDC_CLIENT_ID || 'plantini-teacher-production';
     this.fetch = options.fetch || global.fetch;
   }
 
@@ -20,15 +22,17 @@ class KeycloakInvitations {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
       throw invalidRequest({ email: 'Eine gültige E-Mail-Adresse ist erforderlich.' });
     }
-    if (!['inhaltsredaktion', 'botanisches_review'].includes(role)) {
+    if (!['inhaltsredaktion', 'botanisches_review', 'lehrende'].includes(role)) {
       throw invalidRequest({ role: 'Diese Rolle kann nicht eingeladen werden.' });
     }
-    if (role === 'botanisches_review' && !actor.roles.includes('systemadministration')) {
+    if (['botanisches_review', 'lehrende'].includes(role) && !actor.roles.includes('systemadministration')) {
       throw new ProblemError('EDITOR_INVITE_FORBIDDEN', {
-        status: 403, detail: 'Nur die Systemadministration darf Reviewer einladen.',
+        status: 403, detail: 'Nur die Systemadministration darf Reviewer oder Lehrende einladen.',
       });
     }
-    if (!this.clientId || !this.clientSecret || !this.editorOrigin) {
+    const origin = role === 'lehrende' ? this.teacherOrigin : this.editorOrigin;
+    const clientId = role === 'lehrende' ? this.teacherClientId : this.editorClientId;
+    if (!this.clientId || !this.clientSecret || !origin) {
       throw new ProblemError('EDITOR_INVITES_UNAVAILABLE', {
         status: 503, detail: 'Der Keycloak-Einladungsdienst ist nicht konfiguriert.',
       });
@@ -68,7 +72,7 @@ class KeycloakInvitations {
     if (!mapping.ok) throw unavailable('Das Konto wurde angelegt, die Rolle konnte aber nicht zugewiesen werden.');
     const actionsUrl = new URL(`${this.base}/admin/realms/plantini/users/${userId}/execute-actions-email`);
     actionsUrl.search = new URLSearchParams({
-      client_id: this.editorClientId, redirect_uri: `${this.editorOrigin.replace(/\/$/, '')}/`,
+      client_id: clientId, redirect_uri: `${origin.replace(/\/$/, '')}/`,
     }).toString();
     const invite = await this.request(actionsUrl, {
       method: 'PUT', headers: { ...auth, 'Content-Type': 'application/json' },

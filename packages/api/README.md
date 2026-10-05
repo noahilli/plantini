@@ -83,7 +83,7 @@ Class | Method | HTTP request | Description
 [*ContentApi*](doc/ContentApi.md) | [**listEcosystems**](doc/ContentApi.md#listecosystems) | **GET** /ecosystems | List published ecosystems
 [*EditorApi*](doc/EditorApi.md) | [**approveEditorChange**](doc/EditorApi.md#approveeditorchange) | **POST** /editor/changes/{changeId}/approve | Approve a pending change editorially; release remains separate (reviewer role)
 [*EditorApi*](doc/EditorApi.md) | [**createEditorChange**](doc/EditorApi.md#createeditorchange) | **POST** /editor/changes | Create a role-scoped editorial draft; does not publish
-[*EditorApi*](doc/EditorApi.md) | [**createEditorInvitation**](doc/EditorApi.md#createeditorinvitation) | **POST** /editor/invitations | Invite an editor; only system administrators may invite reviewers
+[*EditorApi*](doc/EditorApi.md) | [**createEditorInvitation**](doc/EditorApi.md#createeditorinvitation) | **POST** /editor/invitations | Invite an editor, reviewer or teacher
 [*EditorApi*](doc/EditorApi.md) | [**getEditorCatalog**](doc/EditorApi.md#geteditorcatalog) | **GET** /editor/catalog | Read the editorial relationship tree (currently at most 1000 records per kind)
 [*EditorApi*](doc/EditorApi.md) | [**getEditorChange**](doc/EditorApi.md#geteditorchange) | **GET** /editor/changes/{changeId} | Read an editorial change visible to the caller
 [*EditorApi*](doc/EditorApi.md) | [**getEditorDashboard**](doc/EditorApi.md#geteditordashboard) | **GET** /editor/dashboard | Read role-scoped editorial counters

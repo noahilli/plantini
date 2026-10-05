@@ -11,7 +11,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**approveEditorChange**](EditorApi.md#approveeditorchange) | **POST** /editor/changes/{changeId}/approve | Approve a pending change editorially; release remains separate (reviewer role)
 [**createEditorChange**](EditorApi.md#createeditorchange) | **POST** /editor/changes | Create a role-scoped editorial draft; does not publish
-[**createEditorInvitation**](EditorApi.md#createeditorinvitation) | **POST** /editor/invitations | Invite an editor; only system administrators may invite reviewers
+[**createEditorInvitation**](EditorApi.md#createeditorinvitation) | **POST** /editor/invitations | Invite an editor, reviewer or teacher
 [**getEditorCatalog**](EditorApi.md#geteditorcatalog) | **GET** /editor/catalog | Read the editorial relationship tree (currently at most 1000 records per kind)
 [**getEditorChange**](EditorApi.md#geteditorchange) | **GET** /editor/changes/{changeId} | Read an editorial change visible to the caller
 [**getEditorDashboard**](EditorApi.md#geteditordashboard) | **GET** /editor/dashboard | Read role-scoped editorial counters
@@ -109,7 +109,9 @@ Name | Type | Description  | Notes
 # **createEditorInvitation**
 > EditorInvitation createEditorInvitation(editorInvitationRequest)
 
-Invite an editor; only system administrators may invite reviewers
+Invite an editor, reviewer or teacher
+
+Only systemadministration may invite botanisches_review or lehrende; this restriction is checked by the server. Invitations for lehrende use the configured teacher portal origin and OIDC client for the target redirect.
 
 ### Example
 ```dart

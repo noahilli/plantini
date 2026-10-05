@@ -66,7 +66,9 @@ setzt Rollenscopes, deaktiviert Selbstregistrierung und schreibt dessen Secret
 nur in die geschützte Env-Datei (0600). Dieser Client aktiviert zugleich den
 bisher unkonfigurierten Studio-Einladungsdienst. SMTP bleibt Voraussetzung für
 E-Mail-Einladungen. Lehrendenrollen werden zunächst durch die bestehende
-Systemadministration vergeben; das Portal selbst kann nur Lernende erzeugen.
+Systemadministration über Studio → Team → „Lehrende“ eingeladen; das Portal
+selbst kann nur Lernende erzeugen. Lehrendeneinladungen kehren nach der
+Passwort-/E-Mail-Einrichtung zum Portal zurück.
 
 Lokal bleibt alles auf IPv4 und vorhandene Volumes werden weiterverwendet:
 

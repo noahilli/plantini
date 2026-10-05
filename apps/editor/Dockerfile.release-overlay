@@ -1,0 +1,4 @@
+# Update only static Studio files on an inspected, already deployed base image.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY index.html app.js json-editor.js style.css /usr/share/nginx/html/
