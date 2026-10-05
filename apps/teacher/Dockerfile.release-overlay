@@ -1,0 +1,4 @@
+# Source-only portal update on a verified base; runtime config stays unchanged.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY app.js /usr/share/nginx/html/app.js
