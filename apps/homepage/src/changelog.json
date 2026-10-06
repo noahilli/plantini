@@ -1,0 +1,281 @@
+{
+ "apps": [
+  {
+   "id": "app",
+   "name": "App",
+   "detail": "Web, Android (Testversion) und Linux"
+  },
+  {
+   "id": "web",
+   "name": "Webseite",
+   "detail": "plantini.eu"
+  },
+  {
+   "id": "studio",
+   "name": "Studio",
+   "detail": "Redaktion, studio.plantini.eu"
+  },
+  {
+   "id": "portal",
+   "name": "Lehrendenportal",
+   "detail": "portal.plantini.eu"
+  },
+  {
+   "id": "plattform",
+   "name": "Plattform",
+   "detail": "Server, Inhalte und Anmeldung"
+  },
+  {
+   "id": "handbuch",
+   "name": "Handbuch",
+   "detail": "Entwicklerhandbuch, passwortgeschützt"
+  }
+ ],
+ "entries": [
+  {
+   "app": "app",
+   "date": "2026-10-07",
+   "version": "0.7.0",
+   "title": "Verspieltere Ökosysteme und Licht, das hinter Bäumen bleibt",
+   "changes": [
+    "Wald, Wiese und Alpen haben viele neue kleine Szenen: im Wald ein Zeltlager mit Lagerfeuer, ein Feenring aus leuchtenden Pilzen, ein Pilzhaus, Eichhörnchen und Vogelhaus; auf der Wiese eine Windmühle mit drehenden Flügeln, Bienenstöcke mit Bienen, Vogelscheuche, Picknick, Brunnen, Gnome, Enten, Frosch und Hase; in den Alpen ein Gebirgszug, eine Kapelle, Kühe, ein Steinbock, ein Adler, Gebetsfahnen und ein Steg über den Bach.",
+    "Jede Welt hat zwei Varianten, die sich von Abschnitt zu Abschnitt abwechseln, damit sich nichts alle zehn Schritte wiederholt. Schmetterlinge, Bienen und der Adler sind nur am Tag unterwegs.",
+    "Das Licht stimmt jetzt: Der Schein von Laternen, Fenstern und Lagerfeuer wird von Bäumen, Bergen und Häusern verdeckt, die davor stehen. Früher leuchtete er über ihnen, in den Alpen sogar die Hütte durch den Berg.",
+    "Lampen beleuchten ihre Umgebung: Steine, Blumen, Zelt und Hüttenwände neben einer Laterne oder dem Feuer werden abends und nachts warm angestrahlt.",
+    "Jeder Baum wirft nur noch einen Schatten, mit weichem Fußfleck. Bäume und Büsche sind weicher gerundet, ferne Flächen verschwimmen leicht im Dunst, und unter der Insel ziehen Wolken.",
+    "Das Zeichnen der Welten beim Ziehen ist trotz deutlich mehr Inhalt schneller geworden (im Wald gemessen von etwa 6–8 auf 3,6 Millisekunden je Bild, im Browser auf einem Desktop-Rechner; auf Handys noch nicht gemessen)."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-05",
+   "version": "0.6.5",
+   "title": "Desktop-Ansicht und Quiz",
+   "changes": [
+    "Auf großen Bildschirmen sind Welten, Ökosystem-Vitrinen, Charakterauswahl, Herbarium-Regale und Quiz begrenzt und kompakter gestaltet statt über die ganze Breite gezogen.",
+    "Im Quiz lässt sich eine Antwort ändern, bis man „Weiter“ oder „Level abschließen“ antippt. Die Prüfung bleibt beim Abschluss auf dem Server."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-05",
+   "version": "0.6.4",
+   "title": "Inhalte sicherer aktualisieren",
+   "changes": [
+    "Die App prüft, ob sie neu genug für ein Inhalts-Release ist (Mindestversion), und prüft Pakete, Prüfsummen und Beziehungen zwischen Ökosystemen, Leveln und Pflanzen, bevor sie die lokalen Inhalte tauscht. Bei einem Fehler bleibt die alte Version erhalten."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-01",
+   "version": "0.6.3",
+   "title": "Abend und Nacht in den Welten",
+   "changes": [
+    "Hütten, Laternen und Glühwürmchen leuchten abends und nachts."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-01",
+   "version": "0.6.2",
+   "title": "Android: direkt zurück in die App nach der Anmeldung",
+   "changes": [
+    "Nach der Anmeldung im Browser öffnet Android die App direkt (verifizierter App Link über plantini.eu). Wo der Browser nicht von selbst übergibt, bietet die Seite den Knopf „In Plantini öffnen“."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-01",
+   "version": "0.6.1",
+   "title": "Rückkehr nach der Anmeldung über die App-Adresse",
+   "changes": [
+    "Android und iOS kehren nach der Anmeldung über die App-Adresse zurück, nicht mehr über einen lokalen Empfänger auf dem Gerät."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-01",
+   "version": "0.6.0",
+   "title": "Neun Entdecker:innen und eine schnellere Startseite",
+   "changes": [
+    "Der freie Charakter-Designer ist durch neun feste Entdecker:innen mit Auswahl beim ersten Start ersetzt (drei Frauen, drei Männer, drei diverse Figuren, alle im Forscherstil).",
+    "Die Startseite ist flüssiger: Die Ökosystem-Vitrinen werden einmal als Bild vorbereitet statt in jedem Frame neu gezeichnet."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-09-30",
+   "version": "0.5.0",
+   "title": "Herbarium mit Fotos, Karte und Artkarten; Tageszeit",
+   "changes": [
+    "Funde zeigen ihr Foto; Bilder werden zwischengespeichert, Fehler beim Laden werden erklärt, und ein Fund geht auch dann nicht verloren, wenn sein Foto fehlt.",
+    "Neue Herbarium-Karte (nur eigene Funde mit Ort), Artkarten und Sammelquoten („x % haben diese Art“).",
+    "Die Ökosysteme folgen der Tageszeit: Morgen, Mittag, Abend, Nacht; im Profil lässt sich eine Tageszeit festlegen.",
+    "Ein Charakter-Designer (am 01.10. wieder ersetzt, siehe 0.6.0)."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-09-30",
+   "version": "0.4.1",
+   "title": "Erste Android-Testversion",
+   "changes": [
+    "Signierte Android-App zum Direktdownload (eigene App-Kennung, nur HTTPS, eigenes Symbol). Start- und Anmeldefehler der ersten Builds sind behoben (Plugin-Registrierung, Browser-Erkennung, x86-Geräte)."
+   ]
+  },
+  {
+   "app": "app",
+   "date": "2026-09-29",
+   "version": null,
+   "title": "Web-App geht online",
+   "changes": [
+    "Die Web-App läuft produktiv (zunächst unter plantini.eu, seit dem 30.09. unter app.plantini.eu): Anmeldung, 30-stufige Lernpfade je Ökosystem mit Steckbrief und Quiz, Feldablauf mit Foto-Bestimmung über Pl@ntNet, privates Herbarium mit Offline-Speicherung und Abgleich."
+   ]
+  },
+  {
+   "app": "web",
+   "date": "2026-10-07",
+   "version": null,
+   "title": "Änderungsprotokoll",
+   "changes": [
+    "Diese Seite: Was sich wann in App, Webseite, Studio, Lehrendenportal, Plattform und Handbuch geändert hat, mit den bisherigen Versionen nachgetragen."
+   ]
+  },
+  {
+   "app": "web",
+   "date": "2026-10-06",
+   "version": null,
+   "title": "Link zum Entwicklerhandbuch",
+   "changes": [
+    "Im Fußbereich aller Seiten, im Abschnitt „Unsere Software“ und auf der Seite „So ist Plantini gebaut“: Link zum passwortgeschützten Entwicklerhandbuch (Zugang auf Anfrage).",
+    "„So ist Plantini gebaut“ nennt jetzt die nächtliche Sicherung (derzeit auf demselben Server, ohne externe Kopie)."
+   ]
+  },
+  {
+   "app": "web",
+   "date": "2026-10-01",
+   "version": null,
+   "title": "Software, Technik, App Link und Rechtliches",
+   "changes": [
+    "Neuer Abschnitt „Unsere Software“ mit 16 einheitlichen Karten, die direkt zum jeweiligen Anbieter führen (als letzter Abschnitt, wie im Menü).",
+    "Neue Seite „So ist Plantini gebaut“: Architektur, Wahl der Anbieter, Erweiterungsmöglichkeiten.",
+    "Rückkehrseite für die Android-Anmeldung (/app/login).",
+    "Impressum und Datenschutzerklärung: Betreiber Noah Illmann mit Anschrift, Hosting, Weitergabe von Bildern an Pl@ntNet, dauerhaft gespeicherte Protokolle, Hinweis zum Stand des Projekts (Ideen von einer dritten Person, unveröffentlichter Teaser, kein kommerzieller Hintergrund, noch nicht Open Source)."
+   ]
+  },
+  {
+   "app": "web",
+   "date": "2026-09-30",
+   "version": null,
+   "title": "Android-Testversion zum Download",
+   "changes": [
+    "Download der signierten APK mit Version, Größe und Prüfsumme. Die 3D-Szenen der Seite wurden sparsamer (begrenzte Auflösung und Bildrate, automatische Qualität, ruhiger Modus)."
+   ]
+  },
+  {
+   "app": "web",
+   "date": "2026-09-29",
+   "version": null,
+   "title": "Projektseite online",
+   "changes": [
+    "plantini.eu zeigt die Projektseite mit den 3D-Ökosystemen zum Ausprobieren."
+   ]
+  },
+  {
+   "app": "studio",
+   "date": "2026-10-05",
+   "version": null,
+   "title": "Einladungen",
+   "changes": [
+    "Mitwirkende lassen sich per E-Mail einladen: die Redaktion lädt weitere Redakteur:innen ein, die Systemadministration Reviewer:innen und Lehrende (Lehrende bekommen Zugang zum Lehrendenportal). Selbstregistrierung gibt es nicht."
+   ]
+  },
+  {
+   "app": "studio",
+   "date": "2026-10-02",
+   "version": null,
+   "title": "Studio geht online",
+   "changes": [
+    "Eigene Redaktionsoberfläche unter studio.plantini.eu für Ökosysteme, Level, Pflanzen und Quizfragen: Baum mit Suche, Formulare für verschachtelte Inhalte und eine Rohansicht, Entwürfe speichern und zum Review einreichen.",
+    "Botanisches Review: eingereichte Änderungen fachlich freigeben oder mit Begründung zurückweisen, mit Verlauf. Rollen: Redaktion, Review und Administration; die Administration meldet sich mit zweitem Faktor an.",
+    "Noch nicht freigeschaltet: Die Veröffentlichung freigegebener Inhalte in die App."
+   ]
+  },
+  {
+   "app": "portal",
+   "date": "2026-10-05",
+   "version": null,
+   "title": "Kontowechsel auf gemeinsam genutzten Rechnern",
+   "changes": [
+    "Beim Anmelden verlangt das Portal ausdrücklich eine Anmeldung und übernimmt keine bestehende Sitzung, damit auf Klassenrechnern ein anderes Konto verwendet werden kann."
+   ]
+  },
+  {
+   "app": "portal",
+   "date": "2026-10-05",
+   "version": null,
+   "title": "Lehrendenportal geht online",
+   "changes": [
+    "Unter portal.plantini.eu legen Lehrende Klassen an und erstellen Schülerkonten ohne E-Mail-Adresse. Das temporäre Passwort wird einmal angezeigt; beim ersten Login legen die Kinder ein eigenes fest.",
+    "Fortschritt je Klasse, Ökosystem und Lernende (aus den vom Server bestätigten Levelabschlüssen), Passwort zurücksetzen, Konten sperren und entsperren. Lehrende sehen nur ihre eigenen Klassen und keine Fotos, Fundorte oder einzelnen Antworten.",
+    "Zugang nur für eingeladene Lehrende."
+   ]
+  },
+  {
+   "app": "plattform",
+   "date": "2026-10-05",
+   "version": null,
+   "title": "Lehr-Schnittstelle und Mindestversion",
+   "changes": [
+    "Neue Schnittstelle für das Lehrendenportal (Klassen, Schülerkonten, Fortschritt) mit serverseitig erzwungenem Klassenbesitz.",
+    "Das Inhalts-Release nennt die Mindestversion der App; Inhalt `2026.10.02-de.2` (3 Ökosysteme, 90 Level, 30 Pflanzen)."
+   ]
+  },
+  {
+   "app": "plattform",
+   "date": "2026-10-02",
+   "version": null,
+   "title": "Inhalts-Releases und Sicherung",
+   "changes": [
+    "Inhalts-Releases sind unveränderlich (Pakete mit Größe und SHA-256), öffentliche Abfragen beziehen sich auf das aktive Release. Neue Schnittstelle für das Studio.",
+    "Nächtliche Sicherung von Datenbanken, privaten Fotos, Zertifikaten und Konfiguration (derzeit auf demselben Server)."
+   ]
+  },
+  {
+   "app": "plattform",
+   "date": "2026-09-30",
+   "version": null,
+   "title": "Fotos, Karte und Artkarten",
+   "changes": [
+    "Private Herbarium-Fotos werden nur dem Besitzer ausgeliefert; Kartenkacheln laufen über einen eigenen Proxy; Artkarten und Sammelquoten kommen vom Server (Quote erst ab genug beteiligten Konten)."
+   ]
+  },
+  {
+   "app": "plattform",
+   "date": "2026-09-29",
+   "version": null,
+   "title": "Produktivbetrieb",
+   "changes": [
+    "Server, Anmeldedienst (Keycloak) und Edge-Proxy mit HTTPS laufen auf einem Server; Registrierungs-Mails werden versendet."
+   ]
+  },
+  {
+   "app": "handbuch",
+   "date": "2026-10-07",
+   "version": null,
+   "title": "3D-Seiten aktualisiert",
+   "changes": [
+    "Die Kapitel zu 3D und Blender beschreiben die neuen Welten, das Licht und die Messung."
+   ]
+  },
+  {
+   "app": "handbuch",
+   "date": "2026-10-06",
+   "version": null,
+   "title": "Handbuch online",
+   "changes": [
+    "docs.plantini.eu, passwortgeschützt: Anleitung für Mitwirkende, Architektur, Backend, App, 3D, Betrieb und Moderation mit Screenshots und Animationen."
+   ]
+  }
+ ]
+}

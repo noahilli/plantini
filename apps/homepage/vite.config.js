@@ -15,6 +15,7 @@ export default defineConfig({
         datenschutz: resolve(import.meta.dirname, 'datenschutz/index.html'),
         bildnachweise: resolve(import.meta.dirname, 'bildnachweise/index.html'),
         technik: resolve(import.meta.dirname, 'technik/index.html'),
+        changelog: resolve(import.meta.dirname, 'changelog/index.html'),
         applogin: resolve(import.meta.dirname, 'app/login/index.html'),
       },
     },
