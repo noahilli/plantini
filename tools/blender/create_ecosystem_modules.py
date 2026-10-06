@@ -24,7 +24,7 @@ def generate(kind):
     meshes = world['meshes']
     for m in meshes:
         if m['name'] == 'grass':
-            m['color'] = [.48, .64, .23] if kind == 'meadow' else [.35, .48, .36]
+            m['color'] = [.48, .64, .23] if kind == 'meadow' else [.36, .56, .35]
         if m['name'] == 'earth' and kind == 'alpine':
             m['color'] = [.38, .40, .42]
 
@@ -65,7 +65,7 @@ def generate(kind):
         for x, y, r in [(3.6, -3.4, 1.2), (4.3, 3.4, 1.0), (-4.7, 2.6, .8)]:
             cone('Meadow hummock', x, y, .08, r, .5, [.43, .59, .20], r*.35, sides=9)
         colors = [[.95, .88, .61], [.73, .33, .46], [.50, .35, .75], [.98, .68, .13]]
-        for i in range(70):
+        for i in range(44):
             x, y = rng.uniform(-5.1, 5.1), rng.uniform(-4.6, 4.6)
             if -3.5 < x < -1.0 or (x-1.7)**2+(y-.7)**2 < 2.7:
                 continue
@@ -77,7 +77,8 @@ def generate(kind):
             cone('Meadow grass', x, y, .08, .13, .42, [.26, .47, .12], motion='plant', sides=4)
     else:
         # Angular peaks on the right keep the playable left-hand route readable.
-        for x, y, r, h in [(3.8, -3.0, 1.6, 2.5), (4.2, 1.2, 1.4, 3.0), (2.9, 3.5, 1.3, 2.2)]:
+        # (add_playful_props.py adds a layered range at the back, see alpine())
+        for x, y, r, h in [(4.4, -1.6, 1.0, 1.9)]:
             cone('Mountain granite', x, y, .08, r, h*.70, [.40, .46, .49], r*.30, sides=5)
             cone('Snow cap', x, y, .08+h*.70, r*.30, h*.30, [.91, .96, .98], sides=5)
         # Same boundary position on both ends, so the stream joins every tile.

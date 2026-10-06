@@ -4,7 +4,9 @@
 * lanterns along the trail in the forest and the meadow,
 * a field of fireflies over the meadow (data only; the app animates them).
 
-Run with Python (no Blender needed, like create_ecosystem_modules.py):
+Run with Python (no Blender needed, like create_ecosystem_modules.py), AFTER
+add_playful_props.py (the lanterns and the hut keep clear of the props, and the
+props' own `lamp` entries are collected here):
 
     python3 tools/blender/add_night_lights.py
 
@@ -134,7 +136,8 @@ def blockers(module):
             continue
         solid_thing = n.startswith(('Tree trunk', 'Pine trunk', 'Mountain', 'Alpine stone', 'Bridge', 'Reusable canopy',
                                     'Pine crown', 'Animated water', 'Sandy stream', 'Flowing woodland',
-                                    'Faceted river', 'Meadow hummock'))
+                                    'Faceted river', 'Meadow hummock')) or m.get('solid') or (
+            n.startswith('Prop ') and not m.get('layer') and m['motion'] not in ('plant', 'glow'))
         if solid_thing:
             # Only what reaches into the height of a hut or lantern (roof ridge ~1.0).
             out.extend((v[0], v[1]) for v in m['vertices'] if GROUND - .05 < v[2] < 1.15)
@@ -180,9 +183,9 @@ def hut_for(module, blocked, candidates, stone):
 
 def main():
     layout = {
-        'forest': {'lanterns': True, 'hut': [(x / 10, y / 10, .25) for x in range(20, 46, 3) for y in range(-44, -14, 4)], 'stone': False},
-        'meadow': {'lanterns': True, 'hut': None, 'fireflies': {'count': 16, 'area': [-1.2, 5.0, -4.8, 4.8], 'z': [.3, 1.4]}},
-        'alpine': {'lanterns': False, 'hut': [(x / 10, y / 10, .3) for x in range(22, 46, 3) for y in range(-40, 40, 4)], 'stone': True},
+        'forest': {'lanterns': True, 'hut': [(x / 10, y / 10, .25) for x in range(22, 38, 2) for y in range(-42, -16, 4)], 'stone': False},
+        'meadow': {'lanterns': True, 'hut': None, 'fireflies': {'count': 16, 'area': [-1.0, 3.7, -4.8, 4.8], 'z': [.3, 1.4]}},
+        'alpine': {'lanterns': False, 'hut': [(2.9, -2.9, .3), (3.3, -2.2, .3), (2.6, -3.6, .3), (3.4, -3.4, .3)], 'stone': True},
     }
     for world, cfg in layout.items():
         path = ASSETS / f'{world}_module.json'
@@ -204,6 +207,8 @@ def main():
                 print(f'{world}: hut at {at}')
             else:
                 raise SystemExit(f'{world}: no free place for the hut')
+        # Light sources that the props bring along (campfire, windmill window).
+        lights += [m['lamp'] for m in module['meshes'] if m.get('lamp')]
         if cfg.get('fireflies'):
             module['fireflies'] = cfg['fireflies']
         module['meshes'] += added
