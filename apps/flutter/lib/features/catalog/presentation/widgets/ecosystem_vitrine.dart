@@ -229,7 +229,9 @@ void _drawModel(
   final instances = <SceneInstance>[
     for (final mesh in PlayerLook.meshesFor(module))
       // Level stations belong to the path view, not to a display piece.
-      if (mesh.slot == null)
+      if (mesh.slot == null &&
+          mesh.inVariant(0) &&
+          !(mesh.dayOnly && lighting.phase == DayPhase.night))
         SceneInstance(
           mesh,
           // The explorer stands at the first station.
@@ -243,23 +245,14 @@ void _drawModel(
     ox: fit.origin.dx,
     oy: fit.origin.dy,
   );
-  final vertices = SceneBuilder.build(
+  SceneBuilder.paintScene(
+    canvas,
     instances,
     projection,
     shading: SceneShading.viewer,
     lighting: lighting,
-  );
-  if (vertices != null) {
-    canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
-    vertices.dispose();
-  }
-  paintLightHalos(
-    canvas,
-    size,
-    module.lights,
-    projection.project,
-    fit.scale,
-    lighting,
+    // The glow of a lamp sits at its depth: what stands in front hides it.
+    markers: lightMarkers(module.lightsOf(0), projection, lighting, size),
   );
   final fireflies = module.fireflies;
   if (fireflies != null && lighting.lamps) {
@@ -350,7 +343,7 @@ final class _Fit {
     var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
     var minZ = 1e9, maxZ = -1e9;
     for (final mesh in module.meshes) {
-      if (mesh.slot != null) continue;
+      if (mesh.slot != null || !mesh.inVariant(0)) continue;
       for (final v in mesh.vertices) {
         minX = math.min(minX, v[0]);
         maxX = math.max(maxX, v[0]);

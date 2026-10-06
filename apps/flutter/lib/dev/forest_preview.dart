@@ -2,12 +2,16 @@
 // flutter run -t lib/dev/forest_preview.dart
 import 'package:flutter/material.dart';
 
+import '../core/diagnostics/frame_stats.dart';
 import '../core/theme/app_theme.dart';
 import '../features/catalog/domain/catalog_models.dart';
 import '../features/catalog/presentation/widgets/modular_forest_view.dart';
 import '../features/catalog/presentation/widgets/world_lighting.dart';
 
 void main() {
+  // --dart-define=PLANTINI_PERF_LOG=true prints the per-second frame statistics.
+  WidgetsFlutterBinding.ensureInitialized();
+  FrameStats.install();
   // ?daytime=night|evening|morning|noon pins the time of day for review.
   final name = Uri.base.queryParameters['daytime'];
   for (final phase in DayPhase.values) {

@@ -495,17 +495,34 @@ final class _ForestPainter extends CustomPainter {
   ui.Picture _record(Size size, int phaseIndex) {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    paintSkyBackdrop(canvas, size, lighting, background);
-    final phase = reduceMotion ? 0.0 : phaseIndex / _phases * math.pi * 2;
+    final loop = reduceMotion ? 0.0 : phaseIndex / _phases;
+    paintSkyBackdrop(
+      canvas,
+      size,
+      lighting,
+      background,
+      loop: loop,
+      clouds: true,
+    );
+    final phase = loop * math.pi * 2;
     final center = (view.focus / 10).round();
+    final first = math.max(0, center - 1);
+    final last = math.min((levelCount / 6).ceil() - 1, center + 1);
+    final projection = SceneProjection(
+      yaw: view.yaw,
+      focus: view.focus,
+      scale: view.scale,
+      ox: size.width / 2,
+      oy: size.height / 2,
+    );
+    final prepare = Stopwatch()..start();
     final instances = <SceneInstance>[];
-    for (
-      var m = math.max(0, center - 1);
-      m <= math.min((levelCount / 6).ceil() - 1, center + 1);
-      m++
-    ) {
+    final markers = <SceneMarker>[];
+    for (var m = first; m <= last; m++) {
       for (final mesh in PlayerLook.meshesFor(module)) {
         if (mesh.slot != null && m * 6 + mesh.slot! >= levelCount) continue;
+        if (mesh.dayOnly && lighting.phase == DayPhase.night) continue;
+        if (!mesh.inVariant(m % 2)) continue;
         if (mesh.motion == 'ranger' &&
             (currentIndex < 0 || currentIndex ~/ 6 != m)) {
           continue;
@@ -526,14 +543,13 @@ final class _ForestPainter extends CustomPainter {
             sway: mesh.motion == 'tree' || mesh.motion == 'plant'
                 ? math.sin(phase + m) * .022
                 : 0,
+            coords: mesh.anim == null ? null : mesh.coordsAt(loop),
           ),
         );
-        if (mesh.motion == 'tree') {
-          final shadow = mesh.shadowFor(lighting);
-          if (shadow != null) {
-            instances.add(SceneInstance(shadow, dx: dx, dy: dy));
-          }
-        }
+      }
+      // One shadow per tree or prop, with a soft blot at its foot.
+      for (final shadow in module.shadowPieces(lighting, m % 2)) {
+        instances.add(SceneInstance(shadow, dy: m * 10.0));
       }
       // The player (or the default ranger) casts one shadow as a whole.
       if (currentIndex >= 0 && currentIndex ~/ 6 == m) {
@@ -554,39 +570,30 @@ final class _ForestPainter extends CustomPainter {
           );
         }
       }
-    }
-    final vertices = SceneBuilder.build(
-      instances,
-      SceneProjection(
-        yaw: view.yaw,
-        focus: view.focus,
-        scale: view.scale,
-        ox: size.width / 2,
-        oy: size.height / 2,
-      ),
-      lighting: lighting,
-      cullHeight: size.height,
-    );
-    if (vertices != null) {
-      canvas.drawVertices(vertices, BlendMode.srcOver, Paint());
-      vertices.dispose();
-    }
-    // Lit windows and lanterns of every module in view glow in the evening and at night.
-    for (
-      var m = math.max(0, center - 1);
-      m <= math.min((levelCount / 6).ceil() - 1, center + 1);
-      m++
-    ) {
-      paintLightHalos(
-        canvas,
-        size,
-        module.lights,
-        view.project,
-        view.scale,
-        lighting,
-        dy: m * 10.0,
+      // Lit windows and lanterns glow in the evening and at night; the glow
+      // takes its place in the depth order, so trees and mountains hide it.
+      markers.addAll(
+        lightMarkers(
+          module.lightsOf(m % 2),
+          projection,
+          lighting,
+          size,
+          dy: m * 10.0,
+        ),
       );
     }
+    FrameStats.note('scene-prepare', prepare.elapsed);
+    SceneBuilder.paintScene(
+      canvas,
+      instances,
+      projection,
+      markers: markers,
+      lighting: lighting,
+      cullHeight: size.height,
+      cullWidth: size.width,
+      haze: lighting.backdrop(background).$1,
+      hazeStrength: lighting.hazeStrength,
+    );
     return recorder.endRecording();
   }
 

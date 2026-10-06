@@ -138,6 +138,15 @@ final class WorldLighting {
     DayPhase.night => _night,
   };
 
+  /// How strongly the farthest scenery melts into the sky (aerial
+  /// perspective): the haze is the top colour of the backdrop.
+  double get hazeStrength => switch (phase) {
+    DayPhase.morning => .26,
+    DayPhase.noon => .14,
+    DayPhase.evening => .26,
+    DayPhase.night => .24,
+  };
+
   /// Backdrop gradient for a world whose own (daylight) tint is [world]: noon
   /// keeps the world's colour, the other phases pull it towards their sky.
   (Color, Color) backdrop(Color world) => switch (phase) {
@@ -159,10 +168,15 @@ final class WorldLighting {
     double ny,
     double nz, {
     required bool gamma,
+    List<double>? lamp,
   }) {
     final ndl = (nx * toSun[0] + ny * toSun[1] + nz * toSun[2]).clamp(0.0, 1.0);
     int ch(double base, int c) {
-      final v = (base * (ambient[c] + sun[c] * ndl)).clamp(0.0, 1.0);
+      // [lamp]: light of nearby lanterns and windows, added to the sun's.
+      final v = (base * (ambient[c] + sun[c] * ndl + (lamp?[c] ?? 0))).clamp(
+        0.0,
+        1.0,
+      );
       return ((gamma ? math.pow(v, 1 / 2.2) : v) * 255).round().clamp(0, 255);
     }
 
@@ -176,8 +190,10 @@ void paintSkyBackdrop(
   Canvas canvas,
   Size size,
   WorldLighting lighting,
-  Color world,
-) {
+  Color world, {
+  double loop = 0,
+  bool clouds = false,
+}) {
   final (top, bottom) = lighting.backdrop(world);
   final rect = Offset.zero & size;
   canvas.drawRect(
@@ -212,6 +228,83 @@ void paintSkyBackdrop(
     );
   }
   if (lighting.stars) paintStars(canvas, size, 38);
+  if (clouds) paintClouds(canvas, size, lighting, loop);
+}
+
+/// Soft cartoon clouds drifting below and beside the little world: the island
+/// floats in the sky. [loop] (0..1, one 6 s animation loop) moves them by a
+/// few pixels back and forth, so the loop closes.
+void paintClouds(
+  Canvas canvas,
+  Size size,
+  WorldLighting lighting,
+  double loop,
+) {
+  final (Color top, Color shade, double alpha) = switch (lighting.phase) {
+    DayPhase.morning => (const Color(0xFFFFF1E2), const Color(0xFFE9CFC0), .95),
+    DayPhase.noon => (const Color(0xFFFFFFFF), const Color(0xFFD8E6F2), .95),
+    DayPhase.evening => (const Color(0xFFFFD9BE), const Color(0xFFE3A38E), .92),
+    DayPhase.night => (const Color(0xFF7683B3), const Color(0xFF4A5688), .75),
+  };
+  final unit = size.shortestSide * .075;
+  const spots = [
+    (.14, .80, 1.15),
+    (.62, .86, 1.5),
+    (.92, .76, 1.0),
+    (.38, .95, 1.0),
+    (.05, .12, .8),
+    (.95, .06, .9),
+  ];
+  for (var i = 0; i < spots.length; i++) {
+    final (fx, fy, s) = spots[i];
+    final dx = math.sin(loop * math.pi * 2 + i * 1.7) * size.width * .014;
+    final c = Offset(size.width * fx + dx, size.height * fy);
+    final r = unit * s;
+    Path puff(double lift) => Path()
+      ..addOval(
+        Rect.fromCenter(
+          center: c.translate(-r * 1.1, lift),
+          width: r * 1.7,
+          height: r * 1.2,
+        ),
+      )
+      ..addOval(
+        Rect.fromCenter(
+          center: c.translate(-r * .25, lift - r * .35),
+          width: r * 1.9,
+          height: r * 1.6,
+        ),
+      )
+      ..addOval(
+        Rect.fromCenter(
+          center: c.translate(r * .75, lift - r * .1),
+          width: r * 1.8,
+          height: r * 1.3,
+        ),
+      )
+      ..addOval(
+        Rect.fromCenter(
+          center: c.translate(r * 1.55, lift + r * .12),
+          width: r * 1.2,
+          height: r * .9,
+        ),
+      )
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: c.translate(r * .2, lift + r * .22),
+            width: r * 3.6,
+            height: r * .8,
+          ),
+          Radius.circular(r * .4),
+        ),
+      );
+    canvas.drawPath(
+      puff(r * .16),
+      Paint()..color = shade.withValues(alpha: alpha),
+    );
+    canvas.drawPath(puff(0), Paint()..color = top.withValues(alpha: alpha));
+  }
 }
 
 /// Fixed pseudo-random stars in the upper half: the same sky every frame.
@@ -227,78 +320,74 @@ void paintStars(Canvas canvas, Size size, int count) {
   }
 }
 
-/// Soft halos around the lit windows and lanterns ([lights]: x, y, z, radius)
-/// in the evening and at night: a pool of light on the ground and a glow
-/// around the lamp. [project] maps scene points to the canvas; [dy] shifts a
-/// light into the module at that offset along the path.
-void paintLightHalos(
+/// The pool of light a lamp throws on the ground: a flat, soft, warm oval.
+/// Painted after the terrain and before everything upright, so trunks and
+/// roofs that stand in it cover it.
+void paintLightPool(
   Canvas canvas,
-  Size size,
-  List<List<double>> lights,
-  ui.Offset Function(double x, double y, double z) project,
-  double scale,
-  WorldLighting lighting, {
-  double dy = 0,
-}) {
-  if (!lighting.lamps || lights.isEmpty) return;
+  ui.Offset ground,
+  double radius,
+  WorldLighting lighting,
+) {
   final strength = lighting.phase == DayPhase.night ? 1.0 : .55;
   const warm = Color(0xFFFFB552);
-  for (final light in lights) {
-    final radius = light[3] * scale;
-    final lamp = project(light[0], light[1] + dy, light[2]);
-    if (lamp.dx < -radius * 2 ||
-        lamp.dx > size.width + radius * 2 ||
-        lamp.dy < -radius * 2 ||
-        lamp.dy > size.height + radius * 2) {
-      continue;
-    }
-    final ground = project(light[0], light[1] + dy, 0.1);
-    final pool = Rect.fromCenter(
-      center: ground,
-      width: radius * 2.4,
-      height: radius * 1.1,
-    );
-    canvas.drawOval(
-      pool,
-      Paint()
-        ..blendMode = BlendMode.plus
-        ..shader = ui.Gradient.radial(
-          ground,
-          radius * 1.2,
-          [warm.withValues(alpha: .42 * strength), warm.withValues(alpha: 0)],
-          null,
-          TileMode.clamp,
-          Float64List.fromList([
-            1,
-            0,
-            0,
-            0,
-            0,
-            .46,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            1,
-          ]),
-        ),
-    );
-    canvas.drawCircle(
-      lamp,
-      radius * .62,
-      Paint()
-        ..blendMode = BlendMode.plus
-        ..shader = ui.Gradient.radial(lamp, radius * .62, [
-          warm.withValues(alpha: .75 * strength),
-          warm.withValues(alpha: 0),
+  final pool = Rect.fromCenter(
+    center: ground,
+    width: radius * 2.4,
+    height: radius * 1.1,
+  );
+  canvas.drawOval(
+    pool,
+    Paint()
+      ..blendMode = BlendMode.plus
+      ..shader = ui.Gradient.radial(
+        ground,
+        radius * 1.2,
+        [warm.withValues(alpha: .42 * strength), warm.withValues(alpha: 0)],
+        null,
+        TileMode.clamp,
+        Float64List.fromList([
+          1,
+          0,
+          0,
+          0,
+          0,
+          .46,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
         ]),
-    );
-  }
+      ),
+  );
+}
+
+/// The glow around a lamp itself. It sits at the lamp's own depth in the
+/// scene, so whatever stands nearer to the viewer hides it.
+void paintLightOrb(
+  Canvas canvas,
+  ui.Offset lamp,
+  double radius,
+  WorldLighting lighting,
+) {
+  final strength = lighting.phase == DayPhase.night ? 1.0 : .55;
+  const warm = Color(0xFFFFB552);
+  canvas.drawCircle(
+    lamp,
+    radius * .56,
+    Paint()
+      ..blendMode = BlendMode.plus
+      ..shader = ui.Gradient.radial(lamp, radius * .56, [
+        warm.withValues(alpha: .7 * strength),
+        warm.withValues(alpha: 0),
+      ]),
+  );
 }
 
 /// Fireflies as small blinking dots. [phase] is the position in the 6 s loop,

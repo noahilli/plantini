@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,18 @@ abstract final class FrameStats {
   static void install() {
     if (!_enabled || _installed) return;
     _installed = true;
+    if (kIsWeb) {
+      // The browser reports no frame timings; the named spans still tell how
+      // long the work of the views takes.
+      Timer.periodic(const Duration(seconds: 1), (_) {
+        if (_spans.isEmpty) return;
+        // ignore: avoid_print
+        print(
+          'PERF-SPANS ${_spans.entries.map((e) => '${e.key} n=${e.value.count} avg=${e.value.avg.toStringAsFixed(1)}ms max=${e.value.max.toStringAsFixed(1)}ms').join(' | ')}',
+        );
+        _spans.clear();
+      });
+    }
     var frames = 0, slow = 0;
     var build = 0.0, raster = 0.0, maxBuild = 0.0, maxRaster = 0.0;
     var since = DateTime.now();
