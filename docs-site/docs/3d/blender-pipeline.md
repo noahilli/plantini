@@ -1,7 +1,7 @@
 # Blender-Pipeline
 
 Die Blender-Werkzeuge liegen in `tools/blender/` und erzeugen alle 3D-Daten, die die App mitbringt: die Waldszene, die
-drei Ökosystem-Module, deren Abend- und Nachtlichter und die neun Entdecker:innen. Diese Seite sagt, was jedes
+drei Ökosystem-Module mit ihren kleinen Szenen (Props), deren Abend- und Nachtlichter und die neun Entdecker:innen. Diese Seite sagt, was jedes
 Skript tut, in welcher Reihenfolge sie laufen müssen und wie du ein neues Ökosystem-Modul anlegst.
 
 !!! note "Geprüft am 05.10.2026"
@@ -9,15 +9,19 @@ Skript tut, in welcher Reihenfolge sie laufen müssen und wie du ein neues Ökos
     ausgeführt (bei zweien mit umgeschriebenem Ausgabepfad). Im Repo hat sich dabei nichts geändert. Ergebnisse stehen
     unten bei den jeweiligen Skripten. Eine Blender-Version ist im Repo nicht festgeschrieben.
 
-## Überblick: fünf Skripte
+## Überblick: sechs Skripte und eine Bibliothek
 
 | Skript | Läuft mit | Liest | Schreibt | Überschreibt vorhandene Ausgabe? |
 |---|---|---|---|---|
 | `create_forest_world.py` | `blender -b -P …` (laut Docstring über Blender-MCP) | – | `artifacts/3d/forest-20260929-v1/plantini-forest.{blend,glb,png}` | **nein** – bricht ab, wenn die `.blend` existiert |
 | `export_forest_module.py` | `blender -b <datei.blend> -P …` | die Szene `Plantini • Waldlichtung` | `apps/flutter/assets/worlds/forest_module.json` | **ja**, ohne Rückfrage |
 | `create_ecosystem_modules.py` | `python3 …` (Blender optional) | `forest_module.json` | `meadow_module.json`, `alpine_module.json` | **ja**, baut beide von Grund auf neu |
+| `add_playful_props.py` | `python3 …` | alle drei `*_module.json` | dieselben drei Dateien | **ja**, aber idempotent (Präfix `Prop `, feste Seeds) |
 | `add_night_lights.py` | `python3 …` | alle drei `*_module.json` | dieselben drei Dateien | **ja**, aber idempotent |
 | `create_explorer_characters.py` | `blender -b -P …` | – | `apps/flutter/assets/characters/explorers.json`, Vorschau in `artifacts/3d/explorers/` | **ja**, ohne Rückfrage |
+
+Dazu kommt `world_kit.py`: die gemeinsame Bibliothek der Python-Skripte (Primitive, Sammler `Kit`, Freiflächen-Karte).
+Sie wird importiert, nicht gestartet.
 
 !!! warning "Stolperfalle: nur ein Skript schützt vor Überschreiben"
     Die Projektanweisungen (`CLAUDE.md` im Repo-Wurzelverzeichnis) sagen, die Blender-Generatoren in `tools/blender/`
@@ -37,12 +41,13 @@ beiden Pfade in den Skripten an, bevor du sie auf einem anderen Rechner laufen l
 flowchart TD
     A["1. create_forest_world.py<br/>(Ausgabeordner versionieren)"] --> B["2. export_forest_module.py<br/>.blend öffnen"]
     B --> C["3. create_ecosystem_modules.py<br/>(optional, nur bei Änderung an Wiese/Alpen)"]
-    B --> D
-    C --> D["4. add_night_lights.py"]
+    B --> P
+    C --> P["4. add_playful_props.py"]
+    P --> D["5. add_night_lights.py<br/>(immer zuletzt)"]
     E["create_explorer_characters.py<br/>(unabhängig)"]
 ```
 
-!!! warning "Stolperfalle: immer `add_night_lights.py` hinterher"
+!!! warning "Stolperfalle: immer erst Props, dann `add_night_lights.py`"
     Der Docstring von `add_night_lights.py` nennt `create_ecosystem_modules.py` als Auslöser („rebuilds meadow and alpine
     from scratch and drops these additions“). Die Regel ist aber **breiter**: Auch `export_forest_module.py` schreibt
     `forest_module.json` neu und lässt Hütte, Laternen und `lights` weg. Geprüft am 05.10.2026: Der frische Export hat
@@ -50,7 +55,11 @@ flowchart TD
     Ohne `lights` bleiben Abend und Nacht in der App ohne Schein (und der Test `every ecosystem module carries its
     night lights` in `apps/flutter/test/features/catalog/world_lighting_test.dart` schlägt fehl).
 
-Die Kette ist reproduzierbar. Auf Kopien ausgeführt ergab sich:
+Die Laternen und die Hütte halten Abstand zu den Props (`blockers()` kennt sie über das Feld `solid`) und das Skript
+übernimmt die Lichter der Props (Feld `lamp`); die Props selbst reservieren den Platz der Hütte. Deshalb: **Props zuerst,
+Nachtlichter zuletzt**.
+
+Die Kette war am 05.10.2026 (vor den Props) reproduzierbar. Auf Kopien ausgeführt ergab sich damals:
 
 - `create_forest_world.py` → `export_forest_module.py` ergibt dieselben 239 Meshes wie das eingecheckte
   `forest_module.json` (ohne Hütte und Laternen), `slots` identisch.
@@ -143,19 +152,64 @@ world['meshes'] = [copy.deepcopy(m) for m in SOURCE['meshes']
 
 ```bash
 python3 tools/blender/create_ecosystem_modules.py
-# meadow 426 meshes 6017 triangles
-# alpine 156 meshes 2330 triangles
+# meadow 286 meshes 4077 triangles
+# alpine 152 meshes 2278 triangles
 ```
 
-(Ausgabe vom 05.10.2026 vor `add_night_lights.py`; danach haben die Module 446 bzw. 165 Meshes.)
+(Ausgabe vom 06.10.2026, vor `add_playful_props.py` und `add_night_lights.py`.)
 
 Läuft das Skript **in Blender** (`blender -b -P …`), gelingt `import bpy`, und `materialize()` legt zusätzlich je Modul
 eine Szene `Plantini • Meadow Module` bzw. `Plantini • Alpine Module` im Arbeitsspeicher an. Das Skript speichert aber
 keine `.blend`, der Zusatz hat also nur Wert, wenn du es interaktiv in Blender ausführst.
 
-Wiese: ein Teich (`Sandy stream pond`, `Flowing woodland pond`), Schilf, Hügel, bis zu 70 Blumen und bis zu 35
-Grasbüschel (Kandidaten auf dem Weg oder im Teich werden übersprungen). Alpen: drei Gipfel mit Schneekappe, ein Bach mit
-`x = .5 + .30*sin((y+5)*tau/10)`, vier Kiefern, bis zu 32 Steine und Blumen.
+Wiese: ein Teich (`Sandy stream pond`, `Flowing woodland pond`), Schilf, Hügel, bis zu 44 Blumen und bis zu 35
+Grasbüschel (Kandidaten auf dem Weg oder im Teich werden übersprungen). Alpen: ein Gipfel, ein Bach mit
+`x = .5 + .30*sin((y+5)*tau/10)`, vier Kiefern, bis zu 32 Steine und Blumen; die übrigen Gipfel (ein Gebirgszug im
+Hintergrund) stellt `add_playful_props.py` her. Die Alpenwiese ist seit dem 06.10.2026 grüner (`[.36, .56, .35]`).
+
+## `add_playful_props.py` – die kleinen Szenen
+
+Reines Python, **idempotent**: entfernt zuerst alle Meshes mit Präfix `Prop ` und baut sie aus festen Seeds neu auf
+(`random.Random(3101 + 17 * variante)` für den Wald, 3102 für die Wiese, 3103 für die Alpen). Der Wald aus Blender
+wird nie neu erzeugt, nur ergänzt.
+
+```bash
+python3 tools/blender/add_playful_props.py
+# forest variant 0: 3xx prop meshes, 3702 triangles
+# forest variant 1: …, 4182 triangles
+# …
+```
+
+Jede Welt bekommt **zwei Varianten** mit verschiedenen Szenen. Die App zeichnet im Modul `m` die Variante `m % 2`.
+
+| Welt | Variante 0 | Variante 1 | in beiden |
+|---|---|---|---|
+| Wald | Zeltlager mit Lagerfeuer (Licht!), Eichhörnchen auf dem Stumpf | Pilzhaus mit leuchtendem Fenster, Vogelhaus | Feenring mit leuchtenden Pilzen, Fliegenpilze, Stümpfe, Baumstämme, Farne, Beerensträucher, Blumenflecken, Wegweiser, Schmetterlinge, schwebende Blätter |
+| Wiese | Windmühle (Flügel drehen sich), Bienenstöcke mit Bienen, Vogelscheuche, Zaun mit Heuballen und Schubkarre, Picknickdecke, Frosch | Brunnen, vier Gnome, Bienenstöcke, Vogelscheuche, Zaun | Seerosen, Enten, Sonnenblumen, Blumenflecken, Hase, Schmetterlinge |
+| Alpen | Steinbock auf dem Felsen, Murmeltier, Adler | Kapelle mit Fenster, zwei Kühe, Adler | Gebirgszug, Felsblöcke mit Schnee, Steinmännchen, Wegweiser, Gebetsfahnen, Steg über den Bach, Edelweiß, Enzian, Alpenrosen, Schneeflecken, Bergsee |
+
+Grundsätze des Skripts:
+
+- **Freiflächen-Karte (`Kit`).** `world_kit.Kit` liest das Modul und merkt sich, was steht (Fußabdrücke von Stämmen, Felsen,
+  Hütte …), wo Wasser ist (Dreiecke von `Flowing woodland*` und `Sandy stream*`) und wo der Weg verläuft. `Kit.spot(radius,
+  region=…)` liefert einen freien Platz; Wasser, ein Streifen von etwa einer Einheit um den Weg und der Rand sind tabu.
+- **Sichtbarer Streifen.** Auf einem Handy sind nur etwa `x = −3,7 … 3,7` zu sehen (Maßstab mindestens 52 px je Einheit,
+  Bildbreite 390 px). Die Szenen stehen deshalb in der Mitte (`x = −1,3 … 3,7`) und hinter dem Weg, nicht am rechten Rand.
+- **Dreieckebudget.** Die Props verdoppeln fast die Dreiecke der Alpen und erhöhen Wald und Wiese um etwa 60 bzw. 110 %
+  (siehe Zählwerte im [Überblick](index.md#zahlwerte-aus-den-json-dateien-06102026)). Dass das nicht mehr kostet als vorher,
+  liegt an der neuen Sortierung ([Performance](performance.md)). Halte trotzdem klein: eine Blume ist sieben Meshes, ein
+  Fliegenpilz vier.
+- **Animation:** `anim(kit, teile, 'hop' …)` gibt allen Teilen eines Tieres dieselben Parameter. Frequenzen sind ganze
+  Zahlen je 6-Sekunden-Schleife (höchstens 3); `day: true` blendet das Mesh nachts aus.
+- **Flache Dinge** (`layer: 'decal'` / `'decal2'`) liegen fast auf dem Boden (z = 0,08 + 0,012 …). Ohne Ebene würde der
+  Painter-Algorithmus sie flackern lassen oder unter Blumen malen.
+- **Schatten:** `shadow`-Kennungen fassen zusammengehörige Teile zu einem Schatten zusammen. Das Kit stellt jeder Kennung
+  `v<variante>:` voran, damit sich die Varianten nicht treffen.
+
+Ein neues Prop schreibst du als Funktion `def mein_prop(k, x, y): …`, die mit `k.add(name, form, '#farbe', …)` Meshes
+anlegt (`form` ist ein Paar aus Vertices und Dreiecken aus `world_kit`: `frustum`, `dome`, `ball`, `box`, `beam`, `prism`,
+`blade`, `disc`, `quad_up`). Dann rufst du sie in `forest()`, `meadow()` oder `alpine()` auf und lässt die drei Skripte
+der Reihe nach laufen.
 
 ## `add_night_lights.py` – Hütten, Laternen, Glühwürmchen
 
@@ -175,9 +229,12 @@ Konfiguration ist das Dictionary `layout` in `main()`:
 
 | Welt | Laternen | Hütte | Glühwürmchen |
 |---|---|---|---|
-| `forest` | ja | Kandidatenraster `x = 2.0…4.4`, `y = −4.4…−1.6`, Holzwände | – |
-| `meadow` | ja | – | `{'count': 16, 'area': [-1.2, 5.0, -4.8, 4.8], 'z': [.3, 1.4]}` |
-| `alpine` | nein | Kandidatenraster `x = 2.2…4.3`, `y = −4.0…3.6`, Steinwände mit Schneedach | – |
+| `forest` | ja | Kandidatenraster `x = 2.2…3.6`, `y = −4.2…−1.8`, Holzwände | – |
+| `meadow` | ja | – | `{'count': 16, 'area': [-1.0, 3.7, -4.8, 4.8], 'z': [.3, 1.4]}` |
+| `alpine` | nein | vier feste Kandidaten um `(3,0, −3,0)`, vor den Gipfeln, Steinwände mit Schneedach | – |
+
+Die Alpenhütte steht an festen Plätzen vor dem Gebirge. Zuvor stand sie am ersten freien Platz des Rasters und lag am
+05.10.2026 hinter einem Gipfel, sodass nur ihr Schein sichtbar war.
 
 Wie Plätze gewählt werden:
 
@@ -190,7 +247,8 @@ Wie Plätze gewählt werden:
 - `solid()` richtet die Dreiecksumlaufrichtung jedes Körpers nach außen aus (Normale gegen den Schwerpunkt). Das ist
   nötig, weil die App keine Rückseitenerkennung hat, die Beleuchtung aber von der Normalen abhängt (siehe unten).
 - `linear('#f1e3b0')` rechnet Hex-Farben mit `(c/255) ** 2.2` in lineare Werte um – dieselbe Konvention wie Blender.
-- Meshes mit `motion: 'glow'` sind Fenster und Laternenglas. `lights` enthält `[x, y, z, radius]`.
+- Meshes mit `motion: 'glow'` sind Fenster und Laternenglas. `lights` enthält `[x, y, z, radius]`; Meshes mit dem Feld
+  `lamp` (Lagerfeuer, Mühlen- und Kapellenfenster, Pilzhaus) werden angehängt, mit der Variante als fünftem Eintrag.
 
 ## `create_explorer_characters.py` – die Entdecker:innen
 

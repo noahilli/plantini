@@ -98,7 +98,7 @@ final pixelRatio = math.min(
 
 | Maßnahme | Wo |
 |---|---|
-| Flächen, die komplett über oder unter dem Fenster liegen, werden übersprungen | `cullHeight` in `SceneBuilder.build` (Lernpfad übergibt `size.height`) |
+| Ganze Meshes außerhalb des Bildes werden nicht projiziert (Bounding-Box), einzelne Flächen außerhalb verworfen | `SceneBuilder._outside`, `cullHeight`/`cullWidth` (der Lernpfad übergibt `size.height` und `size.width`) |
 | `RepaintBoundary` um Welt, Glühwürmchen und Vitrine | `modular_forest_view.dart`, `ecosystem_vitrine.dart` |
 | `isComplex: true, willChange: false` als Hinweis für den Raster-Cache | `CustomPaint` in der Vitrine und im Porträt |
 | Animation aus bei `disableAnimations`, ohne Ticker (Tab nicht sichtbar) und per Pausenknopf | `_updateMotion` in `ModularForestView`, `_syncMotion` in der Vitrine |
@@ -106,9 +106,36 @@ final pixelRatio = math.min(
 | Nur drei Module gleichzeitig | Schleife `center - 1 … center + 1` |
 | Zwischenspeicher für Module (`WorldModule._cache`) | `WorldModule.load` |
 
+### 5. Sortieren ohne Vergleiche
+
+Gemessen am 06.10.2026, nachdem die Welten rund 60 bis 110 % mehr Dreiecke bekommen hatten (Props, siehe
+[Überblick](index.md#zahlwerte-aus-den-json-dateien-06102026)): Die Aufnahme einer Lernpfad-Phase (`path-paint`) kostete im
+Wald zunächst 11 ms statt 5,8 ms, und **8,3 ms davon waren `Float64List.sort`** (Stufe `scene-sort`, `FrameStats`).
+Die Schlüssel sind kleine ganze Zahlen (Gruppe und 16-Bit-Tiefe, weniger als 2^20), also sortiert `SceneBuilder._sortKeys`
+jetzt mit zwei **Zählpässen** (LSD-Radix, 2 × 10 Bit). Das ist stabil und liefert dieselbe Reihenfolge wie vorher.
+
+| Zeit je Aufnahme beim Ziehen (Mittel, 10 s Ziehen, Chromium/Web, Desktop-CPU) | Wald | Wiese | Alpen |
+|---|---:|---:|---:|
+| A: Stand vor dem Umbau (Code und Welten alt) | 5,8–8,2 ms | 5,8 ms | 2,1 ms |
+| B: neuer Code, alte Welten | 6,8 ms | 6,3 ms | 2,4 ms |
+| C: neuer Code, neue Welten (mit Radix-Sortierung) | **3,6 ms** | **4,0 ms** | **1,9 ms** |
+| C vor der Radix-Sortierung | 11 ms | 9,4 ms | 5 ms |
+
+Der Rechner war bei den Läufen nicht leer (Load 7–8), die Werte schwanken um etwa ±20 %; die Größenordnung und die
+Reihenfolge waren in drei Wiederholungen stabil. Auf echten Handys ist nichts gemessen. Gemessen wurde mit
+`lib/dev/forest_preview.dart` und `--dart-define=PLANTINI_PERF_LOG=true` (siehe unten, `PERF-SPANS`).
+
+Die Vitrinen und die Entdecker:innen-Bühne (`SceneBuilder.build`) profitieren von derselben Sortierung.
+
 ## Werkzeuge
 
 ### `FrameStats`: ein Log pro Sekunde
+
+!!! note "Im Browser: `PERF-SPANS`"
+    Der Browser meldet keine Frame-Zeiten. Auf dem Web gibt `FrameStats.install()` deshalb zusätzlich jede Sekunde eine
+    Zeile `PERF-SPANS name n=… avg=…ms max=…ms | …` mit den benannten Abschnitten aus. Der Lernpfad meldet dort `path-paint`
+    und, aufgeschlüsselt, `scene-prepare`, `scene-assemble`, `scene-sort`, `scene-order`, `scene-draw`. Die Vorschau
+    `lib/dev/forest_preview.dart` ruft `FrameStats.install()` selbst auf; mit Playwright lässt sich die Konsole auslesen.
 
 `apps/flutter/lib/core/diagnostics/frame_stats.dart`. Opt-in und im Normalbetrieb wirkungslos (`static const _enabled =
 bool.fromEnvironment('PLANTINI_PERF_LOG')`). `main()` in `lib/main.dart` ruft `FrameStats.install()`.
@@ -237,8 +264,10 @@ Wichtig für die Lesart: „Raster p90 0,5 ms beim Scrollen“ betrifft die **St
 - Die Zeit der **ersten Aufnahme je Winkel** einer Vitrine auf Handys ist nicht gemessen (`knowledge/handovers/app-design-vitrine.md`, Abschnitt „Offen“).
 - Beim **Ziehen** nimmt der Lernpfad in jedem Frame neu auf, weil `focus` im Schlüssel steht. Ob das auf schwachen Geräten
   ruckelt, ist offen; eine Lösung (etwa Aufnahme mit Puffer über das Fenster hinaus und Verschiebung) existiert nicht.
-- Baumschatten werden je Mesh statt je Baum gebaut (siehe [Tageszeit und Licht](tageszeit-licht.md#schatten)); ob das messbar
-  kostet, ist nicht untersucht.
+- Die **16 Phasen** sind die Obergrenze für Animationen: Flügelschlag und Windmühle springen alle 0,375 s weiter. Mehr
+  Phasen kosten Speicher und Aufnahmen; die Frequenzen der Props sind deshalb auf höchstens 3 je Durchlauf begrenzt.
+- Die **Animationen der Props** (`coordsAt`) rechnen je Phase einmal alle Eckpunkte um und halten das Ergebnis im Speicher
+  (64 Stufen je animiertem Mesh); wie viel das auf einem Handy ausmacht, ist nicht gemessen.
 - Speicherverbrauch der JSON-Listen neben den typisierten Listen: nicht gemessen.
 
 ## Weiterführend

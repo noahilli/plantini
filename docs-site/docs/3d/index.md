@@ -13,6 +13,15 @@ Diese Spur besteht aus fünf Seiten: diese Übersicht, [Blender-Pipeline](blende
     oder externe Asset-Dienste (`tools/blender/create_ecosystem_modules.py`, `tools/blender/create_forest_world.py`).
     Zu den Rechten am Gesamtprojekt siehe [Projektstatus und Rechte](../start/status.md): Plantini ist kein Open-Source-Projekt.
 
+![Wald, Wiese und Alpen am Tag](../assets/shots/welten-tag.png){ loading=lazy }
+
+*Die drei Welten am Tag (Vorschau `lib/dev/forest_preview.dart`, 390 × 800 px, Stand 06.10.2026).*
+
+![Dieselben Welten bei Nacht](../assets/shots/welten-nacht.png){ loading=lazy }
+
+*Nachts: Lagerfeuer, Mühlenfenster und Laternen leuchten, die Feenpilze glimmen türkis; was in Wirklichkeit vor einer
+Lampe steht, verdeckt ihr Licht. Zum Vergleich der Abend: [Tageszeit und Licht](tageszeit-licht.md).*
+
 ## Die Idee
 
 Ein Ökosystem besteht aus **Modulen**. Ein Modul ist ein Geländestück von 11,5 × 10 Einheiten (x × y) mit sechs
@@ -25,9 +34,10 @@ Der Weg von der Idee zum Pixel:
 flowchart LR
     A["Blender-Szene<br/>(create_forest_world.py)"] -->|export_forest_module.py| B["forest_module.json"]
     B -->|create_ecosystem_modules.py| C["meadow_module.json<br/>alpine_module.json"]
-    B --> D["add_night_lights.py"]
-    C --> D
-    D --> E["assets/worlds/*_module.json<br/>(Hütten, Laternen, lights, fireflies)"]
+    B --> P["add_playful_props.py<br/>(world_kit.py)"]
+    C --> P
+    P --> D["add_night_lights.py"]
+    D --> E["assets/worlds/*_module.json<br/>(Props, Hütten, Laternen, lights, fireflies)"]
     F["create_explorer_characters.py"] --> G["assets/characters/explorers.json"]
     E --> H["WorldModule / WorldMesh<br/>(Dart)"]
     G --> I["ExplorerRoster / PlayerLook"]
@@ -57,7 +67,7 @@ komplett als Asset eingetragen. Beachte: Dort liegen auch drei große Hintergrun
 | `length` | int | Modullänge (immer `10`) | nein – die App rechnet fest mit `m * 10` |
 | `slots` | `[[x,y,z] × 6]` | Stationsplätze eines Moduls | ja, **genau sechs** (`/ 6`, `% 6` in `modular_forest_view.dart`) |
 | `meshes` | Liste | die Geometrie, siehe unten | ja |
-| `lights` | `[[x,y,z,radius]]` | Lichtquellen für Abend und Nacht | ja (optional) |
+| `lights` | `[[x,y,z,radius(,variant)]]` | Lichtquellen für Abend und Nacht; das fünfte Element (0 oder 1) bindet eine Quelle an die Props einer Variante, ohne es gehört sie allen Modulen | ja (optional) |
 | `fireflies` | Objekt | Glühwürmchen-Feld (nur Wiese) | ja (optional) |
 
 Ein Mesh (`WorldMesh` in `apps/flutter/lib/features/catalog/presentation/widgets/world_module.dart`):
@@ -68,9 +78,17 @@ Ein Mesh (`WorldMesh` in `apps/flutter/lib/features/catalog/presentation/widgets
 | `vertices` | `[[x,y,z], …]` in Weltkoordinaten des Moduls |
 | `faces` | `[[a,b,c], …]` – **ausschließlich Dreiecke**, Indizes in `vertices` |
 | `color` | `[r,g,b]` 0..1, **linear** (wie Blenders `diffuse_color`); die App macht daraus 8-Bit-Farbe und wendet Licht und Gamma selbst an |
-| `motion` | `none`, `tree`, `plant`, `water`, `ranger`, `glow` |
-| `pivot` | Baumposition aus Blender, **wird von der App nicht gelesen** (`grep pivot apps/flutter/lib` ohne Treffer) |
+| `motion` | `none`, `tree`, `plant`, `water`, `ranger`, `glow`, und die animierten Bewegungen `spin`, `flap`, `bob`, `hop`, `orbit` (siehe unten) |
+| `pivot` | Baumposition aus Blender. Die App nutzt sie, um die Teile **eines** Baums zu einem gemeinsamen Schatten zusammenzufassen (Stamm und Kronen teilen den Pivot) und als Drehpunkt animierter Teile |
 | `slot` | `null` oder Stationsnummer 0–5; Meshes mit `slot` verschwinden, wenn es für diesen Platz kein Level gibt |
+| `variant` | nur Props: `0` oder `1`. Die App zeichnet im Modul `m` die Variante `m % 2`, damit sich dieselbe Windmühle nicht alle zehn Einheiten wiederholt. Ohne `variant` gehört das Mesh zu jedem Modul |
+| `layer` | `decal` oder `decal2`: flache Dinge auf dem Boden (Seerosenblätter, Picknickdecke, Schneeflecken). Sie werden nach Gelände und Wasser, aber vor allem Aufrechten gemalt. Zwei Decals in derselben Höhe brauchen verschiedene Ebenen (kein Z-Puffer) |
+| `shadow` | Textkennung: Teile mit derselben Kennung werfen **einen** gemeinsamen Schatten samt weichem Fußfleck |
+| `anim` | Parameter der animierten Bewegungen: `pivot`, `axis`, `amp`, `freq` (ganze Zahl je 6-s-Durchlauf, höchstens 3), `phase`, `drift`, `radius`, `roll` |
+| `glow` | `[r,g,b]` (0–255): Farbe, in der ein `glow`-Mesh leuchtet; ohne das warmes Fensterlicht |
+| `lamp` | `[x,y,z,radius,variant]`: Lichtquelle, die `add_night_lights.py` in `lights` übernimmt (Lagerfeuer, Mühlenfenster) |
+| `day` | `true`: nur am Tag da (Schmetterlinge, Bienen, Adler) |
+| `solid` | `true`: Hütten und Laternen halten Abstand (nur für die Generatoren, die App liest es nicht) |
 
 Kommentierter Ausschnitt (gekürzt; die Kommentare gibt es im echten JSON nicht, die Zahlen stammen aus der Datei):
 
@@ -108,23 +126,34 @@ Das Feld `fireflies` gibt es nur in `meadow_module.json`:
 | Wert | Wirkung in `modular_forest_view.dart` | Wirkung in der Vitrine |
 |---|---|---|
 | `none` | statisch | statisch |
-| `tree`, `plant` | Seitwärts-Scherung `x += sway * z` mit `sway = sin(phase + m) * 0.022`; `tree` wirft einen Schatten | keine Bewegung |
+| `tree`, `plant` | Seitwärts-Scherung `x += sway * z` mit `sway = sin(phase + m) * 0.022` | keine Bewegung |
 | `water` | Verschiebung entlang y um `sin(phase) * 0.17` | keine Bewegung |
+| `spin` | dreht um `axis` durch `pivot` (`WorldMesh.coordsAt`): die Flügel der Windmühle | Ruhelage |
+| `flap` | schwingt um `axis` um `±amp` und driftet auf einer kleinen Schleife `drift`: Schmetterlingsflügel, Flaggen, fliegende Blätter | Ruhelage |
+| `bob` | hebt und senkt sich um `amp` (leichtes Wiegen um `roll`): Vogel, Murmeltier, Kuh | Ruhelage |
+| `hop` | springt um `amp`: Hase, Eichhörnchen, Frosch | Ruhelage |
+| `orbit` | fliegt einen Kreis mit `radius` und dreht sich mit: Enten auf dem Teich, Bienen, Adler | Ruhelage |
 | `ranger` | die Spielfigur: wird an der aktuellen Station platziert und durch die gewählte Entdecker:in ersetzt | steht an Station 0 |
 | `glow` | Fenster und Laternenglas: blass am Tag, warmes Licht ab Abend | wie links |
 
-`pivot` ist also nur Blender-Metadaten: Das „Wiegen“ ist keine Rotation um den Stamm, sondern eine einfache Scherung
-proportional zur Höhe `z`.
+Das „Wiegen“ von Bäumen ist keine Rotation um den Stamm, sondern eine einfache Scherung proportional zur Höhe `z`. Die
+animierten Teile (`spin`, `flap`, `bob`, `hop`, `orbit`) rechnet `WorldMesh.coordsAt(loop)` pro Phase neu und
+merkt sich das Ergebnis; die Flächennormalen werden dabei **nicht** mitgedreht (die Teile sind klein, das Licht bleibt
+also so, als stünden sie in Ruhelage). Alle Frequenzen sind ganze Zahlen, damit der 6-Sekunden-Durchlauf nahtlos schließt;
+bei nur 16 aufgenommenen Phasen sind mehr als drei Schwingungen je Durchlauf nicht mehr als solche zu sehen.
 
-### Zählwerte (aus den JSON-Dateien, 05.10.2026)
+### Zählwerte (aus den JSON-Dateien, 06.10.2026)
 
-| Modul | Meshes | Dreiecke | Vertices | davon `slot != null` | `lights` | Datei |
+Je Modul wird die Basis plus **eine** Variante gezeichnet:
+
+| Modul | Basis (Dreiecke) | Variante 0 | Variante 1 | je Modul gezeichnet | `lights` | Datei |
 |---|---:|---:|---:|---:|---:|---:|
-| `forest` | 264 | 6 816 | 4 032 | 27 | 5 | 200 889 B |
-| `meadow` | 446 | 6 267 | 4 669 | 27 | 5 | 343 714 B |
-| `alpine` | 165 | 2 434 | 1 784 | 27 | 1 | 107 556 B |
+| `forest` | 6 816 | 3 702 | 4 182 | 10 518 / 10 998 | 7 | 581 KB |
+| `meadow` | 4 327 | 4 910 | 4 676 | 9 237 / 9 003 | 6 | 683 KB |
+| `alpine` | 2 382 | 2 331 | 2 595 | 4 713 / 4 977 | 1 | 350 KB |
 
-Die 27 Slot-Meshes sind 6 × `station`, 6 × `station top` und 15 × `trail`.
+Vor dem Umbau (05.10.2026) hatten die Module 6 816, 6 267 und 2 434 Dreiecke (201, 344 und 108 KB). Die Slot-Meshes
+(27 je Modul) sind 6 × `station`, 6 × `station top` und 15 × `trail`.
 
 ## Koordinatensystem und Projektion
 
@@ -174,30 +203,51 @@ hält die 48-px-Tippziele benachbarter Stationen getrennt.
 | `modular_forest_view.dart` | `ModularForestView`: der Lernpfad (Module, Stationsknöpfe, Animation, Glühwürmchen-Ebene) |
 | `ecosystem_vitrine.dart` | `EcosystemVitrine`: die Glasvitrine als gebackene Textur |
 
-### `SceneBuilder.build`
+### `SceneBuilder.build` und `SceneBuilder.paintScene`
 
-`SceneBuilder.build(instances, projection, …)` macht in einem Durchlauf:
+Beide teilen sich `_assemble(...)`. Die Funktion macht in einem Durchlauf:
 
-1. **Projizieren** jedes Vertex (`px`, `py`) plus einen Tiefenwert `pd = along * lift - z * squash`.
-2. **Farbe je Fläche**: im Modus `SceneShading.path` aus dem vorberechneten `mesh.pathColorsFor(lighting)`; im Modus
-   `SceneShading.viewer` (Vitrine) wird je Fläche neu schattiert, weil das Modell unter einem mitgedrehten Licht steht.
-3. **Tiefenschlüssel je Fläche** als `Float64`: `(gruppe + tiefe_quantisiert) * 2^20 + laufende_nummer`. Die Tiefe wird über
-   ±40 Einheiten auf 16 Bit abgebildet (`_depthRange = 40`), die Gruppe (`groundGroup * 65536`) liegt darüber, der
-   Index ganz unten. Float64 ist nötig, damit der Index im Schlüssel erhalten bleibt (`_idxRange = 1048576`, also
-   weniger als 2^20 Flächen pro Szene).
-4. **Native Sortierung** (`Float64List.sort`), dann von „fern“ nach „nah“ in zwei Float32-/Int32-Puffer schreiben.
-5. `ui.Vertices.raw(VertexMode.triangles, positions, colors: …)` – eine Farbe pro Dreieck (flat shading).
+0. **Ganze Meshes überspringen**, deren Bounding-Box (`WorldMesh.bounds`, projiziert) außerhalb des Bildes liegt
+   (`_outside`); Flächen außerhalb werden zusätzlich einzeln verworfen (`cullHeight`, `cullWidth`).
+1. **Projizieren** jedes Vertex (`px`, `py`) plus einen Tiefenwert `pd = along * lift - z * squash`. Animierte Teile
+   bringen ihre Koordinaten der Phase mit (`SceneInstance.coords`).
+2. **Farbe je Fläche**: im Modus `SceneShading.path` aus dem vorberechneten `mesh.pathColorsFor(lighting)` (Sonne und
+   Lampenlicht); im Modus `SceneShading.viewer` (Vitrine) wird je Fläche neu schattiert, weil das Modell unter einem
+   mitgedrehten Licht steht. Danach **Dunst** (ferne Flächen werden zum Himmel hin heller, `haze`) und **Rundung**:
+   Aufrechte Dinge bekommen je Eckpunkt eine Helligkeit zwischen 0,78 am Fuß und 1,12 an der Spitze
+   (`WorldMesh.vertexShade`). Deshalb gibt es **drei Farben je Dreieck**: die Facetten bleiben sichtbar, laufen aber
+   weich ineinander.
+3. **Tiefenschlüssel je Fläche** als `Int32`: `gruppe * 65536 + tiefe_quantisiert`. Die Tiefe wird über ±40 Einheiten auf
+   16 Bit abgebildet (`_depthRange = 40`); die Gruppe (`groundGroup`) liegt darüber.
+4. **Sortieren mit zwei Zählpässen** (`_sortKeys`: LSD-Radix, 2 × 10 Bit). Das ist stabil: Flächen mit gleichem Schlüssel
+   behalten die Reihenfolge, in der sie hinzugefügt wurden. Gemalt wird von „fern“ nach „nah“, bei Gleichstand die
+   zuletzt hinzugefügte zuerst (so wie zuvor mit dem Fließkomma-Schlüssel). Warum kein `Float64List.sort` mehr: siehe
+   [Performance](performance.md#5-sortieren-ohne-vergleiche).
+5. `build` gibt ein einziges `ui.Vertices.raw(VertexMode.triangles, positions, colors: …)` zurück (eine Farbe je Ecke).
+   `paintScene` malt **mehrere** Abschnitte und setzt dazwischen die `SceneMarker`.
+
+**`SceneMarker`** sind Dinge, die nicht über, sondern *zwischen* den Dreiecken gemalt werden: das Leuchten einer Laterne
+ist ein Marker an der Tiefe der Lampe (alles, was näher an der Kamera steht, verdeckt ihn), die Lichtpfütze am Boden ein
+Marker, der nach allem Flachen und vor allem Aufrechten kommt. `paintScene` findet die Stelle mit einer Binärsuche
+über den sortierten Schlüsseln (`_upperBound`) und zerlegt den Dreieckspuffer dort.
 
 Die Zeichengruppe (`WorldMesh.groundGroup`) legt fest, was vor dem Tiefenvergleich gemalt wird. **Höhere Gruppen werden
 früher gemalt**:
 
 | Gruppe | Meshes |
 |---|---|
-| 4 | `earth`, `grass` |
-| 3 | Name beginnt mit `Sandy stream` |
-| 2 | Name beginnt mit `Flowing woodland`; alle Schatten (`motion == 'shadow'`) |
-| 1 | Name beginnt mit `Animated water` |
-| 0 | alles andere (Tiefensortierung untereinander) |
+| 7 | `earth`, `grass` |
+| 6 | Name beginnt mit `Sandy stream` |
+| 5 | Name beginnt mit `Flowing woodland` |
+| 4 | alle Schatten und Fußflecken (`motion == 'shadow'`) |
+| 3 | Name beginnt mit `Animated water` |
+| 2 | `layer == 'decal'` |
+| 1 | `layer == 'decal2'` |
+| 0 | alles Aufrechte (Tiefensortierung untereinander) |
+
+Die Trennung zwischen Gruppe 1 und 0 ist wichtig: Eine Lichtpfütze am Boden (`SceneMarker.ground`) wird nach allem
+Flachen und vor allem Aufrechten gemalt, damit Stämme und Dächer sie überdecken (siehe
+[Tageszeit und Licht](tageszeit-licht.md#laternen-hutten-gluhwurmchen)).
 
 Diese Präfixe sind ein **stiller Vertrag zwischen Blender-Namen und Dart-Code**. Die Teiche der Wiese heißen deshalb
 `Sandy stream pond` und `Flowing woodland pond`, die alpinen Bäche `Sandy stream gravel` und
@@ -206,7 +256,9 @@ Wiesenblumen gemalt werden.
 
 ### Der Lernpfad: `ModularForestView`
 
-- Nur das aktuelle Modul und seine beiden Nachbarn werden gezeichnet (`center - 1 … center + 1`).
+- Nur das aktuelle Modul und seine beiden Nachbarn werden gezeichnet (`center - 1 … center + 1`); jedes Modul `m` zeigt
+  die Basis und die **Variante `m % 2`** der Props (Windmühle und Bienenstöcke in den geraden, Brunnen und Gnome in den
+  ungeraden Wiesenmodulen, usw.). Schatten, Lichter und Lampenlicht auf den Flächen richten sich nach derselben Variante.
 - Die Animation hat **16 Phasen** je 6-Sekunden-Zyklus (`const _phases = 16`). Der `AnimationController` tickt zwar
   durchgehend, das Widget repaintet aber nur, wenn die Phase wechselt (`_frames.value++`). Jede Phase wird einmal als
   `ui.Picture` aufgenommen und danach nur noch abgespielt (`PictureCache`).
@@ -235,6 +287,8 @@ Herbarium, Anmeldung – Aufrufer: `home_screen.dart`, `ecosystem_list_screen.da
 
 - Eigene Einpassung (`_Fit`): Das Modul wird in den freien Bereich zwischen Glasrand und Sockel skaliert; Meshes mit
   `slot != null` (Stationen, Pfadstücke) fehlen, die Spielfigur steht an Station 0.
+- Die Vitrine zeigt die Basis und die Variante 0 (`mesh.inVariant(0)`); Tagwesen wie Schmetterlinge fehlen nachts.
+  Animierte Teile stehen in Ruhelage.
 - Wand, Sockel, Modell und Glas werden **zu einer Textur** gebacken (`toImageSync`) und als ein Bild gezeichnet. Warum
   das nötig war, steht in [Performance](performance.md).
 - Bei `animate: true` schwingt das Modell ±0,15 rad in zwei Durchläufen über 32 s und steht dann still.
@@ -257,7 +311,7 @@ Herbarium, Anmeldung – Aufrufer: `home_screen.dart`, `ecosystem_list_screen.da
     identisch aus – gewollt, siehe Kommentar an `_viewerGain` in `world_scene.dart`.
 
 !!! warning "Stolperfalle: `SceneBuilder.build` ist nicht wiedereintrittsfähig"
-    Die Arbeitspuffer (`_px`, `_py`, `_pd`, `_keys`, `_pos`, `_col`) sind `static`. Der Aufruf ist synchron und auf dem
+    Die Arbeitspuffer (`_px`, `_py`, `_pd`, `_keys`, `_order`, `_swap`, `_bucket`, `_pos`, `_col`) sind `static`. Der Aufruf ist synchron und auf dem
     UI-Isolate sicher; ein zweiter Aufruf aus einem anderen Isolate oder während eines ersten wäre es nicht.
 
 !!! warning "Stolperfalle: Der Cache-Schlüssel ist der Vertrag"

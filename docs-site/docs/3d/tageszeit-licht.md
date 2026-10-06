@@ -9,6 +9,10 @@ andere Himmel, leuchtende Fenster und Laternen. Alles dafür steckt in
 
 *Der Lernpfad im Tagesverlauf.*
 
+![Wald, Wiese und Alpen am Abend](../assets/shots/welten-abend.png){ loading=lazy }
+
+*Der Abend in den drei Welten (Wiese und Alpen jeweils in einem Modul mit der zweiten Prop-Variante).*
+
 ## Vier Phasen
 
 `DayPhase` ist ein Enum mit Anzeigename (`label`) und der Zuordnung von Uhrzeit zu Phase:
@@ -158,11 +162,23 @@ Die Vitrine malt ihre Rückwand in `_CaseBackPainter` selbst: Mittag als helle G
 
 *Der Lernpfad bei Nacht.*
 
+## Himmel: Dunst und Wolken
+
+Zwei Dinge machen aus dem Hintergrund mehr als einen Verlauf:
+
+- **Dunst** (aerial perspective): Im Pfad werden ferne Flächen zur Oberkante des Bildes hin zur Himmelsfarbe gemischt
+  (`SceneBuilder._assemble`, Parameter `haze` und `hazeStrength`; Mischfaktor `smoothstep((tiefe − 0,5) / 5,5)`). Die
+  Stärke steht in `WorldLighting.hazeStrength` (Mittag 0,14, Morgen und Abend 0,26, Nacht 0,24). Leuchtende Meshes
+  (`glow`) nimmt der Dunst aus.
+- **Wolken** (`paintClouds`): sechs weiche Wolken unter und neben der kleinen Welt, sodass die Insel im Himmel schwebt.
+  Sie schwingen mit `loop` ein paar Pixel hin und her (nahtlose Schleife) und haben je Phase eigene Farben (Morgen
+  cremig, Mittag weiß, Abend rosa, Nacht blau). Nur der Lernpfad schaltet sie ein (`clouds: true`).
+
 ## Schatten
 
-Es gibt keine Schattenberechnung im Sinne von Shadow-Maps. Stattdessen entsteht pro Objekt **ein flaches, halbtransparentes
-Polygon**: die konvexe Hülle aller Punkte, entlang des Lichts auf den Boden projiziert (`WorldMesh.shadowOf`, mit
-Andrews Monotone-Chain-Algorithmus in `_convexHull`).
+Es gibt keine Schattenberechnung im Sinne von Shadow-Maps. Stattdessen entsteht pro **Gruppe** ein flaches,
+halbtransparentes Polygon: die konvexe Hülle aller Punkte der Gruppe, entlang des Lichts auf den Boden projiziert
+(`WorldMesh.shadowOf`, mit Andrews Monotone-Chain-Algorithmus in `_convexHull`).
 
 ```dart title="apps/flutter/lib/features/catalog/presentation/widgets/world_module.dart"
 // Very low sun would throw endless shadows; cap the stretch.
@@ -182,23 +198,27 @@ Rechenbeispiel für die Spitze eines Baums bei `z = 2`, Fuß bei `(0, 0)`:
 
 Die Kappung `max(toSun.z, 0.7)` ist also bei Morgen und Abend aktiv und verkürzt dort die Schatten um ein Drittel bis zwei Fünftel.
 
-Eigenschaften:
+Was zu einem Schatten gehört, bestimmt `WorldMesh.shadowKey`: die JSON-Kennung `shadow` (Props) oder, bei `motion ==
+'tree'` ohne Kennung, der **Pivot** (Stamm und Kronen eines Baums haben denselben). `WorldModule.shadowPieces(lighting,
+variant)` fasst die Meshes je Kennung zusammen und liefert pro Gruppe
 
-- Farbe fest `0x1C2618`, Deckkraft je Phase: Nacht `0x22`, Mittag `0x40`, sonst `0x3A`.
-- Zeichengruppe 2 (siehe [Überblick](index.md#scenebuilderbuild)): Schatten werden nach Boden und Bach, aber vor allem
-  anderen gemalt.
-- Es werfen Schatten: Meshes mit `motion == 'tree'` (**jedes Mesh einzeln**, also Stamm und jede Kronenkugel je ein
-  Polygon) und die **Spielfigur als Ganzes** (`PlayerLook.shadow(lighting)` bzw. beim Standard-Ranger
-  `WorldMesh.shadowOf([…ranger…], …)`). Mehrere Meshes einer Figur teilen sich ein Polygon, damit sich keine dunkleren
-  Flecken überlagern (Kommentar an `shadowOf`).
-- **Kein Schatten:** `plant`-Meshes (Wiese), Hütten und Laternen sowie alles in der Vitrine. `_drawModel` in
-  `ecosystem_vitrine.dart` erzeugt keine Schatten.
-- Die Hüllen werden je Phase gecacht (`_shadows`, Schlüssel `lighting.phase`).
+- das **Schattenpolygon** (Farbe `0x1C2618`, Deckkraft je Phase: Nacht `0x22`, Mittag `0x40`, sonst `0x3A`) und
+- einen weichen **Fußfleck** (`WorldMesh.contactOf`): drei übereinanderliegende, durchscheinende Ringe um den Fuß der
+  Gruppe (alle Punkte mit `z < 0,45`), die zusammen einen Verlauf ergeben. Gruppen, die länger als 1,1 Einheiten sind
+  (Zaun, Brücke), bekommen keinen Fleck, sonst würde er die Wiese nur abdunkeln.
 
-!!! note "Beobachtung (nicht untersucht, ob gewollt)"
-    Weil Bäume pro Mesh einen Schatten werfen, überlagern sich die halbtransparenten Polygone von Stamm und
-    Kronen. Bei mehreren Kronenteilen entsteht so ein dunklerer Kern im Schatten. Bei Figuren ist das ausdrücklich
-    vermieden, bei Bäumen steht dazu nichts im Code.
+Weitere Eigenschaften:
+
+- Zeichengruppe 4 (siehe [Überblick](index.md#scenebuilderbuild-und-scenebuilderpaintscene)): Schatten werden nach Boden
+  und Bach, aber vor Wasserflächen-Glanz, Decals und allem Aufrechten gemalt.
+- Es werfen Schatten: Bäume, alle Props mit `shadow` (Zelt, Mühle, Hütte, Heuballen, Felsen, Gipfel …) und die
+  **Spielfigur als Ganzes** (`PlayerLook.shadow(lighting)` bzw. beim Standard-Ranger `WorldMesh.shadowOf([…ranger…], …)`).
+- **Kein Schatten:** `plant`-Meshes (Blumen, Gräser), Tiere, Laternen und alles in der Vitrine.
+- Die Hüllen werden je Phase **und Variante** gecacht (`_shadowPieces`, Schlüssel `(phase, variant)`).
+
+!!! note "Früher: ein Schatten je Mesh"
+    Bis zum 06.10.2026 warf jedes Baum-Mesh einzeln einen Schatten; wo sich Stamm und Kronenkugeln überlagerten, entstand
+    ein dunklerer Kern. Seitdem teilt sich ein Baum **einen** Schatten (Pivot), wie es bei Figuren schon vorher war.
 
 ## Laternen, Hütten, Glühwürmchen
 
@@ -219,25 +239,46 @@ if (motion == 'glow' && lighting.lamps) {
 Tagsüber (`lamps == false`) werden sie wie jedes andere Mesh beleuchtet und wirken blass (Grundfarbe
 `#f1e3b0`). Abends `0xFFFFC878`, nachts `0xFFFFE08A`. In der Vitrine gilt dieselbe Regel in `SceneBuilder.build`.
 
-### `lights` und Lichtschein
+Ein `glow`-Mesh kann seine eigene Leuchtfarbe mitbringen (JSON-Feld `glow: [r, g, b]`, `WorldMesh.glowArgb`): die
+Feenpilze im Wald leuchten türkis, das Lagerfeuer orange, nur die Fenster warm.
 
-`module.lights` ist eine Liste `[x, y, z, radius]`. `paintLightHalos(canvas, size, lights, project, scale, lighting, {dy})`
-tut für jede sichtbare Quelle zweierlei, jeweils mit `BlendMode.plus` (additiv):
+### `lights`: Licht, das hinter Bäumen bleibt
 
-1. einen **Lichtfleck am Boden**: ein Oval (Breite `radius * 2.4`, Höhe `radius * 1.1`) mit radialem Verlauf in
-   `0xFFFFB552`, Deckkraft `0.42 * strength`;
-2. einen **Schein um die Lampe**: Kreis mit Radius `radius * 0.62`, Deckkraft `0.75 * strength`.
+`module.lights` ist eine Liste `[x, y, z, radius]`, optional mit einer Variante als fünftem Eintrag (siehe
+[Überblick](index.md#dateiformat)). Jede Quelle erzeugt zwei **`SceneMarker`** (`lightMarkers` in `world_scene.dart`):
 
-`strength` ist nachts `1.0`, abends `0.55`. Quellen außerhalb des Bildes (mit Rand von `2 * radius`) werden übersprungen. Im
-Lernpfad wird der Schein für jedes sichtbare Modul mit `dy: m * 10.0` gemalt und **gehört zum aufgenommenen Bild**
-(`_record` in `modular_forest_view.dart`).
+1. eine **Lichtpfütze am Boden** (`paintLightPool`): ein Oval (Breite `radius * 2,4`, Höhe `radius * 1,1`) mit radialem
+   Verlauf in `0xFFFFB552`, Deckkraft `0,42 * strength`, additiv (`BlendMode.plus`). Sie wird **nach allem Flachen und vor
+   allem Aufrechten** gemalt: Stämme, Dächer und Felsen, die in der Pfütze stehen, überdecken sie.
+2. ein **Schein um die Lampe** (`paintLightOrb`): Kreis mit Radius `radius * 0,56`, Deckkraft `0,7 * strength`, additiv, an
+   der **Tiefe der Lampe**. Alles, was näher an der Kamera steht (eine Baumkrone, ein Berg), wird danach gemalt und
+   verdeckt ihn.
 
-!!! warning "Bekannte Grenze: der Schein liegt über allem"
-    `paintLightHalos` läuft nach `drawVertices`. Steht eine Baumkrone vor einer Hütte, leuchtet der Schein über der Krone.
-    Das Handover `knowledge/handovers/herbarium-map-character-daytime.md` nennt dieselbe Grenze; der Code löst sie nicht.
+`strength` ist nachts `1,0`, abends `0,55`. Im Pfad entstehen die Marker für jedes sichtbare Modul mit `dy: m * 10.0` und
+gehören zum aufgenommenen Bild (`_record` in `modular_forest_view.dart`); die Vitrine setzt sie genauso
+(`_drawModel`, Variante 0).
 
-Die 48-px-Stationsknöpfe (Flutter-Widgets, nicht Teil des Bildes) bekommen in `_station` bei `lamps` und freigeschaltetem Level
-einen warmen `BoxShadow` (nachts `blurRadius: 22`, `spreadRadius: 4`, abends 14 und 1).
+!!! success "Gelöst am 06.10.2026: der Schein lag nicht mehr über allem"
+    Früher lief `paintLightHalos` **nach** `drawVertices`; ein Schein hinter einer Baumkrone oder einem Berg strahlte
+    darüber (auf den Screenshots vom 06.10.2026: ein Lichtfleck mitten auf einer Krone im Wald, die Alpenhütte
+    leuchtete durch den Berg). Mit `SceneBuilder.paintScene` und den Markern ist das behoben. Der Schein am Rand
+    einer verdeckenden Fläche bleibt sichtbar (Streulicht um die Silhouette); eine Lampe, die vollständig hinter einer
+    großen Fläche steht, sieht man nicht mehr.
+
+### Lampenlicht auf den Flächen
+
+Nachts und abends **beleuchten die Lampen die Dinge in ihrer Nähe**: Steine, Blumen, Hüttenwände, Zeltstoff und
+Baumstämme neben einer Laterne oder dem Lagerfeuer werden warm (`WorldMesh._lampLight`, eingerechnet in
+`WorldLighting.shade(..., lamp:)`). Je Fläche gilt: nur Flächen, die der Lampe zugewandt sind
+(`n · richtung > 0`), innerhalb von 2,4 Radien, mit quadratisch abfallender Stärke; zusammen höchstens 1,0 (nachts
+mal 1,15, abends mal 0,6). Große Flächen (Gelände, Berghänge: Fläche über 0,9) bleiben ausgenommen, sonst würde die
+ganze Ebene einfarbig. Zur Sicherheit gegen „Licht durch Bäume“: Eine Fläche, die der Lampe den Rücken zukehrt, bleibt
+dunkel. Verdeckung durch andere Körper wird dabei **nicht** geprüft (Lampe, Fläche und Hindernis müssten dafür
+geschnitten werden); bei den kleinen Lampen reichte die Zuwendung, im Screenshot fiel nichts auf.
+
+Ein Mesh bekommt die Lampen seines Moduls bei `WorldMesh.attach`: Basis-Meshes die Laternen und Hütten, Props zusätzlich
+die Lampen ihrer eigenen Variante (`WorldModule.lightsOf`). Die Spielfigur wird nicht angestrahlt (ihre Meshes
+wechseln den Platz, der Farb-Cache nicht).
 
 ### Glühwürmchen
 
@@ -268,8 +309,9 @@ Ein Phasenwechsel muss alles Aufgenommene verwerfen. Die Schlüssel enthalten de
 | Lernpfad, `PictureCache` in `_ForestPainter.paint` | `(module, view.size, view.focus, view.yaw, levelCount, currentIndex, background, lighting.phase, PlayerLook.cacheKey)` | neuer Schlüssel: alle 16 aufgenommenen Phasenbilder werden verworfen und nach und nach neu aufgenommen |
 | Vitrine, `_BakedCasePainter` | Zeichenkette aus Welt, Phase, `PlayerLook.cacheKey`, Winkel (3 Nachkommastellen), Größe und `pixelRatio`, mit senkrechtem Strich verbunden | bis zu 12 Texturen, die am längsten ungenutzte zuerst entfernt |
 | Entdecker:innen-Porträt, `_PortraitPainter` | Zeichenkette aus `explorer.id`, Phase, Größe und `pixelRatio` | bis zu 30 Texturen |
-| Flächenfarben, `WorldMesh._pathColors` | `DayPhase` | je Mesh vier `Int32List`s |
-| Schattenhüllen, `WorldMesh._shadows` | `DayPhase` | je Mesh bis zu vier Polygone |
+| Flächenfarben, `WorldMesh._pathColors` | `DayPhase` | je Mesh vier `Int32List`s (Sonne und Lampenlicht) |
+| Schattenhüllen, `WorldModule._shadowPieces` | `(DayPhase, Variante)` | Polygone und Fußflecken je Gruppe |
+| Animierte Koordinaten, `WorldMesh._frames` | Schleifenposition (64 Stufen) | je animiertem Mesh ein `Float32List` je Stufe |
 
 Der Pfad hat darüber hinaus keinen eigenen Zeitgeber: Wechselt `DayClock.phase`, ruft `_dayChanged()` ein `setState` auf,
 der `_ForestPainter` bekommt ein neues `WorldLighting`, und `shouldRepaint` meldet die Änderung.
@@ -283,7 +325,11 @@ der `_ForestPainter` bekommt ein neues `WorldLighting`, und `shouldRepaint` meld
   (dart2js) tatsächlich so rechnet oder der Compiler die Multiplikation anders übersetzt, ist **nicht geprüft**; dart2wasm
   hat 64-Bit-Ganzzahlen. Selbst im ungünstigen Fall bleibt die Schleife nahtlos, weil sie nur von `phase` abhängt – es
   könnten nur die Positionen auf Web und nativ verschieden streuen.
-- **Baumschatten je Mesh** (siehe [Schatten](#schatten)): ob das Absicht ist, steht nirgends.
+- **Lampenlicht ohne Verdeckung** (siehe [Lampenlicht auf den Flächen](#lampenlicht-auf-den-flachen)): Das Licht kennt
+  nur die Zuwendung der Fläche, keinen Schatten durch Körper dazwischen.
+- **Glühwürmchen bleiben eine Ebene über dem Bild.** Sie sind als einzige Lichter nicht in die Tiefenordnung eingebaut
+  (sie müssten jedes Frame neu eingeordnet werden); sie stehen nur auf der Wiese, wo keine Bäume sind. Ein Test
+  (`world_lighting_test.dart`) verlangt, dass nur die Wiese `fireflies` hat.
 
 ## Tests und Nachweise
 
