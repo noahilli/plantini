@@ -1,7 +1,7 @@
 // Turns the app's exported Blender modules (assets/worlds/*_module.json) into
 // three.js geometry. Blender is z-up; three.js is y-up: (x, y, z) -> (x, z, -y).
 // Meshes are merged per behaviour so a whole ecosystem costs a handful of draw
-// calls: static, swaying vegetation, water glints and the explorer figure.
+// calls: static, swaying vegetation, water glints, animated props and the explorer figure.
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
@@ -55,17 +55,42 @@ function meshGeometry(mesh, { sway = false, phase = 0 } = {}) {
   return geometry;
 }
 
+// Props that move (windmill sails, wings, ducks, bees, hopping animals) carry
+// their animation in vertex attributes and run in ONE shader, the same
+// formulas as WorldMesh.coordsAt in the app (apps/flutter/.../world_module.dart):
+// a loop is 6 s and every frequency is a whole number, so it closes.
+const ANIM_KIND = { spin: 1, flap: 2, bob: 3, hop: 4, orbit: 5 };
+
+function animGeometry(mesh) {
+  const geometry = meshGeometry(mesh);
+  const a = mesh.anim;
+  const count = geometry.attributes.position.count;
+  const pivot = toThree(a.pivot ?? [0, 0, 0]);
+  const axis = toThree(a.axis ?? [0, 0, 1]);
+  const drift = a.drift ?? [0, 0, 0];
+  // aB: orbit radius or flap drift frequency, then the drift (bob: the roll) in Blender axes.
+  const second = mesh.motion === 'orbit' ? (a.radius ?? 1) : (a.driftFreq ?? 1);
+  const b = mesh.motion === 'bob' ? [second, a.roll ?? 0, 0, 0] : [second, ...drift];
+  const fill = (values) => Array.from({ length: count }, () => values).flat();
+  geometry.setAttribute('aPivot', new THREE.Float32BufferAttribute(fill(pivot), 3));
+  geometry.setAttribute('aAxis', new THREE.Float32BufferAttribute(fill(axis), 3));
+  geometry.setAttribute('aA', new THREE.Float32BufferAttribute(fill([ANIM_KIND[mesh.motion], a.amp ?? 0, a.freq ?? 1, a.phase ?? 0]), 4));
+  geometry.setAttribute('aB', new THREE.Float32BufferAttribute(fill(b), 4));
+  return geometry;
+}
+
 function merge(geometries) {
   return geometries.length ? mergeGeometries(geometries, false) : null;
 }
 
 export function buildWorld(data, time) {
-  const buckets = { static: [], sway: [], water: [], ranger: [] };
+  const buckets = { static: [], sway: [], water: [], ranger: [], anim: [] };
   let counter = 0;
   for (const mesh of data.meshes) {
     counter += 1;
     const phase = (counter * 2.399963) % (Math.PI * 2); // golden angle: neighbours sway out of step
-    if (mesh.motion === 'tree' || mesh.motion === 'plant') buckets.sway.push(meshGeometry(mesh, { sway: true, phase }));
+    if (mesh.anim && ANIM_KIND[mesh.motion]) buckets.anim.push(animGeometry(mesh));
+    else if (mesh.motion === 'tree' || mesh.motion === 'plant') buckets.sway.push(meshGeometry(mesh, { sway: true, phase }));
     else if (mesh.motion === 'water') buckets.water.push(meshGeometry(mesh, { phase }));
     else if (mesh.motion === 'ranger') buckets.ranger.push(meshGeometry(mesh));
     else buckets.static.push(meshGeometry(mesh));
@@ -73,11 +98,11 @@ export function buildWorld(data, time) {
 
   const group = new THREE.Group();
 
-  const solid = new THREE.MeshLambertMaterial({ vertexColors: true });
+  const solid = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
   const staticGeometry = merge(buckets.static);
   if (staticGeometry) group.add(new THREE.Mesh(staticGeometry, solid));
 
-  const swaying = new THREE.MeshLambertMaterial({ vertexColors: true });
+  const swaying = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
   swaying.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = time;
     shader.vertexShader = shader.vertexShader
@@ -89,6 +114,38 @@ export function buildWorld(data, time) {
   };
   const swayGeometry = merge(buckets.sway);
   if (swayGeometry) group.add(new THREE.Mesh(swayGeometry, swaying));
+
+  const animated = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
+  animated.onBeforeCompile = (shader) => {
+    shader.uniforms.uTime = time;
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute vec3 aPivot; attribute vec3 aAxis; attribute vec4 aA; attribute vec4 aB; uniform float uTime;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>
+        float kind = aA.x, amp = aA.y;
+        float loop = uTime / 6.0;
+        float t = 6.2831853 * aA.z * loop + 6.2831853 * aA.w;
+        float angle = 0.0;
+        vec3 off = vec3(0.0); // offset in Blender axes
+        if (kind < 1.5) { angle = t; }
+        else if (kind < 2.5) {
+          angle = amp * sin(t);
+          float dt = 6.2831853 * aB.x * loop + 6.2831853 * aA.w;
+          off = vec3(aB.y * sin(dt), aB.z * sin(dt + 1.5707963), aB.w * sin(2.0 * dt));
+        } else if (kind < 3.5) { off.z = amp * sin(t); angle = aB.y * sin(t + 1.0); }
+        else if (kind < 4.5) { off.z = amp * abs(sin(t * 0.5)); }
+        else { angle = t; off = vec3(aB.x * (cos(t) - 1.0), aB.x * sin(t), amp * sin(2.0 * t)); }
+        vec3 ax = normalize(aAxis);
+        vec3 rel = transformed - aPivot;
+        float ca = cos(angle), sa = sin(angle);
+        rel = rel * ca + cross(ax, rel) * sa + ax * dot(ax, rel) * (1.0 - ca);
+        transformed = rel + aPivot + vec3(off.x, off.z, -off.y);`);
+  };
+  const animatedGeometry = merge(buckets.anim);
+  if (animatedGeometry) {
+    const animatedMesh = new THREE.Mesh(animatedGeometry, animated);
+    animatedMesh.frustumCulled = false; // creatures leave their rest position
+    group.add(animatedMesh);
+  }
 
   const glint = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false });
   glint.onBeforeCompile = (shader) => {
@@ -121,7 +178,7 @@ export function buildWorld(data, time) {
     },
     dispose() {
       group.traverse((node) => node.geometry?.dispose());
-      solid.dispose(); swaying.dispose(); glint.dispose();
+      solid.dispose(); swaying.dispose(); animated.dispose(); glint.dispose();
     },
   };
 }

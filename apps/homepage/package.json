@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "snapshot": "node scripts/snapshot-content.mjs",
-    "changelog": "node scripts/build-changelog.mjs"
+    "changelog": "node scripts/build-changelog.mjs",
+    "worlds": "node scripts/sync-worlds.mjs"
   },
   "engines": {
     "node": ">=20"
