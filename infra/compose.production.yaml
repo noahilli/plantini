@@ -215,6 +215,26 @@ services:
       start_period: 5s
     security_opt: [no-new-privileges:true]
 
+  docs:
+    image: ${DOCS_IMAGE:?set an immutable Plantini handbook image reference}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp, /var/cache/nginx, /var/run]
+    cap_drop: [ALL]
+    ports:
+      - "127.0.0.1:${DOCS_LOOPBACK_PORT:-8086}:8080"
+    volumes:
+      # bcrypt htpasswd, owned by uid 101 (nginx-unprivileged), mode 0400; never in the repository
+      - ${DOCS_HTPASSWD_DIR:-/opt/plantini/docs-auth}:/etc/nginx/htpasswd:ro
+    networks: [edge]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz | grep -qx ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 5s
+    security_opt: [no-new-privileges:true]
+
 networks:
   edge: {}
   app:

@@ -61,6 +61,13 @@ studio.{$PLANTINI_DOMAIN} {
 	reverse_proxy 127.0.0.1:{$EDITOR_PORT:8084}
 }
 
+# Contributor handbook (MkDocs). Access control is Basic Auth inside the docs
+# container (see docs-site/nginx.conf); Caddy only terminates TLS.
+docs.{$PLANTINI_DOMAIN} {
+	import security_headers
+	reverse_proxy 127.0.0.1:{$DOCS_PORT:8086}
+}
+
 # Class and pupil administration has its own PKCE client and UI container.
 portal.{$PLANTINI_DOMAIN} {
 	import security_headers
