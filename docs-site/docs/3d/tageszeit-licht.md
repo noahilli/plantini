@@ -156,7 +156,7 @@ gedrehte Fläche ist heller als eine abgewandte, die Nacht ist dunkler als der M
 4. **Sterne** (`paintStars`, 38 Stück im Pfad, 16 in der Vitrine): eine feste Pseudozufallsfolge (linearer
    Kongruenzgenerator, Startwert 7919), im oberen 55 %-Bereich – jedes Bild zeigt denselben Himmel.
 
-Die Vitrine malt ihre Rückwand in `_CaseBackPainter` selbst: Mittag als helle Galeriewand, sonst `skyTop`/`skyBottom` plus Glow.
+Die Vitrine hat seit dem 08.10.2026 keine Rückwand mehr: Das Modell schwebt auf transparentem Grund vor dem Hintergrund der jeweiligen Seite, Himmel, Sterne und Glow entfallen dort.
 
 ![Der Lernpfad bei Nacht](../assets/shots/app-pfad-nacht.png){ loading=lazy }
 
@@ -307,7 +307,7 @@ Ein Phasenwechsel muss alles Aufgenommene verwerfen. Die Schlüssel enthalten de
 | Wo | Schlüssel (Ausschnitt) | Wirkung |
 |---|---|---|
 | Lernpfad, `PictureCache` in `_ForestPainter.paint` | `(module, view.size, view.focus, view.yaw, levelCount, currentIndex, background, lighting.phase, PlayerLook.cacheKey)` | neuer Schlüssel: alle 16 aufgenommenen Phasenbilder werden verworfen und nach und nach neu aufgenommen |
-| Vitrine, `_BakedCasePainter` | Zeichenkette aus Welt, Phase, `PlayerLook.cacheKey`, Winkel (3 Nachkommastellen), Größe und `pixelRatio`, mit senkrechtem Strich verbunden | bis zu 12 Texturen, die am längsten ungenutzte zuerst entfernt |
+| Vitrine, `_FloatingModelPainter` | Zeichenkette aus Welt, Phase, `PlayerLook.cacheKey`, Winkel (3 Nachkommastellen), Größe und `pixelRatio`, mit senkrechtem Strich verbunden | bis zu 12 Texturen, die am längsten ungenutzte zuerst entfernt |
 | Entdecker:innen-Porträt, `_PortraitPainter` | Zeichenkette aus `explorer.id`, Phase, Größe und `pixelRatio` | bis zu 30 Texturen |
 | Flächenfarben, `WorldMesh._pathColors` | `DayPhase` | je Mesh vier `Int32List`s (Sonne und Lampenlicht) |
 | Schattenhüllen, `WorldModule._shadowPieces` | `(DayPhase, Variante)` | Polygone und Fußflecken je Gruppe |

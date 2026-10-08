@@ -1,0 +1,33 @@
+# Local-network demo: the E2E stack (compose.e2e.yaml) reachable from other
+# computers on the same network. Started by tools/scripts/start-lan-demo.sh with
+#   docker compose -p plantini-lan --env-file <lan.env> -f compose.e2e.yaml -f compose.lan.yaml
+# Own project name, own volumes and own ports (web 3100, API 1438, login 8182),
+# so the loopback E2E stack on 3000/1338/8082 keeps running untouched.
+#
+# This publishes a development stack (start-dev Keycloak with its admin console,
+# generated demo passwords, plain HTTP) on every interface of the host. Use it on
+# a trusted home or office network only, and stop it afterwards.
+services:
+  keycloak:
+    environment:
+      KC_HOSTNAME: ${LAN_HOST:?set LAN_HOST to the address of this computer}
+      KC_HOSTNAME_PORT: '8182'
+    ports: !override
+      - "0.0.0.0:8182:8080"
+    volumes: !override
+      # A copy of the realm whose web client also accepts the LAN address.
+      - ${LAN_REALM_DIR:?set LAN_REALM_DIR}:/opt/keycloak/data/import:ro
+
+  platform:
+    environment:
+      CORS_ORIGINS: http://${LAN_HOST}:3100
+      PLATFORM_OIDC_ISSUER: http://${LAN_HOST}:8182/realms/plantini
+    ports: !override
+      - "0.0.0.0:1438:1337"
+
+  web:
+    ports: !override
+      - "0.0.0.0:3100:80"
+    volumes: !override
+      - ../apps/flutter/build/web-lan:/usr/share/nginx/html:ro
+      - ./nginx/e2e.conf:/etc/nginx/conf.d/default.conf:ro

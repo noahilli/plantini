@@ -140,7 +140,7 @@ Das „Wiegen“ von Bäumen ist keine Rotation um den Stamm, sondern eine einfa
 animierten Teile (`spin`, `flap`, `bob`, `hop`, `orbit`) rechnet `WorldMesh.coordsAt(loop)` pro Phase neu und
 merkt sich das Ergebnis; die Flächennormalen werden dabei **nicht** mitgedreht (die Teile sind klein, das Licht bleibt
 also so, als stünden sie in Ruhelage). Alle Frequenzen sind ganze Zahlen, damit der 6-Sekunden-Durchlauf nahtlos schließt;
-bei nur 16 aufgenommenen Phasen sind mehr als drei Schwingungen je Durchlauf nicht mehr als solche zu sehen.
+bei 30 Bildern je Sekunde wären auch schnellere Schwingungen darstellbar; die Frequenzen sind trotzdem auf höchstens 3 je Durchlauf gedeckelt, weil schnelleres Flattern bei 6 s Schleife hektisch wirkt.
 
 ### Zählwerte (aus den JSON-Dateien, 06.10.2026)
 
@@ -201,7 +201,7 @@ hält die 48-px-Tippziele benachbarter Stationen getrennt.
 | `world_scene.dart` | `SceneProjection`, `SceneInstance`, `SceneBuilder.build`, `PictureCache` |
 | `world_lighting.dart` | Tageszeit, Beleuchtung, Himmel, Lichtschein – siehe [Tageszeit und Licht](tageszeit-licht.md) |
 | `modular_forest_view.dart` | `ModularForestView`: der Lernpfad (Module, Stationsknöpfe, Animation, Glühwürmchen-Ebene) |
-| `ecosystem_vitrine.dart` | `EcosystemVitrine`: die Glasvitrine als gebackene Textur |
+| `ecosystem_vitrine.dart` | `EcosystemVitrine`: das schwebende Modell als gebackene Textur |
 
 ### `SceneBuilder.build` und `SceneBuilder.paintScene`
 
@@ -259,9 +259,12 @@ Wiesenblumen gemalt werden.
 - Nur das aktuelle Modul und seine beiden Nachbarn werden gezeichnet (`center - 1 … center + 1`); jedes Modul `m` zeigt
   die Basis und die **Variante `m % 2`** der Props (Windmühle und Bienenstöcke in den geraden, Brunnen und Gnome in den
   ungeraden Wiesenmodulen, usw.). Schatten, Lichter und Lampenlicht auf den Flächen richten sich nach derselben Variante.
-- Die Animation hat **16 Phasen** je 6-Sekunden-Zyklus (`const _phases = 16`). Der `AnimationController` tickt zwar
-  durchgehend, das Widget repaintet aber nur, wenn die Phase wechselt (`_frames.value++`). Jede Phase wird einmal als
-  `ui.Picture` aufgenommen und danach nur noch abgespielt (`PictureCache`).
+- Die Animation ist eine 6-Sekunden-Schleife mit **30 Bildern je Sekunde** (`_framesPerLoop = 180`). Der
+  `AnimationController` tickt mit der Bildwiederholrate des Geräts, das Widget zeichnet aber nur beim Wechsel des
+  30stel-Bildes neu (`_frames.value++`). Jedes Bild wird **beim Zeigen aufgenommen** und nach dem nächsten verworfen
+  (`PictureCache.retireAfterNext`); nur ein stehendes Bild (Pause, reduzierte Bewegung, Ansicht ändert sich nicht) wird
+  zwischengespeichert und wiederholt. Früher waren es 16 aufgenommene Phasen (etwa 2,7 Bilder je Sekunde): 180 Bilder je
+  Welt im Speicher zu halten wäre viel zu teuer, eine Aufnahme kostet dank Radix-Sortierung nur 2–3 ms.
 - Ziehen verschiebt `position` (Einheit: Module) und `yaw` (auf ±0,35 begrenzt); das Mausrad bewegt `position`.
 - Die Stationsknöpfe (Level 1–6 je Modul) sind normale Flutter-Widgets, die per `_Projection.project` über die
   Szene gelegt werden – nicht Teil des 3D-Bildes. Außerhalb des Sichtfensters werden sie ganz weggelassen (auch
@@ -281,17 +284,20 @@ Wiesenblumen gemalt werden.
 
 ### Die Vitrine: `EcosystemVitrine`
 
-Eine Glasvitrine mit Sockel und Messingschild, in der dasselbe Modul schräg von vorn steht (Startseite, Lernliste,
-Herbarium, Anmeldung – Aufrufer: `home_screen.dart`, `ecosystem_list_screen.dart`,
-`herbarium_bottle_collection.dart` und der Anmeldebildschirm in `router.dart`). Eigenheiten:
+Seit dem 08.10.2026 ohne Glas, Wand und Sockel: Dasselbe Modul schwebt schräg von vorn vor dem Hintergrund, mit einem
+weichen Schatten darunter und einem Namensschild als Pille, wie die drei Modelle auf der Projekt-Homepage (Startseite,
+Lernliste, Herbarium, Anmeldung – Aufrufer: `home_screen.dart`, `ecosystem_list_screen.dart`,
+`herbarium_bottle_collection.dart` und der Anmeldebildschirm in `router.dart`). Der Name `EcosystemVitrine` blieb, damit
+Aufrufer und Tests unverändert bleiben. Eigenheiten:
 
-- Eigene Einpassung (`_Fit`): Das Modul wird in den freien Bereich zwischen Glasrand und Sockel skaliert; Meshes mit
+- Eigene Einpassung (`_Fit`): Das Modul wird in den freien Bereich über Schatten und Namensschild skaliert; Meshes mit
   `slot != null` (Stationen, Pfadstücke) fehlen, die Spielfigur steht an Station 0.
 - Die Vitrine zeigt die Basis und die Variante 0 (`mesh.inVariant(0)`); Tagwesen wie Schmetterlinge fehlen nachts.
   Animierte Teile stehen in Ruhelage.
-- Wand, Sockel, Modell und Glas werden **zu einer Textur** gebacken (`toImageSync`) und als ein Bild gezeichnet. Warum
-  das nötig war, steht in [Performance](performance.md).
-- Bei `animate: true` schwingt das Modell ±0,15 rad in zwei Durchläufen über 32 s und steht dann still.
+- Das Modell wird **zu einer Textur** gebacken (`toImageSync`, transparenter Hintergrund) und als ein Bild gezeichnet; der
+  Schatten ist ein einziger Radialverlauf. Warum das nötig war, steht in [Performance](performance.md).
+- Bei `animate: true` schwingt das Modell ±0,15 rad in zwei Durchläufen über 32 s und schwebt dabei zweimal sanft auf und
+  ab (die Textur wird nur verschoben, der Schatten schrumpft beim Steigen); danach steht es still.
 
 ![Die Entdecker:innen von Plantini](../assets/shots/art-charaktere.png){ loading=lazy }
 

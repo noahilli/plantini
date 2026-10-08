@@ -78,3 +78,13 @@ Die Seed-Inhalte sind umfangreiche deutsche Demo-Inhalte, aber noch keine
 fachredaktionell freigegebene Produktionsdatenbank. Medien und botanische
 Quellen müssen vor öffentlicher Veröffentlichung separat lizenziert und
 fachlich geprüft werden.
+
+## Demo im lokalen Netz (LAN)
+
+`tools/scripts/start-lan-demo.sh [<IPv4>] [--skip-build]` baut die Web-App für die Adresse dieses Rechners und startet den Demo-Stack so, dass andere Rechner im selben Netz ihn öffnen können: Web-App `http://<IPv4>:3100`, API `:1438`, Anmeldung (Keycloak) `:8182`. Beenden: `tools/scripts/start-lan-demo.sh --stop`.
+
+- **Eigener Stack:** Compose-Projekt `plantini-lan` (`infra/compose.e2e.yaml` plus Override `infra/compose.lan.yaml`), eigene Volumes und Ports; der Loopback-Stack auf 3000/1338/8082 und die E2E-Tests bleiben unberührt. Web-Build in `apps/flutter/build/web-lan`.
+- **Geheimnisse:** `tools/e2e/scripts/prepare-lan-env.mjs` erzeugt `tools/e2e/.runtime/lan/lan.env` (ignoriert) einmalig und eine Realm-Kopie, in der der Web-Client zusätzlich `http://<IPv4>:3100` erlaubt. Demo-Konto `demo@plantini.test`; das Passwort gibt das Skript am Ende aus (oder vorher mit `LAN_DEMO_PASSWORD=… setzen`).
+- **Ohne HTTPS:** Browser stellen WebCrypto nur auf https und localhost bereit; `flutter_secure_storage` scheitert auf `http://192.168…` (Anmeldung kehrt in einer Schleife zu `/login` zurück, Konsole: `AuthService initialize failed`). Entwicklungs-Builds der Web-App (`PLANTINI_ENV=development`) fallen deshalb auf `InsecureDevCredentialStore` (Local Storage) zurück (`lib/auth/credential_store.dart`); Staging und Produktion nie. Kamera und Standort des Browsers gibt es ohne sicheren Kontext ebenfalls nicht.
+- **Sicherheit:** Der Stack veröffentlicht einen Entwicklungs-Keycloak samt Admin-Konsole und Klartext-HTTP auf allen Schnittstellen. Nur im vertrauten Netz betreiben und danach stoppen.
+- **Nachweis 08.10.2026:** Mit Chromium über die LAN-Adresse (unsicherer Kontext): Anmeldung, Charakterauswahl, Home mit schwebendem Modell, Lernpfad mit bewegtem Adler; Konsole ohne Fehler. Von einem **anderen** Rechner im Netz ist es nicht geprüft; eine Host-Firewall könnte die Ports blockieren.

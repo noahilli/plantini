@@ -16,13 +16,13 @@ Ein Bild bei 60 fps darf 16,7 ms kosten (UI-Thread und Raster-Thread zusammen m�
 
 | Ansicht | Was passiert pro Frame | Kosten |
 |---|---|---|
-| Lernpfad, ruhend | Der `AnimationController` (6 s) tickt, `_frames.value++` feuert nur beim Wechsel der Phase (16 je Zyklus, also etwa 2,7 mal pro Sekunde); dann wird ein aufgenommenes `ui.Picture` abgespielt | sehr klein |
-| Lernpfad, **erster Durchlauf** | Jede der 16 Phasen wird beim ersten Erreichen aufgenommen (`_record`): Projektion aller Vertices, Tiefenschlüssel, Sortierung, `ui.Vertices.raw` | Schwerpunkt der UI-Zeit |
-| Lernpfad, **Ziehen** | `view.focus` und `view.yaw` stehen im Cache-Schlüssel; jeder Ziehschritt ist ein neuer Schlüssel, also wird neu aufgenommen | wie erster Durchlauf, aber in jedem Frame |
-| Lernpfad, Wechsel von Tageszeit oder Figur | neuer Schlüssel: alle Phasenbilder werden verworfen | wie erster Durchlauf |
+| Lernpfad, **animiert** (Standard) | Der `AnimationController` (6 s) tickt, `_frames.value++` feuert 30 mal pro Sekunde (180 Bilder je Schleife); jedes Bild wird aufgenommen (`_record`), gezeichnet und verworfen | 2–3 ms je Bild (Chromium auf dem Desktop, 08.10.2026), das sind etwa 7 % des 33-ms-Budgets |
+| Lernpfad, **stehend** (Pause, reduzierte Bewegung) | Ein aufgenommenes `ui.Picture` wird wiederholt | sehr klein |
+| Lernpfad, **Ziehen** | Ebenfalls eine Aufnahme je Bild, mit dem neuen `focus`/`yaw` | wie animiert, in jedem Frame |
+| Lernpfad, Wechsel von Tageszeit oder Figur | nächste Aufnahme nutzt die neuen Farben; ein stehendes Bild bekommt einen neuen Schlüssel | eine Aufnahme |
 | Glühwürmchen (Wiese, abends/nachts) | eigene Ebene `_FireflyPainter`, bei **jedem** Tick neu gemalt; je sichtbarem Modul bis zu 16 Tiere | klein, aber nicht null |
 | Vitrine, ruhend | gar nichts: eine Textur wird als Bild gezeichnet | ein Quad |
-| Vitrine, schwingend (`animate: true`) | Wechsel zwischen etwa sieben gebackenen Winkeln, danach Ruhe | einmaliges Backen je Winkel |
+| Vitrine, schwebend (`animate: true`) | Wechsel zwischen etwa sieben gebackenen Winkeln, dazu ein verschobenes Bild und ein Radialverlauf als Schatten, danach Ruhe | einmaliges Backen je Winkel |
 | Porträt im Auswahlraster | gebackene Textur | ein Quad |
 | `ExplorerStage` (große Vorschau) | **jedes Frame** Szene aus 1 000 bis 1 800 Dreiecken neu bauen, solange sie sich dreht oder wiegt | hier gibt es keinen Cache |
 
@@ -259,13 +259,12 @@ Wichtig für die Lesart: „Raster p90 0,5 ms beim Scrollen“ betrifft die **St
 ## Offene Punkte
 
 - **Echte Android-Geräte sind nicht gemessen** (der Emulator hat laut Handover keine brauchbare GPU). Die Zahlen gelten für
-  einen Desktop-Rechner. Auf schwachen Handys ist die UI-Zeit der Lernpfad-Aufnahmen (16 Phasen nach jedem Ziehen oder
+  einen Desktop-Rechner. Auf schwachen Handys ist die UI-Zeit der Lernpfad-Aufnahmen (jedes der 30 Bilder je Sekunde, auch nach dem Ziehen oder
   Tageszeitwechsel) der wahrscheinlichste Engpass.
 - Die Zeit der **ersten Aufnahme je Winkel** einer Vitrine auf Handys ist nicht gemessen (`knowledge/handovers/app-design-vitrine.md`, Abschnitt „Offen“).
 - Beim **Ziehen** nimmt der Lernpfad in jedem Frame neu auf, weil `focus` im Schlüssel steht. Ob das auf schwachen Geräten
   ruckelt, ist offen; eine Lösung (etwa Aufnahme mit Puffer über das Fenster hinaus und Verschiebung) existiert nicht.
-- Die **16 Phasen** sind die Obergrenze für Animationen: Flügelschlag und Windmühle springen alle 0,375 s weiter. Mehr
-  Phasen kosten Speicher und Aufnahmen; die Frequenzen der Props sind deshalb auf höchstens 3 je Durchlauf begrenzt.
+- **30 Bilder je Sekunde** (bis 07.10.2026 waren es 16 aufgenommene Phasen je 6-s-Schleife, also 2,7 Bilder je Sekunde; Flügelschlag und Windmühle sprangen alle 0,375 s weiter). Die Aufnahme je Bild kostet dauerhaft Rechenzeit, solange der Lernpfad sichtbar ist; der Pausenknopf und „Bewegung reduzieren“ stoppen das. Auf schwachen Handys ist das der wahrscheinliche Engpass und nicht gemessen.
 - Die **Animationen der Props** (`coordsAt`) rechnen je Phase einmal alle Eckpunkte um und halten das Ergebnis im Speicher
   (64 Stufen je animiertem Mesh); wie viel das auf einem Handy ausmacht, ist nicht gemessen.
 - Speicherverbrauch der JSON-Listen neben den typisierten Listen: nicht gemessen.

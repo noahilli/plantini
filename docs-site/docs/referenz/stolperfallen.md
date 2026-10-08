@@ -250,7 +250,7 @@ Sammlung der Fallen, in die man bei Plantini tatsächlich laufen kann. Jeder Ein
 ### Zeichenkosten bei Vitrinen und Lernpfad
 
 - **Symptom:** Ruckeln beim Scrollen der Startseite.
-- **Ursache:** Mehrere getrennt gezeichnete Ebenen (Wand, Sockel, Modell, Glas) wurden jedes Bild neu gezeichnet. Die Vitrine ist deshalb pro Winkel **eine** gebackene Textur (`_BakedCasePainter`).
+- **Ursache:** Mehrere getrennt gezeichnete Ebenen (Wand, Sockel, Modell, Glas) wurden jedes Bild neu gezeichnet. Die Vitrine ist deshalb pro Winkel **eine** gebackene Textur (heute `_FloatingModelPainter`, ohne Wand, Sockel und Glas).
 - **Lösung:** neue Effekte so bauen, dass sie in die gebackene Textur passen; messen mit dem Leistungslauf aus [Tests und CI](../mitmachen/tests-ci.md).
 - **Beleg:** `apps/flutter/lib/features/catalog/presentation/widgets/ecosystem_vitrine.dart`, `knowledge/handovers/herbarium-map-character-daytime.md`.
 
