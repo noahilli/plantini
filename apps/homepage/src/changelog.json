@@ -277,6 +277,25 @@
    "changes": [
     "docs.plantini.eu, passwortgeschützt: Anleitung für Mitwirkende, Architektur, Backend, App, 3D, Betrieb und Moderation mit Screenshots und Animationen."
    ]
+  },
+  {
+   "app": "app",
+   "date": "2026-10-08",
+   "version": "0.7.1",
+   "title": "Schwebende Modelle und flüssigere Bewegung",
+   "changes": [
+    "Die Ökosystem-Modelle auf Startseite, Lernliste, Herbarium und Anmeldung stehen nicht mehr in einer Glasvitrine mit Sockel und Messingschild, sondern schweben wie auf der Projekt-Homepage frei mit weichem Schatten und einem kleinen Namensschild. Beim Betrachten schweben sie sanft auf und ab.",
+    "Die Welten im Lernpfad bewegen sich mit 30 statt etwa 3 Bildern pro Sekunde: Bäume und Gräser wiegen sich, Wasser glitzert, die Windmühle dreht sich, Tiere und Schmetterlinge bewegen sich flüssig. Der Pausenknopf und „Bewegung reduzieren“ halten alles an."
+   ]
+  },
+  {
+   "app": "handbuch",
+   "date": "2026-10-08",
+   "version": null,
+   "title": "Schwebende Modelle, 30 Bilder pro Sekunde",
+   "changes": [
+    "Die 3D-Kapitel beschreiben die schwebenden Modelle, die Animation mit 30 Bildern pro Sekunde und die neue Messung."
+   ]
   }
  ]
 }
