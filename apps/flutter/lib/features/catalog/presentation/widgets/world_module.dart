@@ -531,8 +531,8 @@ final class WorldMesh {
 
   // ---- Animated parts -------------------------------------------------------
 
-  /// Number of recorded animation frames per loop (see `_phases` in the path
-  /// view); [coordsAt] takes the loop position as a fraction of this.
+  /// Coordinates of the animated part per frame (180 frames per 6 s loop, see
+  /// `_framesPerLoop` in the path view); [coordsAt] takes the loop position.
   final _frames = <int, Float32List>{};
 
   /// Vertex coordinates of an animated part at [loop] (0..1 is one 6 s loop,
@@ -547,8 +547,8 @@ final class WorldMesh {
   Float32List coordsAt(double loop) {
     final a = anim;
     if (a == null) return coords;
-    final key = (loop * 64).round() % 64;
-    return _frames[key] ??= _animate(a, key / 64);
+    final key = (loop * 180).round() % 180;
+    return _frames[key] ??= _animate(a, key / 180);
   }
 
   Float32List _animate(Map<String, dynamic> a, double loop) {

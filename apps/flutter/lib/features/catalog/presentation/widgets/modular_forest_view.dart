@@ -46,8 +46,10 @@ enum EcosystemWorld {
 
 /// Real, projected Blender mesh geometry. No native GL plugin or remote CDN.
 /// Only the current module and its neighbours are rendered, regardless of size.
-/// Animation frames per 6 s cycle that are recorded once and replayed.
-const _phases = 16;
+/// The animation is a 6 s loop shown at 30 frames per second. A frame is
+/// recorded when it is shown (about 3-4 ms for a module on a desktop), not
+/// cached: 180 recorded pictures per world would cost far too much memory.
+const _framesPerLoop = 180;
 
 final class ModularForestView extends StatefulWidget {
   const ModularForestView({
@@ -89,13 +91,12 @@ final class _ModularForestViewState extends State<ModularForestView>
   @override
   void initState() {
     super.initState();
-    // Repaint only when the animation moves to the next of _phases recorded
-    // frames, not on every tick: sway and water are slow, and a replayed
-    // picture costs almost nothing.
+    // Repaint when the animation moves to the next of the 30 frames per
+    // second, not on every vsync tick.
     DayClock.phase.addListener(_dayChanged);
     PlayerLook.id.addListener(_dayChanged);
     _clock.addListener(() {
-      final phase = (_clock.value * _phases).floor() % _phases;
+      final phase = (_clock.value * _framesPerLoop).floor() % _framesPerLoop;
       if (phase != _lastPhase) {
         _lastPhase = phase;
         _frames.value++;
@@ -464,7 +465,7 @@ final class _ForestPainter extends CustomPainter {
   final WorldModule module;
   final _Projection view;
   final int levelCount;
-  final Animation<double> clock;
+  final AnimationController clock;
   final bool reduceMotion;
   final int currentIndex;
   final Color background;
@@ -474,28 +475,37 @@ final class _ForestPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final timer = Stopwatch()..start();
-    final phase = reduceMotion ? 0 : (clock.value * _phases).floor() % _phases;
-    // Same view state, same animation phase: replay the recorded picture.
-    final key = (
-      module,
-      view.size,
-      view.focus,
-      view.yaw,
-      levelCount,
-      currentIndex,
-      background,
-      lighting.phase,
-      PlayerLook.cacheKey,
-    );
-    final picture = cache.obtain(key, phase, () => _record(size, phase));
-    canvas.drawPicture(picture);
+    final frame = reduceMotion
+        ? 0
+        : (clock.value * _framesPerLoop).floor() % _framesPerLoop;
+    if (!reduceMotion && clock.isAnimating) {
+      // Moving: record the frame, draw it once and let go of it.
+      final picture = _record(size, frame);
+      canvas.drawPicture(picture);
+      cache.retireAfterNext(picture);
+    } else {
+      // Standing still (paused, reduced motion, view not changing): the same
+      // view state shows the same picture, so replay the recorded one.
+      final key = (
+        module,
+        view.size,
+        view.focus,
+        view.yaw,
+        levelCount,
+        currentIndex,
+        background,
+        lighting.phase,
+        PlayerLook.cacheKey,
+      );
+      canvas.drawPicture(cache.obtain(key, frame, () => _record(size, frame)));
+    }
     FrameStats.note('path-paint', timer.elapsed);
   }
 
   ui.Picture _record(Size size, int phaseIndex) {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    final loop = reduceMotion ? 0.0 : phaseIndex / _phases;
+    final loop = reduceMotion ? 0.0 : phaseIndex / _framesPerLoop;
     paintSkyBackdrop(
       canvas,
       size,

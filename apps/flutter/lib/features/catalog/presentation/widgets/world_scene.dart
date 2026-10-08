@@ -525,6 +525,18 @@ final class PictureCache {
   Object? _key;
   final _pictures = <int, ui.Picture>{};
   final _retired = <ui.Picture>[];
+  final _transient = <ui.Picture>[];
+
+  /// A picture that is drawn once (a frame of the running animation): it is
+  /// disposed one call later, the way [obtain] retires old pictures.
+  void retireAfterNext(ui.Picture picture) {
+    for (final old in _transient) {
+      old.dispose();
+    }
+    _transient
+      ..clear()
+      ..add(picture);
+  }
 
   ui.Picture obtain(Object key, int slot, ui.Picture Function() record) {
     for (final picture in _retired) {
@@ -540,10 +552,11 @@ final class PictureCache {
   }
 
   void dispose() {
-    for (final picture in [..._pictures.values, ..._retired]) {
+    for (final picture in [..._pictures.values, ..._retired, ..._transient]) {
       picture.dispose();
     }
     _pictures.clear();
     _retired.clear();
+    _transient.clear();
   }
 }

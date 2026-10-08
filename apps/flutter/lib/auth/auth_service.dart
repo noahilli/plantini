@@ -18,7 +18,17 @@ final class AuthService extends ChangeNotifier {
     AuthPlatformHelper? helper,
     CredentialStore? credentialStore,
   }) : _helper = helper ?? getAuthPlatformHelper(),
-       _credentialStore = credentialStore ?? SecureCredentialStore();
+       _credentialStore =
+           credentialStore ??
+           SecureCredentialStore(
+             // A development web demo opened over plain http on a local
+             // network has no WebCrypto; staging and production never fall back.
+             developmentFallback:
+                 kIsWeb &&
+                     _config.environment == PlantiniEnvironment.development
+                 ? InsecureDevCredentialStore()
+                 : null,
+           );
 
   final AppConfig _config;
   final AuthPlatformHelper _helper;

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -10,15 +11,17 @@ import 'world_lighting.dart';
 import 'world_module.dart';
 import 'world_scene.dart';
 
-/// A small display case ("Vitrine") holding a miniature of an ecosystem: the
-/// same Blender module as the level path, on a gallery plinth under glass.
+/// A miniature of an ecosystem that floats in front of whatever is behind it,
+/// like the three models on the project homepage: the same module as the level
+/// path, a soft shadow under it, no case, no glass, no plinth. (The widget keeps
+/// its old name "Vitrine" so that callers and tests need not change.)
 ///
 /// Cost model: the miniature is projected and lit once per (world, angle,
-/// size) and then replayed as a bounded cached texture. Static vitrines therefore
-/// never repaint. With [animate] the model sways a few degrees for two slow
-/// swings (stepping through a handful of cached angles) and then rests; it
-/// does not move at all under reduced motion or while the widget is not
-/// ticking (off-screen tab).
+/// size) and then replayed as a bounded cached texture. Static models therefore
+/// never repaint. With [animate] the model sways a few degrees and hovers up
+/// and down for two slow swings (stepping through a handful of cached angles)
+/// and then rests; it does not move at all under reduced motion or while the
+/// widget is not ticking (off-screen tab).
 final class EcosystemVitrine extends StatefulWidget {
   const EcosystemVitrine({
     super.key,
@@ -154,40 +157,28 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                         builder: (context, snapshot) {
                           final module = snapshot.data;
                           if (module == null) {
-                            // Still loading: just the empty case.
-                            return Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                CustomPaint(
-                                  isComplex: true,
-                                  willChange: false,
-                                  painter: _CaseBackPainter(world, lighting),
-                                ),
-                                const CustomPaint(
-                                  isComplex: true,
-                                  willChange: false,
-                                  painter: _CaseFrontPainter(),
-                                ),
-                              ],
-                            );
+                            // Still loading: nothing yet.
+                            return const SizedBox.expand();
                           }
-                          // The whole vitrine (wall, plinth, model, glass) is baked
-                          // into one texture per angle and replayed as a textured
-                          // quad. While the model sways it steps through a handful
-                          // of such textures; layered painters (a blurred shadow,
-                          // gradients) cost 10-30 ms per frame while scrolling.
+                          // The model is baked into one texture per angle and
+                          // replayed as a textured quad. While it sways it steps
+                          // through a handful of such textures; layered painters
+                          // (blurred shadows, gradients) cost 10-30 ms per frame
+                          // while scrolling. The hover is only an offset of the
+                          // texture, the shadow a single radial gradient.
                           return ValueListenableBuilder<int>(
                             valueListenable: _step,
                             builder: (context, step, _) => CustomPaint(
                               size: size,
                               isComplex: true,
                               willChange: false,
-                              painter: _BakedCasePainter(
+                              painter: _FloatingModelPainter(
                                 world,
                                 module,
                                 widget.animate ? step * _bucket : widget.yaw,
                                 pixelRatio,
                                 lighting,
+                                widget.animate ? _clock : null,
                               ),
                             ),
                           );
@@ -198,7 +189,7 @@ final class _EcosystemVitrineState extends State<EcosystemVitrine>
                           alignment: const Alignment(0, .93),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: _Plaque(widget.title!),
+                            child: _NameTag(widget.title!),
                           ),
                         ),
                       if (widget.child != null) widget.child!,
@@ -268,22 +259,27 @@ void _drawModel(
   }
 }
 
-/// A resting vitrine (back wall, plinth, model, glass) baked into ONE texture.
-/// Scrolling a list of them then costs one textured quad each, instead of
-/// replaying gradients, clips and a blurred shadow per vitrine per frame.
-final class _BakedCasePainter extends CustomPainter {
-  const _BakedCasePainter(
+/// A resting model baked into ONE texture. Scrolling a list of them then costs
+/// one textured quad each, instead of replaying projections and gradients per
+/// model per frame. The soft shadow under the model is one radial gradient; the
+/// hover moves the texture and squeezes the shadow, nothing is re-baked.
+final class _FloatingModelPainter extends CustomPainter {
+  _FloatingModelPainter(
     this.world,
     this.module,
     this.yaw,
     this.pixelRatio,
     this.lighting,
-  );
+    this.hover,
+  ) : super(repaint: hover);
 
   final EcosystemWorld world;
   final WorldModule module;
   final double yaw, pixelRatio;
   final WorldLighting lighting;
+
+  /// 0..1 loop of the hover while the model animates, otherwise null.
+  final Animation<double>? hover;
 
   static final _images = <String, ui.Image>{};
   static final _retired = <ui.Image>[];
@@ -307,9 +303,7 @@ final class _BakedCasePainter extends CustomPainter {
       final timer = Stopwatch()..start();
       final recorder = ui.PictureRecorder();
       final rec = Canvas(recorder)..scale(pixelRatio);
-      _CaseBackPainter(world, lighting).paint(rec, size);
       _drawModel(rec, module, yaw, size, lighting);
-      const _CaseFrontPainter().paint(rec, size);
       final picture = recorder.endRecording();
       image = picture.toImageSync(
         (size.width * pixelRatio).ceil(),
@@ -319,16 +313,47 @@ final class _BakedCasePainter extends CustomPainter {
       FrameStats.note('vitrine-bake', timer.elapsed);
     }
     _images[key] = image;
+
+    // Hover: two slow rises and falls over the animation loop; at rest 0.
+    final loop = hover?.value ?? 0;
+    final lift = math.sin(loop * math.pi * 4) * size.height * .014;
+    // Soft shadow on the ground under the model, smaller while it rises.
+    final shadowCentre = Offset(size.width * .5, size.height * .80);
+    final shadowWidth = size.width * (.62 - lift / size.height * 3);
+    final shadowHeight = size.height * .075;
+    final shadow = Rect.fromCenter(
+      center: shadowCentre,
+      width: shadowWidth,
+      height: shadowHeight,
+    );
+    canvas.drawOval(
+      shadow,
+      Paint()
+        ..shader = ui.Gradient.radial(
+          shadowCentre,
+          shadowWidth / 2,
+          const [Color(0x40000000), Color(0x00000000)],
+          null,
+          TileMode.clamp,
+          // Squash the circle into an ellipse.
+          Float64List.fromList([
+            1, 0, 0, 0, //
+            0, shadowHeight / shadowWidth, 0, 0,
+            0, 0, 1, 0,
+            0, shadowCentre.dy * (1 - shadowHeight / shadowWidth), 0, 1,
+          ]),
+        ),
+    );
     canvas.drawImageRect(
       image,
       Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
-      Offset.zero & size,
+      (Offset.zero & size).shift(Offset(0, -lift)),
       Paint()..filterQuality = FilterQuality.medium,
     );
   }
 
   @override
-  bool shouldRepaint(covariant _BakedCasePainter old) =>
+  bool shouldRepaint(covariant _FloatingModelPainter old) =>
       old.world != world ||
       old.module != module ||
       old.yaw != yaw ||
@@ -337,7 +362,7 @@ final class _BakedCasePainter extends CustomPainter {
 }
 
 /// Fit-to-bounds projection: the module's bounding box is projected at the
-/// given angle and scaled into the free area between glass edge and plinth.
+/// given angle and scaled into the free area above the shadow and the name tag.
 final class _Fit {
   _Fit(WorldModule module, this.yaw, Size size) {
     var minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
@@ -365,12 +390,12 @@ final class _Fit {
         }
       }
     }
-    // Free area inside the glass: margins left/right/top, plinth below.
+    // Free area: margins left/right/top, room for shadow and name tag below.
     final area = Rect.fromLTWH(
-      size.width * .09,
-      size.height * .10,
-      size.width * .82,
-      size.height * .64,
+      size.width * .03,
+      size.height * .03,
+      size.width * .94,
+      size.height * .74,
     );
     scale = math.min(area.width / (sx1 - sx0), area.height / (sy1 - sy0));
     origin = Offset(
@@ -389,214 +414,37 @@ final class _Fit {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Case: back wall + plinth behind the model, glass + brass in front of it.
-
-final class _CaseBackPainter extends CustomPainter {
-  const _CaseBackPainter(this.world, this.lighting);
-  final EcosystemWorld world;
-  final WorldLighting lighting;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final r = math.min(28.0, size.shortestSide * .12);
-    final clip = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(r),
-    );
-    canvas.save();
-    canvas.clipRRect(clip);
-
-    // Back wall: a soft, slightly tinted gallery light; the sky colour and the
-    // sun or moon glow follow the time of day.
-    final tint = world.background;
-    final noon = lighting.phase == DayPhase.noon;
-    final (skyTop, skyBottom) = lighting.backdrop(tint);
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()
-        ..shader = ui.Gradient.linear(Offset.zero, Offset(0, size.height), [
-          noon ? Color.lerp(const Color(0xFFFFFCF5), tint, .35)! : skyTop,
-          noon ? Color.lerp(tint, const Color(0xFF9FB289), .35)! : skyBottom,
-        ]),
-    );
-    final glowAt = Offset(
-      size.width * (.5 + (noon ? 0 : lighting.glowAt.x) * .42),
-      size.height * (noon ? .16 : .5 + lighting.glowAt.y * .36),
-    );
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()
-        ..shader = ui.Gradient.radial(glowAt, size.width * .75, [
-          noon ? const Color(0x99FFFFFF) : lighting.glow.withValues(alpha: .6),
-          const Color(0x00FFFFFF),
-        ]),
-    );
-    if (lighting.stars) {
-      paintStars(canvas, Size(size.width, size.height * .8), 16);
-    }
-
-    // Gallery plinth: satin green with a brass lip and subtle panel lines.
-    final top = size.height * .77;
-    final plinth = Rect.fromLTRB(
-      size.width * .06,
-      top,
-      size.width * .94,
-      size.height * .98,
-    );
-    canvas.drawRect(
-      plinth,
-      Paint()
-        ..shader = ui.Gradient.linear(plinth.topCenter, plinth.bottomCenter, [
-          const Color(0xFF647266),
-          const Color(0xFF263C35),
-        ]),
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(plinth.left, top, plinth.width, 2.5),
-      Paint()..color = const Color(0xFFD9B878),
-    );
-    final grain = Paint()
-      ..color = const Color(0x14000000)
-      ..strokeWidth = 1;
-    for (var i = 1; i < 5; i++) {
-      final y = top + (size.height - top) * i / 5;
-      canvas.drawLine(Offset(plinth.left, y), Offset(plinth.right, y), grain);
-    }
-
-    // Contact shadow on the plinth under the model.
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(size.width / 2, top + 2),
-        width: size.width * .72,
-        height: size.height * .07,
-      ),
-      Paint()
-        ..color = const Color(0x55000000)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
-    );
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(covariant _CaseBackPainter old) =>
-      old.world != world || old.lighting != lighting;
-}
-
-final class _CaseFrontPainter extends CustomPainter {
-  const _CaseFrontPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final r = math.min(28.0, size.shortestSide * .12);
-    final rrect = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(r),
-    );
-    canvas.save();
-    canvas.clipRRect(rrect);
-
-    // Glass: faint milky film + two diagonal reflections.
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = const Color(0x0DFFFFFF),
-    );
-    final strip = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset(size.width * .1, 0),
-        Offset(size.width * .5, size.height * .5),
-        [const Color(0x38FFFFFF), const Color(0x00FFFFFF)],
-      );
-    Path band(double x0, double w) => Path()
-      ..moveTo(size.width * x0, 0)
-      ..lineTo(size.width * (x0 + w), 0)
-      ..lineTo(size.width * (x0 + w - .32), size.height * .78)
-      ..lineTo(size.width * (x0 - .32), size.height * .78)
-      ..close();
-    canvas.drawPath(band(.36, .13), strip);
-    canvas.drawPath(band(.56, .05), strip);
-
-    // Brass lid: a thin rail along the top edge.
-    canvas.drawRect(
-      Rect.fromLTWH(size.width * .06, size.height * .04, size.width * .88, 3),
-      Paint()
-        ..shader = ui.Gradient.linear(
-          Offset(0, size.height * .04),
-          Offset(0, size.height * .04 + 3),
-          [const Color(0xFFD9B878), const Color(0xFF8E6B34)],
-        ),
-    );
-    canvas.restore();
-
-    final glass = RRect.fromRectAndRadius(
-      Rect.fromLTRB(
-        size.width * .06,
-        size.height * .04,
-        size.width * .94,
-        size.height * .77,
-      ),
-      const Radius.circular(16),
-    );
-    canvas.drawRRect(
-      glass,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..color = const Color(0x88FFFFFF),
-    );
-
-    // Rim: lit on the upper left, in shade on the lower right.
-    canvas.drawRRect(
-      rrect.deflate(.75),
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5
-        ..shader = ui.Gradient.linear(
-          Offset.zero,
-          Offset(size.width, size.height),
-          [const Color(0xB3FFFFFF), const Color(0x1F2E2B25)],
-        ),
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _CaseFrontPainter old) => false;
-}
-
-final class _Plaque extends StatelessWidget {
-  const _Plaque(this.text);
+/// The name of the world in a soft pill under the floating model.
+final class _NameTag extends StatelessWidget {
+  const _NameTag(this.text);
   final String text;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+  Widget build(BuildContext context) => DecoratedBox(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(6),
-      gradient: const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Color(0xFFE8CB92), Color(0xFFB98F4E)],
-      ),
-      border: Border.all(color: const Color(0x66402A10)),
+      borderRadius: BorderRadius.circular(999),
+      color: const Color(0xE6FFFBF2),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x55000000),
-          blurRadius: 4,
+          color: Color(0x33000000),
+          blurRadius: 6,
           offset: Offset(0, 2),
         ),
       ],
     ),
-    child: ExcludeSemantics(
-      child: Text(
-        text.toUpperCase(),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontFamily: 'Figtree',
-          fontWeight: FontWeight.w700,
-          fontSize: 11,
-          letterSpacing: 1.6,
-          color: Color(0xFF3B2814),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      child: ExcludeSemantics(
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontFamily: 'Figtree',
+            fontWeight: FontWeight.w700,
+            fontSize: 13,
+            color: Color(0xFF2E2B25),
+          ),
         ),
       ),
     ),
