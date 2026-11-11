@@ -33,7 +33,7 @@ const html = `<!doctype html>
 <main class="wrap article changelog" id="inhalt">
 <p class="eyebrow">Änderungen</p>
 <h1>Was sich wann geändert hat</h1>
-<p class="lead">Das Änderungsprotokoll aller Teile von Plantini, neueste Einträge zuerst. Plantini ist ein unvollständiger, noch nicht veröffentlichter Teaser (siehe <a href="/technik/#projektstand">Hinweis zum Stand des Projekts</a>); die Einträge beschreiben, was in der Testversion tatsächlich ausgerollt wurde. Die Versionen vor dem 7. Oktober 2026 sind nachgetragen.</p>
+<p class="lead">Das Änderungsprotokoll aller Teile von Plantini, neueste Einträge zuerst. Plantini ist ein früher, unvollständiger Stand (siehe <a href="/technik/#projektstand">Hinweis zum Stand des Projekts</a>); die Einträge beschreiben, was tatsächlich ausgerollt wurde. Die Versionen vor dem 7. Oktober 2026 sind nachgetragen.</p>
 <div class="chips" role="group" aria-label="Nach Teil filtern">${chips}</div>
 <div class="entries">
 ${list}

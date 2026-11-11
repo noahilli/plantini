@@ -5,7 +5,7 @@ Plantini besteht aus einer Flutter-App, einer Fach-API auf Basis von Strapi, ein
 !!! note "Quelle der Wahrheit"
     Beschrieben ist der Stand des Codes im Repository (Oktober 2026), nicht der Soll-Zustand aus `knowledge/**`.
     Wo beides auseinanderläuft, steht der Widerspruch ausdrücklich im Text. Den Projektstatus
-    (unveröffentlichter Teaser, nicht Open Source) erklärt [Projektstatus und Rechte](../start/status.md).
+    (früher Stand, Open Source unter AGPL-3.0-or-later) erklärt [Projektstatus und Rechte](../start/status.md).
 
 ## Die Komponenten
 

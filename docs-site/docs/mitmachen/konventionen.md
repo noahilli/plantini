@@ -18,7 +18,7 @@ change (RELEASE-11) version desktop and quiz application release
 Regeln:
 
 - **Präfix** aus `change`, `featre`, `bugfix`, `test`, `docs`, `wip`.
-- **`featre` ist bewusst so geschrieben.** Das Wort steht so in `todos.md` (Zeile „Konvention `featre|bugfix|change (ID) Beschreibung`“) und wurde so in 18 Commits der Historie verwendet (`git log --format=%s | grep -c '^featre'`). Nicht „korrigieren“, sondern konsistent bleiben oder mit dem Projektinhaber klären.
+- **`featre` ist bewusst so geschrieben.** Das Wort war so in der früheren `todos.md` als Konvention festgelegt, steht jetzt in `CONTRIBUTING.md` und wurde so in 18 Commits der Historie verwendet (`git log --format=%s | grep -c '^featre'`). Nicht „korrigieren“, sondern konsistent bleiben oder mit dem Projektinhaber klären.
 - **ID** in Klammern: die Aufgaben-ID aus `todos.md` (`MEDIA-10`, `AUTH-03`, …).
 - **Beschreibung** kurz, englisch, Kleinschreibung, ohne Punkt, meist mit Verb im Imperativ. Die Historie ist so gehalten; eine Prüfung per Hook gibt es nicht.
 - **Kein Push** ohne ausdrückliche Anweisung des Projektinhabers.
@@ -62,26 +62,14 @@ Das Schema (`STATUS_SCHEMA.md`):
 
 ### Das Prüfskript und sein aktueller Zustand
 
-`python3 knowledge/scripts/validate_knowledge.py` prüft das alles und läuft als Gate in beiden CI-Konfigurationen. Es hat **fest einkodierte Zählwerte**:
+`python3 knowledge/scripts/validate_knowledge.py` prüft das alles und läuft als Gate in beiden CI-Konfigurationen. Seit 11.11.2026 gilt für Aufgaben-IDs nur noch eine Richtung: **jede ID in `todos.md` braucht eine Zeile in `STATUS_REGISTRY.csv`**. Die Registry darf erledigte IDs behalten (sie ist die Historie); `todos.md` enthält nur offene Punkte. Die frühere feste Erwartung von 117 IDs ist entfallen. Fest einkodiert bleibt die Zahl der Anforderungen:
 
 ```python title="knowledge/scripts/validate_knowledge.py (Auszug)"
 if len(rows) != 95:
     errors.append(f"expected 95 features, got {len(rows)}")
-...
-if len(todo_ids) != 117:
-    errors.append(f"expected 117 direct TODO ids, got {len(todo_ids)}")
 ```
 
-!!! warning "Stolperfalle: das Wissens-Gate ist heute rot"
-    Lokal gemessen am 05.10.2026:
-
-    ```text
-    Knowledge validation FAILED
-    - expected 117 direct TODO ids, got 139
-    - status registry missing TODO ids: CMS-09,CMS-10,CONTENT-09,CONTENT-10,CONTENT-11,CONTENT-12,DESIGN-09,DESIGN-10,GAME-07,GAME-08,LEARN-12,MEDIA-10,RELEASE-10,TEACH-01,WORLD-11
-    ```
-
-    Zwei Ursachen: (1) `todos.md` enthält 139 Aufgaben-IDs, das Skript erwartet 117; (2) 15 IDs fehlen in der Registry. Wer eine neue ID anlegt, muss deshalb **drei** Stellen anfassen: Zeile in `todos.md`, Zeile in `STATUS_REGISTRY.csv` und die Zahl im Skript. Ein Pull Request, der nur eine neue ID einführt, macht das Gate nicht grün, solange die 15 Altlasten bestehen.
+Wer eine neue ID anlegt, fasst also **zwei** Stellen an: Zeile in `todos.md` und Zeile in `STATUS_REGISTRY.csv`.
 
 Das Skript prüft außerdem: 95 Anforderungen in `knowledge/features/features.csv` (63 `FA…`, 32 `NFA…`), Rollen-Dateien unter `knowledge/agents/NN-*.md` für jede `primary_role`, Querverweise, gültige Statuswerte, doppelte IDs sowie die Auflösbarkeit aller `E-…`/`B-…`-Verweise.
 
@@ -90,7 +78,7 @@ Das Skript prüft außerdem: 95 Anforderungen in `knowledge/features/features.cs
 Reihenfolge der Verbindlichkeit laut `CLAUDE.md` und Schema:
 
 1. `knowledge/state/STATUS_REGISTRY.csv` (laut Schema die Autorität, faktisch hinter `todos.md` zurück: `last_reviewed` überwiegend 2026-08-25),
-2. `todos.md` (Aufgabentext; der Kopf „Stand: 26. August 2026“ ist überholt, der Inhalt reicht bis in den Oktober),
+2. `todos.md` (nur offene Aufgaben; am 11.11.2026 auf das Wesentliche gekürzt, ältere Einträge in der Git-Historie),
 3. `knowledge/state/EVIDENCE.md`, `BLOCKERS.md`, `PROJECT_STATUS.md`,
 4. `requirements/features.csv`, `knowledge/features/features.csv`, `knowledge/state/BACKLOG.csv`: **deprecated**, nur für Anforderungstexte.
 

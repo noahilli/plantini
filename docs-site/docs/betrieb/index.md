@@ -6,7 +6,7 @@ Plantini läuft als Ein-Server-Betrieb: ein Linux-Host, Docker Compose für die 
     Hostnamen, Konten und Verzeichnisse des echten Servers stehen hier bewusst nicht. Du liest `<domain>` (deine Basisdomain), `<server>` (dein Zielhost), `<deploy-root>` (Arbeitsverzeichnis auf dem Server; die Skripte im Repo nehmen als Voreinstellung `/opt/plantini` an), `<release>` (Commit-Hash des Releases) und `<admin-benutzer>` (ein Keycloak-Administrator). Setze eigene Werte ein.
 
 !!! warning "Projektstatus"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser und nicht Open Source (die Rechte liegen nicht beim Entwickler). Der hier beschriebene Betrieb ist ein Stand für Vorführung und Erprobung, kein produktionsreifer Dienst. Mitarbeit ist nach Absprache möglich: `noah@illmann.net`.
+    Plantini ist Open Source (Code: AGPL-3.0-or-later, Inhalte: CC BY-SA 4.0; siehe `LICENSE` und `NOTICE`) und ein früher, unvollständiger Stand. Der hier beschriebene Betrieb ist ein Stand für Vorführung und Erprobung, kein produktionsreifer Dienst. Wer eine eigene, veränderte Instanz öffentlich betreibt, muss ihren Quelltext nach AGPL anbieten.
 
 ## Zielbild
 

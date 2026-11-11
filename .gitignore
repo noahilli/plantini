@@ -73,3 +73,9 @@ docs/plantnet-credentials
 # Documentation site (docs-site)
 docs-site/.venv/
 docs-site/site/
+
+# Private operations notes (server names, addresses, roll-out log)
+operations/private/
+
+# Local agent notes
+CLAUDE.local.md

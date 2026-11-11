@@ -3,7 +3,7 @@
 Ein Release besteht aus vier getrennten Teilen: Container-Images (Plattform, Studio, Portal, Homepage, selten Keycloak), dem Flutter-Web-Build, der Android-APK und der Eingangskonfiguration (Caddyfile). Es gibt keine Registry und keine CI-Pipeline für den Betrieb – alles wird auf dem Entwicklungsrechner gebaut und von dort auf den Server übertragen. Diese Seite beschreibt den Ablauf, die Rolle der beiden Hilfsskripte und das Zurückrollen.
 
 !!! note "Hintergrund"
-    Die Seite fasst `infra/`-Skripte (Code) und die Betriebsnotizen `knowledge/operations/production-stack.md` sowie `operations/runbooks/production-deploy.md` zusammen. Reale Hostnamen, Konten und Zeitpunkte sind durch Platzhalter ersetzt (`<domain>`, `<server>`, `<deploy-root>`, `<release>`). Bei Widersprüchen gilt der Code.
+    Die Seite fasst `infra/`-Skripte (Code) und die Betriebsnotizen `knowledge/operations/production-stack.md` sowie das nicht öffentliche Betriebsprotokoll des Betreibers zusammen. Reale Hostnamen, Konten und Zeitpunkte sind durch Platzhalter ersetzt (`<domain>`, `<server>`, `<deploy-root>`, `<release>`). Bei Widersprüchen gilt der Code.
 
 !!! warning "Veraltete Runbooks"
     `operations/runbooks/deployment.md` und `operations/runbooks/backup-restore.md` beschreiben einen älteren Aufbau (`infra/compose.yaml`, MinIO, Health-Pfad `/_health`, `git checkout tags/…` als Rollback). Sie passen nicht zum Produktionsstack und sind keine Grundlage für ein Deployment.
@@ -292,7 +292,7 @@ curl -s -D - -o /dev/null -H "Origin: https://app.$D"     https://api.$D/api/v1/
 curl -s -D - -o /dev/null -H "Origin: https://example.org" https://api.$D/api/v1/health | grep -i '^access-control-allow-origin'   # erwartet: keine Zeile
 ```
 
-Zusätzlich im Browser: Login auf `app.<domain>` bis zur Katalogansicht, Anmeldung am Studio und am Portal (mit Konten, die deine Rollen tragen). Der Test mit echter Registrierung entfällt, weil die Selbstregistrierung im Realm ausgeschaltet ist (`registrationAllowed = false` in `tools/scripts/build-production-realm.mjs`).
+Zusätzlich im Browser: Login auf `app.<domain>` bis zur Katalogansicht, Anmeldung am Studio und am Portal (mit Konten, die deine Rollen tragen). Dazu eine echte Registrierung mit Wegwerfkonto samt Bestätigungsmail (die Selbstregistrierung ist an, `registrationAllowed = true` in `tools/scripts/build-production-realm.mjs`); das Konto danach löschen.
 
 ## Rollback
 
@@ -369,4 +369,4 @@ Nachher
 - [Backup und Beobachtung](backup-monitoring.md) · [Android-Release](android-release.md) · [Projekt-Homepage](homepage.md)
 - [App bauen und veröffentlichen](../app/bauen-release.md)
 - Quellen: `infra/production/update-release-env.mjs`, `infra/production/promote-public-assets.mjs`, `infra/production/compose.proxy.yaml`, `infra/production/Caddyfile`, `services/platform/Dockerfile`, `services/platform/Dockerfile.release-overlay`, `apps/editor/Dockerfile.release-overlay`, `apps/teacher/Dockerfile.release-overlay`, `tools/scripts/prepare-app-release.mjs`
-- Hintergrund: `knowledge/operations/production-stack.md`, `operations/runbooks/production-deploy.md`
+- Hintergrund: `knowledge/operations/production-stack.md`, `operations/runbooks/backup-restore.md`

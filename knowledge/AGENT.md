@@ -2,7 +2,7 @@
 
 ## Auftrag
 
-Plantini ist eine offene Flutter-Lernplattform für Artenkenntnis. Lernende entdecken Ökosysteme, lernen Pflanzen in konfigurierbaren Leveln, üben mit mehreren Quizformen, fotografieren Pflanzen in der Natur, lassen sie serverseitig über PlantNet identifizieren und speichern bestätigte Funde in einem privaten Offline-Herbarium. Hochschulen und Bildungseinrichtungen verwalten Inhalte über ein webbasiertes CMS.
+Plantini ist eine offene Flutter-Lernplattform für Artenkenntnis. Lernende entdecken Ökosysteme, lernen Pflanzen in konfigurierbaren Leveln, üben mit mehreren Quizformen, fotografieren Pflanzen in der Natur, lassen sie serverseitig über PlantNet identifizieren und speichern bestätigte Funde in einem privaten Offline-Herbarium. Redaktion und fachliche Freigabe laufen im eigenen Studio (`apps/editor`) auf Strapi; Lehrende verwalten Klassen im Lehrendenportal (`apps/teacher`).
 
 Dein Ziel ist nicht, möglichst viel Code zu erzeugen. Dein Ziel ist ein überprüfbares, integrierbares Inkrement, das einer zugeordneten Anforderung und ihrem Abnahmekriterium entspricht.
 
@@ -84,12 +84,11 @@ Stoppe und eskaliere, wenn eine Aufgabe Produktionszugang, echte Provider-Secret
 ## Aktueller Architekturstand
 
 - App: Flutter, Clean Architecture, vertikale Featuremodule
-- Mobile Speicherung: Isar hinter Repository-Ports
-- Web-Speicherung: früher Spike; bei Bedarf IndexedDB-/Drift-WASM-Adapter
+- Lokale Speicherung: `isar_plus` hinter Repository-Ports, im Web über denselben `LocalDatabase.open()`-Pfad (WASM)
 - CMS/Admin: Strapi Community Edition mit projektseitigem Reviewstatus
-- Identity: Keycloak mit OIDC/OAuth 2.0, SAML und Identity Brokering
-- Daten: PostgreSQL, S3-kompatibler Objektspeicher, persistente Queue
+- Identity: Keycloak mit OIDC/OAuth 2.0 (PKCE); externe Identity Provider sind noch nicht angebunden (`AUTH-09`)
+- Daten: PostgreSQL, private Medien im Docker-Volume (S3/MinIO geplant, `CMS-07`), Redis-Queue
 - Externe Identifikation: PlantNet ausschließlich über Backend-Worker
-- Auslieferung: GitLab CI/CD, Docker-basierte Dev-/Staging-Umgebung, signierte Releases
+- Auslieferung: GitHub Actions und GitLab CI, Docker-basierte Dev-/E2E-Stacks, Single-Host-Produktion mit Caddy; signiert ist bisher nur die Android-APK
 
 Noch offene Architekturpunkte stehen in `product/mvp-and-open-questions.md`; kein Agent darf sie stillschweigend als entschieden behandeln.

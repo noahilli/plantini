@@ -3,7 +3,7 @@
 Neben der Flutter-App gibt es zwei kleine, eigenständige Weboberflächen: das **Studio** (`apps/editor`) für die Redaktion und das **Lehrendenportal** (`apps/teacher`) für Lehrende. Beide sind statische Seiten ohne Build-Schritt, melden sich per OIDC bei Keycloak an und sprechen ausschließlich mit der Fach-API.
 
 !!! note "Projektstatus"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser und **nicht Open Source**. Beide Oberflächen sind funktionsfähige Minimalstände, kein fertiges Produkt. Mitarbeit ist nach Absprache möglich (Kontakt: `noah@illmann.net`).
+    Plantini ist Open Source (Code: AGPL-3.0-or-later, Inhalte: CC BY-SA 4.0; siehe `LICENSE` und `NOTICE`) und ein früher, unvollständiger Stand. Beide Oberflächen sind funktionsfähige Minimalstände, kein fertiges Produkt. Beiträge: siehe `CONTRIBUTING.md`.
 
 ## Die beiden Oberflächen im Vergleich
 

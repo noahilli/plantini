@@ -103,7 +103,7 @@ Der Menüpunkt „Meine Klassen“ zeigt alle Klassen mit Zahl der Lernenden.
 
 - Bis zu 500 Lernende je Klasse, bis zu 100 Klassen je Lehrperson.
 - Aktionen werden **nicht automatisch wiederholt**: Bricht die Verbindung mitten im Anlegen ab, lade die Klasse neu und prüfe, ob das Konto schon existiert, bevor du es erneut anlegst.
-- Plantini ist ein nicht veröffentlichter Teaser (siehe [Status](../start/status.md)). Kläre vor einem Einsatz mit echten Schüler:innen die datenschutzrechtliche Zulässigkeit an deiner Einrichtung.
+- Plantini ist ein früher, unvollständiger Stand (siehe [Status](../start/status.md)). Kläre vor einem Einsatz mit echten Schüler:innen die datenschutzrechtliche Zulässigkeit an deiner Einrichtung.
 
 ## Für Entwickler:innen
 

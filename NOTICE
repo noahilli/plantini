@@ -1,29 +1,57 @@
-Plantini – Open Source Plant Identification & Learning Platform
-Copyright (c) 2026 Plantini Contributors
+Plantini – offene Lernplattform für Artenkenntnis
+Copyright (C) 2026 Noah Illmann <noah@illmann.net>
 
-This product includes software developed by the Plantini Project and third-party components:
+Die Idee und das fachliche Konzept von Plantini stammen von einer dritten
+Person, die der Veröffentlichung als Open Source zugestimmt hat. Programmcode,
+Konfiguration und Dokumentation hat Noah Illmann geschrieben; er ist Urheber
+und Rechteinhaber dieser Teile.
 
-1. Flutter Framework
-   - License: BSD 3-Clause
-   - Copyright: Google LLC and Flutter Authors
+Lizenzen
+========
 
-2. Strapi Headless CMS
-   - License: MIT
-   - Copyright: Strapi Solutions
+1. Software (Standard für alle Dateien, sofern unten nicht anders angegeben):
+   GNU Affero General Public License, Version 3 oder später
+   (AGPL-3.0-or-later), Volltext in LICENSE.
+   Wer Plantini verändert und die veränderte Fassung weitergibt oder als
+   Dienst über ein Netzwerk anbietet (Web-App, API, Studio, Portal), muss den
+   vollständigen Quelltext dieser Fassung unter derselben Lizenz zugänglich
+   machen.
 
-3. Keycloak IAM
-   - License: Apache License 2.0
-   - Copyright: Red Hat, Inc. and Keycloak Contributors
+2. Lerninhalte: Texte, Quizfragen und Steckbriefe unter content/, die 3D-Welten
+   und Figuren unter apps/flutter/assets/worlds/ und artifacts/3d/ sowie die
+   Handbuchtexte unter docs-site/docs/:
+   Creative Commons Namensnennung – Weitergabe unter gleichen Bedingungen 4.0
+   International (CC BY-SA 4.0), Volltext in LICENSES/CC-BY-SA-4.0.txt.
+   Namensnennung: „Plantini, Noah Illmann“ mit Link auf das Projekt.
 
-4. Isar Database
-   - License: Apache License 2.0
-   - Copyright: Simon Leier
+3. Ausgenommen (nicht unter den Projektlizenzen):
+   - knowledge/references/: Anforderungs- und Designunterlagen der Ideengeberin
+     bzw. des Ideengebers und Dritter. Mit Erlaubnis zur Nachvollziehbarkeit
+     enthalten; alle Rechte bei den jeweiligen Urheber:innen.
+   - Pflanzenfotos unter apps/homepage/public/photos/: Urheber und Lizenz je
+     Foto stehen in apps/homepage/src/content.json (Felder author, license,
+     source). Fotos, die der Server zur Laufzeit von iNaturalist oder Wikimedia
+     Commons lädt, behalten ihre dort angegebene Lizenz; die App zeigt sie mit
+     Namensnennung an.
+   - Die Namen „Plantini“ und das Logo sind keine Lizenzgegenstände; eine
+     abgewandelte Fassung soll unter eigenem Namen auftreten.
 
-5. PlantNet API Integration
-   - Powered by Pl@ntNet (https://plantnet.org)
-   - Identification data used for educational biodiversity learning
+Enthaltene und genutzte Fremdkomponenten
+========================================
 
-Fonts bundled with the app (apps/flutter/assets/fonts):
-   - Caprasimo (Copyright 2023 The Caprasimo Project Authors) - SIL Open Font License 1.1
-   - Figtree (Copyright 2022 The Figtree Project Authors) - SIL Open Font License 1.1;
-     the Regular, SemiBold and Bold files are static instances of the variable font.
+- Flutter und Dart-Pakete: BSD-3-Clause bzw. die Lizenz des jeweiligen Pakets
+  (apps/flutter/pubspec.lock)
+- Strapi 4 (Community Edition): MIT
+- Keycloak: Apache-2.0
+- Isar Plus (apps/flutter/web/isar_plus.js, isar_plus.wasm): Apache-2.0
+- Mermaid (docs-site/docs/assets/javascripts/mermaid.min.js): MIT
+- Schriften Caprasimo und Figtree (apps/flutter/assets/fonts,
+  docs-site/docs/assets/fonts): SIL Open Font License 1.1. Die Figtree-Dateien
+  Regular, SemiBold und Bold sind statische Instanzen der variablen Schrift.
+- Kartenkacheln: © OpenStreetMap-Mitwirkende (ODbL), über den Kachel-Proxy der
+  Fach-API
+- Pflanzenbestimmung: Pl@ntNet (https://plantnet.org), nur serverseitig;
+  im Test durch einen Mock ersetzt
+
+Die vollständigen Lizenzen der Abhängigkeiten liegen in den jeweiligen Paketen
+(node_modules, Pub-Cache) bzw. in deren Quellrepositorien.

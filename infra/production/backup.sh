@@ -3,7 +3,7 @@
 # both PostgreSQL databases, the private photo volume, TLS state of Caddy and
 # the configuration (production.env, realm file, compose/Caddy files).
 # Run as root (systemd timer plantini-backup.timer). Keeps KEEP_DAYS days.
-# Restore: see operations/runbooks/production-deploy.md ("Sicherung und Wiederherstellung").
+# Restore: see operations/runbooks/backup-restore.md ("Produktions-Sicherung auf dem Single-Host").
 set -euo pipefail
 
 ROOT=${PLANTINI_ROOT:-/opt/plantini}

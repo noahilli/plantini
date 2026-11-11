@@ -4,18 +4,16 @@ Plantini ist ein Entwicklungsprojekt mit mehreren Bausteinen (Flutter-App, Fach-
 
 ## Projektstatus und Rechte
 
-!!! warning "Unveröffentlicht, nicht Open Source"
-    Plantini ist ein **unveröffentlichter, unvollständiger Teaser** ohne kommerziellen Hintergrund. Das Projekt ist **nicht Open Source**: Die Rechte liegen nicht beim Entwickler. Mitarbeit ist **nur nach Absprache** möglich. Schreib vorher an den Projektkontakt `noah@illmann.net`, bevor du Zeit investierst oder Code weitergibst.
+!!! note "Open Source, früher Stand"
+    Plantini ist Open Source: Code unter der **GNU Affero General Public License 3.0 oder später** (`LICENSE`), Lerninhalte unter **CC BY-SA 4.0** (`LICENSES/CC-BY-SA-4.0.txt`); Details und Ausnahmen in `NOTICE`. Die Idee stammt von einer dritten Person, die der Veröffentlichung zugestimmt hat; Urheber des Codes ist Noah Illmann. Es gibt keinen kommerziellen Hintergrund.
 
 Was daraus praktisch folgt:
 
-- Das Repository ist nicht öffentlich nutzbar; Quelltext, Inhalte und Zugänge gibst du nicht an Dritte weiter.
-- Es gibt keinen Anspruch auf Aufnahme eines Beitrags. Der Projektinhaber entscheidet über den Merge.
+- Du darfst den Code nutzen, ändern und weitergeben. Wer eine veränderte Fassung weitergibt **oder als Dienst betreibt**, muss den Quelltext dieser Fassung unter AGPL anbieten.
+- Mit einem Beitrag stellst du ihn unter dieselben Lizenzen (Code AGPL-3.0-or-later, Inhalte CC BY-SA 4.0) und bestätigst das mit `Signed-off-by` (Developer Certificate of Origin, siehe `CONTRIBUTING.md`).
+- Es gibt keinen Anspruch auf Aufnahme eines Beitrags. Der Maintainer entscheidet über den Merge.
 - Inhalte (Fotos, Texte, Modelle) dürfen nur mit geklärter Lizenz ins Projekt. Siehe `content/**` in der Ownership-Tabelle unten und die Lizenzregeln im Moderationsteil.
-- Sicherheitslücken meldest du nicht öffentlich, sondern direkt an den Projektkontakt.
-
-!!! note "Widersprüchliche Dateien im Repository"
-    Im Repository liegen Dateien, die einen anderen Eindruck erwecken können (`README.md`, `LICENSE`, `NOTICE`, `knowledge/governance/*`). Sie sind **keine** Rechteeinräumung und beschreiben den tatsächlichen Rechtestand nicht verbindlich. Wende dich bei Fragen an den Projektkontakt. Die Vorlagen unter `knowledge/governance/` (`CONTRIBUTING.template.md` usw.) sind Vorlagen, kein gelebter Prozess.
+- Sicherheitslücken meldest du nicht öffentlich, sondern wie in `SECURITY.md` beschrieben.
 
 Den fachlichen Stand des Projekts (was läuft, was fehlt) findest du unter [Projektstatus](../start/status.md); empfohlene Einstiegsreihenfolgen stehen in den [Lesepfaden](../start/lesepfade.md).
 

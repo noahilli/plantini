@@ -3,7 +3,7 @@
 Diese Seite zeigt, wie du die App für Web, Linux und Android baust, wo Version und Signierung herkommen, was `prepare-app-release.mjs` erzeugt und wie du Frame-Zeiten misst. Alle Befehle sind gegen die Skripte und Dateien im Repository geprüft, aber hier **nicht ausgeführt**.
 
 !!! note "Projektstatus"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser, kein Open-Source-Projekt. Es gibt eine signierte Android-Test-APK zum Direktdownload auf der Projektwebseite; kein Store-Eintrag. Serverseitige Auslieferung und Betrieb beschreibt [Android-Release (Betrieb)](../betrieb/android-release.md), hier steht nur die App-Seite.
+    Plantini ist Open Source (AGPL-3.0-or-later) und ein früher, unvollständiger Stand. Es gibt eine signierte Android-Test-APK zum Direktdownload auf der Projektwebseite; kein Store-Eintrag. Serverseitige Auslieferung und Betrieb beschreibt [Android-Release (Betrieb)](../betrieb/android-release.md), hier steht nur die App-Seite.
 
 ## Voraussetzungen und Werkzeugversionen
 

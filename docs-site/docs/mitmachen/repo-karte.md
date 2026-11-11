@@ -24,7 +24,7 @@ Das Repository ist ein Monorepo. Diese Seite beschreibt jede Top-Level-Struktur 
 ├── knowledge/          Wissenspaket: Rollen, Architektur, Betrieb, Handover, Status
 ├── content/            Seed-Datei für Ökosysteme (siehe Hinweis)
 ├── operations/         Runbooks (Deployment, Backup/Restore)
-├── docs/               ADRs, Release Notes, SBOM
+├── docs/               ADRs, Verweis auf das Änderungsprotokoll
 ├── docs-site/          dieses Handbuch (MkDocs Material)
 ├── requirements/       features.csv (deprecated)
 ├── artifacts/          Vorschaubilder und Berichte
@@ -158,8 +158,8 @@ Details zum Betrieb: [Betrieb](../betrieb/index.md).
 | `knowledge/state/` | `STATUS_REGISTRY.csv`, `EVIDENCE.md`, `BLOCKERS.md`, `PROJECT_STATUS.md`, `DECISIONS.md`, `RISKS.md` |
 | `knowledge/handovers/` | jüngster Entwicklungsstand je Thema (Spiel, Karteikarten, 3D-Welt, Lernmaterial) |
 | `docs/adr/` | Architekturentscheidungen (`001-initial-architecture.md`, `002-api-v1-boundary.md`) |
-| `docs/RELEASE_NOTES.md`, `docs/SBOM.md` | Release Notes und Stückliste (Stand August 2026, teils überholt) |
-| `operations/runbooks/` | `deployment.md`, `production-deploy.md`, `backup-restore.md` |
+| `docs/RELEASE_NOTES.md` | Verweis auf das Änderungsprotokoll (`apps/homepage/src/changelog.json`); eine Stückliste (SBOM) soll künftig die CI erzeugen (`SEC-07`) |
+| `operations/runbooks/` | `deployment.md`, `backup-restore.md` (das Roll-out-Protokoll mit Serverdetails liegt nur lokal unter `operations/private/`, git-ignoriert) |
 | `requirements/features.csv` | **deprecated**; nur für Anforderungstexte FA/NFA |
 
 !!! warning "Stolperfalle: Seeds"

@@ -10,7 +10,7 @@ from pathlib import Path
 from mathutils import Vector
 
 random.seed(23)
-ROOT = Path('<repo>/artifacts/3d/forest-20260929-v1')
+ROOT = Path(__file__).resolve().parents[2] / 'artifacts/3d/forest-20260929-v1'
 ROOT.mkdir(parents=True, exist_ok=True)
 if (ROOT / 'plantini-forest.blend').exists():
     raise RuntimeError('Output already exists. Choose a new version directory.')

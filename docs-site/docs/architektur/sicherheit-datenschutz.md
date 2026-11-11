@@ -3,7 +3,7 @@
 Diese Seite beschreibt, wie Plantini Identitäten, Rollen und personenbezogene Daten schützt und wo der Code das tatsächlich erzwingt. Sie prüft die Aussagen aus `knowledge/architecture/security-and-privacy.md`, `SECURITY.md` und `AGENT.md` gegen die Implementierung und benennt Abweichungen und Lücken offen.
 
 !!! warning "Stand"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser (siehe [Projektstatus und Rechte](../start/status.md)). Es gab weder
+    Plantini ist ein früher, unvollständiger Stand (siehe [Projektstatus und Rechte](../start/status.md)). Es gab weder
     einen Pen-Test noch eine rechtliche Prüfung. Diese Seite ist eine technische Bestandsaufnahme, keine Rechtsberatung und keine
     Sicherheitszusage. Fehlendes steht ausdrücklich als „nicht umgesetzt“ oder „nicht geprüft“ da.
 
@@ -211,7 +211,7 @@ Aus dem Realm (`services/identity/realm/plantini-realm.json`), erzwungen durch `
 | Einstellung | Wert |
 |---|---|
 | Passwortrichtlinie | `length(14) and notUsername and notEmail and passwordHistory(5)` |
-| Selbstregistrierung | aus (`registrationAllowed: false`); E-Mail-Bestätigung und Passwort-Reset an |
+| Selbstregistrierung | an (`registrationAllowed: true`, seit 10.11.2026); E-Mail-Bestätigung und Passwort-Reset an |
 | TOTP | `HmacSHA1`, 6 Stellen, 30 s, Lookahead 1, Code nicht wiederverwendbar |
 | TOTP-Pflicht | **nur** für `systemadministration` und `organisationsadministration` (bedingte OTP-Authenticators `plantini-systemadmin-otp`, `plantini-organisationadmin-otp`) |
 | Brute-Force | `bruteForceProtected`, `failureFactor: 5`, `waitIncrementSeconds: 60`, `maxFailureWaitSeconds: 900`, kein permanenter Lockout |

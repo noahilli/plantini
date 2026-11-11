@@ -113,4 +113,4 @@ Diese Regeln sind redaktionelle Vorgaben des Projekts. Das Studio erzwingt nur e
 
 ## Kontakt
 
-Plantini ist ein unveröffentlichter, unvollständiger Teaser und nicht Open Source. Bei Fragen zur Mitarbeit oder zu Zugängen: `noah@illmann.net`.
+Plantini ist Open Source; Lerninhalte stehen unter CC BY-SA 4.0. Beiträge laufen über Issues und Pull Requests (siehe `CONTRIBUTING.md`). Fragen zu Zugängen: `noah@illmann.net`.

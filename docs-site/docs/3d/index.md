@@ -11,7 +11,7 @@ Diese Spur besteht aus fünf Seiten: diese Übersicht, [Blender-Pipeline](blende
 !!! note "Herkunft der Assets"
     Laut Kopfkommentaren der Skripte sind alle Modelle prozedural aus Primitiven erzeugt, ohne heruntergeladene Texturen
     oder externe Asset-Dienste (`tools/blender/create_ecosystem_modules.py`, `tools/blender/create_forest_world.py`).
-    Zu den Rechten am Gesamtprojekt siehe [Projektstatus und Rechte](../start/status.md): Plantini ist kein Open-Source-Projekt.
+    Zu den Rechten am Gesamtprojekt siehe [Projektstatus und Rechte](../start/status.md): Code unter AGPL-3.0-or-later, die 3D-Modelle als Lerninhalte unter CC BY-SA 4.0.
 
 ![Wald, Wiese und Alpen am Tag](../assets/shots/welten-tag.png){ loading=lazy }
 

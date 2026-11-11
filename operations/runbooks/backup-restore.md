@@ -60,3 +60,13 @@ docker exec -t plantini-postgres-keycloak-1 pg_restore -U keycloak -d keycloak -
 # 3. Keycloak neu starten
 docker compose -f infra/compose.yaml restart keycloak
 ```
+
+---
+
+## Produktions-Sicherung auf dem Single-Host (Stand 02.10.2026)
+
+**Was Updates überlebt:** Alle Daten liegen in benannten Docker-Volumes (`plantini-production_platform-db`, `_keycloak-db`, `_private-media`, `_redis-data`, `plantini-proxy_caddy-data`). `docker compose up -d` (Image-Wechsel) und Neustarts ändern sie nicht; Keycloak importiert den Realm nur beim allerersten Start (`--import-realm`), Konten und Clients bleiben also erhalten. **Nie** `docker compose down -v`, `docker volume rm` oder `docker system prune --volumes` ausführen. Nicht in Volumes, sondern auf dem Host: `/opt/plantini/{production.env,realm-production.json,infra,web,downloads}` (siehe config.tar.gz).
+
+**Sicherung:** `infra/production/backup.sh` (systemd-Timer `plantini-backup.timer`, täglich ca. 03:15 Uhr, 14 Tage Aufbewahrung) schreibt nach `/var/backups/plantini/<Zeitstempel>/` (root, 0700): `platform.dump`, `keycloak.dump` (pg_dump -Fc, nach dem Schreiben mit `pg_restore --list` geprüft), `private-media.tar.gz`, `caddy-data.tar.gz`, `config.tar.gz` (enthält Geheimnisse), `SHA256SUMS`. Erster Lauf 02.10.2026 17:06 UTC: 43 MB, Prüfsummen ok. Grenze: **die Sicherung liegt auf demselben Server und derselben Platte** – gegen Plattenausfall oder Serververlust schützt sie nicht. Offen: regelmäßige Kopie auf ein anderes System (verschlüsselt, z. B. per SFTP). Die Wiederherstellung ist noch nicht in einem Probelauf geübt.
+
+**Wiederherstellen (Datenbank):** Stack stoppen (`docker compose stop platform keycloak`), dann `docker exec -i plantini-production-postgres-platform-1 pg_restore -U plantini -d plantini --clean --if-exists < platform.dump` (Keycloak entsprechend mit `keycloak.dump`), Volumes `private-media` per `tar -xzf` zurückspielen, Dienste starten.

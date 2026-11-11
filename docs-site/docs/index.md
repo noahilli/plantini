@@ -16,9 +16,9 @@ wie Redaktion und Review **Inhalte pflegen** und wie das System **benutzt** wird
 </div>
 
 <div class="pl-status" markdown>
-**Projektstatus.** Plantini ist ein unveröffentlichter, unvollständiger Teaser. Die Ideen stammen von einer
-dritten Person, das Projekt ist **nicht Open Source** (die Rechte liegen nicht beim Entwickler) und hat keinen
-kommerziellen Hintergrund; es wurden und werden weder Spenden noch Zahlungen angenommen.
+**Projektstatus.** Plantini ist ein früher, unvollständiger Stand und **Open Source** (Code: AGPL-3.0-or-later,
+Inhalte: CC BY-SA 4.0). Die Idee stammt von einer dritten Person, die der Veröffentlichung zugestimmt hat; Urheber
+des Codes ist Noah Illmann. Es gibt keinen kommerziellen Hintergrund; es wurden und werden weder Spenden noch Zahlungen angenommen.
 Details: [Projektstatus und Rechte](start/status.md).
 </div>
 

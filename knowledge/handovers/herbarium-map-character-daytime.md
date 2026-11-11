@@ -60,7 +60,7 @@ Neu: `test/core/image_service_test.dart`, `test/features/catalog/world_lighting_
 
 ## Ausrollen (Reihenfolge, nicht ausgeführt)
 
-1. Platform-Image bauen und laden (Schema-Migration legt `species_cards` und `profiles.character` an, `production-deploy.md`), `up -d platform`.
+1. Platform-Image bauen und laden (Schema-Migration legt `species_cards` und `profiles.character` an), `up -d platform`.
 2. Web-App bauen (`--no-web-resources-cdn`, Produktions-Defines) und nach `/opt/plantini/web` kopieren.
 3. APK neu bauen (`flutter build apk` ohne `--no-pub`, neue Abhängigkeit flutter_map).
 4. Von außen prüfen: Foto im Herbarium, `/api/v1/tiles/5/17/10` mit Token, Charakter-Editor beim ersten Login.

@@ -3,7 +3,7 @@
 Das Backend von Plantini ist ein **Strapi-4.25-Projekt** (`services/platform`), das zwei Aufgaben erfüllt: Es ist das Redaktionssystem für die Inhalte (Ökosysteme, Level, Pflanzen, Quizfragen) und es trägt die eigene **Fach-API** unter `/api/v1`, mit der Flutter-App, Studio und Lehrendenportal sprechen. Diese Seite zeigt, wie das Projekt aufgebaut ist, wie beide Schichten zusammenhängen und wie du es baust und testest.
 
 !!! note "Projektstatus"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser und **nicht Open Source**. Dieses Handbuch beschreibt den Stand des Quelltexts im Arbeitsbaum. Wo etwas fehlt oder nicht geprüft wurde, steht das ausdrücklich dabei. Mitarbeit ist nach Absprache möglich (Kontakt `noah@illmann.net`).
+    Plantini ist Open Source (Code: AGPL-3.0-or-later, Inhalte: CC BY-SA 4.0; siehe `LICENSE` und `NOTICE`) und ein früher, unvollständiger Stand. Dieses Handbuch beschreibt den Stand des Quelltexts im Arbeitsbaum. Wo etwas fehlt oder nicht geprüft wurde, steht das ausdrücklich dabei. Beiträge: siehe `CONTRIBUTING.md`.
 
 ## Technologie auf einen Blick
 

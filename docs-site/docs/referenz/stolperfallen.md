@@ -151,11 +151,11 @@ Sammlung der Fallen, in die man bei Plantini tatsächlich laufen kann. Jeder Ein
 - **Lösung:** den ganzen Realm lesen und dort nachsehen.
 - **Beleg:** `infra/production/configure-smtp.sh` (Kommentar, Zeile 5).
 
-### Selbstregistrierung ist ausgeschaltet; Login mit E-Mail
+### Login mit E-Mail (versionierter Realm) oder Benutzername (nach `configure-managed-accounts.mjs`)
 
-- **Symptom:** Anmeldung mit einem Benutzernamen schlägt fehl; Registrierung nicht möglich.
-- **Ursache:** Der versionierte Realm hat `registrationAllowed: false`; `build-production-realm.mjs` setzt es ebenfalls. Der versionierte Realm hat `registrationEmailAsUsername: true`, daher ist der Anmeldename die E-Mail-Adresse. `configure-managed-accounts.mjs` schaltet `registrationEmailAsUsername` für den Realm aus und legt verwaltete Schülerkonten mit Benutzernamen an.
-- **Lösung:** Konten über das Portal anlegen; in Tests die E-Mail als Login nehmen.
+- **Symptom:** Anmeldung mit einem Benutzernamen schlägt fehl.
+- **Ursache:** Der versionierte Realm hat `registrationEmailAsUsername: true`, daher ist der Anmeldename die E-Mail-Adresse. `configure-managed-accounts.mjs` schaltet `registrationEmailAsUsername` für den Realm aus und legt verwaltete Schülerkonten mit Benutzernamen an. Die Selbstregistrierung war vom 05.10. bis 10.11.2026 ausgeschaltet und ist seitdem wieder an (`registrationAllowed: true` in Realm-Quelle, `build-production-realm.mjs` und `configure-managed-accounts.mjs`).
+- **Lösung:** In Tests die E-Mail als Login nehmen; Schülerkonten über das Portal anlegen.
 - **Beleg:** `services/identity/realm/plantini-realm.json`, `tools/scripts/build-production-realm.mjs`, `tools/e2e/scripts/prepare-e2e-env.mjs`, `tools/scripts/configure-managed-accounts.mjs`.
 
 ## Betrieb
@@ -165,7 +165,7 @@ Sammlung der Fallen, in die man bei Plantini tatsächlich laufen kann. Jeder Ein
 - **Symptom:** Nach einer Änderung der Datei und `caddy reload` gilt weiter die alte Konfiguration.
 - **Ursache:** Die Datei ist als **einzelne Datei** eingehängt (`./Caddyfile:/etc/caddy/Caddyfile:ro` in `infra/production/compose.proxy.yaml`). Ersetzt man sie durch eine neue Datei (neuer Inode), hält der Container die alte.
 - **Lösung:** den Inhalt in dieselbe Datei schreiben (`cat neu > Caddyfile`), dann Caddy im Container neu laden. Das Runbook beschreibt genau diese Reihenfolge; den vollständigen Reload-Aufruf hält es nicht fest. Siehe [Deployment](../betrieb/deployment.md).
-- **Beleg:** `infra/production/compose.proxy.yaml`, `operations/runbooks/production-deploy.md` (Umzugs-Reihenfolge, Schritt 4).
+- **Beleg:** `infra/production/compose.proxy.yaml`; Betriebsprotokoll des Betreibers (nicht öffentlich).
 
 ### Einstiegsdateien der Web-App nicht cachen
 
@@ -179,7 +179,7 @@ Sammlung der Fallen, in die man bei Plantini tatsächlich laufen kann. Jeder Ein
 - **Symptom:** (vermieden) Datenbanken, private Fotos und Zertifikate sind weg.
 - **Ursache:** Der E2E-Stack nutzt `down --volumes` routinemäßig. Im Produktionsstack liegen Postgres, Keycloak, private Medien und Caddy-Zustand in benannten Volumes.
 - **Lösung:** im Produktionsbetrieb nur `up -d`, `stop`, Neustarts; nie `down -v`, `docker volume rm` oder `docker system prune --volumes`. Die Sicherung schreibt `infra/production/backup.sh` nach `$BACKUP_DIR` (Standard `/var/backups/plantini`) auf dasselbe System; eine entfernte Kopie ist im Skript nicht vorgesehen. Siehe [Backup und Monitoring](../betrieb/backup-monitoring.md).
-- **Beleg:** `operations/runbooks/production-deploy.md` (Abschnitt „Datenhaltung und Sicherung“), `infra/production/backup.sh`, `tools/e2e/package.json` (`stack:down`).
+- **Beleg:** `operations/runbooks/backup-restore.md` (Abschnitt „Produktions-Sicherung auf dem Single-Host“), `infra/production/backup.sh`, `tools/e2e/package.json` (`stack:down`).
 
 ### `update-release-env.mjs` mit Scope `all` setzt mehr als Images
 
@@ -292,4 +292,4 @@ Offene, nicht belegte Punkte, damit sie niemand als Fakt weiterträgt: ob Strapi
 - [Entwicklungsumgebung](../mitmachen/setup.md), [Tests und CI](../mitmachen/tests-ci.md), [Konventionen](../mitmachen/konventionen.md)
 - [Compose-Dateien](../betrieb/compose.md), [Deployment](../betrieb/deployment.md), [Identität & Keycloak](../betrieb/identity-keycloak.md), [Android-Release](../betrieb/android-release.md)
 - [Glossar](glossar.md), [Ports und Dienste](ports-dienste.md)
-- Quellen: `knowledge/operations/android-release.md`, `operations/runbooks/production-deploy.md`, `infra/`, `tools/`
+- Quellen: `knowledge/operations/android-release.md`, `operations/runbooks/backup-restore.md`, `infra/`, `tools/`

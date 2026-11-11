@@ -127,10 +127,10 @@ Der Vertrag ist normativ, der Code ist die Wahrheit über das Verhalten. Beim Le
 | `meta` bei `LEVEL_LOCKED` | – | im Code vorgesehen, geht verloren | dort |
 | `ContentManifest.signature` | optional | wird nie erzeugt | [Inhalte & Releases](inhalte-releases.md) |
 | `GET /health` | nicht enthalten | existiert (`allowedServerOnly` im Prüfskript) | `routes/platform.js` |
-| `info.license` | `Apache-2.0` | – | siehe Hinweis |
+| `info.license` | `AGPL-3.0-or-later` | – | siehe Hinweis |
 
-!!! warning "Lizenzangabe im Vertrag"
-    Der Kopf von `contracts/api.yaml` trägt ein Feld `info.license: Apache-2.0` (und `services/platform/package.json` ein `license`-Feld). Die Felder widersprechen dem Projektstatus: Plantini ist ein unveröffentlichter Teaser und **nicht Open Source**; sie sind nicht als Aussage über den Rechtestatus zu lesen. Der Maintainer sollte klären, was dort stehen soll.
+!!! note "Lizenzangabe im Vertrag"
+    Der Kopf von `contracts/api.yaml` trägt `info.license` mit der SPDX-Kennung `AGPL-3.0-or-later`, ebenso das `license`-Feld in `services/platform/package.json`. Beides entspricht `LICENSE`.
 
 ## Client-Generierung
 

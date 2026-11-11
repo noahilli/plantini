@@ -81,20 +81,19 @@ if todo_path.is_file():
         r"\*\*P[0-3]\s+\|\s+([A-Z]+-[0-9]{2}):",
         todo_path.read_text(encoding="utf-8"),
     ))
-    if len(todo_ids) != 117:
-        errors.append(f"expected 117 direct TODO ids, got {len(todo_ids)}")
+    if not todo_ids:
+        errors.append("no TODO ids found in ../todos.md")
 else:
     errors.append("missing: ../todos.md")
 
 registry_work_items = {
     row.get("id", "") for row in status_rows if row.get("record_type") == "work_item"
 }
+# todos.md lists only open work; the registry keeps closed items as history,
+# so only the direction "every open TODO has a registry row" is enforced.
 missing_work_items = sorted(todo_ids - registry_work_items)
-unexpected_work_items = sorted(registry_work_items - todo_ids)
 if missing_work_items:
     errors.append(f"status registry missing TODO ids: {','.join(missing_work_items)}")
-if unexpected_work_items:
-    errors.append(f"status registry has unknown work items: {','.join(unexpected_work_items)}")
 
 def table_ids(path: Path, prefix: str) -> set[str]:
     if not path.is_file():

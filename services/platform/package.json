@@ -38,7 +38,7 @@
     "node": ">=18.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.9.1"

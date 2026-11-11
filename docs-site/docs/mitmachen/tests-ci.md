@@ -3,7 +3,7 @@
 Diese Seite ist die Anleitung für die QA-Spur: welche Prüfungen es gibt, wie du sie lokal ausführst, was die beiden CI-Konfigurationen tun und welche Lücken und roten Tests heute bestehen. Alle Zahlen mit dem Vermerk „lokal gemessen“ habe ich am 05.10.2026 im Arbeitsbaum selbst erhoben; sie sind Momentaufnahmen und können sich mit dem nächsten Commit ändern.
 
 !!! warning "Aktueller Stand in einem Satz"
-    Lokal gemessen: Backend 45 von 49 Tests grün (4 übersprungen), Realm-Tests 5 von 5, Flutter 128 grün und 13 rot, `flutter analyze` mit einem Fehler, Wissens-Gate (`validate_knowledge.py`) rot. Die CI-Gates für Flutter-Analyse, Flutter-Tests und Wissenskonsistenz würden heute also fehlschlagen. Details unten.
+    Lokal gemessen: Backend 45 von 49 Tests grün (4 übersprungen), Realm-Tests 5 von 5, Flutter 128 grün und 13 rot, `flutter analyze` mit einem Fehler. Die CI-Gates für Flutter-Analyse und Flutter-Tests würden heute also fehlschlagen; das Wissens-Gate (`validate_knowledge.py`) ist seit 11.11.2026 grün. Details unten.
 
 `$R` steht in den Befehlen für das Repository-Verzeichnis (siehe [Entwicklungsumgebung](setup.md)).
 
@@ -38,7 +38,7 @@ Aufbau von `apps/flutter/test/` (28 Testdateien): Top-Level-Tests für Konfigura
 
 ### Bekannte rote Tests (TEST-01)
 
-`todos.md` führt die Aufgabe `TEST-01` (P2, Registry-Status `planned`, Owner `qa-playwright`): „13 schon vor diesen Änderungen fehlschlagende Flutter-Tests reparieren … `game05_herbarium_bottles_test.dart` kompiliert nicht: `await tester.view.reset()` ist `void`“. Die Zahl 13 stimmt mit meiner Messung überein.
+`todos.md` führt die Aufgabe `TEST-01` (seit 11.11.2026 P0 als Voraussetzung für eine aussagekräftige öffentliche CI, Registry-Status `planned`, Owner `qa-playwright`): „13 schon vor diesen Änderungen fehlschlagende Flutter-Tests reparieren … `game05_herbarium_bottles_test.dart` kompiliert nicht: `await tester.view.reset()` ist `void`“. Die Zahl 13 stimmt mit meiner Messung überein.
 
 Lokal gemessen (`flutter test`, 05.10.2026): `+128 -13`. Die 13 Fehler im Einzelnen:
 
@@ -69,7 +69,7 @@ error • This expression has a type of 'void' so its value can't be used … �
 Damit schlägt auch der Analyse-Schritt der CI heute fehl. `dart format --output=none --set-exit-if-changed lib test` ist dagegen sauber (167 Dateien, 0 Änderungen).
 
 !!! note "Keine neuen Tests, solange GAME-QA pausiert ist"
-    Laut Projektstand (Nutzerwunsch, seit 07.09.2026, `todos.md`) werden zurzeit **keine neuen Tests** geschrieben, und bestehende rote Tests werden nicht stillschweigend „repariert“. Stimm dich vorher ab, wenn du `TEST-01` angehen willst.
+    Laut Projektstand (Nutzerwunsch seit 07.09.2026) werden zurzeit **keine neuen Tests** geschrieben, und bestehende rote Tests werden nicht stillschweigend „repariert“. Stimm dich vorher ab, wenn du `TEST-01` angehen willst.
 
 ## Backend
 
@@ -138,7 +138,7 @@ Lokal gemessen:
 |---|---|
 | `validate-ci-config.mjs` | OK: `Flutter 3.47.1`, IPv4-E2E-Lebenszyklus und Artefaktpfade stimmen überein |
 | `validate-api-contract.mjs` | OK: `52 implemented, 8 planned, generator 7.25.0` |
-| `validate_knowledge.py` | **FAILED**: `expected 117 direct TODO ids, got 139` und 15 fehlende Registry-Zeilen (Details in den [Konventionen](konventionen.md#das-prufskript-und-sein-aktueller-zustand)) |
+| `validate_knowledge.py` | OK (seit 11.11.2026; Regeln in den [Konventionen](konventionen.md#das-prufskript-und-sein-aktueller-zustand)) |
 
 `validate-ci-config.mjs` ist ein Konsistenzwächter für beide CI-Dateien: Es verlangt die gleiche Flutter-Version, die Playwright-Image-Version `v1.55.0-noble`, `PLANTINI_E2E_SKIP_WEB_BUILD: "true"` in GitLab, in **beiden** Dateien eine feste Liste von Schritten (u. a. `npm run stack:up`, `npm test`, `npm run stack:down`, `flutter analyze`, `flutter test`, `dart run build_runner build`, `git diff --exit-code -- packages/api`), das Fehlen von `|| true`, `allow_failure: true` und `continue-on-error: true`, die Existenz von `services/platform/package-lock.json` und die Abwesenheit von `yarn.lock`.
 
@@ -256,7 +256,7 @@ Unterschiede, die du kennen solltest:
 - **Auslöser:** GitLab definiert keine `rules:`/`only:`-Einschränkungen, die Pipeline läuft also bei jedem Push; GitHub nur für `main` (Push und Pull Request).
 
 !!! note "Kein Remote-Nachweis"
-    Laut `todos.md` und `operations/runbooks/production-deploy.md` gab es für den dokumentierten Stand keinen Remote-Pipeline-Lauf (Aufgabe `INFRA-01`). Die Aussagen zur CI auf dieser Seite beschreiben die Konfiguration, nicht einen beobachteten Lauf.
+    Für den dokumentierten Stand gab es noch keinen nachgewiesenen Remote-Pipeline-Lauf (Aufgabe `OSS-01` in `todos.md`). Die Aussagen zur CI auf dieser Seite beschreiben die Konfiguration, nicht einen beobachteten Lauf.
 
 ## Leistungs-Messlauf
 

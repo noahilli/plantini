@@ -54,6 +54,6 @@ for i,(x,y,z) in enumerate(result['slots']):
 for y in [-4.8,-4.4,4.4,4.8]:
     box('connector',-2.4,y,.115,.24,.30,.04,[.78,.67,.43])
 scene.frame_set(previous)
-out=Path('<repo>/apps/flutter/assets/worlds/forest_module.json')
+out=Path(__file__).resolve().parents[2] / 'apps/flutter/assets/worlds/forest_module.json'
 out.write_text(json.dumps(result,separators=(',',':')))
 print(json.dumps({'path':str(out),'meshes':len(result['meshes']),'triangles':sum(len(m['faces']) for m in result['meshes'])}))

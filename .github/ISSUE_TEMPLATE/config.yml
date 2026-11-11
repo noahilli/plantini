@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Sicherheitslücke melden
+    url: https://github.com/noahilli/plantini/security/advisories/new
+    about: Bitte nicht öffentlich melden, sondern als privates Security Advisory (siehe SECURITY.md).
+  - name: Handbuch
+    url: https://github.com/noahilli/plantini/tree/main/docs-site/docs
+    about: Aufbau, Setup, Betrieb und Redaktion.

@@ -1,95 +1,113 @@
-# Plantini · gemeinsame Einführung für AI-Agents
+# Plantini – Einstieg für KI-Agenten (Claude, Codex & Co.)
 
-## Auftrag
+Diese Datei ist der Startpunkt für jede Agenten-Sitzung. `CLAUDE.md` bindet sie ein; andere Werkzeuge lesen sie direkt.
 
-Plantini ist eine offene Flutter-Lernplattform für Artenkenntnis. Lernende entdecken Ökosysteme, lernen Pflanzen in konfigurierbaren Leveln, üben mit mehreren Quizformen, fotografieren Pflanzen in der Natur, lassen sie serverseitig über PlantNet identifizieren und speichern bestätigte Funde in einem privaten Offline-Herbarium. Hochschulen und Bildungseinrichtungen verwalten Inhalte über ein webbasiertes CMS.
+## Was Plantini ist
 
-Dein Ziel ist nicht, möglichst viel Code zu erzeugen. Dein Ziel ist ein überprüfbares, integrierbares Inkrement, das einer zugeordneten Anforderung und ihrem Abnahmekriterium entspricht.
+Offene Flutter-Lernplattform für Artenkenntnis: Ökosysteme → Level → Steckbrief → Quiz → Feldfoto → Pl@ntNet-Bestimmung (nur serverseitig, im Test gemockt) → privates Offline-Herbarium. Redaktion im Studio (`apps/editor`) auf Strapi, Klassenverwaltung im Lehrendenportal (`apps/teacher`), Identität über Keycloak. Lizenz: Code AGPL-3.0-or-later, Inhalte CC BY-SA 4.0 (`LICENSE`, `NOTICE`).
 
-## Pflichtlektüre vor Änderungen
+Ziel ist eine **präsentierbare, öffentlich zugängliche Demo**, kein Produktionsausbau.
 
-1. `manifest.yaml`
-2. `product/vision-and-scope.md`
-3. eigene Datei unter `agents/`
-4. eigene Zeilen in `features/features.csv`
-5. relevante Dateien unter `architecture/`
-6. `delivery/coordination-protocol.md`
-7. `delivery/definition-of-ready-done.md`
+## Zuerst lesen
 
-Bei Auth-, CMS- oder Docker-Aufgaben zusätzlich die passenden Playbooks unter `operations/` lesen. Das Originaldokument unter `references/` bleibt die normative Langfassung.
+1. `knowledge/AGENT.md` – **verbindliche** Systemgrenzen, Arbeitsprotokoll und Stop-Bedingungen (Pfade dort relativ zu `knowledge/`).
+2. `todos.md` – offene Aufgaben mit IDs (`AUTH-06`, `OSS-01`, …).
+3. `knowledge/handovers/*.md` – jüngster Entwicklungsstand je Thema (3D-Welt, Karteikarten, App-Design …).
+4. `CONTRIBUTING.md` – Commit-, Issue- und PR-Format.
+5. Handbuch `docs-site/docs/` – ausführlich zu App, Backend, Betrieb, Studio/Portal; Einstieg `docs-site/docs/mitmachen/index.md`.
 
-## Nicht verhandelbare Systemgrenzen
+## Grenzen, die bei jeder Änderung gelten (Kurzfassung)
 
-- Die Flutter-App spricht ausschließlich mit der Fach-API und Keycloak, niemals direkt mit Strapi-Admin-APIs oder PlantNet.
-- PlantNet-Schlüssel, OIDC-Secrets, Datenbankpasswörter und Signierschlüssel gelangen nie in App, Repository, Image, Testtrace oder Screenshot.
-- Strapi enthält redaktionelle Inhalte und Veröffentlichungsmetadaten, aber keine Passwörter, privaten Herbariumfotos oder exakten Fundorte.
-- Keycloak enthält Identitäten, Providerverknüpfungen, Sitzungen und Realm-/Clientrollen, aber keine Lern- oder Herbariumdaten.
-- Fach- und personenbezogene Daten werden über stabile interne IDs verbunden. E-Mail, wissenschaftlicher Name oder Provider-ID sind keine fachlichen Primärschlüssel.
-- Exakte Fundorte sind optional, privat und standardmäßig aus Exporten und Analytik entfernt oder vergröbert.
-- Veröffentlichtes Lernmaterial ist versioniert. Ein Client aktiviert ein Release erst nach vollständiger Prüfung von Manifest und Prüfsummen.
-- Offline-Schreibvorgänge besitzen stabile Client-IDs und sind idempotent. Wiederholung darf keine doppelten Funde, Events oder Identifikationen erzeugen.
-- Levelabschluss und PlantNet-Abgleich werden serverseitig validiert. Ein Clientergebnis allein ist nicht autoritativ.
-- Domain- und Application-Code kennen weder Flutter, Isar, HTTP, Kamera, GPS, Strapi noch PlantNet. Adapter implementieren Ports.
-- Produktionskonfiguration ist deklarativ reproduzierbar. Playwright darf Dev/Staging über die UI konfigurieren, muss das Ergebnis aber exportieren und versionieren.
+- Die App spricht nur mit Fach-API und Keycloak, nie mit Strapi-Admin oder Pl@ntNet.
+- Keine Secrets in App, Repository, Image, Testtrace oder Screenshot.
+- Levelabschluss und Pl@ntNet-Abgleich validiert der Server; ein Clientergebnis allein zählt nicht.
+- Offline-Schreibvorgänge haben stabile Client-IDs und sind idempotent.
+- Exakte Fundorte sind privat (die App rundet vor dem Upload, siehe `SECURITY.md`).
+- Stoppen und nachfragen bei: Produktionszugang, echten Provider-Secrets, realen Nutzerdaten, irreversibler Migration, ungeklärten Bildrechten, Breaking API Change.
 
-## Zielstruktur des Produkt-Repositories
+## Layout
 
-```text
-apps/flutter/                 Flutter-App für Android, iOS und Web
-services/platform/           Strapi-Erweiterungen und Fach-API
-services/identity/           Keycloak-Realm, Clients, Themes und Export
-contracts/                   OpenAPI 3.1, Schemas und Eventkatalog
-infra/                       Compose/IaC, CI, Monitoring, Backup
-tools/e2e/                   Playwright-Konfiguration und E2E-Tests
-content/                     offene Seeds/Exporte, keine privaten Daten
-docs/                        ADRs, Betrieb, Datenschutz und Contribution
-knowledge/                   dieses Paket oder dessen gepflegte Nachfolge
+| Pfad | Inhalt |
+|---|---|
+| `apps/flutter/` | App (Web, Linux, Android, iOS). `lib/app` Config/Router/DI, `lib/features/*` Domain/Application/Infrastructure/Presentation, `lib/ui/*` ältere Screens (Spiel, Quiz, Weltkarte), `lib/design_system`, `lib/auth`, `lib/adapters/http`, `lib/dev/*_preview.dart` Designvorschauen (nicht im Router) |
+| `apps/editor/`, `apps/teacher/`, `apps/homepage/` | Studio, Lehrendenportal, Projekt-Homepage (statisch, Vite) |
+| `packages/api/` | **Generierter** Dart-Client aus `contracts/api.yaml` – nie von Hand editieren |
+| `contracts/api.yaml` | OpenAPI 3.1, kanonischer Vertrag |
+| `services/platform/` | Strapi 4.25 + Fach-API (`src/api/platform/services/core/*`), Tests in `test/` (`node --test`) |
+| `services/identity/` | Keycloak-Realm `plantini`, Validator und Sicherheitstests |
+| `infra/` | Compose (dev, e2e, lan, production, authoring, plantnet), nginx, Pl@ntNet-Mock, `production/` (Caddy, Backup) |
+| `tools/e2e/` | Playwright (health, contract, web-app, resilience, accessibility) |
+| `tools/scripts/`, `tools/blender/` | Validatoren, Client-Generator, Demo-Start, Foto-Prefetch, Blender-Generatoren für 3D-Module |
+| `docs-site/` | MkDocs-Handbuch |
+| `knowledge/` | Wissenspaket: Rollen, Architektur, Betrieb, Handovers, `state/` (Status, Nachweise, Blocker) |
+
+## Befehle
+
+Immer mit absolutem Pfad oder `cd "$(git rev-parse --show-toplevel)"` arbeiten – `npm` im falschen Ordner scheitert mit ENOENT.
+
+```sh
+R="$(git rev-parse --show-toplevel)"
+
+# Flutter (Version aus .flutter-version = 3.47.1, Dart 3.13.1)
+cd "$R/apps/flutter" && flutter analyze && flutter test
+cd "$R/apps/flutter" && flutter test test/router_test.dart          # einzelne Datei
+cd "$R/apps/flutter" && dart format --output=none --set-exit-if-changed lib test
+
+# Backend (Node 20; Node > 20 ist per engines ausgeschlossen)
+cd "$R/services/platform" && npm run lint && npm run check && npm test && npm run build
+cd "$R" && node --test services/identity/test/*.test.mjs
+
+# Verträge und Konsistenz (blockieren in CI)
+cd "$R" && node tools/scripts/validate-api-contract.mjs
+cd "$R" && node tools/scripts/validate-ci-config.mjs
+cd "$R" && python3 knowledge/scripts/validate_knowledge.py
+cd "$R" && npx --yes @redocly/cli@1.34.3 lint contracts/api.yaml
+
+# Client neu erzeugen – nach JEDER Änderung an contracts/api.yaml
+cd "$R" && tools/scripts/generate-api-client.sh
+
+# Frischer, isolierter IPv4-Stack + Demo (baut Web-App, legt Testlerner an, druckt Login)
+cd "$R" && tools/scripts/start-local-demo.sh [--no-open]     # App http://127.0.0.1:3000, API :1338, Keycloak :8082
+cd "$R/tools/e2e" && npm run stack:up && npm test             # Playwright; stack:down räumt auf
+cd "$R" && tools/scripts/ci-check.sh                          # kompletter lokaler CI-Lauf
 ```
 
-Ein Monorepo ist die Ausgangsentscheidung. Große Medien können später in ein separates Content-Repository bzw. den Objektspeicher ausgelagert werden.
+## Fallstricke
 
-## Arbeitsprotokoll für jeden Agent
+- `flutter analyze --no-pub lib` (so in älteren Handovers) übersieht Fehler in `test/`. Für Nachweise immer `flutter analyze` ohne Einschränkung.
+- Vier Backend-Tests sind Redis-gesteuert und werden ohne Redis **übersprungen** („45 von 49 grün, 4 übersprungen“ ist kein Vollnachweis).
+- 13 Flutter-Tests sind seit längerem rot (`TEST-01`); nicht stillschweigend „reparieren“.
+- Stack und E2E sind **IPv4-first** (`127.0.0.1` statt `localhost`).
+- `start.sh`/`infra/compose.yaml` ist der alte Dev-Stack; der Demo- und E2E-Pfad ist `infra/compose.e2e.yaml` über `tools/e2e/scripts/run-e2e-stack.sh`.
+- Demo-Inhalte werden nur bei `PLATFORM_SEED_DEMO_CONTENT=true` importiert; Seeds unter `content/seeds`.
+- Keycloak importiert den Realm nur beim ersten Start. Änderungen an `services/identity/realm/plantini-realm.json` wirken auf bestehende Instanzen nicht; dort per Admin-API/`kcadm` nachziehen (Handbuch `betrieb/identity-keycloak.md`).
+- Wikimedia liefert beim Fotoabruf HTTP 429; keine Umgehung, keine ungeprüften Ersatzbilder.
+- Blender-Generatoren (`tools/blender/*.py`) verweigern das Überschreiben vorhandener Artefakte; Ausgabeordner versionieren.
 
-1. Aufgabe mit Feature-ID, Ziel, erlaubten Pfaden und Abnahme festhalten.
-2. Bestehenden Stand und fremde Änderungen prüfen; keine fremden Arbeiten überschreiben.
-3. Falls Vertrag, Schema oder Entscheidung fehlt: stoppen, einen Vorschlag erstellen und zuständige Rollen einbeziehen.
-4. Kleinstes vertikales Inkrement implementieren. Keine spekulative Plattform bauen.
-5. Tests auf der niedrigsten sinnvollen Ebene ergänzen; kritische Reise zusätzlich integriert/E2E prüfen.
-6. Dokumentation, Migration, Telemetrie und Datenschutzfolgen im selben Inkrement aktualisieren.
-7. Handoff nach `delivery/handoff-template.md` schreiben: Änderungen, Nachweise, bekannte Risiken, nächste Rolle.
+## Konventionen
 
-## Multi-Agent-Koordination
+- **Commits:** `change|featre|bugfix|test|docs|wip (ID) beschreibung` – Details und Beispiele in `CONTRIBUTING.md`. Keine Co-Author- oder Werkzeug-Zeilen in Commit-Nachrichten.
+- **Kein Push** ohne ausdrückliche Anweisung.
+- Änderungen an Vertrag, Schema oder Auth immer im selben Inkrement mit Client-Neugenerierung, Tests und Doku (`knowledge/delivery/definition-of-ready-done.md`).
+- **Parallele Sitzungen:** Im selben Arbeitsbaum können andere Agenten schreiben. Nie `git stash`, `checkout`, `reset` oder Formatierung über fremde uncommittete Dateien; nur eigene Dateien stagen. Für Vergleiche gegen `HEAD` ein separates `git worktree` anlegen.
+- Projektwissen gehört nach `knowledge/` (Handover unter `knowledge/handovers/`), Nachweise nach `knowledge/state/EVIDENCE.md`.
 
-- Ein Pfad hat zu einem Zeitpunkt genau einen schreibenden Owner. Siehe `agents/ownership.csv`.
-- Verträge, Auth-Rollen, Datenmodelle und Infrastruktur sind gemeinsame Engpassartefakte. Änderungen brauchen die dort genannten Reviews.
-- Jeder Agent arbeitet auf eigener Branch bzw. eigenem Worktree. Keine Agenten teilen einen nicht committed Zwischenstand.
-- Der Product Manager priorisiert und pflegt Featurestatus; der Orchestrator entscheidet Architektur und Integrationsreihenfolge.
-- Ein Agent darf keine Anforderungen als „done“ markieren, wenn Abnahmekriterium oder erforderlicher E2E-Nachweis fehlt.
-- Konflikte werden nicht durch „last writer wins“ gelöst. Stoppen, diff/handoff bereitstellen, Owner entscheiden lassen.
+## Status-Quellen
 
-## Test- und Qualitätsregeln
+1. `todos.md` – offene Aufgaben (nur Offenes; Erledigtes in der Git-Historie).
+2. `knowledge/state/STATUS_REGISTRY.csv` – Status je ID, auch erledigte. Jede ID aus `todos.md` braucht hier eine Zeile, sonst ist `validate_knowledge.py` rot.
+3. `knowledge/state/EVIDENCE.md`, `BLOCKERS.md`, `PROJECT_STATUS.md`.
+4. `requirements/features.csv`, `knowledge/features/features.csv`, `BACKLOG.csv` – nur noch für Anforderungstexte (FA/NFA).
 
-- Domainregeln: Unit-Tests, bei kritischer Logik mindestens 90 % Branch Coverage.
-- Flutter: Unit-, Widget-, Golden-/Semantik- und Integrationsprüfungen; Zustände Loading, Empty, Offline, Error und große Schrift mitdenken.
-- API: OpenAPI-Validierung, Contract- und Integrationsprüfungen gegen PostgreSQL/Keycloak/Storage.
-- CMS/Auth: Playwright-Setup und UI-Smokes auf Dev/Staging; exportierte Konfiguration wird im frischen Container erneut importiert.
-- Kernreise: Registrierung → Level → Quiz → Feldauftrag → Identifikation → Herbarium als E2E, zunächst mit PlantNet-Mock.
-- Sicherheit: Secret-, Dependency-, Container-, SAST- und DAST-Prüfung; kritische oder hohe Befunde blockieren Releases.
-- Betrieb: Migration, Backup/Restore, Queue-Wiederaufnahme, Provider-429 und Offline-/Netzwechsel werden aktiv getestet.
+Nichts auf `verified`/`[x]` setzen ohne Nachweis-ID. „Production Ready“ oder „Release Candidate“ nicht behaupten, solange `RELEASE-2026-08-25` blockiert ist.
 
-## Stop-Bedingungen
+## Arbeitsweise
 
-Stoppe und eskaliere, wenn eine Aufgabe Produktionszugang, echte Provider-Secrets, reale Nutzerdaten, eine irreversible Migration, ungeklärte Bildrechte, eine Änderung an Einwilligungslogik oder einen Breaking API Change benötigt. Dokumentiere den Blocker; erfinde keine Freigabe.
+- Nicht behaupten, was nicht gelaufen ist: Build-Erfolg ist keine UI-Abnahme. Nutzerabnahmen (Abschnitt 2 in `todos.md`) sind offen, bis die Person sie bestätigt.
+- Keine neuen Tests ohne Absprache, solange die Anpassung der Spieltests (GAME-QA) pausiert ist.
 
-## Aktueller Architekturstand
+## Geheimnisse
 
-- App: Flutter, Clean Architecture, vertikale Featuremodule
-- Mobile Speicherung: Isar hinter Repository-Ports
-- Web-Speicherung: früher Spike; bei Bedarf IndexedDB-/Drift-WASM-Adapter
-- CMS/Admin: Strapi Community Edition mit projektseitigem Reviewstatus
-- Identity: Keycloak mit OIDC/OAuth 2.0, SAML und Identity Brokering
-- Daten: PostgreSQL, S3-kompatibler Objektspeicher, persistente Queue
-- Externe Identifikation: PlantNet ausschließlich über Backend-Worker
-- Auslieferung: GitLab CI/CD, Docker-basierte Dev-/Staging-Umgebung, signierte Releases
+`todos-credentials`, `docs/plantnet-credentials`, `.env*`, `tools/e2e/.runtime/` und `continue-codex` sind git-ignoriert und lokal. **Nie lesen, ausgeben oder in Doku/Screenshots übernehmen.**
 
-Noch offene Architekturpunkte stehen in `product/mvp-and-open-questions.md`; kein Agent darf sie stillschweigend als entschieden behandeln.
+`operations/private/` (git-ignoriert) enthält das Roll-out-Protokoll des Betreibers mit Servernamen und Adressen. Lesen ist erlaubt, wenn es um den Produktivbetrieb geht; Inhalte daraus nie in versionierte Dateien übernehmen. Pl@ntNet-Erreichbarkeit nur über `tools/scripts/verify-plantnet-credentials.mjs` prüfen (gibt den Schlüssel nicht aus).

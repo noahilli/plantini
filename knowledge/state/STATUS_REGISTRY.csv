@@ -143,5 +143,17 @@ APP-10,work_item,P1,in_progress,flutter-frontend,FA032,APP-09,NONE,NONE,alpha,20
 APP-11,work_item,P1,in_progress,flutter-frontend,FA032,APP-10,NONE,NONE,alpha,2026-09-30,Accept herbarium map and species cards and collection shares; privacy review of owner-only find location
 DESIGN-12,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept time-of-day lighting on real phones
 DESIGN-13,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,DESIGN-11,NONE,NONE,alpha,2026-09-30,Accept the character creator and refine the Blender kit
-TEST-01,work_item,P2,planned,qa-playwright,NFA022,NONE,NONE,NONE,alpha,2026-09-30,Repair the 13 Flutter tests that failed before these changes
+TEST-01,work_item,P0,planned,qa-playwright,NFA022,NONE,NONE,NONE,alpha,2026-09-30,Repair the 13 Flutter tests that failed before these changes
 PERF-01,work_item,P1,planned,flutter-frontend,NFA016,DESIGN-11,NONE,NONE,alpha,2026-10-01,Measure frame times on real Android devices with the perf walk
+OSS-01,work_item,P0,in_progress,devops-release,NFA023,NONE,NONE,NONE,release,2026-11-11,"Publish the cleaned history, protect main, enable secret scanning and prove a green remote pipeline"
+CMS-10,work_item,P1,planned,cms-manager,FA050;FA052,CMS-09,NONE,NONE,alpha,2026-11-11,Integrate editorial preview and atomic release approval for generated drafts
+CONTENT-10,work_item,P1,planned,content-data,FA013,NONE,NONE,NONE,alpha,2026-11-11,Review all 30 species against direct species sources and approve editorially
+CONTENT-11,work_item,P2,planned,content-data,FA013,CONTENT-10,NONE,NONE,alpha,2026-11-11,Differentiate rounds 2 and 3 with comparison and habitat questions
+CONTENT-12,work_item,P1,planned,content-data,FA013;FA053,NONE,NONE,NONE,release,2026-11-11,"Check and label rights for texts, photos and 3D models per file"
+DESIGN-09,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,NONE,NONE,NONE,alpha,2026-11-11,User acceptance of the low-poly redesign in the running app
+DESIGN-10,work_item,P1,in_progress,ux-accessibility,NFA016;NFA017,NONE,NONE,NONE,alpha,2026-11-11,User acceptance of the responsive plant index card
+GAME-08,work_item,P1,in_progress,flutter-frontend,FA020,NONE,NONE,NONE,alpha,2026-11-11,"User acceptance of the profile, quiz and collection flow"
+LEARN-12,work_item,P1,in_progress,flutter-frontend,FA020,NONE,NONE,NONE,alpha,2026-11-11,User acceptance of the endless index card practice mode
+MEDIA-10,work_item,P1,in_progress,flutter-frontend,FA013,NONE,NONE,NONE,alpha,2026-11-11,User acceptance of the plant photo gallery
+WORLD-11,work_item,P1,in_progress,flutter-frontend,FA010,NONE,NONE,NONE,alpha,2026-11-11,User acceptance of the animated 3D ecosystems on mobile devices
+DOCS-02,work_item,P2,planned,devops-release,NFA027,NONE,NONE,NONE,alpha,2026-11-11,Document the docs service and the LAN demo stack in the operations handbook

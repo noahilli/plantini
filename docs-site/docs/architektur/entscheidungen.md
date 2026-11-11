@@ -73,8 +73,8 @@ Strapi-Custom-Routes als Fach-API (OQ-03); Docker/Compose, Strapi CE, Keycloak, 
 - OQ-01: Der Seed enthält 30 Arten (3 Ökosysteme à 10), nicht 75.
 - OQ-02: Isar läuft im Web; der Rückfall wurde nicht gebraucht (siehe K-007).
 - OQ-03: dünne Custom-Routes – siehe D-01.
-- **Lizenz:** Punkt 2 („Eigener Code wird unter Apache-2.0 veröffentlicht“) gilt nicht. Das Repository enthält zwar `LICENSE` und `NOTICE`, aber Plantini ist
-  nicht Open Source; die Rechte liegen nicht beim Entwickler. Siehe [Projektstatus und Rechte](../start/status.md).
+- **Lizenz:** Punkt 2 („Eigener Code wird unter Apache-2.0 veröffentlicht“) ist überholt. Seit 11.11.2026 steht der Code unter
+  AGPL-3.0-or-later, Lerninhalte unter CC BY-SA 4.0 (`LICENSE`, `NOTICE`). Siehe [Projektstatus und Rechte](../start/status.md).
 
 ## R-002: Fach-API v1 als stabiler App-Vertrag
 

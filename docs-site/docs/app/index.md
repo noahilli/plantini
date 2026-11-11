@@ -3,7 +3,7 @@
 Die Plantini-App liegt unter `apps/flutter/` und läuft als Web-App, Linux-Desktop-Programm und Android-App (iOS ist im Repository vorbereitet, aber nicht belegt, siehe [Bauen und Release](bauen-release.md)). Diese Seite erklärt, wie `lib/` aufgebaut ist, wie die Teile beim Start zusammengesteckt werden und welche Konventionen du beim Mitarbeiten brauchst.
 
 !!! note "Projektstatus"
-    Plantini ist ein unveröffentlichter, unvollständiger Teaser und **kein Open-Source-Projekt**; die Rechte liegen nicht beim Entwickler. Mitarbeit ist nach Absprache möglich (Kontakt: `noah@illmann.net`). Die App-Version steht in `apps/flutter/pubspec.yaml` (`version: 0.6.5+9` zum Zeitpunkt dieser Seite).
+    Plantini ist Open Source (Code: AGPL-3.0-or-later, Inhalte: CC BY-SA 4.0; siehe `LICENSE` und `NOTICE`) und ein früher, unvollständiger Stand. Beiträge: siehe `CONTRIBUTING.md`. Die App-Version steht in `apps/flutter/pubspec.yaml` (`version: 0.7.1+11` zum Zeitpunkt dieser Seite).
 
 <figure markdown="span">
   ![Startseite der App: Überschrift „Bereit für die nächste Expedition?“, eine Karte „Nächster Schritt“ mit Weiter-Knopf, darunter der Abschnitt „Ökosysteme“ und die Navigationsleiste mit fünf Reitern](../assets/shots/app-home.png)

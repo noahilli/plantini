@@ -1,0 +1,9 @@
+# <präfix> (<ID>) <beschreibung>
+#
+# präfix: change | bugfix | test | docs | wip
+# ID:     Aufgabe aus todos.md (z. B. AUTH-06) oder Issue (#123)
+# Beschreibung: englisch, klein, ohne Punkt, z. B.
+#   change (AUTH-06) reopen public self-registration
+#
+# Optional nach einer Leerzeile: warum (nicht was), in ganzen Sätzen.
+# Mit `git commit -s` die Zeile Signed-off-by anhängen (DCO, siehe CONTRIBUTING.md).

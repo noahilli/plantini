@@ -249,4 +249,4 @@ Es gibt keine Automatik, also gehört eine kurze Routine dazu:
 - [Betrieb: Überblick](index.md) · [Compose-Dateien](compose.md) · [Deployment](deployment.md) · [Identität und Keycloak](identity-keycloak.md)
 - [Sicherheit und Datenschutz](../architektur/sicherheit-datenschutz.md)
 - Quellen: `infra/production/backup.sh`, `infra/production/plantini-backup.service`, `infra/production/plantini-backup.timer`, `infra/compose.production.yaml`, `infra/production/Caddyfile`
-- Hintergrund: `knowledge/operations/observability-and-backup.md` (Soll), `operations/runbooks/production-deploy.md` (Betriebsnotizen; enthält reale Hostdetails und wird hier nicht wiedergegeben)
+- Hintergrund: `knowledge/operations/observability-and-backup.md` (Soll), `operations/runbooks/backup-restore.md` (Sicherung und Wiederherstellung)

@@ -3,8 +3,8 @@ info:
   title: Plantini Platform API
   version: 1.0.0-draft.1
   license:
-    name: Apache-2.0
-    identifier: Apache-2.0
+    name: AGPL-3.0-or-later
+    identifier: AGPL-3.0-or-later
   description: |
     Kanonischer Vertrag zwischen Plantini-App und Fach-API. Die App kommuniziert
     niemals direkt mit Strapi oder einem Identifikationsprovider. Alle schreibenden
