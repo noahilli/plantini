@@ -1,6 +1,6 @@
 # 3D-Ökosysteme: verspielteres Design und Licht, das hinter Bäumen bleibt (06.10.2026)
 
-Stand: Branch `main`, Commits `3409c59` (Dart) und `473ebb5` (Welten und Skripte). Aufgabe: `WORLD-11` (bleibt offen,
+Stand: Branch `main`, Commits `a38b90c` (Dart) und `7f2cec5` (Welten und Skripte). Aufgabe: `WORLD-11` (bleibt offen,
 Nutzerabnahme fehlt; **nicht** ausgerollt, **nicht** auf einem Handy gesehen).
 
 ## Anlass

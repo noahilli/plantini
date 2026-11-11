@@ -3,7 +3,7 @@
 > Fortsetzung vom 22. September: siehe `lesson-authoring.md`. Neue strukturierte
 > Steckbriefe, Missionsdarstellung und CMS-Entwurfs-Generator sind ergänzt;
 > Demo-Release `2026.09.22-de.1`. Dieser ältere Handoff beschreibt die Basis.
-> Die hier unten erwähnte Backend-Assertion wurde bereits mit `cfe97a5` korrigiert;
+> Die hier unten erwähnte Backend-Assertion wurde bereits mit `933b02e` korrigiert;
 > die übrigen Test-/Abnahmegrenzen bleiben bestehen.
 
 ## Auftrag und Umsetzung
@@ -93,6 +93,6 @@ kleine Ablaufkorrekturen und Dokumentation. Keine Veröffentlichung oder Push.
 
 ## Commits im Haupt-Checkout
 
-- `d894621` – `wip: tests ecosystem journeys and specimen bottles`
-- `22e4187` – `change (GAME-03) build thirty-level ecosystem journeys`
-- `0202bc0` – `change (GAME-04) add playable world maps and specimen bottles`
+- `c9c9a16` – `wip: tests ecosystem journeys and specimen bottles`
+- `4682bba` – `change (GAME-03) build thirty-level ecosystem journeys`
+- `af8c20c` – `change (GAME-04) add playable world maps and specimen bottles`

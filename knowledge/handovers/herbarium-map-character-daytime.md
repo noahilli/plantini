@@ -1,6 +1,6 @@
 # Herbarium-Fotos, Karte, Artkarten, Tageszeit, Charakter — 30.09.2026
 
-Commits: `07c578e`, `dca4fbd`, `370f3e4` (Fotos, Cache, Fehler), `df8fcf7` (Karte, Artkarten, Quoten), `b10d9b4` (Tageszeit), `67c55b5` (Charakter). **Nichts davon ist auf dem Produktivserver ausgerollt.**
+Commits: `8a2266f`, `9e86cf0`, `3c7f327` (Fotos, Cache, Fehler), `b456ef2` (Karte, Artkarten, Quoten), `6bb1e8c` (Tageszeit), `2bda3e1` (Charakter). **Nichts davon ist auf dem Produktivserver ausgerollt.**
 
 ## Ursache „Fundfoto nicht verfügbar“
 
@@ -32,7 +32,7 @@ Die App schickte beim Speichern eines Fundes nur `identificationJobId`, nie `med
 
 ## Charakter (Stand 01.10.2026: festes Set statt Designer)
 
-Der Charakter-Designer (frei kombinierbare Teile, `67c55b5`) ist entfernt. Stattdessen gibt es **neun feste Entdecker:innen**, alle im Forscher-Stil (Westen, Fernglas, Notizbuch, Safari-/Ranger-Hut), bewusst unterschiedlich in Hautton, Alter, Haaren, Kopfbedeckung, Statur und Mobilität:
+Der Charakter-Designer (frei kombinierbare Teile, `2bda3e1`) ist entfernt. Stattdessen gibt es **neun feste Entdecker:innen**, alle im Forscher-Stil (Westen, Fernglas, Notizbuch, Safari-/Ranger-Hut), bewusst unterschiedlich in Hautton, Alter, Haaren, Kopfbedeckung, Statur und Mobilität:
 
 | Gruppe | Figuren |
 |---|---|
@@ -56,7 +56,7 @@ Messwerkzeug: `integration_test/perf_walk_test.dart` (`DISPLAY=:0 flutter drive 
 
 ## Tests
 
-Neu: `test/core/image_service_test.dart`, `test/features/catalog/world_lighting_test.dart`, `test/features/character/explorer_test.dart`, Backend `tile-proxy.test.js`, `character-schema.test.js`. Flutter: 123 bestanden, dieselben **13 Fehler wie vor den Änderungen** (Stand `ba6919e`: Level-Gate-, Researcher-Path-, Plant-Detail-, Router- und Herbarium-Detail-Tests sowie ein Kompilierfehler in `game05_herbarium_bottles_test.dart` – Altlasten, nicht angefasst). Backend: 46 Tests, 42 bestanden, 4 übersprungen (Redis).
+Neu: `test/core/image_service_test.dart`, `test/features/catalog/world_lighting_test.dart`, `test/features/character/explorer_test.dart`, Backend `tile-proxy.test.js`, `character-schema.test.js`. Flutter: 123 bestanden, dieselben **13 Fehler wie vor den Änderungen** (Stand `7a4bf03`: Level-Gate-, Researcher-Path-, Plant-Detail-, Router- und Herbarium-Detail-Tests sowie ein Kompilierfehler in `game05_herbarium_bottles_test.dart` – Altlasten, nicht angefasst). Backend: 46 Tests, 42 bestanden, 4 übersprungen (Redis).
 
 ## Ausrollen (Reihenfolge, nicht ausgeführt)
 

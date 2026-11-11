@@ -58,7 +58,7 @@ Lokal gemessen (`flutter test`, 05.10.2026): `+128 -13`. Die 13 Fehler im Einzel
 | `test/router_test.dart` | GoRouter & Navigation renders HerbariumScreen | Testfehler |
 | `test/router_test.dart` | GoRouter & Navigation renders PlantDetailScreen via router fallback | Testfehler |
 
-Die Ursachen der zwölf Testfehler habe ich **nicht untersucht**; sie gelten laut `knowledge/handovers/herbarium-map-character-daytime.md` (Abschnitt „Tests“) als Altlasten vor den damaligen Änderungen (Stand `ba6919e`).
+Die Ursachen der zwölf Testfehler habe ich **nicht untersucht**; sie gelten laut `knowledge/handovers/herbarium-map-character-daytime.md` (Abschnitt „Tests“) als Altlasten vor den damaligen Änderungen (Stand `7a4bf03`).
 
 Dasselbe Problem zeigt `flutter analyze`: ein Fehler und zwei Hinweise, alle in derselben Datei:
 

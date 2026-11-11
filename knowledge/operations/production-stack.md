@@ -58,6 +58,8 @@ Datenschutzfreigaben.
 
 ## Ausrollung 05.10.2026: Lehrendenportal und nachgeholtes App-Release
 
+> Hinweis (11.11.2026): Image-Tags und Release-Ordner auf dem Server (`plantini/platform:059ac98`, `/opt/plantini/releases/3f00d12/` usw.) tragen Commit-Kennungen aus der Zeit **vor** der Veröffentlichung. Die Git-Historie wurde für die Veröffentlichung neu geschrieben; die Kennungen sind deshalb nicht mehr als Commits auffindbar, die Inhalte entsprechen aber den gleichnamigen Ständen.
+
 Die bestehenden PostgreSQL-/Redis-/Keycloak-Volumes wurden weiterverwendet;
 kein `down`, Realm-Neuimport oder Zurücksetzen bestehender Nutzer. Vorher wurde
 das Produktionsbackup `20261005T105241Z` erfolgreich erstellt. Die vorherige

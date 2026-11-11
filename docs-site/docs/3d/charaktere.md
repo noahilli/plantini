@@ -2,7 +2,7 @@
 
 Lernende wählen bei der ersten Anmeldung eine von **neun festen Entdecker:innen**. Die Figur steht danach auf dem
 Lernpfad an der aktuellen Station und in den Vitrinen. Es gibt keinen Charakter-Editor: Ein früherer Designer mit frei
-kombinierbaren Teilen wurde durch dieses feste Set ersetzt (Commit `45ac760`, `DESIGN-13`).
+kombinierbaren Teilen wurde durch dieses feste Set ersetzt (Commit `854c2bf`, `DESIGN-13`).
 
 ![Die neun Entdecker:innen im Kontaktbogen](../assets/shots/art-charaktere.png){ loading=lazy }
 

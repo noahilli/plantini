@@ -44,7 +44,7 @@ Die Kartenfarbe (nur dekorative helle Flächen, Lesetext bleibt dunkel) wird so 
 
 ## Lernmodus
 
-Separater Agent implementierte den disjunkten Teil in eigenem Worktree; Main reviewte und integrierte `9bf2edb`. Pfad `/ecosystems/:ecosystemId/practice`, Einstieg „Karteikarten üben“ in der Ökosystemansicht.
+Separater Agent implementierte den disjunkten Teil in eigenem Worktree; Main reviewte und integrierte `a2b70c8`. Pfad `/ecosystems/:ecosystemId/practice`, Einstieg „Karteikarten üben“ in der Ökosystemansicht.
 
 Auf ausdrücklichen Nutzerwunsch inzwischen **alle veröffentlichten Pflanzen der Ökosystem-Level**, unabhängig von deren Freischaltung. IDs werden dedupliziert; auch Karten ohne Merkmalsnotizen bleiben sichtbar. Einstieg „Alle Pflanzenkarten · endlos lernen“ ist unabhängig vom Levelstatus aktiv. Vorherige/nächste Karte sind jederzeit erreichbar; Fragen können beim reinen Anschauen übersprungen werden.
 
