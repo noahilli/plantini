@@ -8,7 +8,7 @@ Diese Liste enthält nur offene, wesentliche Punkte. Erledigte und überholte Ei
 
 ## 1. Öffentlicher Start
 
-- [ ] **P0 | OSS-01:** Repository öffentlich schalten: bereinigte Historie nach GitHub übertragen, Branch-Schutz für `main`, Secret Scanning und Dependabot einschalten, eine grüne Remote-Pipeline nachweisen (ersetzt INFRA-01).
+- [ ] **P0 | OSS-01:** Öffentliches Repository <https://github.com/noahilli/plantini> nachziehen. Seit 11.11.2026 öffentlich, mit bereinigter Historie, Secret Scanning samt Push-Schutz, Dependabot-Warnungen und -Sicherheitsupdates, privater Schwachstellenmeldung und Schutz von `main` gegen Force-Push und Löschen. Offen: eine grüne Remote-Pipeline nachweisen (hängt an TEST-01; ersetzt INFRA-01).
 - [ ] **P0 | TEST-01:** Rote Flutter-Tests beheben oder bewusst markieren, damit die öffentliche CI aussagekräftig ist (13 Tests schlugen schon vor den Spieländerungen fehl; `game05_herbarium_bottles_test.dart` kompiliert nicht: `await tester.view.reset()` ist `void`). Nur nach Freigabe, solange GAME-QA pausiert ist.
 - [ ] **P1 | SEC-06:** Datenschutzerklärung an die offene Selbstregistrierung anpassen (Registrierung, Konten ohne E-Mail, Minderjährige, Löschung) und freigeben.
 - [ ] **P1 | AUTH-10:** Einwilligungsversionen, Altersfluss, Datenkopie und Kontolöschung umsetzen; mit offener Registrierung vordringlich.
