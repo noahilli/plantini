@@ -192,7 +192,7 @@ cd $R && docker compose --env-file tools/e2e/.runtime/e2e.env -p plantini-e2e \
 
 - legt bzw. aktualisiert den Client `plantini-teacher-dev` (PKCE S256, Redirect `http://127.0.0.1:8085/`),
 - legt den vertraulichen Verwaltungsclient `plantini-account-manager` mit den Rollen `manage-users`, `view-users`, `query-users`, `view-realm` an,
-- schaltet im Realm die Selbstregistrierung aus und registriert das Admin-only-Attribut `plantini_managed_student`,
+- lässt im Realm die Selbstregistrierung an (Anmeldename statt E-Mail) und registriert das Admin-only-Attribut `plantini_managed_student`,
 - **schreibt `PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID`, `PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET` und `TEACHER_PUBLIC_URL` in die übergebene Env-Datei** (Modus 0600).
 
 `infra/compose.teacher.local.yaml` erzwingt die beiden `PLATFORM_KEYCLOAK_ADMIN_*`-Werte mit `${…:?run configure-managed-accounts.mjs}`. Fehlen sie, bricht Compose mit genau diesem Hinweis ab.

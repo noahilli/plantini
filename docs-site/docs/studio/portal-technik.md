@@ -231,7 +231,7 @@ Weitere Datenschutzaspekte aus dem Code:
 2. Weist die Default-Scopes `roles` und `plantini-api-audience` zu und erlaubt dem Client per Scope-Mapping die Realm-Rollen `lehrende` und `systemadministration`.
 3. Legt den vertraulichen Client `plantini-account-manager` an (`serviceAccountsEnabled: true`, kein Browser-Flow, `fullScopeAllowed: false`) und gibt dessen Service-Account die `realm-management`-Rollen `manage-users`, `view-users`, `query-users`, `view-realm`. Keine Realm- oder Clientverwaltung.
 4. Ändert das **globale** User-Profile des Realms: `email`, `firstName`, `lastName` sind nicht mehr Pflicht, und das Attribut `plantini_managed_student` wird als reines Admin-Attribut (`view`/`edit`: `admin`, Wert nur `true`) deklariert.
-5. Schaltet `registrationAllowed` aus.
+5. Lässt die Selbstregistrierung an (`registrationAllowed: true`, bis 10.11.2026 schaltete das Skript sie aus) und setzt `registrationEmailAsUsername: false`.
 6. Schreibt `PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID`, `PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET` und `TEACHER_PUBLIC_URL` in die Env-Datei (Modus 0600).
 
 !!! warning "Stolperfalle: Skript akzeptiert nur zwei Origins"

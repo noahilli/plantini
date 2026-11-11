@@ -69,8 +69,8 @@ export function validateRealmSecurity(realm, { environment = 'development' } = {
     }
   }
 
-  if (realm.registrationAllowed !== false || !realm.verifyEmail || !realm.resetPasswordAllowed) {
-    fail('self-registration must be disabled; email verification and password reset remain enabled');
+  if (!realm.registrationAllowed || !realm.verifyEmail || !realm.resetPasswordAllowed) {
+    fail('registration, email verification, and password reset must be enabled together');
   }
   const verifyEmail = (realm.requiredActions ?? []).find(
     (action) => action.alias === 'VERIFY_EMAIL',

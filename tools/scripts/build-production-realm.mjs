@@ -15,8 +15,9 @@ const source = new URL('../../services/identity/realm/plantini-realm.json', impo
 const realm = JSON.parse(await readFile(source, 'utf8'));
 
 realm.sslRequired = 'all';
-// Learner accounts are provisioned by teachers through the portal.
-realm.registrationAllowed = false;
+// Public self-registration is open (user decision 10.11.2026); teachers can
+// additionally provision managed learner accounts through the portal.
+realm.registrationAllowed = true;
 realm.verifyEmail = true;
 realm.resetPasswordAllowed = true;
 realm.smtpServer = {

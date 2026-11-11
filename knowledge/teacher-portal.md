@@ -16,8 +16,10 @@ Eine E-Mail-Adresse ist optional. Ein generiertes Startpasswort wird genau
 einmal angezeigt und muss beim ersten Login geändert werden. Eine angegebene
 E-Mail-Adresse wird in Keycloak bestätigt. Das Portal kann Passwörter erneut
 zurücksetzen und Konten sperren bzw. aktivieren; der Lernfortschritt bleibt dabei
-erhalten. Die Selbstregistrierung im Realm ist deaktiviert. Bereits vorhandene
-Konten bleiben erhalten.
+erhalten. Die Selbstregistrierung war beim Rollout deaktiviert und ist seit 10.11.2026
+(Nutzerentscheidung) wieder öffentlich offen; selbst registrierte Konten sind
+normale Lernende ohne `plantini_managed_student` und für Lehrende nicht
+verwaltbar. Bereits vorhandene Konten bleiben erhalten.
 
 ## Rechte und Daten
 
@@ -62,7 +64,7 @@ node tools/scripts/configure-managed-accounts.mjs <geschützte-env-Datei> https:
 ```
 
 Das Skript legt den Portalclient und einen vertraulichen Verwaltungsclient an,
-setzt Rollenscopes, deaktiviert Selbstregistrierung und schreibt dessen Secret
+setzt Rollenscopes, lässt die Selbstregistrierung an und schreibt dessen Secret
 nur in die geschützte Env-Datei (0600). Dieser Client aktiviert zugleich den
 bisher unkonfigurierten Studio-Einladungsdienst. SMTP bleibt Voraussetzung für
 E-Mail-Einladungen. Lehrendenrollen werden zunächst durch die bestehende

@@ -86,7 +86,9 @@ const managedAttribute = { name: 'plantini_managed_student', displayName: 'Manag
   permissions: { view: ['admin'], edit: ['admin'] }, validations: { options: { options: ['true'] } } };
 profile.attributes = [...(profile.attributes || []).filter((attribute) => attribute.name !== managedAttribute.name), managedAttribute];
 await admin('/users/profile', { method: 'PUT', body: profile });
-await admin('', { method: 'PUT', body: { registrationAllowed: false, registrationEmailAsUsername: false } });
+// Public self-registration stays open next to managed pupil accounts. Login names
+// are no longer e-mail addresses because pupils may have no e-mail.
+await admin('', { method: 'PUT', body: { registrationAllowed: true, registrationEmailAsUsername: false } });
 
 const updates = { PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID: managementId, PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET: secret, TEACHER_PUBLIC_URL: origin.origin };
 let updated = source;
@@ -95,4 +97,4 @@ for (const [name, value] of Object.entries(updates)) {
   updated = pattern.test(updated) ? updated.replace(pattern, `${name}=${value}`) : `${updated.replace(/\s*$/, '')}\n${name}=${value}\n`;
 }
 await writeFile(file, updated, { mode: 0o600 }); await chmod(file, 0o600);
-console.log('Portal client, account manager and closed registration configured. Credentials remain in the protected environment file.');
+console.log('Portal client, account manager and open self-registration configured. Credentials remain in the protected environment file.');

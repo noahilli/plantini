@@ -28,7 +28,7 @@ Plantini nutzt Keycloak (Version 24.0.4) als einzigen Identitätsanbieter: ein R
 |---|---|
 | Realm-Name | `plantini` |
 | Signatur | `RS256` (`defaultSignatureAlgorithm`) |
-| Selbstregistrierung | aus (`registrationAllowed: false`); E-Mail-Bestätigung (`verifyEmail`) und Passwort-Reset an |
+| Selbstregistrierung | **an** (`registrationAllowed: true`, seit 10.11.2026 wieder öffentlich); E-Mail-Bestätigung (`verifyEmail`) und Passwort-Reset an. Der Validator verlangt alle drei zusammen. |
 | Passwortrichtlinie | `length(14) and notUsername and notEmail and passwordHistory(5)` |
 | Brute-Force-Schutz | an, `failureFactor` 5, `maxTemporaryLockouts` 5, kein permanentes Sperren |
 | Token | Access-Token 300 s, SSO-Leerlauf 1800 s, SSO maximal 28800 s, Refresh-Token-Rotation (`revokeRefreshToken: true`) |
@@ -130,7 +130,7 @@ Was es tut (Quelltext):
 
 | Schritt | Wirkung |
 |---|---|
-| Realm | `sslRequired = 'all'`, `registrationAllowed = false`, `verifyEmail = true`, `resetPasswordAllowed = true` |
+| Realm | `sslRequired = 'all'`, `registrationAllowed = true`, `verifyEmail = true`, `resetPasswordAllowed = true` |
 | SMTP | `smtpServer` mit Host, Port, `from`/`user` = Benutzer, `ssl: 'true'`, `starttls: 'false'`, `auth: 'true'` – **ohne Passwort** |
 | `plantini-web-production` | aktiv; Redirects `<origin>/`, `<origin>/auth/callback`, `<origin>/auth/logout-callback`; Web-Origin; Post-Logout-URI |
 | `plantini-editor-production` | aktiv; Origin `studio.<domain>` (aus dem Argument abgeleitet: `app.` entfernt, `studio.` vorangestellt) |
@@ -250,7 +250,7 @@ Das Skript führt der Reihe nach aus:
 | Client `plantini-account-manager` | vertraulich (`publicClient: false`), nur Servicekonto (`serviceAccountsEnabled`), Standard-Flow, Implicit und Direct Grants aus, `fullScopeAllowed: false` |
 | Servicekonto-Rollen | `realm-management`: `manage-users`, `view-users`, `query-users`, `view-realm` (Rollenzuweisung **und** Scope-Mapping) |
 | User-Profil | E-Mail, Vor- und Nachname nicht mehr Pflicht; neues Attribut `plantini_managed_student` (nur Admins sehen/ändern es) |
-| Realm | `registrationAllowed: false`, `registrationEmailAsUsername: false` |
+| Realm | `registrationAllowed: true`, `registrationEmailAsUsername: false` (Anmeldename ≠ E-Mail, weil Schülerkonten keine E-Mail brauchen) |
 | Umgebungsdatei | `PLATFORM_KEYCLOAK_ADMIN_CLIENT_ID`, `PLATFORM_KEYCLOAK_ADMIN_CLIENT_SECRET`, `TEACHER_PUBLIC_URL` |
 
 Danach startest du `platform` neu (`up -d platform`), damit die Variablen wirken. Ohne sie bleiben Einladungen und verwaltete Schülerkonten abgeschaltet.
@@ -259,6 +259,14 @@ Danach startest du `platform` neu (`up -d platform`), damit die Variablen wirken
     `infra/production.env.example` nennt für das Servicekonto drei Rollen (`view-users`, `manage-users`, `view-realm`). Das Skript vergibt vier, zusätzlich `query-users`. Maßgeblich ist das Skript.
 
 Fachliche Hintergründe zu Rollen, Klassen und Audit stehen in [Portal-Technik](../studio/portal-technik.md). Die Anwendungssicht auf das Servicekonto – die Plattform greift über `http://keycloak:8080` im internen `app`-Netz auf die Admin-API zu (`PLATFORM_KEYCLOAK_ADMIN_BASE_URL`) – steht in [Compose-Dateien](compose.md#platform).
+
+### Offene Registrierung neben verwalteten Konten
+
+Seit 10.11.2026 ist die Selbstregistrierung wieder offen; die vom Portal angelegten Schülerkonten bleiben parallel bestehen. Was das im laufenden Realm bedeutet (abgeleitet aus `configure-managed-accounts.mjs`, nicht gegen die Live-Instanz geprüft):
+
+- Selbst registrierte Konten bekommen nur `default-roles-plantini` → `lernende`. Studio und Portal bleiben ihnen verschlossen, bis jemand Rollen vergibt.
+- Das Attribut `plantini_managed_student` ist nur für Admins sichtbar und änderbar. Ein selbst registriertes Konto kann sich also nicht als verwaltetes Schülerkonto ausgeben, und Lehrende können es nicht über das Portal übernehmen (`requireManagedLearner()`).
+- Weil `configure-managed-accounts.mjs` `email` im User-Profil auf „nicht Pflicht“ setzt, verlangt auch das **Registrierungsformular** keine E-Mail-Adresse. Wer sich ohne E-Mail registriert, durchläuft keine Bestätigung und kann sein Passwort nicht selbst zurücksetzen. Eine Pflicht-E-Mail nur für Selbstregistrierte (`required.roles: ["user"]`) ist keine Lösung: `VERIFY_PROFILE` ist im Realm aktiv und würde dann auch Schüler beim nächsten Login nach einer E-Mail fragen.
 
 ## SMTP
 
